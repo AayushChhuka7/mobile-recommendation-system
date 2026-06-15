@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+  
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// model Roles {
+//   roleId   String  @id @default(uuid()) @map("role_id") @db.Uuid
+//   roleName String  @unique @map("role_name") @db.VarChar(50)
+//   user     Users[]
+
+//   @@map("roles")
+// }
+
+model Users {
+  name String 
+  userId   String  @id @default(uuid()) @map("user_id") @db.Uuid
+  email    String  @unique @db.VarChar(255)
+  password String  @db.VarChar(255)
+  phoneNo  String? @map("phone_no")
+  isActive Boolean @default(true) @map("is_active")
+  isVerified Boolean @default(false) @map("is_verified")
+  
+  // roleId   String  @map("role_id") @db.Uuid
+  // role  Roles  @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
+  
+  otps  Otp[]
+
+  @@map("users")
+}
+
+model Otp {
+  otpId     String   @id @default(uuid()) @map("otp_id") @db.Uuid
+  code      String   @db.VarChar(6)
+  userId    String   @map("user_id") @db.Uuid
+  expiresAt DateTime @map("expires_at")
+  isUsed    Boolean  @default(false) @map("is_used")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      Users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("otps")
+}
