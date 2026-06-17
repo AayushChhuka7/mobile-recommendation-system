@@ -1,6 +1,5 @@
 import { prisma } from "../config/index.mjs";
 import { asyncHandler } from "../middleware/errorHandler.mjs";
-import { generateRandomUUID } from "../middleware/userMiddleware.mjs";
 import { mockUsers } from "../mockData/userData.mjs";
 
 // export const getAllUser = async (req, res, next) => {
