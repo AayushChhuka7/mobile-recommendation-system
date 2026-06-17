@@ -6,6 +6,8 @@ import { mockUsers } from "../mockData/userData.mjs";
 import { prisma } from "../config/index.mjs";
 import { asyncHandler } from "./errorHandler.mjs";
 
+import bcrypt from "bcrypt";
+
 // export const validateAllowedKeys = (allowedKeys) => {
 //   const schema = {};
 
@@ -47,13 +49,18 @@ import { asyncHandler } from "./errorHandler.mjs";
 export const validationWith = (...validations) => {
   return [
     ...validations,
-    (req, res, next) => {
+    async (req, res, next) => {
       const error = validationResult(req);
       if (!error.isEmpty()) {
         return res.status(400).json({ error: error.array() });
       }
-
       const data = matchedData(req, { locations: ["body"] });
+
+      if (data.password) {
+        data.password = await hashedPassword(data.password);
+      }
+      // console.log(data);
+
       req.data = data;
       next();
     },
@@ -75,17 +82,17 @@ export const checkId = asyncHandler(async (req, res, next) => {
   next();
 });
 
-export const generateRandomUUID = () => {
-  let generatedId;
-  do {
-    generatedId = crypto.randomUUID().slice(0, 8);
-  } while (mockUsers.find((u) => u.id === generatedId));
-  return generatedId;
-};
-
 export const isAuthenticate = (req, res, next) => {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: "please login" });
   }
   next();
+};
+
+export const hashedPassword = async (password) => {
+  return await bcrypt.hashSync(password, 10);
+};
+
+export const verifyPassword = async (password, saved) => {
+  return await bcrypt.compareSync(password, saved);
 };
