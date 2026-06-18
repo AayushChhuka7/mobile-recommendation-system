@@ -1,5 +1,6 @@
 import { checkSchema } from "express-validator";
 import { mockUsers } from "../mockData/userData.mjs";
+import { prisma } from "../config/index.mjs";
 
 const checkEmail = {
   in: ["body"],
@@ -10,8 +11,10 @@ const checkEmail = {
     errorMessage: "please enter validate email",
   },
   custom: {
-    options: (value) => {
-      const exist = mockUsers.find((u) => u.email === value);
+    options: async (value) => {
+      const exist = await prisma.users.findUnique({
+        where: { email: value },
+      });
       if (exist) throw new Error("Email is already registered");
       return true;
     },
@@ -48,8 +51,10 @@ const checkPhoneNo = {
   },
 
   custom: {
-    options: (value) => {
-      const exist = mockUsers.find((u) => u.phoneNo === value);
+    options: async (value) => {
+      const exist = await prisma.users.findUnique({
+        where: { phoneNo: value },
+      });
       if (exist) throw new Error("phoneNo is already registered");
       return true;
     },

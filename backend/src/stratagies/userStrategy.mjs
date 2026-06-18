@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy } from "passport-local";
 import { mockUsers } from "../mockData/userData.mjs";
 import { prisma } from "../config/index.mjs";
+import { verifyPassword } from "../middleware/userMiddleware.mjs";
 
 passport.serializeUser((user, done) => {
   done(null, user.userId);
@@ -29,8 +30,14 @@ export default passport.use(
       if (!findUser) {
         throw new Error("User not found");
       }
-      if (findUser.password !== password) {
+      const valid = await verifyPassword(password, findUser.password);
+      const verified = findUser.isVerified;
+
+      if (!valid) {
         throw new Error("Invalid Credential");
+      }
+      if (!verified) {
+        throw new Error("please verified your account");
       }
       done(null, findUser);
     } catch (error) {
