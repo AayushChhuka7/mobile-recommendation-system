@@ -146,13 +146,15 @@ authRoutes.get(
 authRoutes.post(
   "/verify",
   asyncHandler(async (req, res) => {
-    const { otp, email } = req.body;
+    const { otp } = req.body;
+
+    const userId = req.session.pendingUserId;
 
     const validOtp = await prisma.otp.findFirst({
       where: {
         code: otp,
         user: {
-          email: email,
+          userId: userId,
         },
       },
     });
@@ -174,15 +176,16 @@ authRoutes.post(
 
     await prisma.$transaction([
       prisma.users.update({
-        where: { email: email },
+        where: { userId: userId },
         data: { isVerified: true },
       }),
 
       prisma.otp.update({
-        where: { otpId: validOtp.otpId }, 
+        where: { otpId: validOtp.otpId },
         data: { isUsed: true },
       }),
     ]);
+    delete req.session.pendingUserId;
 
     return res.status(200).json({ message: "Verification complete" });
   }),
@@ -200,7 +203,11 @@ authRoutes.post(
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
+    if (user.isVerified === true) {
+      return res
+        .status(404)
+        .json({ message: "User is already verified please logged in" });
+    }
     //2ota result dinxha euta count arko data (updateMany bata :count use gardainam so _)
     const [_, newOtp] = await prisma.$transaction([
       prisma.otp.updateMany({
