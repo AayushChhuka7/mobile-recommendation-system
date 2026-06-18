@@ -8,8 +8,15 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
 import { errorHandler } from "./middleware/errorHandler.mjs";
+import connectPgSimple from "connect-pg-simple";
 
-const PORT = process.env.PORT || 8001;
+const PgStore = connectPgSimple(session);
+const store = new PgStore({
+  conString: process.env.DATABASE_URL,
+  createTableIfMissing: true,
+});
+
+const PORT = process.env.PORT || 8001; 
 const cookieSecret = process.env.COOKIE_SECRET;
 const app = express();
 
@@ -19,11 +26,12 @@ app.use(cookieParser());
 
 app.use(
   session({
+    store: store,
     secret: cookieSecret,
     saveUninitialized: false,
     resave: false,
     cookie: {
-      maxAge: 10000 * 60 * 3,
+      maxAge: 1000 * 60 * 3,
     },
   }),
 );
