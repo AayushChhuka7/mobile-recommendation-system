@@ -3,51 +3,38 @@ import { mockUsers } from "../mockData/userData.mjs";
 import "../stratagies/userStrategy.mjs";
 import passport from "passport";
 import { asyncHandler } from "../middleware/errorHandler.mjs";
-import { validationWith } from "../middleware/userMiddleware.mjs";
-import { registerUser } from "../controller/authController.mjs";
-import { userCreationValidation } from "../validation/userValidation.mjs";
+import {
+  isAuthenticate,
+  validationWith,
+} from "../middleware/userMiddleware.mjs";
+import {
+  forgetPasswordController,
+  registerUserController,
+  userLoginController,
+} from "../controller/authController.mjs";
+import {
+  checkPassword,
+  userCreationValidation,
+} from "../validation/userValidation.mjs";
 import { prisma } from "../config/index.mjs";
 import { generateOtp } from "../middleware/authOtp.mjs";
+import { checkSchema } from "express-validator";
+import {
+  registerUserService,
+  resendOtpService,
+  userLogoutService,
+  verifyEmail,
+  verifyOtpService,
+  verifyPassword,
+} from "../service/authService.mjs";
 
 export const authRoutes = Router();
 
-authRoutes.post("/login", passport.authenticate("local"), (req, res) => {
-  console.log(req.session.passport.user);
-  return res.status(200).json({
-    message: "Login successful",
-    user: {
-      id: req.user.id,
-      email: req.user.email,
-    },
-  });
-});
+authRoutes.post("/login", userLoginController);
 
-authRoutes.post("/logout", (req, res, next) => {
-  // req.user hatako
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
+authRoutes.post("/logout", isAuthenticate, userLogoutService);
 
-    // Destroy session  in server
-    req.session.destroy((sessionErr) => {
-      if (sessionErr) {
-        return res
-          .status(500)
-          .json({ message: "Could not log out completely" });
-      }
-      // browser ko cookie hatako
-      res.clearCookie("connect.sid");
-      return res.status(200).json({ message: "Logged out successfully" });
-    });
-  });
-});
-
-authRoutes.post(
-  "/register",
-  validationWith(userCreationValidation),
-  registerUser,
-);
+authRoutes.post("/register", registerUserController);
 // authRoutes.get(
 //   "/verify/:email",
 //   asyncHandler(async (req, res) => {
@@ -105,133 +92,66 @@ authRoutes.post(
 //   }),
 // );
 
-authRoutes.get(
-  "/verify/:email",
-  asyncHandler(async (req, res) => {
-    const { email } = req.params;
+// authRoutes.get(
+//   "/verify/:email",
+//   asyncHandler(async (req, res) => {
+//     const { email } = req.params;
 
-    const user = await prisma.users.findUnique({
-      where: { email: email },
-    });
+//     const user = await prisma.users.findUnique({
+//       where: { email: email },
+//     });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
 
-    const otp = await prisma.otp.findFirst({
-      where: {
-        userId: user.userId,
-        isUsed: false,
-        expiresAt: { gt: new Date() },
-      },
-      select: {
-        code: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+//     const otp = await prisma.otp.findFirst({
+//       where: {
+//         userId: user.userId,
+//         isUsed: false,
+//         expiresAt: { gt: new Date() },
+//       },
+//       select: {
+//         code: true,
+//       },
+//       orderBy: {
+//         createdAt: "desc",
+//       },
+//     });
 
-    if (!otp) {
-      return res
-        .status(400)
-        .json({ message: "No active OTP found for this user" });
-    }
+//     if (!otp) {
+//       return res
+//         .status(400)
+//         .json({ message: "No active OTP found for this user" });
+//     }
 
-    res.send(otp);
-  }),
-);
+//     res.send(otp);
+//   }),
+// );
 
 //verify
-authRoutes.post(
-  "/verify",
-  asyncHandler(async (req, res) => {
-    const { otp } = req.body;
-
-    const userId = req.session.pendingUserId;
-
-    const validOtp = await prisma.otp.findFirst({
-      where: {
-        code: otp,
-        user: {
-          userId: userId,
-        },
-      },
-    });
-
-    if (!validOtp) {
-      res.status(400);
-      throw new Error("Invalid OTP code or email.");
-    }
-
-    if (validOtp.isUsed) {
-      res.status(400);
-      throw new Error("This OTP has already been used.");
-    }
-
-    if (new Date() > validOtp.expiresAt) {
-      res.status(400);
-      throw new Error("This OTP has expired.");
-    }
-
-    await prisma.$transaction([
-      prisma.users.update({
-        where: { userId: userId },
-        data: { isVerified: true },
-      }),
-
-      prisma.otp.update({
-        where: { otpId: validOtp.otpId },
-        data: { isUsed: true },
-      }),
-    ]);
-    delete req.session.pendingUserId;
-
-    return res.status(200).json({ message: "Verification complete" });
-  }),
-);
+authRoutes.post("/verify", verifyEmail);
 
 //resend otp
+authRoutes.post("/resend", resendOtpService);
+
+//forget password
+authRoutes.post("/forget", forgetPasswordController);
 authRoutes.post(
-  "/resend/",
-  asyncHandler(async (req, res) => {
-    const { email } = req.body;
-    const user = await prisma.users.findUnique({
-      where: { email: email },
-    });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    if (user.isVerified === true) {
-      return res
-        .status(404)
-        .json({ message: "User is already verified please logged in" });
-    }
-    //2ota result dinxha euta count arko data (updateMany bata :count use gardainam so _)
-    const [_, newOtp] = await prisma.$transaction([
-      prisma.otp.updateMany({
-        where: {
-          userId: user.userId,
-          isUsed: false,
+  "/forget/changePassword",
+  validationWith(
+    checkSchema({
+      password: checkPassword,
+      confirmPassword: {
+        ...checkPassword,
+        custom: {
+          options: (value, { req }) => {
+            return value === req.body.password;
+          },
+          errorMessage: "password did not matched",
         },
-        data: {
-          isUsed: true,
-        },
-      }),
-
-      prisma.otp.create({
-        data: {
-          code: generateOtp(),
-          userId: user.userId,
-          expiresAt: new Date(Date.now() + 5 * 60 * 1000),
-        },
-      }),
-    ]);
-
-    return res.status(200).json({
-      message: "A new OTP has been sent successfully.",
-      code: newOtp.code,
-    });
-  }),
+      },
+    }),
+  ),
+  verifyPassword,
 );
