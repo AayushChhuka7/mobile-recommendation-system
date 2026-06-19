@@ -21,7 +21,7 @@ const checkEmail = {
   },
 };
 
-const checkPassword = {
+export const checkPassword = {
   in: ["body"],
   notEmpty: { errorMessage: "Should not be Empty" },
   isLength: {
@@ -81,6 +81,15 @@ export const userCreationValidation = checkSchema({
   name: checkUserName,
   email: checkEmail,
   password: checkPassword,
+  confirmPassword: {
+    ...checkPassword,
+    custom: {
+      options: (value, { req }) => {
+        return value === req.body.password;
+      },
+      errorMessage: "password did not matched",
+    },
+  },
   phoneNo: checkPhoneNo,
 });
 
