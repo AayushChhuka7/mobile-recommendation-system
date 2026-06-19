@@ -16,11 +16,12 @@ const store = new PgStore({
   createTableIfMissing: true,
 });
 
-const PORT = process.env.PORT || 8001; 
+const PORT = process.env.PORT || 8001;
 const cookieSecret = process.env.COOKIE_SECRET;
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded())
 
 app.use(cookieParser());
 
@@ -31,6 +32,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: {
+      secure: false,
       maxAge: 1000 * 60 * 3,
     },
   }),
