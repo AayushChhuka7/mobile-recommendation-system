@@ -21,7 +21,7 @@ const cookieSecret = process.env.COOKIE_SECRET;
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded())
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(
@@ -31,7 +31,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: {
-      secure: false,
+      secure: false, 
       maxAge: 1000 * 60 * 3,
     },
   }),

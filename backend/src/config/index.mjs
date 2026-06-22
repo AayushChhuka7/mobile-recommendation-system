@@ -11,4 +11,5 @@ const pool = new Pool({
 export const prisma = new PrismaClient({
   adapter: new PrismaPg(pool),
 });
-console.log(process.env.DATABASE_URL);
+// NOTE: DATABASE_URL contains credentials — never log it.
+// To verify the connection at startup, use a `SELECT 1` ping instead.
