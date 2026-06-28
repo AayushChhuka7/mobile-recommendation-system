@@ -10,6 +10,8 @@ import passport from "passport";
 import { errorHandler } from "./middleware/errorHandler.mjs";
 import connectPgSimple from "connect-pg-simple";
 
+import cors from "cors";
+
 const PgStore = connectPgSimple(session);
 const store = new PgStore({
   conString: process.env.DATABASE_URL,
@@ -22,6 +24,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 app.use(cookieParser());
 
 app.use(
@@ -31,7 +34,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: {
-      secure: false, 
+      secure: false,
       maxAge: 1000 * 60 * 3,
     },
   }),
