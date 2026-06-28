@@ -1,8 +1,8 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
-import { mockUsers } from "../mockData/userData.mjs";
-import { prisma } from "../config/index.mjs";
-import { verifyPassword } from "../middleware/userMiddleware.mjs";
+import { prisma } from "../config/prisma.mjs";
+import { findUserByEmail } from "../services/userService.mjs";
+import { verifyPassword } from "../utils/crypto.mjs";
 
 passport.serializeUser((user, done) => {
   done(null, user.userId);
@@ -10,7 +10,6 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    // const findUser = mockUsers.find((u) => u.id == id);
     const findUser = await prisma.users.findUnique({
       where: { userId: id },
     });
@@ -24,9 +23,7 @@ passport.deserializeUser(async (id, done) => {
 export default passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
     try {
-      const findUser = await prisma.users.findUnique({
-        where: { email: email },
-      });
+      const findUser = await findUserByEmail(email);
       if (!findUser) {
         throw new Error("User not found");
       }

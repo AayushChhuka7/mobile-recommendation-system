@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { transporter } from "../config/emailConfig.mjs";
 
 export const sendEmail = async (userEmail, otp) => {
