@@ -6,6 +6,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+
+}
+
+enum OtpPurpose {
+  Registration
+  PasswordReset
+  EmailChange
 }
 
 // model Roles {
@@ -34,14 +41,16 @@ model Users {
 }
 
 model Otp {
-  otpId     String   @id @default(uuid()) @map("otp_id") @db.Uuid
-  code      String   @db.VarChar(6)
-  userId    String   @map("user_id") @db.Uuid
-  expiresAt DateTime @map("expires_at")
-  isUsed    Boolean  @default(false) @map("is_used")
-  createdAt DateTime @default(now()) @map("created_at")
+  otpId     String     @id @default(uuid()) @map("otp_id") @db.Uuid
+  code      String     @db.VarChar(6)
+  userId    String     @map("user_id") @db.Uuid
+  purpose   OtpPurpose @default(Registration) @map("purpose")
+  expiresAt DateTime   @map("expires_at")
+  isUsed    Boolean    @default(false) @map("is_used")
+  createdAt DateTime   @default(now()) @map("created_at")
 
-  user      Users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user      Users      @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
+  @@index([userId, purpose, isUsed, expiresAt])
   @@map("otps")
 }

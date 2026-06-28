@@ -1,68 +1,32 @@
-import { prisma } from "../config/index.mjs";
+import {
+  createUser,
+  deactivateOwnAccount as deactivateOwnAccountService,
+  deleteUser as deleteUserService,
+  findAllUsers,
+  updateUser,
+} from "../services/userService.mjs";
+import { changePasswordWhileLoggedInService } from "../services/authService.mjs";
 import { asyncHandler } from "../middleware/errorHandler.mjs";
-import { mockUsers } from "../mockData/userData.mjs";
-
-// export const getAllUser = async (req, res, next) => {
-//   const {
-//     query: { filter, value },
-//   } = req;
-
-//   if (filter && value) {
-//     const users = mockUsers.filter((user) => {
-//       if (user[filter] === undefined || user[filter] === null) {
-//         const error = new Error("Send valid filter value");
-//         error.status = 400;
-//         next(error);
-//       }
-
-//       return user[filter].includes(value);
-//     });
-//     if (users.length === 0)
-//       return res.status(404).json({ message: "No such user" });
-//     return res.status(200).json(users);
-//   }
-//   const users = mockUsers;
-//   if (!users) return res.status(404).json({ error: "User NOT FOUND" });
-//   return res.status(200).json(users);
-// };
 
 export const getAllUser = asyncHandler(async (req, res) => {
-  const users = await prisma.users.findMany();
-
+  const users = await findAllUsers();
   if (users.length === 0) {
     throw new Error("No users found");
   }
-  return res.status(200).json(users);
+  res.status(200).json(users);
 });
 
-export const getUserById = (req, res, next) => {
-  const user = req.checkUser;
-  return res.status(200).json(user);
+export const getUserById = (req, res) => {
+  res.status(200).json(req.checkUser);
 };
 
-export const postUser = asyncHandler(async (req, res, next) => {
-  const { data } = req;
-  const newUser = await prisma.users.create({
-    data: data,
-  });
+export const postUser = asyncHandler(async (req, res) => {
+  const newUser = await createUser(req.data);
   res.status(201).json(newUser);
 });
 
-export const patchUser = asyncHandler(async (req, res, next) => {
-  const id = req.checkUser.id;
-  const data = req.data;
-
-  // const userIndex = mockUsers.findIndex((u) => u.id === id);
-
-  // mockUsers[userIndex] = {
-  //   ...mockUsers[userIndex],
-  //   ...data,
-  // };
-  const updatedUser = await prisma.users.update({
-    where: { userId: id },
-    data: data,
-  });
-
+export const patchUser = asyncHandler(async (req, res) => {
+  const updatedUser = await updateUser(req.checkUser.userId, req.data);
   res.status(200).json({
     message: "User updated successfully",
     user: updatedUser,
@@ -70,7 +34,53 @@ export const patchUser = asyncHandler(async (req, res, next) => {
 });
 
 export const deleteUser = asyncHandler(async (req, res) => {
-  const id = req.checkUser.id;
-  const deletedUser = await prisma.users.delete({ where: { userId: id } });
-  return res.status(200).json({ message: "Deletion Complete" });
+  await deleteUserService(req.checkUser.userId);
+  res.status(200).json({ message: "Deletion Complete" });
+});
+
+// ---- Self-service profile endpoints ----
+
+export const getOwnProfile = (req, res) => {
+  const { userId, name, email, phoneNo, isActive, isVerified } = req.user;
+  res.status(200).json({
+    userId,
+    name,
+    email,
+    phoneNo,
+    isActive,
+    isVerified,
+  });
+};
+
+export const updateOwnProfile = asyncHandler(async (req, res) => {
+  const updatedUser = await updateUser(req.user.userId, req.data);
+  const { userId, name, email, phoneNo, isActive, isVerified } = updatedUser;
+  res.status(200).json({
+    message: "Profile updated successfully",
+    user: { userId, name, email, phoneNo, isActive, isVerified },
+  });
+});
+
+export const changeOwnPassword = asyncHandler(async (req, res) => {
+  await changePasswordWhileLoggedInService(
+    req.user.userId,
+    req.body.currentPassword,
+    req.data.password,
+  );
+  res.status(200).json({ message: "Password changed successfully" });
+});
+
+export const deactivateOwnAccount = asyncHandler(async (req, res) => {
+  await deactivateOwnAccountService(req.user.userId);
+  await new Promise((resolve, reject) => {
+    req.logout((err) => {
+      if (err) return reject(err);
+      req.session.destroy((sessionErr) => {
+        if (sessionErr) return reject(sessionErr);
+        resolve();
+      });
+    });
+  });
+  res.clearCookie("connect.sid");
+  res.status(200).json({ message: "Account deactivated successfully" });
 });
