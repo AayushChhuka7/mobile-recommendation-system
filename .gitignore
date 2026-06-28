@@ -27,28 +27,11 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
-# ── Build artefacts ─────────────────────────────────────────────────────────
-/build
-/dist
-/coverage
-/.next
-/.out
 
-# ── Logs ────────────────────────────────────────────────────────────────────
-logs/
-*.log
+backend/docs
+backend/node_modules
+backend/CLAUDE.md
 
-# ── Tooling caches ──────────────────────────────────────────────────────────
-.eslintcache
-.cache/
-.parcel-cache/
-
-# ── Prisma generated client (lives inside backend/src/generated) ────────────
-# (also listed in backend/.gitignore; repeated here for clarity)
-
-# ── Local data & uploads ────────────────────────────────────────────────────
-uploads/
-tmp/
-*.local
+.claude 
+backend/.claude
