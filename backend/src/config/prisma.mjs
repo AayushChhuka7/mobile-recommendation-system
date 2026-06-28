@@ -7,7 +7,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-console.log(process.env.DATABASE_URL);
+// console.log(process.env.DATABASE_URL);
 
 export const prisma = new PrismaClient({
   adapter: new PrismaPg(pool),
