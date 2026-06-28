@@ -6,22 +6,29 @@ import {
   patchUser,
   postUser,
 } from "../controller/userController.mjs";
-import { checkId, validationWith } from "../middleware/userMiddleware.mjs";
+import { loadUserById } from "../middleware/userLoader.mjs";
+import { validationWith } from "../middleware/validator.mjs";
 import {
   userCreationValidation,
   userUpdateValidation,
 } from "../validation/userValidation.mjs";
-// import { validateAllowedKeys } from "../middleware/userMiddleware.mjs";
 
 export const userRoutes = Router();
 
 userRoutes.get("/", getAllUser);
-userRoutes.get("/:id", checkId, getUserById);
-userRoutes.post("/", validationWith(userCreationValidation), postUser);
+userRoutes.get("/:id", loadUserById, getUserById);
+userRoutes.post(
+  "/",
+  validationWith(
+    userCreationValidation,
+    ["name", "email", "password", "confirmPassword", "phoneNo"],
+  ),
+  postUser,
+);
 userRoutes.patch(
   "/:id",
-  checkId,
-  validationWith(userUpdateValidation),
+  loadUserById,
+  validationWith(userUpdateValidation, ["name", "email", "password", "phoneNo"]),
   patchUser,
 );
-userRoutes.delete("/:id", checkId, deleteUser);
+userRoutes.delete("/:id", loadUserById, deleteUser);
