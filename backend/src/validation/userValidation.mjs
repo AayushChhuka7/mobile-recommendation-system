@@ -1,6 +1,6 @@
 import { checkSchema } from "express-validator";
 import { mockUsers } from "../mockData/userData.mjs";
-import { prisma } from "../config/index.mjs";
+import { prisma } from "../config/prisma.mjs";
 
 const checkEmail = {
   in: ["body"],
@@ -41,7 +41,6 @@ const checkPhoneNo = {
   trim: true,
 
   optional: {
-    //empty lai ni ignore hanxha
     options: { checkFalsy: true },
   },
   matches: {
@@ -107,4 +106,42 @@ export const userUpdateValidation = checkSchema({
     optional: true,
   },
   phoneNo: { ...checkPhoneNo, optional: true },
+});
+
+// ---- New schemas for self-service profile / auth management ----
+
+export const updateOwnProfileValidation = checkSchema({
+  name: {
+    ...checkUserName,
+    optional: { options: { checkFalsy: true } },
+  },
+  phoneNo: {
+    ...checkPhoneNo,
+    optional: { options: { checkFalsy: true } },
+  },
+});
+
+export const changePasswordWhileLoggedInValidation = checkSchema({
+  currentPassword: {
+    ...checkPassword,
+  },
+  password: checkPassword,
+  confirmPassword: {
+    ...checkPassword,
+    custom: {
+      options: (value, { req }) => {
+        return value === req.body.password;
+      },
+      errorMessage: "password did not matched",
+    },
+  },
+});
+
+export const requestEmailChangeValidation = checkSchema({
+  currentPassword: {
+    ...checkPassword,
+  },
+  newEmail: {
+    ...checkEmail,
+  },
 });
