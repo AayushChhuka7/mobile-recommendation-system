@@ -1,23 +1,46 @@
 import { prisma } from "../config/prisma.mjs";
 import { generateOtp, hashPassword, verifyPassword } from "../utils/crypto.mjs";
 import { sendEmail } from "../utils/email.mjs";
+import { findRoleByName } from "./userService.mjs";
 
 const OTP_TTL_MS = 5 * 60 * 1000;
 
 const newOtpExpiry = () => new Date(Date.now() + OTP_TTL_MS);
 
+// Story 1.9 — every new registration is auto-assigned the `Customer`
+// role in the same transaction as the user insert. Promotion is
+// admin-only via /api/users/:id/roles.
+//
+// Requires `npm run seed:rbac` to have been run at least once so the
+// Customer role row exists. Without it, registration fails — that's
+// intentional (a fresh deploy that skips seed is misconfigured).
 export const registerUserService = async (userData) => {
   const { confirmPassword, ...data } = userData;
-  const newUser = await prisma.users.create({ data });
+
+  const customerRole = await findRoleByName("Customer");
+  if (!customerRole) {
+    const error = new Error("Service not initialized. Contact support.");
+    error.status = 500;
+    throw error;
+  }
 
   const code = generateOtp();
-  await prisma.otp.create({
-    data: {
-      code,
-      userId: newUser.userId,
-      purpose: "Registration",
-      expiresAt: newOtpExpiry(),
-    },
+
+  const newUser = await prisma.$transaction(async (tx) => {
+    const createdUser = await tx.users.create({
+      data: { ...data, roleId: customerRole.roleId },
+    });
+
+    await tx.otp.create({
+      data: {
+        code,
+        userId: createdUser.userId,
+        purpose: "Registration",
+        expiresAt: newOtpExpiry(),
+      },
+    });
+
+    return createdUser;
   });
   await sendEmail(data.email, code);
 
