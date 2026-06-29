@@ -2,6 +2,7 @@ import { Router } from "express";
 import passport from "passport";
 import "../strategies/userStrategy.mjs";
 import { isAuthenticate } from "../middleware/auth.mjs";
+import { loadUserRoles } from "../middleware/loadUserRoles.mjs";
 import { validationWith } from "../middleware/validator.mjs";
 import {
   changePasswordValidation,
@@ -58,12 +59,14 @@ authRoutes.post(
 authRoutes.post(
   "/me/email/request",
   isAuthenticate,
+  loadUserRoles,
   validationWith(requestEmailChangeValidation, ["currentPassword", "newEmail"]),
   requestEmailChange,
 );
 authRoutes.post(
   "/me/email/verify",
   isAuthenticate,
+  loadUserRoles,
   verifyOwnOtp,
   verifyEmailChange,
 );

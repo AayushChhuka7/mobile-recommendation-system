@@ -13,13 +13,13 @@ enum OtpPurpose {
   EmailChange
 }
 
-// model Roles {
-//   roleId   String  @id @default(uuid()) @map("role_id") @db.Uuid
-//   roleName String  @unique @map("role_name") @db.VarChar(50)
-//   user     Users[]
+model Roles {
+  roleId   String  @id @default(uuid()) @map("role_id") @db.Uuid
+  roleName String  @unique @map("role_name") @db.VarChar(50)
+  users    Users[]
 
-//   @@map("roles")
-// }
+  @@map("roles")
+}
 
 model Users {
   name       String
@@ -30,11 +30,16 @@ model Users {
   isActive   Boolean @default(true) @map("is_active")
   isVerified Boolean @default(false) @map("is_verified")
 
-  // roleId   String  @map("role_id") @db.Uuid
-  // role  Roles  @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
+  // Phase 1 RBAC: direct FK to Roles. Optional so existing rows can be
+  // backfilled by the seed script without a schema-level DEFAULT.
+  // (Phase 2 may need to migrate this to a join table when many-roles
+  // or role→permission joins land; we'll handle that when we get there.)
+  roleId String? @map("role_id") @db.Uuid
+  role   Roles?  @relation(fields: [roleId], references: [roleId], onDelete: SetNull)
 
   otps Otp[]
 
+  @@index([roleId])
   @@map("users")
 }
 
