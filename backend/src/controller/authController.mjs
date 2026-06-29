@@ -13,6 +13,8 @@ import { asyncHandler } from "../middleware/errorHandler.mjs";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { userId } = await registerUserService(req.data);
+
+  //verify garna baki bhayeko user ko id
   req.session.pendingUserId = userId;
   res.status(201).json({
     message: "Registration successful. Please verify your OTP.",
