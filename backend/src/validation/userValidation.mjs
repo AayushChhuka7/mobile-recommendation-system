@@ -145,3 +145,25 @@ export const requestEmailChangeValidation = checkSchema({
     ...checkEmail,
   },
 });
+
+// ---- RBAC Phase 1 — admin role assignment ----
+
+const ALLOWED_ROLE_NAMES = ["Customer", "Salesman", "Admin"];
+
+export const assignRoleValidation = checkSchema({
+  roleName: {
+    in: ["body"],
+    trim: true,
+    notEmpty: { errorMessage: "roleName is required" },
+    isIn: {
+      options: [ALLOWED_ROLE_NAMES],
+      errorMessage: `roleName must be one of: ${ALLOWED_ROLE_NAMES.join(", ")}`,
+    },
+  },
+});
+
+export const revokeRoleValidation = checkSchema({
+  // role name comes from the URL path; we still need an express-validator
+  // schema entry so we can re-use `validationWith` for the URL whitelist.
+  // No body fields.
+});

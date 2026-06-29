@@ -1,8 +1,10 @@
 import {
+  assignRole,
   createUser,
   deactivateOwnAccount as deactivateOwnAccountService,
   deleteUser as deleteUserService,
   findAllUsers,
+  revokeRole,
   updateUser,
 } from "../services/userService.mjs";
 import { changePasswordWhileLoggedInService } from "../services/authService.mjs";
@@ -83,4 +85,40 @@ export const deactivateOwnAccount = asyncHandler(async (req, res) => {
   });
   res.clearCookie("connect.sid");
   res.status(200).json({ message: "Account deactivated successfully" });
+});
+
+// ---- RBAC Phase 1 — admin-only role assignment ----
+
+export const assignUserRole = asyncHandler(async (req, res) => {
+  const updated = await assignRole(req.checkUser.userId, req.data.roleName);
+  // Beginner-friendly if/else instead of `??` (nullish coalescing).
+  let roleLabel = null;
+  if (updated.role && updated.role.roleName) {
+    roleLabel = updated.role.roleName;
+  }
+  res.status(200).json({
+    message: `Role "${req.data.roleName}" assigned to user ${updated.userId}`,
+    user: {
+      userId: updated.userId,
+      email: updated.email,
+      role: roleLabel,
+    },
+  });
+});
+
+export const revokeUserRole = asyncHandler(async (req, res) => {
+  const updated = await revokeRole(req.checkUser.userId);
+  // Beginner-friendly if/else instead of `??` (nullish coalescing).
+  let roleLabel = null;
+  if (updated.role && updated.role.roleName) {
+    roleLabel = updated.role.roleName;
+  }
+  res.status(200).json({
+    message: `Role revoked for user ${updated.userId}`,
+    user: {
+      userId: updated.userId,
+      email: updated.email,
+      role: roleLabel,
+    },
+  });
 });

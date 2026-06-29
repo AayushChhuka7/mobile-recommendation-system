@@ -8,10 +8,21 @@ passport.serializeUser((user, done) => {
   done(null, user.userId);
 });
 
+// Story 1.10: only the safe fields enter the session. Anything attached
+// to `req.user` is a subset of the user row — never the password.
 passport.deserializeUser(async (id, done) => {
   try {
     const findUser = await prisma.users.findUnique({
       where: { userId: id },
+      select: {
+        userId: true,
+        name: true,
+        email: true,
+        phoneNo: true,
+        isActive: true,
+        isVerified: true,
+        roleId: true,
+      },
     });
     if (!findUser) throw new Error("notfound");
     done(null, findUser);
@@ -23,6 +34,9 @@ passport.deserializeUser(async (id, done) => {
 export default passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
     try {
+      // Auth verification still needs the password hash, so the local
+      // strategy uses the full row internally. We only attach the safe
+      // subset to the session via deserializeUser above.
       const findUser = await findUserByEmail(email);
       if (!findUser) {
         throw new Error("User not found");
