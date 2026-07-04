@@ -1,12 +1,11 @@
 import {
-  assignRole,
   createUser,
   deactivateOwnAccount as deactivateOwnAccountService,
   deleteUser as deleteUserService,
   findAllUsers,
-  revokeRole,
   updateUser,
 } from "../services/userService.mjs";
+import { assignRole, revokeRole } from "../services/rbacService.mjs";
 import { changePasswordWhileLoggedInService } from "../services/authService.mjs";
 import { asyncHandler } from "../middleware/errorHandler.mjs";
 
