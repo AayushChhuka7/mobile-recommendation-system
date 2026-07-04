@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { isAuthenticate } from "../middleware/auth.mjs";
-import { loadUserRoles } from "../middleware/loadUserRoles.mjs";
+import { loadUserContext } from "../middleware/loadUserContext.mjs";
 import { validationWith } from "../middleware/validator.mjs";
 import {
   changeOwnPassword,
@@ -15,7 +15,7 @@ import {
 
 export const ownUserRoutes = Router();
 
-ownUserRoutes.use(isAuthenticate, loadUserRoles);
+ownUserRoutes.use(isAuthenticate, loadUserContext);
 
 ownUserRoutes.get("/me", getOwnProfile);
 ownUserRoutes.patch(

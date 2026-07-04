@@ -125,6 +125,17 @@ exports.Prisma.RolesScalarFieldEnum = {
   roleName: 'roleName'
 };
 
+exports.Prisma.PermissionsScalarFieldEnum = {
+  permissionId: 'permissionId',
+  permissionKey: 'permissionKey',
+  description: 'description'
+};
+
+exports.Prisma.RolePermissionsScalarFieldEnum = {
+  roleId: 'roleId',
+  permissionId: 'permissionId'
+};
+
 exports.Prisma.UsersScalarFieldEnum = {
   name: 'name',
   userId: 'userId',
@@ -146,9 +157,19 @@ exports.Prisma.OtpScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SessionScalarFieldEnum = {
+  sid: 'sid',
+  sess: 'sess',
+  expire: 'expire'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -160,6 +181,12 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
 exports.OtpPurpose = exports.$Enums.OtpPurpose = {
   Registration: 'Registration',
   PasswordReset: 'PasswordReset',
@@ -168,8 +195,11 @@ exports.OtpPurpose = exports.$Enums.OtpPurpose = {
 
 exports.Prisma.ModelName = {
   Roles: 'Roles',
+  Permissions: 'Permissions',
+  RolePermissions: 'RolePermissions',
   Users: 'Users',
-  Otp: 'Otp'
+  Otp: 'Otp',
+  Session: 'Session'
 };
 
 /**
