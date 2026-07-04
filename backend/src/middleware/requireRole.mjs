@@ -1,12 +1,15 @@
 // requireRole(...roleNames) — Story 1.5
 //
 // Phase-1-only gate. Checks `req.auth.roleNames` (populated by
-// `loadUserRoles`). Pass = user holds at least one of the named roles.
+// `loadUserContext`). Pass = user holds at least one of the named roles.
 //
-// IMPORTANT: This is intentionally narrow. Phase 2 introduces
+// IMPORTANT: This is intentionally narrow. Phase 2 introduced
 // `requirePermission(...keys)` and the rule is "no new controller /
 // service code should reach for requireRole again". If you're adding a
-// new gate, prefer `requirePermission`.
+// new gate, prefer `requirePermission`. As of Phase 2, this file has
+// zero importers in the codebase; it stays in the tree so a future
+// need can reach for it without re-deriving the shape, but new code
+// should not import it.
 
 import { asyncHandler } from "./errorHandler.mjs";
 
