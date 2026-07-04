@@ -1,7 +1,7 @@
 import { prisma } from "../config/prisma.mjs";
 import { generateOtp, hashPassword, verifyPassword } from "../utils/crypto.mjs";
 import { sendEmail } from "../utils/email.mjs";
-import { findRoleByName } from "./userService.mjs";
+import { findRoleByName } from "./rbacService.mjs";
 
 const OTP_TTL_MS = 5 * 60 * 1000;
 

@@ -9,9 +9,9 @@ import {
   revokeUserRole,
 } from "../controller/userController.mjs";
 import { isAuthenticate } from "../middleware/auth.mjs";
-import { loadUserRoles } from "../middleware/loadUserRoles.mjs";
+import { loadUserContext } from "../middleware/loadUserContext.mjs";
 import { loadUserById } from "../middleware/userLoader.mjs";
-import { requireRole } from "../middleware/requireRole.mjs";
+import { requirePermission } from "../middleware/requirePermission.mjs";
 import { validationWith } from "../middleware/validator.mjs";
 import {
   assignRoleValidation,
@@ -22,21 +22,27 @@ import {
 export const userRoutes = Router();
 
 // All admin endpoints require an authenticated, active session with
-// `req.auth` populated. Role gating (`requireRole("Admin")`) follows.
-userRoutes.use(isAuthenticate, loadUserRoles);
+// `req.auth` populated. Per-permission gating follows.
+userRoutes.use(isAuthenticate, loadUserContext);
 
-const adminOnly = requireRole("Admin");
+// RBAC Phase 2: each admin route names the permission key it needs.
+// `requireRole("Admin")` is gone from this file — `requireRole` is
+// kept around as a Phase-1-only artifact, but no new code should
+// import it.
+const canReadUser = requirePermission("user:read");
+const canCreateUser = requirePermission("user:create");
+const canUpdateUser = requirePermission("user:update");
+const canDeleteUser = requirePermission("user:delete");
+const canAssignRole = requirePermission("role:assign");
+const canRevokeRole = requirePermission("role:revoke");
 
-// RBAC Phase 1 note: `requireRole("Admin")` is acceptable here as a
-// Phase-1 compromise. Phase 2 replaces this with
-// `requirePermission("role:assign")`. See docs/updates.md.
 const ROLE_NAME_PATTERN = /^[A-Za-z]{1,50}$/;
 
-userRoutes.get("/", adminOnly, getAllUser);
-userRoutes.get("/:id", adminOnly, loadUserById, getUserById);
+userRoutes.get("/", canReadUser, getAllUser);
+userRoutes.get("/:id", canReadUser, loadUserById, getUserById);
 userRoutes.post(
   "/",
-  adminOnly,
+  canCreateUser,
   validationWith(
     userCreationValidation,
     ["name", "email", "password", "confirmPassword", "phoneNo"],
@@ -45,18 +51,18 @@ userRoutes.post(
 );
 userRoutes.patch(
   "/:id",
-  adminOnly,
+  canUpdateUser,
   loadUserById,
   validationWith(userUpdateValidation, ["name", "email", "password", "phoneNo"]),
   patchUser,
 );
-userRoutes.delete("/:id", adminOnly, loadUserById, deleteUser);
+userRoutes.delete("/:id", canDeleteUser, loadUserById, deleteUser);
 
-// ---- RBAC Phase 1 — admin role-assignment endpoints ----
+// ---- RBAC — role-assignment endpoints ----
 
 userRoutes.post(
   "/:id/roles",
-  adminOnly,
+  canAssignRole,
   loadUserById,
   validationWith(assignRoleValidation, ["roleName"]),
   assignUserRole,
@@ -64,7 +70,7 @@ userRoutes.post(
 
 userRoutes.delete(
   "/:id/roles/:roleName",
-  adminOnly,
+  canRevokeRole,
   loadUserById,
   (req, res, next) => {
     if (!ROLE_NAME_PATTERN.test(req.params.roleName)) {

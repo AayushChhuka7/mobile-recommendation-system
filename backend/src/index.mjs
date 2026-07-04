@@ -13,9 +13,12 @@ import connectPgSimple from "connect-pg-simple";
 import cors from "cors";
 
 const PgStore = connectPgSimple(session);
+// The `session` table is owned by Prisma (see schema.prisma → model
+// Session). connect-pg-simple must NOT create it at runtime, otherwise
+// we re-introduce migration-history drift.
 const store = new PgStore({
   conString: process.env.DATABASE_URL,
-  createTableIfMissing: true,
+  createTableIfMissing: false,
 });
 
 const PORT = process.env.PORT || 8001;
