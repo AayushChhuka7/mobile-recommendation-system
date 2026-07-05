@@ -53,7 +53,7 @@ model Users {
   userId     String  @id @default(uuid()) @map("user_id") @db.Uuid
   email      String  @unique @db.VarChar(255)
   password   String  @db.VarChar(255)
-  phoneNo    String? @map("phone_no")
+  phoneNo    String? @unique @map("phone_no")
   isActive   Boolean @default(true) @map("is_active")
   isVerified Boolean @default(false) @map("is_verified")
 

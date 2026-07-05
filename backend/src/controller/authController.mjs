@@ -9,6 +9,7 @@ import {
   verifyEmailService,
   verifyPasswordChangeService,
 } from "../services/authService.mjs";
+import { getAssignableRoles } from "../services/rbacService.mjs";
 import { asyncHandler } from "../middleware/errorHandler.mjs";
 
 export const registerUser = asyncHandler(async (req, res) => {
@@ -76,3 +77,13 @@ export const verifyEmailChange = asyncHandler(async (req, res) => {
 export const ackOtpVerified = (req, res) => {
   res.status(200).json({ message: "OTP verified. You may now change your password." });
 };
+
+// Returns the whitelist of roles a user can self-assign at
+// registration. The FE's `/choose-role` screen renders this list;
+// `Admin` is intentionally excluded (admin-only assignment). The
+// whitelist lives in `services/rbacService.mjs` as the single
+// source of truth, so this handler has no business logic of its own.
+export const getRoleOptions = asyncHandler(async (req, res) => {
+  const roles = getAssignableRoles();
+  res.status(200).json({ roles });
+});
