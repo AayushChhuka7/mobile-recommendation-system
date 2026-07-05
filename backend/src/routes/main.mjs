@@ -7,7 +7,12 @@ import { isAuthenticate } from "../middleware/auth.mjs";
 
 export const router = Router();
 
-router.use("/users", userRoutes);
+// `ownUserRoutes` is mounted FIRST so the `/me` literal wins over
+// `userRoutes`'s `/:id` matcher. Express tries routes in registration
+// order; a request for `/users/me` reaches `ownUserRoutes` first and
+// matches `/me` (self-service). A request for `/users/<uuid>` falls
+// through to `userRoutes` and matches the admin `/:id` route.
 router.use("/users", ownUserRoutes);
+router.use("/users", userRoutes);
 router.use("/auth", authRoutes);
 router.use("/products", isAuthenticate, productRoutes);

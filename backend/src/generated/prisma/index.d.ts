@@ -8159,18 +8159,18 @@ export namespace Prisma {
   export type UsersWhereUniqueInput = Prisma.AtLeast<{
     userId?: string
     email?: string
+    phoneNo?: string
     AND?: UsersWhereInput | UsersWhereInput[]
     OR?: UsersWhereInput[]
     NOT?: UsersWhereInput | UsersWhereInput[]
     name?: StringFilter<"Users"> | string
     password?: StringFilter<"Users"> | string
-    phoneNo?: StringNullableFilter<"Users"> | string | null
     isActive?: BoolFilter<"Users"> | boolean
     isVerified?: BoolFilter<"Users"> | boolean
     roleId?: UuidNullableFilter<"Users"> | string | null
     role?: XOR<RolesNullableScalarRelationFilter, RolesWhereInput> | null
     otps?: OtpListRelationFilter
-  }, "userId" | "email">
+  }, "userId" | "email" | "phoneNo">
 
   export type UsersOrderByWithAggregationInput = {
     name?: SortOrder
