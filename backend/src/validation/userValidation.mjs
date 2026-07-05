@@ -1,6 +1,7 @@
 import { checkSchema } from "express-validator";
 import { mockUsers } from "../mockData/userData.mjs";
 import { prisma } from "../config/prisma.mjs";
+import { isAssignableRole } from "../services/rbacService.mjs";
 
 const checkEmail = {
   in: ["body"],
@@ -90,6 +91,24 @@ export const userCreationValidation = checkSchema({
     },
   },
   phoneNo: checkPhoneNo,
+  // Self-service role pick at registration. Whitelist comes from
+  // `rbacService.getAssignableRoles()` — currently ["Customer",
+  // "Salesman"]. `Admin` is admin-only and cannot be self-assigned.
+  roleName: {
+    in: ["body"],
+    trim: true,
+    notEmpty: { errorMessage: "roleName is required" },
+    custom: {
+      options: (value) => {
+        if (!isAssignableRole(value)) {
+          throw new Error(
+            "roleName must be one of: Customer, Salesman",
+          );
+        }
+        return true;
+      },
+    },
+  },
 });
 
 export const userUpdateValidation = checkSchema({
