@@ -1,12 +1,13 @@
 import { Router } from "express";
-import passport from "passport";
 import "../strategies/userStrategy.mjs";
 import { isAuthenticate } from "../middleware/auth.mjs";
 import { loadUserContext } from "../middleware/loadUserContext.mjs";
 import { validationWith } from "../middleware/validator.mjs";
+import { roleGuard } from "../middleware/roleGuard.mjs";
 import {
   changePasswordValidation,
   forgetPasswordValidation,
+  loginSchema,
 } from "../validation/authValidation.mjs";
 import {
   userCreationValidation,
@@ -19,6 +20,7 @@ import {
   ackOtpVerified,
   changePassword,
   forgetPassword,
+  getRoleOptions,
   registerUser,
   requestEmailChange,
   resendOtp,
@@ -30,13 +32,23 @@ import {
 
 export const authRoutes = Router();
 
-authRoutes.post("/login", passport.authenticate("local"), userLogin);
+// Public — the FE's `/choose-role` screen renders this list before
+// the user is logged in. Mounted first so the public/intent is
+// obvious from the top of the file.
+authRoutes.get("/role-options", getRoleOptions);
+
+authRoutes.post(
+  "/login",
+  validationWith(loginSchema, ["email", "password", "roleName"]),
+  roleGuard,
+  userLogin,
+);
 authRoutes.post("/logout", isAuthenticate, userLogout);
 authRoutes.post(
   "/register",
   validationWith(
     userCreationValidation,
-    ["name", "email", "password", "confirmPassword", "phoneNo"],
+    ["name", "email", "password", "confirmPassword", "phoneNo", "roleName"],
   ),
   registerUser,
 );

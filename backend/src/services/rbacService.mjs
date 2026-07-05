@@ -167,3 +167,53 @@ export const findRolePermissions = async (roleId) => {
   }
   return keys;
 };
+
+// ---- Self-service role assignment ----
+//
+// `getAssignableRoles` / `isAssignableRole` define the whitelist for
+// roles a user can pick at registration. `Admin` is intentionally
+// excluded — admins are promoted only via `assignRole` (admin
+// endpoint), not through the self-service registration path.
+//
+// `assertUserRoleMatches` is the login-time check: the FE sends a
+// `roleName` with the credentials, and we verify the user's row
+// actually holds that role. The login validator is open-string (any
+// non-empty role name is accepted at the wire) so admins can log in
+// without maintaining a separate login whitelist; the DB row is the
+// source of truth.
+
+// Whitelist of roles a user can self-assign at registration.
+// `Admin` is admin-only.
+const ASSIGNABLE_ROLES = ["Customer", "Salesman"];
+
+export const getAssignableRoles = () => {
+  // Return a fresh array so callers can't mutate the source.
+  return [...ASSIGNABLE_ROLES];
+};
+
+export const isAssignableRole = (roleName) => {
+  if (typeof roleName !== "string" || roleName.length === 0) return false;
+  return ASSIGNABLE_ROLES.includes(roleName);
+};
+
+// Verifies the user holds the requested role. Returns
+// `{ matched, actualRole }` — never throws on a normal mismatch,
+// so the caller (roleGuard) can drive the 303 response without
+// try/catch noise. A missing user surfaces as `actualRole: null`
+// so the guard can handle it (e.g. 303 to a "no role" path).
+export const assertUserRoleMatches = async (userId, roleName) => {
+  if (typeof userId !== "string" || userId.length === 0) {
+    return { matched: false, actualRole: null };
+  }
+  if (typeof roleName !== "string" || roleName.length === 0) {
+    return { matched: false, actualRole: null };
+  }
+
+  const userRoles = await findUserRoles(userId);
+  // Phase 1 = single role per user, so `userRoles` is either [] or
+  // a 1-element array. Phase 2 will widen the semantics; the
+  // `matched` flag stays correct under either shape.
+  const actualRole = userRoles.length > 0 ? userRoles[0] : null;
+  const matched = actualRole === roleName;
+  return { matched, actualRole };
+};
