@@ -20,34 +20,7 @@ model Roles {
   roleName String  @unique @map("role_name") @db.VarChar(50)
   users    Users[]
 
-  // RBAC Phase 2: a role is a bundle of permissions via the
-  // RolePermissions join. New permissions are insert-only; the matrix
-  // is seeded idempotently.
-  permissions RolePermissions[]
-
   @@map("roles")
-}
-
-model Permissions {
-  permissionId   String   @id @default(uuid()) @map("permission_id") @db.Uuid
-  permissionKey  String   @unique @map("permission_key") @db.VarChar(100)
-  description    String?  @map("description") @db.VarChar(255)
-
-  roles RolePermissions[]
-
-  @@map("permissions")
-}
-
-model RolePermissions {
-  roleId       String   @map("role_id") @db.Uuid
-  permissionId String   @map("permission_id") @db.Uuid
-
-  role       Roles       @relation(fields: [roleId], references: [roleId], onDelete: Cascade)
-  permission Permissions @relation(fields: [permissionId], references: [permissionId], onDelete: Cascade)
-
-  @@id([roleId, permissionId])
-  @@index([permissionId])
-  @@map("role_permissions")
 }
 
 model Users {
@@ -61,8 +34,6 @@ model Users {
 
   // Phase 1 RBAC: direct FK to Roles. Optional so existing rows can be
   // backfilled by the seed script without a schema-level DEFAULT.
-  // (Phase 2 may need to migrate this to a join table when many-roles
-  // or role→permission joins land; we'll handle that when we get there.)
   roleId String? @map("role_id") @db.Uuid
   role   Roles?  @relation(fields: [roleId], references: [roleId], onDelete: SetNull)
 
