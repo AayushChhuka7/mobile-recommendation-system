@@ -2,6 +2,8 @@
   width: 100%;
   min-height: 100vh;
   display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
 }
 
@@ -117,21 +119,39 @@
   width: 100%;
   max-width: 420px;
   box-shadow: var(--shadow-md);
+  position: relative;
 }
 
 .register-card {
   max-width: 460px;
 }
 
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--slate-dark);
+  margin-bottom: 12px;
+  transition: background var(--transition);
+}
+
+.back-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
 .auth-title {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .auth-subtitle {
-  font-size: 13.5px;
+  font-size: 15px;
   color: var(--text-muted);
   margin-bottom: 24px;
 }
@@ -143,7 +163,7 @@
 .auth-footer {
   text-align: center;
   margin-top: 20px;
-  font-size: 13px;
+  font-size: 14.5px;
   color: var(--text-muted);
 }
 
@@ -163,7 +183,7 @@
 
 .input-label {
   display: block;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--slate-dark);
   margin-bottom: 6px;
@@ -171,10 +191,10 @@
 
 .input-field {
   width: 100%;
-  padding: 9px 12px;
+  padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 13.5px;
+  font-size: 15px;
   color: var(--text);
   background: var(--white);
   transition:
@@ -237,9 +257,9 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 16px;
+  padding: 9px 16px;
   border-radius: 8px;
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 500;
   transition:
     background var(--transition),
@@ -268,7 +288,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  font-size: 14px;
   margin-bottom: 16px;
 }
 select.input-field {
@@ -334,6 +354,110 @@ select.input-field {
 .success-hint {
   color: var(--text-muted);
   font-size: 13px;
+}
+
+.result-panel {
+  text-align: center;
+  padding: 24px 0 8px;
+}
+
+.result-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.result-icon.success {
+  background: var(--success-light);
+  color: var(--success);
+}
+
+.result-icon.error {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+.result-text {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.result-text.success {
+  color: var(--success);
+}
+
+.result-text.error {
+  color: var(--danger);
+}
+
+.result-hint {
+  color: var(--text-muted);
+  font-size: 13.5px;
+}
+
+.form-submit-error {
+  text-align: center;
+  color: var(--danger);
+  font-size: 13px;
+  margin: 4px 0 16px;
+}
+
+.questionnaire-section {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--primary-light);
+  padding: 16px 16px 4px;
+  margin-bottom: 20px;
+}
+
+.questionnaire-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.questionnaire-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.usage-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.usage-chip {
+  padding: 7px 14px;
+  border: 1px solid var(--border-dark);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate-dark);
+  background: var(--white);
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.usage-chip:hover {
+  border-color: var(--primary);
+}
+
+.usage-chip.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
 }
 
 .otp-container {
