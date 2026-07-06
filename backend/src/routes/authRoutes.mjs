@@ -32,9 +32,7 @@ import {
 
 export const authRoutes = Router();
 
-// Public — the FE's `/choose-role` screen renders this list before
-// the user is logged in. Mounted first so the public/intent is
-// obvious from the top of the file.
+
 authRoutes.get("/role-options", getRoleOptions);
 
 authRoutes.post(
@@ -54,13 +52,18 @@ authRoutes.post(
 );
 authRoutes.post("/verify", verifyOtp, verifyEmail);
 authRoutes.post("/resend", resendOtp);
+
+//forget hunda email rakhera send haney
 authRoutes.post(
   "/forget",
   validationWith(forgetPasswordValidation, ["email"]),
   forgetPassword,
 );
 
+//otp verify garney after forget password 
 authRoutes.post("/forget/verify", verifyOtp, ackOtpVerified);
+
+
 authRoutes.post(
   "/forget/changePassword",
   isOtpVerified,
