@@ -1,40 +1,32 @@
-import { useState } from 'react'
-import './App.css'
-import Login from './components/Login'
-import Dashboard from './components/Dashboard'
-import ToastContainer from './components/Toast'
+import { useState } from "react";
+import "./App.css";
+import Login from "./components/Login";
 
 function App() {
-  const [user, setUser] = useState(null)
-  const [authPage, setAuthPage] = useState('login')
+  const [user, setUser] = useState(null);
+  const [authPage, setAuthPage] = useState("login");
 
   const handleLogin = (userData) => {
-    setUser(userData)
-  }
-
-  const handleLogout = () => {
-    setUser(null)
-    setAuthPage('login')
-  }
+    if (authPage === "register") {
+      setAuthPage("login");
+    } else {
+      setUser(userData);
+    }
+  };
 
   const handleNavigate = (page) => {
-    setAuthPage(page)
-  }
+    setAuthPage(page);
+  };
 
   return (
     <div className="app">
-      {!user ? (
-        <Login 
-          onLogin={handleLogin} 
-          onNavigate={handleNavigate} 
-          authPage={authPage}
-        />
-      ) : (
-        <Dashboard user={user} onLogout={handleLogout} />
-      )}
-      <ToastContainer />
+      <Login
+        onLogin={handleLogin}
+        onNavigate={handleNavigate}
+        authPage={authPage}
+      />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
