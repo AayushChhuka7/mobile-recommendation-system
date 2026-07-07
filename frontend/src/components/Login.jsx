@@ -8,7 +8,7 @@ const OTP_LENGTH = 6;
 const RESEND_COOLDOWN_SECONDS = 60;
 const EMPTY_OTP = Array(OTP_LENGTH).fill("");
 const OTP_INDEXES = Array.from({ length: OTP_LENGTH }, (_, i) => i);
-const TOAST_DURATION_MS = 3000; // how long the top toast stays visible
+const TOAST_DURATION_MS = 1000;
 const NEPAL_CITIES = [
   "Kathmandu",
   "Lalitpur",
@@ -238,12 +238,17 @@ function Login({ onLogin, onNavigate, authPage }) {
     usage: [],
   });
   const [registerErrors, setRegisterErrors] = useState({});
+  const [registerLoading, setRegisterLoading] = useState(false);
 
   const [otp, setOtp] = useState(EMPTY_OTP);
   const [otpError, setOtpError] = useState("");
   const [otpLoading, setOtpLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendLoading, setResendLoading] = useState(false);
   const [otpResult, setOtpResult] = useState(null);
+  // Holds whatever the /auth/verify call returns, so we can log the user in
+  // with real server data instead of the locally-typed form values.
+  const [verifiedUser, setVerifiedUser] = useState(null);
 
   const [forgotStep, setForgotStep] = useState(1);
   const [forgotEmail, setForgotEmail] = useState("");
@@ -253,6 +258,7 @@ function Login({ onLogin, onNavigate, authPage }) {
   const [forgotOtpError, setForgotOtpError] = useState("");
   const [forgotOtpLoading, setForgotOtpLoading] = useState(false);
   const [forgotResendCooldown, setForgotResendCooldown] = useState(0);
+  const [forgotResendLoading, setForgotResendLoading] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [newPasswordErrors, setNewPasswordErrors] = useState({});
@@ -350,16 +356,39 @@ function Login({ onLogin, onNavigate, authPage }) {
   );
 
   const handleRegisterNext = useCallback(
-    (e) => {
+    async (e) => {
       e?.preventDefault();
       const validationErrors = validateRegister();
       setRegisterErrors(validationErrors);
-      if (!Object.keys(validationErrors).length) {
+      if (Object.keys(validationErrors).length) return;
+
+      setRegisterLoading(true);
+      try {
+        await api.post("/auth/register", {
+          username: registerData.username,
+          email: registerData.email,
+          password: registerData.password,
+          confirmPassword: registerData.confirmPassword,
+          phone: registerData.phone,
+          roleName: registerRole,
+          ...(registerRole === "Customer" ? { questionnaire } : {}),
+        });
+
         setStep(2);
         setResendCooldown(RESEND_COOLDOWN_SECONDS);
+      } catch (error) {
+        console.error(error);
+        const serverErrors = error.response?.data?.errors;
+        if (serverErrors && typeof serverErrors === "object") {
+          setRegisterErrors(serverErrors);
+        } else {
+          alert(error.response?.data?.message || "Registration failed");
+        }
+      } finally {
+        setRegisterLoading(false);
       }
     },
-    [validateRegister],
+    [registerData, registerRole, questionnaire, validateRegister],
   );
 
   const handleOtpChange = useCallback((index, value) => {
@@ -392,15 +421,17 @@ function Login({ onLogin, onNavigate, authPage }) {
   }, []);
 
   const completeRegistration = useCallback(() => {
-    onLogin({
-      name: registerData.username,
-      role: registerRole,
-      email: registerData.email,
-    });
-  }, [registerData, registerRole, onLogin]);
+    onLogin(
+      verifiedUser || {
+        name: registerData.username,
+        role: registerRole,
+        email: registerData.email,
+      },
+    );
+  }, [verifiedUser, registerData, registerRole, onLogin]);
 
   const handleOtpVerify = useCallback(
-    (e) => {
+    async (e) => {
       e?.preventDefault();
       const otpString = otp.join("");
       if (otpString.length !== OTP_LENGTH) {
@@ -410,34 +441,49 @@ function Login({ onLogin, onNavigate, authPage }) {
       setOtpLoading(true);
       setOtpError("");
 
-      setTimeout(() => {
+      try {
+        const response = await api.post("/auth/verify", {
+          email: registerData.email,
+          otp: otpString,
+        });
+
+        setVerifiedUser(response.data || null);
+        setOtpResult({
+          status: "success",
+          message: "Registration successful!!",
+        });
+
+        setTimeout(completeRegistration, TOAST_DURATION_MS);
+      } catch (error) {
+        console.error(error);
+        setOtpResult({
+          status: "error",
+          message:
+            error.response?.data?.message ||
+            "We couldn't verify that code. Please try again.",
+        });
+      } finally {
         setOtpLoading(false);
-        const verified = true;
-
-        if (verified) {
-          setOtpResult({
-            status: "success",
-            message: "Registration successful!!",
-          });
-
-          setTimeout(completeRegistration, TOAST_DURATION_MS);
-        } else {
-          setOtpResult({
-            status: "error",
-            message: "We couldn't verify that code. Please try again.",
-          });
-        }
-      }, 1500);
+      }
     },
-    [otp, completeRegistration],
+    [otp, registerData.email, completeRegistration],
   );
 
-  const handleResendOtp = useCallback(() => {
-    setResendCooldown(RESEND_COOLDOWN_SECONDS);
-    setOtp(EMPTY_OTP);
-    setOtpError("");
-    setOtpResult(null);
-  }, []);
+  const handleResendOtp = useCallback(async () => {
+    setResendLoading(true);
+    try {
+      await api.post("/auth/resend", { email: registerData.email });
+      setResendCooldown(RESEND_COOLDOWN_SECONDS);
+      setOtp(EMPTY_OTP);
+      setOtpError("");
+      setOtpResult(null);
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Couldn't resend the code");
+    } finally {
+      setResendLoading(false);
+    }
+  }, [registerData.email]);
 
   const handleOtpBack = useCallback(() => {
     setOtp(EMPTY_OTP);
@@ -467,7 +513,7 @@ function Login({ onLogin, onNavigate, authPage }) {
   }, []);
 
   const handleForgotEmailSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e?.preventDefault();
       if (!forgotEmail || !EMAIL_REGEX.test(forgotEmail)) {
         setForgotEmailError("Enter a valid email address");
@@ -476,11 +522,18 @@ function Login({ onLogin, onNavigate, authPage }) {
       setForgotEmailError("");
       setForgotLoading(true);
 
-      setTimeout(() => {
-        setForgotLoading(false);
+      try {
+        await api.post("/auth/forget", { email: forgotEmail });
         setForgotStep(2);
         setForgotResendCooldown(RESEND_COOLDOWN_SECONDS);
-      }, 1000);
+      } catch (error) {
+        console.error(error);
+        setForgotEmailError(
+          error.response?.data?.message || "Couldn't send the code",
+        );
+      } finally {
+        setForgotLoading(false);
+      }
     },
     [forgotEmail],
   );
@@ -515,7 +568,7 @@ function Login({ onLogin, onNavigate, authPage }) {
   }, []);
 
   const handleForgotOtpVerify = useCallback(
-    (e) => {
+    async (e) => {
       e?.preventDefault();
       const otpString = forgotOtp.join("");
       if (otpString.length !== OTP_LENGTH) {
@@ -523,20 +576,42 @@ function Login({ onLogin, onNavigate, authPage }) {
         return;
       }
       setForgotOtpLoading(true);
-      // NOTE: replace with a real verify-otp API call when ready.
-      setTimeout(() => {
-        setForgotOtpLoading(false);
+
+      try {
+        // ackOtpVerified marks this session as allowed to change the
+        // password (checked by isOtpVerified on /forget/changePassword).
+        await api.post("/auth/forget/verify", {
+          email: forgotEmail,
+          otp: otpString,
+        });
         setForgotStep(3);
-      }, 1000);
+      } catch (error) {
+        console.error(error);
+        setForgotOtpError(
+          error.response?.data?.message ||
+            "We couldn't verify that code. Please try again.",
+        );
+      } finally {
+        setForgotOtpLoading(false);
+      }
     },
-    [forgotOtp],
+    [forgotOtp, forgotEmail],
   );
 
-  const handleForgotResendOtp = useCallback(() => {
-    setForgotResendCooldown(RESEND_COOLDOWN_SECONDS);
-    setForgotOtp(EMPTY_OTP);
-    setForgotOtpError("");
-  }, []);
+  const handleForgotResendOtp = useCallback(async () => {
+    setForgotResendLoading(true);
+    try {
+      await api.post("/auth/forget", { email: forgotEmail });
+      setForgotResendCooldown(RESEND_COOLDOWN_SECONDS);
+      setForgotOtp(EMPTY_OTP);
+      setForgotOtpError("");
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Couldn't resend the code");
+    } finally {
+      setForgotResendLoading(false);
+    }
+  }, [forgotEmail]);
 
   const handleForgotOtpBack = useCallback(() => {
     setForgotOtp(EMPTY_OTP);
@@ -564,7 +639,7 @@ function Login({ onLogin, onNavigate, authPage }) {
   }, [onNavigate]);
 
   const handleResetPasswordSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e?.preventDefault();
       const validationErrors = validateNewPassword();
       setNewPasswordErrors(validationErrors);
@@ -572,25 +647,37 @@ function Login({ onLogin, onNavigate, authPage }) {
 
       setResetLoading(true);
 
-      setTimeout(() => {
-        setResetLoading(false);
-        const changed = true;
+      try {
+        await api.post("/auth/forget/changePassword", {
+          email: forgotEmail,
+          newPassword,
+          confirmNewPassword,
+        });
 
-        if (changed) {
-          setResetResult({
-            status: "success",
-            message: "Password changed successfully!",
-          });
-          setTimeout(goToLoginAfterReset, TOAST_DURATION_MS);
-        } else {
-          setResetResult({
-            status: "error",
-            message: "Something went wrong. Please try again.",
-          });
-        }
-      }, 1000);
+        setResetResult({
+          status: "success",
+          message: "Password changed successfully!",
+        });
+        setTimeout(goToLoginAfterReset, TOAST_DURATION_MS);
+      } catch (error) {
+        console.error(error);
+        setResetResult({
+          status: "error",
+          message:
+            error.response?.data?.message ||
+            "Something went wrong. Please try again.",
+        });
+      } finally {
+        setResetLoading(false);
+      }
     },
-    [validateNewPassword, goToLoginAfterReset],
+    [
+      validateNewPassword,
+      forgotEmail,
+      newPassword,
+      confirmNewPassword,
+      goToLoginAfterReset,
+    ],
   );
 
   if (authPage === "register") {
@@ -763,8 +850,12 @@ function Login({ onLogin, onNavigate, authPage }) {
                 </div>
               )}
 
-              <button type="submit" className="btn btn-primary w-full">
-                Register
+              <button
+                type="submit"
+                className="btn btn-primary w-full"
+                disabled={registerLoading}
+              >
+                {registerLoading ? "Submitting..." : "Register"}
               </button>
 
               <div className="auth-footer">
@@ -822,8 +913,11 @@ function Login({ onLogin, onNavigate, authPage }) {
                 {resendCooldown > 0 ? (
                   <span className="otp-timer">Resend in {resendCooldown}s</span>
                 ) : (
-                  <span className="auth-link" onClick={handleResendOtp}>
-                    Resend
+                  <span
+                    className="auth-link"
+                    onClick={resendLoading ? undefined : handleResendOtp}
+                  >
+                    {resendLoading ? "Resending..." : "Resend"}
                   </span>
                 )}
               </div>
@@ -937,8 +1031,13 @@ function Login({ onLogin, onNavigate, authPage }) {
                     Resend in {forgotResendCooldown}s
                   </span>
                 ) : (
-                  <span className="auth-link" onClick={handleForgotResendOtp}>
-                    Resend
+                  <span
+                    className="auth-link"
+                    onClick={
+                      forgotResendLoading ? undefined : handleForgotResendOtp
+                    }
+                  >
+                    {forgotResendLoading ? "Resending..." : "Resend"}
                   </span>
                 )}
               </div>
