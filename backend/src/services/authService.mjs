@@ -7,17 +7,6 @@ const OTP_TTL_MS = 5 * 60 * 1000;
 
 const newOtpExpiry = () => new Date(Date.now() + OTP_TTL_MS);
 
-// Story 1.9 — every new registration is assigned the role
-// carried in `userData.roleName` in the same transaction as the
-// user insert. The validator upstream restricts the value to
-// the self-service whitelist (currently `Customer`, `Salesman`),
-// so the lookup is guaranteed to succeed for valid input.
-// Promotion to `Admin` is admin-only via /api/users/:id/roles.
-//
-// Requires `npm run seed:rbac` to have been run at least once so
-// the requested role row exists. Without it, registration fails —
-// that's intentional (a fresh deploy that skips seed is
-// misconfigured).
 export const registerUserService = async (userData) => {
   const { confirmPassword, roleName, ...data } = userData;
 
