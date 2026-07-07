@@ -9,6 +9,14 @@ const RESEND_COOLDOWN_SECONDS = 60;
 const EMPTY_OTP = Array(OTP_LENGTH).fill("");
 const OTP_INDEXES = Array.from({ length: OTP_LENGTH }, (_, i) => i);
 const TOAST_DURATION_MS = 1000;
+// Mirrors the backend's `userValidation.mjs → checkPassword` rules so the
+// FE rejects weak passwords before round-tripping to the server.
+const PASSWORD_MIN_LENGTH = 8;
+const PASSWORD_RULES = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/;
+const PASSWORD_HINT = `At least ${PASSWORD_MIN_LENGTH} characters with one uppercase, one lowercase, one number, and one special character.`;
+// Roles the user can self-assign at registration. Mirrors the backend's
+// `rbacService.isAssignableRole` whitelist (Admin is admin-only).
+const SELF_ASSIGNABLE_ROLES = ["Customer", "Salesman"];
 const NEPAL_CITIES = [
   "Kathmandu",
   "Lalitpur",
@@ -262,6 +270,8 @@ function Login({ onLogin, onNavigate, authPage }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [newPasswordErrors, setNewPasswordErrors] = useState({});
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
   const [resetResult, setResetResult] = useState(null);
   useEffect(() => {
@@ -305,8 +315,11 @@ function Login({ onLogin, onNavigate, authPage }) {
     if (!email) e.email = "Email is required";
     else if (!EMAIL_REGEX.test(email)) e.email = "Enter a valid email address";
     if (!password) e.password = "Password is required";
-    else if (password.length < 6)
-      e.password = "Password must be at least 6 characters";
+    else if (password.length < PASSWORD_MIN_LENGTH)
+      e.password = `Password must be at least ${PASSWORD_MIN_LENGTH} characters`;
+    else if (!PASSWORD_RULES.test(password))
+      e.password =
+        "Password must include uppercase, lowercase, number, and special character";
     return e;
   }, [email, password]);
 
@@ -315,8 +328,12 @@ function Login({ onLogin, onNavigate, authPage }) {
     if (!registerData.username) e.username = "Username is required";
     if (!registerData.email || !EMAIL_REGEX.test(registerData.email))
       e.email = "Valid email required";
-    if (!registerData.password || registerData.password.length < 6)
-      e.password = "Minimum 6 characters";
+    if (!registerData.password) e.password = "Password is required";
+    else if (registerData.password.length < PASSWORD_MIN_LENGTH)
+      e.password = `Minimum ${PASSWORD_MIN_LENGTH} characters`;
+    else if (!PASSWORD_RULES.test(registerData.password))
+      e.password =
+        "Must include uppercase, lowercase, number, and special character";
     if (registerData.confirmPassword !== registerData.password)
       e.confirmPassword = "Passwords do not match";
     if (registerData.phone && !/^\+?[0-9\s-]{7,15}$/.test(registerData.phone))
@@ -365,11 +382,14 @@ function Login({ onLogin, onNavigate, authPage }) {
       setRegisterLoading(true);
       try {
         await api.post("/auth/register", {
-          username: registerData.username,
+          // Backend schema (userValidation.mjs) expects `name` and `phoneNo`.
+          // The FE used to send `username` / `phone` and the request was
+          // rejected at the `validationWith` whitelist stage.
+          name: registerData.username,
           email: registerData.email,
           password: registerData.password,
           confirmPassword: registerData.confirmPassword,
-          phone: registerData.phone,
+          phoneNo: registerData.phone,
           roleName: registerRole,
           ...(registerRole === "Customer" ? { questionnaire } : {}),
         });
@@ -421,14 +441,15 @@ function Login({ onLogin, onNavigate, authPage }) {
   }, []);
 
   const completeRegistration = useCallback(() => {
-    onLogin(
-      verifiedUser || {
-        name: registerData.username,
-        role: registerRole,
-        email: registerData.email,
-      },
-    );
-  }, [verifiedUser, registerData, registerRole, onLogin]);
+    // The backend's /auth/verify response is just `{ message }` with no user
+    // object. The dashboard needs a real `user` shape (id/email/etc.) so we
+    // hand it what we already have from the registration form.
+    onLogin({
+      name: registerData.username,
+      email: registerData.email,
+      roleName: registerRole,
+    });
+  }, [registerData, registerRole, onLogin]);
 
   const handleOtpVerify = useCallback(
     async (e) => {
@@ -442,12 +463,28 @@ function Login({ onLogin, onNavigate, authPage }) {
       setOtpError("");
 
       try {
-        const response = await api.post("/auth/verify", {
+        // 1. Verify the OTP — flips isVerified=true and consumes the OTP.
+        await api.post("/auth/verify", {
           email: registerData.email,
           otp: otpString,
         });
 
-        setVerifiedUser(response.data || null);
+        // 2. Immediately log the user in so the dashboard gets a real
+        //    session + a real user object. If login fails (wrong password
+        //    edge case, network blip) the user can still reach the login
+        //    page from the toast.
+        try {
+          const loginResponse = await api.post("/auth/login", {
+            email: registerData.email,
+            password: registerData.password,
+            roleName: registerRole,
+          });
+          setVerifiedUser(loginResponse.data?.user || null);
+        } catch (loginErr) {
+          console.error("auto-login after verify failed", loginErr);
+          setVerifiedUser(null);
+        }
+
         setOtpResult({
           status: "success",
           message: "Registration successful!!",
@@ -627,8 +664,12 @@ function Login({ onLogin, onNavigate, authPage }) {
 
   const validateNewPassword = useCallback(() => {
     const e = {};
-    if (!newPassword || newPassword.length < 6)
-      e.newPassword = "Minimum 6 characters";
+    if (!newPassword) e.newPassword = "Password is required";
+    else if (newPassword.length < PASSWORD_MIN_LENGTH)
+      e.newPassword = `Minimum ${PASSWORD_MIN_LENGTH} characters`;
+    else if (!PASSWORD_RULES.test(newPassword))
+      e.newPassword =
+        "Must include uppercase, lowercase, number, and special character";
     if (confirmNewPassword !== newPassword)
       e.confirmNewPassword = "Passwords do not match";
     return e;
@@ -739,6 +780,9 @@ function Login({ onLogin, onNavigate, authPage }) {
                 onChange={(e) => updateRegister("password", e.target.value)}
                 error={registerErrors.password}
               />
+              {!registerErrors.password && (
+                <div className="input-hint">{PASSWORD_HINT}</div>
+              )}
 
               <TextField
                 label="Re-enter password"
@@ -772,9 +816,11 @@ function Login({ onLogin, onNavigate, authPage }) {
                   value={registerRole}
                   onChange={(e) => setRegisterRole(e.target.value)}
                 >
-                  <option value="Customer">Customer</option>
-                  <option value="Salesman">Salesman</option>
-                  <option value="Admin">Admin</option>
+                  {SELF_ASSIGNABLE_ROLES.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -1060,29 +1106,76 @@ function Login({ onLogin, onNavigate, authPage }) {
                 Enter and confirm your new password.
               </div>
 
-              <TextField
-                label="New password"
-                icon={<LockIcon />}
-                type="password"
-                name="new-password"
-                autoComplete="new-password"
-                placeholder="••••••••"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                error={newPasswordErrors.newPassword}
-              />
+              <div className="input-group">
+                <label className="input-label">New password</label>
+                <div className="input-with-icon password-field">
+                  <span className="input-icon">
+                    <LockIcon />
+                  </span>
+                  <input
+                    className={`input-field ${newPasswordErrors.newPassword ? "error" : ""}`}
+                    type={showNewPassword ? "text" : "password"}
+                    name="new-password"
+                    autoComplete="new-password"
+                    placeholder="••••••••"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowNewPassword((prev) => !prev)}
+                    aria-label={
+                      showNewPassword ? "Hide password" : "Show password"
+                    }
+                  >
+                    {showNewPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
+                {newPasswordErrors.newPassword && (
+                  <div className="input-error">
+                    {newPasswordErrors.newPassword}
+                  </div>
+                )}
+                {!newPasswordErrors.newPassword && (
+                  <div className="input-hint">{PASSWORD_HINT}</div>
+                )}
+              </div>
 
-              <TextField
-                label="Re-enter new password"
-                icon={<LockIcon />}
-                type="password"
-                name="confirm-new-password"
-                autoComplete="new-password"
-                placeholder="••••••••"
-                value={confirmNewPassword}
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
-                error={newPasswordErrors.confirmNewPassword}
-              />
+              <div className="input-group">
+                <label className="input-label">Re-enter new password</label>
+                <div className="input-with-icon password-field">
+                  <span className="input-icon">
+                    <LockIcon />
+                  </span>
+                  <input
+                    className={`input-field ${newPasswordErrors.confirmNewPassword ? "error" : ""}`}
+                    type={showConfirmNewPassword ? "text" : "password"}
+                    name="confirm-new-password"
+                    autoComplete="new-password"
+                    placeholder="••••••••"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowConfirmNewPassword((prev) => !prev)}
+                    aria-label={
+                      showConfirmNewPassword
+                        ? "Hide password"
+                        : "Show password"
+                    }
+                  >
+                    {showConfirmNewPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
+                {newPasswordErrors.confirmNewPassword && (
+                  <div className="input-error">
+                    {newPasswordErrors.confirmNewPassword}
+                  </div>
+                )}
+              </div>
 
               {resetResult?.status === "error" && (
                 <div className="form-submit-error">{resetResult.message}</div>
@@ -1176,9 +1269,11 @@ function Login({ onLogin, onNavigate, authPage }) {
                   value={roleName}
                   onChange={(e) => setRoleName(e.target.value)}
                 >
-                  <option value="Customer">Customer</option>
-                  <option value="Admin">Admin</option>
-                  <option value="Salesman">Salesman</option>
+                  {SELF_ASSIGNABLE_ROLES.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
                 </select>
               </div>
 
