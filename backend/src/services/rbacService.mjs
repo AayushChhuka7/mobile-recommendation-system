@@ -1,11 +1,12 @@
-// rbacService — RBAC Phase 1 + Phase 2.
+// rbacService — RBAC Phase 1.
 //
-// All Role / RolePermission / Permission-related Prisma access lives
-// here. userService stays focused on the user-row CRUD that has nothing
-// to do with authorization.
+// All Role-related Prisma access lives here. userService stays
+// focused on the user-row CRUD that has nothing to do with
+// authorization. (RBAC Phase 2's permission tables were reverted on
+// 2026-07-06; this module owns roles only.)
 //
-// Phase 1 (one role per user via `users.roleId` FK) and Phase 2
-// (role→permission bundles) both read/write through this module.
+// Phase 1 = one role per user via the `users.roleId` FK. Every
+// read/write on that FK goes through this module.
 
 import { prisma } from "../config/prisma.mjs";
 
@@ -47,8 +48,7 @@ export const findUserRoles = async (userId) => {
     select: ROLES_SAFE_USER_FIELDS,
   });
   if (!user) return [];
-  // Phase 1 = single role per user. Return an array shape so callers
-  // don't have to special-case Phase 2 when it lands.
+  
   if (user.role && user.role.roleName) {
     return [user.role.roleName];
   }
@@ -104,70 +104,6 @@ export const revokeRole = async (userId) => {
   });
 };
 
-// ---- Permission lookups (Phase 2) ----
-//
-// `loadUserContext` is the only planned consumer of
-// `findUserPermissions`. `findRolePermissions` is exported for the
-// upcoming admin endpoint (story 2.9/2.10) but has no current
-// caller — keeping the service complete rather than waiting for
-// the admin tooling to land.
-
-// Resolves the user's permissions in one query, joining
-// users → roles → role_permissions → permissions.
-export const findUserPermissions = async (userId) => {
-  const user = await prisma.users.findUnique({
-    where: { userId },
-    select: {
-      role: {
-        select: {
-          permissions: {
-            select: {
-              permission: { select: { permissionKey: true } },
-            },
-          },
-        },
-      },
-    },
-  });
-
-  if (!user || !user.role) return [];
-
-  const keys = [];
-  for (const rp of user.role.permissions) {
-    const k = rp.permission.permissionKey;
-    if (k) {
-      keys.push(k);
-    }
-  }
-  return keys;
-};
-
-// Resolves the permission keys granted by a single role. Useful for
-// the admin UI ("what does the Salesman role grant?").
-export const findRolePermissions = async (roleId) => {
-  const role = await prisma.roles.findUnique({
-    where: { roleId },
-    select: {
-      permissions: {
-        select: {
-          permission: { select: { permissionKey: true } },
-        },
-      },
-    },
-  });
-
-  if (!role) return [];
-
-  const keys = [];
-  for (const rp of role.permissions) {
-    const k = rp.permission.permissionKey;
-    if (k) {
-      keys.push(k);
-    }
-  }
-  return keys;
-};
-
 // ---- Self-service role assignment ----
 //
 // `getAssignableRoles` / `isAssignableRole` define the whitelist for
@@ -196,11 +132,7 @@ export const isAssignableRole = (roleName) => {
   return ASSIGNABLE_ROLES.includes(roleName);
 };
 
-// Verifies the user holds the requested role. Returns
-// `{ matched, actualRole }` — never throws on a normal mismatch,
-// so the caller (roleGuard) can drive the 303 response without
-// try/catch noise. A missing user surfaces as `actualRole: null`
-// so the guard can handle it (e.g. 303 to a "no role" path).
+
 export const assertUserRoleMatches = async (userId, roleName) => {
   if (typeof userId !== "string" || userId.length === 0) {
     return { matched: false, actualRole: null };
@@ -210,9 +142,7 @@ export const assertUserRoleMatches = async (userId, roleName) => {
   }
 
   const userRoles = await findUserRoles(userId);
-  // Phase 1 = single role per user, so `userRoles` is either [] or
-  // a 1-element array. Phase 2 will widen the semantics; the
-  // `matched` flag stays correct under either shape.
+ 
   const actualRole = userRoles.length > 0 ? userRoles[0] : null;
   const matched = actualRole === roleName;
   return { matched, actualRole };
