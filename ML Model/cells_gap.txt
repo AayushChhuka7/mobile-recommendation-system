@@ -1,0 +1,254 @@
+================================================================================
+CELL 53 (code)
+================================================================================
+import pandas as pd
+import numpy as np
+import re
+
+def engineer_camera_video_features(df):
+    df['Camera_Video'] = df['Camera_Video'].fillna('Unknown').astype(str)
+
+    def max_resolution(text):
+        t = text.lower()
+
+        if '8k' in t:
+            return 5
+        elif '6k' in t:
+            return 4
+        elif '4k' in t:
+            return 3
+        elif '1440p' in t or '2k' in t:
+            return 2
+        elif '1080p' in t:
+            return 1
+        elif any(x in t for x in ['720p', '480p', '320p', 'cif', 'qcif']):
+            return 0
+        else:
+            return np.nan
+
+    df['Video_Max_Resolution_Tier'] = df['Camera_Video'].apply(max_resolution)
+
+    df['Video_Has_4K_Plus'] = (
+        df['Camera_Video']
+        .str.contains(r'4k|6k|8k', case=False, regex=True)
+        .astype(int)
+    )
+
+    df['Video_Has_8K'] = (
+        df['Camera_Video']
+        .str.contains(r'8k', case=False, regex=True)
+        .astype(int)
+    )
+
+
+    df['Video_Has_Stabilization'] = (
+        df['Camera_Video']
+        .str.contains(r'gyro-eis|ois|eis', case=False, regex=True)
+        .astype(int)
+    )
+
+
+    df['Video_Has_HDR'] = (
+        df['Camera_Video']
+        .str.contains(r'hdr|hdr10|hdr10\+|dolby vision|hdr vivid',
+                      case=False,
+                      regex=True)
+        .astype(int)
+    )
+
+    df['Video_Has_High_FPS'] = (df['Camera_Video'].str.contains(r'120fps|240fps|480fps|960fps',case=False,regex=True).astype(int) )
+
+    return df
+
+df = engineer_camera_video_features(df)
+================================================================================
+CELL 54 (code)
+================================================================================
+new_cols = [
+    'Video_Max_Resolution_Tier',
+    'Video_Has_4K_Plus',
+    'Video_Has_8K',
+    'Video_Has_Stabilization',
+    'Video_Has_HDR',
+    'Video_Has_High_FPS'
+]
+df['Video_Max_Resolution_Tier'] = df.groupby(
+    'Chipset', dropna=False
+)['Video_Max_Resolution_Tier'].transform(lambda x: x.fillna(x.median()))
+
+df['Video_Max_Resolution_Tier'] = df.groupby(
+    ['Brand', 'Announced_Year'], dropna=False
+)['Video_Max_Resolution_Tier'].transform(lambda x: x.fillna(x.median()))
+
+df['Video_Max_Resolution_Tier'] = df['Video_Max_Resolution_Tier'].fillna(
+    df['Video_Max_Resolution_Tier'].median()
+)
+
+print("\nNaN values in engineered columns:")
+print(df[new_cols].isna().sum())
+================================================================================
+CELL 57 (code)
+================================================================================
+df["Selfie_4K_Video"].value_counts()
+================================================================================
+CELL 59 (code)
+================================================================================
+import pandas as pd
+import numpy as np
+import re
+
+def engineer_wifi_features(df):
+    df['WiFi'] = df['WiFi'].fillna('No WiFi').astype(str)
+
+
+    def wifi_generation(text):
+        t = text.lower()
+
+        if re.search(r'\b802\.11be\b|\bwi[- ]?fi\s*7\b|\b802\.11\s*7\b', t):
+            return 7
+        elif re.search(r'\b802\.11ax\b|\bwi[- ]?fi\s*6e\b|\bwi[- ]?fi\s*6\b|\b6e\b', t):
+            return 6
+        elif re.search(r'\b802\.11ac\b|\bac\b', t):
+            return 5
+        elif re.search(r'\b802\.11n\b|\bn\b', t):
+            return 4
+        elif re.search(r'\b802\.11g\b|\bg\b', t):
+            return 3
+        elif re.search(r'\b802\.11b\b|\bb\b', t):
+            return 2
+        elif re.search(r'\b802\.11a\b|\ba\b', t):
+            return 1
+        else:
+            return 0
+
+    df['WiFi_Generation'] = df['WiFi'].apply(wifi_generation)
+
+
+    df['WiFi_Dual_Band'] = df['WiFi'].str.contains(
+        'dual-band', case=False
+    ).astype(int)
+
+    df['WiFi_Tri_Band'] = df['WiFi'].str.contains(
+        'tri-band', case=False
+    ).astype(int)
+
+
+    df['Has_WiFi_Direct'] = df['WiFi'].str.contains(
+        'wi-fi direct|wifi direct',
+        case=False,
+        regex=True
+    ).astype(int)
+
+    df['Has_Hotspot'] = df['WiFi'].str.contains(
+        'hotspot',
+        case=False
+    ).astype(int)
+
+    return df
+
+
+df = engineer_wifi_features(df)
+================================================================================
+CELL 60 (code)
+================================================================================
+wifi_cols = ['WiFi_Generation','WiFi_Dual_Band','WiFi_Tri_Band','Has_WiFi_Direct','Has_Hotspot']
+print(df[wifi_cols].isna().sum())
+================================================================================
+CELL 62 (code)
+================================================================================
+df["NFC"].value_counts()
+================================================================================
+CELL 63 (markdown)
+================================================================================
+### GPS COlmn Feature ENgineering
+================================================================================
+CELL 64 (code)
+================================================================================
+import re
+
+def engineer_gps_features(df):
+    df['GPS'] = df['GPS'].fillna('Unknown').astype(str)
+
+    def gnss_count(text):
+        t = text.lower()
+        if t.strip() in ['no', 'unknown']:
+            return 0
+        systems = ['gps', 'glonass', 'galileo', 'bds', 'qzss', 'navic']
+        return sum(1 for s in systems if s in t)
+
+    df['GNSS_System_Count'] = df['GPS'].apply(gnss_count)
+
+
+    df['Has_Multi_GNSS'] = (df['GNSS_System_Count'] >= 2).astype(int)
+
+    df['GPS_Has_Dual_Frequency'] = df['GPS'].str.contains(
+        r'l1\+l5|l1\s*\+\s*l5', case=False, regex=True
+    ).astype(int)
+
+
+    df['Has_GPS'] = (~df['GPS'].str.strip().str.lower().isin(['no', 'unknown'])).astype(int)
+
+    return df
+
+df = engineer_gps_features(df)
+
+print(df['GNSS_System_Count'].value_counts(dropna=False).sort_index())
+print(df[['Has_Multi_GNSS','GPS_Has_Dual_Frequency','Has_GPS']].mean())
+print(df[['Has_Multi_GNSS','GPS_Has_Dual_Frequency','Has_GPS']].isnull().mean())
+
+df.drop(columns=['GPS'], inplace=True)
+================================================================================
+CELL 66 (code)
+================================================================================
+import pandas as pd
+import numpy as np
+
+def engineer_sensors_features(df):
+    df['Sensors'] = df['Sensors'].fillna('Unknown').astype(str)
+
+    df['Has_Fingerprint'] = df['Sensors'].str.contains('fingerprint', case=False).astype(int)
+
+    def fingerprint_position(text):
+        t = text.lower()
+        if any(x in t for x in ['under display', 'under-display', 'under screen', 'under-screen']):
+            return 'Under_Display'
+        elif 'side-mounted' in t or 'side mounted' in t:
+            return 'Side_Mounted'
+        elif 'rear-mounted' in t or 'rear mounted' in t:
+            return 'Rear_Mounted'
+        elif 'front-mounted' in t or 'front mounted' in t:
+            return 'Front_Mounted'
+        elif 'top-mounted' in t or 'top mounted' in t:
+            return 'Top_Mounted'
+        elif 'fingerprint' in t:
+            return 'Other'
+        return 'None'
+
+    df['Fingerprint_Position'] = df['Sensors'].apply(fingerprint_position)
+
+    df['Has_Face_Unlock'] = df['Sensors'].str.contains(r'face id|face recognition|face unlock|iris', case=False, regex=True).astype(int)
+    df['Has_Gyro'] = df['Sensors'].str.contains('gyro', case=False).astype(int)
+    df['Has_Compass'] = df['Sensors'].str.contains('compass', case=False).astype(int)
+    df['Has_Barometer'] = df['Sensors'].str.contains('barometer', case=False).astype(int)
+    df['Sensor_Count'] = df['Sensors'].apply(lambda x: 0 if x == 'Unknown' else len(x.split(',')))
+
+    print(df[['Has_Fingerprint','Fingerprint_Position','Has_Face_Unlock','Has_Gyro','Has_Compass','Has_Barometer','Sensor_Count']].isna().sum())
+
+    df.drop(columns='Sensors', inplace=True)
+
+    return df
+
+df = engineer_sensors_features(df)
+================================================================================
+CELL 67 (markdown)
+================================================================================
+### Color columns
+================================================================================
+CELL 68 (code)
+================================================================================
+df['Color_Option_Count'] = df['Colors'].apply(lambda x: 0 if pd.isna(x) else len(str(x).split(',')))
+df.drop(columns=['Colors'], inplace=True)
+================================================================================
+CELL 69 (markdown)
+================================================================================
+### FM_Radio Columns
