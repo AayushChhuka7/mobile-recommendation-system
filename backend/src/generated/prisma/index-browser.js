@@ -152,12 +152,141 @@ exports.Prisma.SessionScalarFieldEnum = {
   expire: 'expire'
 };
 
+exports.Prisma.UserProfileScalarFieldEnum = {
+  profileId: 'profileId',
+  userId: 'userId',
+  age: 'age',
+  gender: 'gender',
+  country: 'country',
+  state: 'state',
+  city: 'city',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserPreferenceScalarFieldEnum = {
+  preferenceId: 'preferenceId',
+  userId: 'userId',
+  maxBudget: 'maxBudget',
+  cameraPreference: 'cameraPreference',
+  usageType: 'usageType',
+  preferredBrand: 'preferredBrand',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PhonesScalarFieldEnum = {
+  phoneId: 'phoneId',
+  brand: 'brand',
+  modelName: 'modelName',
+  price: 'price',
+  antutuScore: 'antutuScore',
+  ramGb: 'ramGb',
+  storageGb: 'storageGb',
+  batteryMah: 'batteryMah',
+  chargingWatts: 'chargingWatts',
+  displayType: 'displayType',
+  displayPpi: 'displayPpi',
+  cameraScore: 'cameraScore',
+  frontCameraScore: 'frontCameraScore',
+  osName: 'osName',
+  supports5g: 'supports5g',
+  supportsNfc: 'supportsNfc',
+  dualSim: 'dualSim',
+  source: 'source',
+  sourceUrl: 'sourceUrl',
+  imageUrl: 'imageUrl',
+  imagePath: 'imagePath',
+  isActive: 'isActive',
+  discontinuedAt: 'discontinuedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RecommendationHistoryScalarFieldEnum = {
+  historyId: 'historyId',
+  userId: 'userId',
+  phoneId: 'phoneId',
+  searchDate: 'searchDate',
+  queryId: 'queryId',
+  filtersJson: 'filtersJson',
+  performanceMatch: 'performanceMatch',
+  cameraMatch: 'cameraMatch',
+  batteryMatch: 'batteryMatch',
+  displayMatch: 'displayMatch',
+  budgetMatch: 'budgetMatch',
+  brandMatch: 'brandMatch',
+  overallCompatibility: 'overallCompatibility',
+  personaSnapshot: 'personaSnapshot',
+  clicked: 'clicked',
+  compared: 'compared',
+  saved: 'saved',
+  purchased: 'purchased'
+};
+
+exports.Prisma.CustomerProfileScalarFieldEnum = {
+  profileId: 'profileId',
+  userId: 'userId',
+  budgetSegment: 'budgetSegment',
+  techTier: 'techTier',
+  cameraPreference: 'cameraPreference',
+  softwareSegment: 'softwareSegment',
+  favoriteBrand: 'favoriteBrand',
+  preferredRamGb: 'preferredRamGb',
+  preferredStorageGb: 'preferredStorageGb',
+  recommendationPersona: 'recommendationPersona',
+  avgPerformanceMatch: 'avgPerformanceMatch',
+  avgCameraMatch: 'avgCameraMatch',
+  avgFrontCameraMatch: 'avgFrontCameraMatch',
+  avgBudget: 'avgBudget',
+  avgBatteryMatch: 'avgBatteryMatch',
+  avgDisplayMatch: 'avgDisplayMatch',
+  segmentConfidence: 'segmentConfidence',
+  searchCount: 'searchCount',
+  totalRecommendations: 'totalRecommendations',
+  totalComparisons: 'totalComparisons',
+  totalWishlist: 'totalWishlist',
+  lastUpdated: 'lastUpdated'
+};
+
+exports.Prisma.WishlistScalarFieldEnum = {
+  wishlistId: 'wishlistId',
+  userId: 'userId',
+  phoneId: 'phoneId',
+  addedDate: 'addedDate'
+};
+
+exports.Prisma.ComparisonHistoryScalarFieldEnum = {
+  comparisonId: 'comparisonId',
+  userId: 'userId',
+  phoneIdA: 'phoneIdA',
+  phoneIdB: 'phoneIdB',
+  comparedDate: 'comparedDate'
+};
+
+exports.Prisma.AdminStatsCacheScalarFieldEnum = {
+  statId: 'statId',
+  computedDate: 'computedDate',
+  mostRecommendedBrand: 'mostRecommendedBrand',
+  mostRecommendedPhone: 'mostRecommendedPhone',
+  avgUserBudget: 'avgUserBudget',
+  mostPopularPersona: 'mostPopularPersona',
+  avgCompatibility: 'avgCompatibility',
+  mostComparedPhone: 'mostComparedPhone',
+  mostViewedPhone: 'mostViewedPhone'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
 exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
@@ -182,11 +311,54 @@ exports.OtpPurpose = exports.$Enums.OtpPurpose = {
   EmailChange: 'EmailChange'
 };
 
+exports.CameraPreference = exports.$Enums.CameraPreference = {
+  Sensible: 'Sensible',
+  Photophile: 'Photophile',
+  SelfieAddict: 'SelfieAddict'
+};
+
+exports.UsageType = exports.$Enums.UsageType = {
+  Student: 'Student',
+  Gamer: 'Gamer',
+  Business: 'Business',
+  Casual: 'Casual',
+  Creator: 'Creator'
+};
+
+exports.BudgetSegment = exports.$Enums.BudgetSegment = {
+  BudgetExplorer: 'BudgetExplorer',
+  AffordableBuyer: 'AffordableBuyer',
+  MidRangeBuyer: 'MidRangeBuyer',
+  PremiumBuyer: 'PremiumBuyer',
+  LuxuryBuyer: 'LuxuryBuyer'
+};
+
+exports.TechTier = exports.$Enums.TechTier = {
+  Budget: 'Budget',
+  Reasonable: 'Reasonable',
+  FlagshipKiller: 'FlagshipKiller',
+  TechSavvy: 'TechSavvy',
+  Luxurious: 'Luxurious'
+};
+
+exports.SegmentConfidence = exports.$Enums.SegmentConfidence = {
+  provisional: 'provisional',
+  confirmed: 'confirmed'
+};
+
 exports.Prisma.ModelName = {
   Roles: 'Roles',
   Users: 'Users',
   Otp: 'Otp',
-  Session: 'Session'
+  Session: 'Session',
+  UserProfile: 'UserProfile',
+  UserPreference: 'UserPreference',
+  Phones: 'Phones',
+  RecommendationHistory: 'RecommendationHistory',
+  CustomerProfile: 'CustomerProfile',
+  Wishlist: 'Wishlist',
+  ComparisonHistory: 'ComparisonHistory',
+  AdminStatsCache: 'AdminStatsCache'
 };
 
 /**
