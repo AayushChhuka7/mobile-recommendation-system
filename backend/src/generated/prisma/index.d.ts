@@ -34,6 +34,26 @@ export type Otp = $Result.DefaultSelection<Prisma.$OtpPayload>
  */
 export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
 /**
+ * Model Brands
+ * 
+ */
+export type Brands = $Result.DefaultSelection<Prisma.$BrandsPayload>
+/**
+ * Model Phones
+ * 
+ */
+export type Phones = $Result.DefaultSelection<Prisma.$PhonesPayload>
+/**
+ * Model PhoneVariants
+ * 
+ */
+export type PhoneVariants = $Result.DefaultSelection<Prisma.$PhoneVariantsPayload>
+/**
+ * Model PhoneSpecs
+ * 
+ */
+export type PhoneSpecs = $Result.DefaultSelection<Prisma.$PhoneSpecsPayload>
+/**
  * Model UserProfile
  * 
  */
@@ -43,11 +63,6 @@ export type UserProfile = $Result.DefaultSelection<Prisma.$UserProfilePayload>
  * 
  */
 export type UserPreference = $Result.DefaultSelection<Prisma.$UserPreferencePayload>
-/**
- * Model Phones
- * 
- */
-export type Phones = $Result.DefaultSelection<Prisma.$PhonesPayload>
 /**
  * Model RecommendationHistory
  * 
@@ -324,6 +339,46 @@ export class PrismaClient<
   get session(): Prisma.SessionDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.brands`: Exposes CRUD operations for the **Brands** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Brands
+    * const brands = await prisma.brands.findMany()
+    * ```
+    */
+  get brands(): Prisma.BrandsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.phones`: Exposes CRUD operations for the **Phones** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Phones
+    * const phones = await prisma.phones.findMany()
+    * ```
+    */
+  get phones(): Prisma.PhonesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.phoneVariants`: Exposes CRUD operations for the **PhoneVariants** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PhoneVariants
+    * const phoneVariants = await prisma.phoneVariants.findMany()
+    * ```
+    */
+  get phoneVariants(): Prisma.PhoneVariantsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.phoneSpecs`: Exposes CRUD operations for the **PhoneSpecs** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PhoneSpecs
+    * const phoneSpecs = await prisma.phoneSpecs.findMany()
+    * ```
+    */
+  get phoneSpecs(): Prisma.PhoneSpecsDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.userProfile`: Exposes CRUD operations for the **UserProfile** model.
     * Example usage:
     * ```ts
@@ -342,16 +397,6 @@ export class PrismaClient<
     * ```
     */
   get userPreference(): Prisma.UserPreferenceDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.phones`: Exposes CRUD operations for the **Phones** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Phones
-    * const phones = await prisma.phones.findMany()
-    * ```
-    */
-  get phones(): Prisma.PhonesDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.recommendationHistory`: Exposes CRUD operations for the **RecommendationHistory** model.
@@ -840,9 +885,12 @@ export namespace Prisma {
     Users: 'Users',
     Otp: 'Otp',
     Session: 'Session',
+    Brands: 'Brands',
+    Phones: 'Phones',
+    PhoneVariants: 'PhoneVariants',
+    PhoneSpecs: 'PhoneSpecs',
     UserProfile: 'UserProfile',
     UserPreference: 'UserPreference',
-    Phones: 'Phones',
     RecommendationHistory: 'RecommendationHistory',
     CustomerProfile: 'CustomerProfile',
     Wishlist: 'Wishlist',
@@ -863,7 +911,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "roles" | "users" | "otp" | "session" | "userProfile" | "userPreference" | "phones" | "recommendationHistory" | "customerProfile" | "wishlist" | "comparisonHistory" | "adminStatsCache"
+      modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "customerProfile" | "wishlist" | "comparisonHistory" | "adminStatsCache"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1163,6 +1211,302 @@ export namespace Prisma {
           }
         }
       }
+      Brands: {
+        payload: Prisma.$BrandsPayload<ExtArgs>
+        fields: Prisma.BrandsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BrandsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BrandsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload>
+          }
+          findFirst: {
+            args: Prisma.BrandsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BrandsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload>
+          }
+          findMany: {
+            args: Prisma.BrandsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload>[]
+          }
+          create: {
+            args: Prisma.BrandsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload>
+          }
+          createMany: {
+            args: Prisma.BrandsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BrandsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload>[]
+          }
+          delete: {
+            args: Prisma.BrandsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload>
+          }
+          update: {
+            args: Prisma.BrandsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload>
+          }
+          deleteMany: {
+            args: Prisma.BrandsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BrandsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BrandsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload>[]
+          }
+          upsert: {
+            args: Prisma.BrandsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BrandsPayload>
+          }
+          aggregate: {
+            args: Prisma.BrandsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBrands>
+          }
+          groupBy: {
+            args: Prisma.BrandsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BrandsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BrandsCountArgs<ExtArgs>
+            result: $Utils.Optional<BrandsCountAggregateOutputType> | number
+          }
+        }
+      }
+      Phones: {
+        payload: Prisma.$PhonesPayload<ExtArgs>
+        fields: Prisma.PhonesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PhonesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PhonesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
+          }
+          findFirst: {
+            args: Prisma.PhonesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PhonesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
+          }
+          findMany: {
+            args: Prisma.PhonesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>[]
+          }
+          create: {
+            args: Prisma.PhonesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
+          }
+          createMany: {
+            args: Prisma.PhonesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PhonesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>[]
+          }
+          delete: {
+            args: Prisma.PhonesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
+          }
+          update: {
+            args: Prisma.PhonesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
+          }
+          deleteMany: {
+            args: Prisma.PhonesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PhonesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PhonesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>[]
+          }
+          upsert: {
+            args: Prisma.PhonesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
+          }
+          aggregate: {
+            args: Prisma.PhonesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePhones>
+          }
+          groupBy: {
+            args: Prisma.PhonesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PhonesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PhonesCountArgs<ExtArgs>
+            result: $Utils.Optional<PhonesCountAggregateOutputType> | number
+          }
+        }
+      }
+      PhoneVariants: {
+        payload: Prisma.$PhoneVariantsPayload<ExtArgs>
+        fields: Prisma.PhoneVariantsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PhoneVariantsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PhoneVariantsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload>
+          }
+          findFirst: {
+            args: Prisma.PhoneVariantsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PhoneVariantsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload>
+          }
+          findMany: {
+            args: Prisma.PhoneVariantsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload>[]
+          }
+          create: {
+            args: Prisma.PhoneVariantsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload>
+          }
+          createMany: {
+            args: Prisma.PhoneVariantsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PhoneVariantsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload>[]
+          }
+          delete: {
+            args: Prisma.PhoneVariantsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload>
+          }
+          update: {
+            args: Prisma.PhoneVariantsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload>
+          }
+          deleteMany: {
+            args: Prisma.PhoneVariantsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PhoneVariantsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PhoneVariantsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload>[]
+          }
+          upsert: {
+            args: Prisma.PhoneVariantsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneVariantsPayload>
+          }
+          aggregate: {
+            args: Prisma.PhoneVariantsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePhoneVariants>
+          }
+          groupBy: {
+            args: Prisma.PhoneVariantsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PhoneVariantsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PhoneVariantsCountArgs<ExtArgs>
+            result: $Utils.Optional<PhoneVariantsCountAggregateOutputType> | number
+          }
+        }
+      }
+      PhoneSpecs: {
+        payload: Prisma.$PhoneSpecsPayload<ExtArgs>
+        fields: Prisma.PhoneSpecsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PhoneSpecsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PhoneSpecsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload>
+          }
+          findFirst: {
+            args: Prisma.PhoneSpecsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PhoneSpecsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload>
+          }
+          findMany: {
+            args: Prisma.PhoneSpecsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload>[]
+          }
+          create: {
+            args: Prisma.PhoneSpecsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload>
+          }
+          createMany: {
+            args: Prisma.PhoneSpecsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PhoneSpecsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload>[]
+          }
+          delete: {
+            args: Prisma.PhoneSpecsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload>
+          }
+          update: {
+            args: Prisma.PhoneSpecsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload>
+          }
+          deleteMany: {
+            args: Prisma.PhoneSpecsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PhoneSpecsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PhoneSpecsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload>[]
+          }
+          upsert: {
+            args: Prisma.PhoneSpecsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneSpecsPayload>
+          }
+          aggregate: {
+            args: Prisma.PhoneSpecsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePhoneSpecs>
+          }
+          groupBy: {
+            args: Prisma.PhoneSpecsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PhoneSpecsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PhoneSpecsCountArgs<ExtArgs>
+            result: $Utils.Optional<PhoneSpecsCountAggregateOutputType> | number
+          }
+        }
+      }
       UserProfile: {
         payload: Prisma.$UserProfilePayload<ExtArgs>
         fields: Prisma.UserProfileFieldRefs
@@ -1308,80 +1652,6 @@ export namespace Prisma {
           count: {
             args: Prisma.UserPreferenceCountArgs<ExtArgs>
             result: $Utils.Optional<UserPreferenceCountAggregateOutputType> | number
-          }
-        }
-      }
-      Phones: {
-        payload: Prisma.$PhonesPayload<ExtArgs>
-        fields: Prisma.PhonesFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.PhonesFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.PhonesFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
-          }
-          findFirst: {
-            args: Prisma.PhonesFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.PhonesFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
-          }
-          findMany: {
-            args: Prisma.PhonesFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>[]
-          }
-          create: {
-            args: Prisma.PhonesCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
-          }
-          createMany: {
-            args: Prisma.PhonesCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.PhonesCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>[]
-          }
-          delete: {
-            args: Prisma.PhonesDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
-          }
-          update: {
-            args: Prisma.PhonesUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
-          }
-          deleteMany: {
-            args: Prisma.PhonesDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.PhonesUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.PhonesUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>[]
-          }
-          upsert: {
-            args: Prisma.PhonesUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$PhonesPayload>
-          }
-          aggregate: {
-            args: Prisma.PhonesAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregatePhones>
-          }
-          groupBy: {
-            args: Prisma.PhonesGroupByArgs<ExtArgs>
-            result: $Utils.Optional<PhonesGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.PhonesCountArgs<ExtArgs>
-            result: $Utils.Optional<PhonesCountAggregateOutputType> | number
           }
         }
       }
@@ -1867,9 +2137,12 @@ export namespace Prisma {
     users?: UsersOmit
     otp?: OtpOmit
     session?: SessionOmit
+    brands?: BrandsOmit
+    phones?: PhonesOmit
+    phoneVariants?: PhoneVariantsOmit
+    phoneSpecs?: PhoneSpecsOmit
     userProfile?: UserProfileOmit
     userPreference?: UserPreferenceOmit
-    phones?: PhonesOmit
     recommendationHistory?: RecommendationHistoryOmit
     customerProfile?: CustomerProfileOmit
     wishlist?: WishlistOmit
@@ -2040,21 +2313,69 @@ export namespace Prisma {
 
 
   /**
+   * Count Type BrandsCountOutputType
+   */
+
+  export type BrandsCountOutputType = {
+    phones: number
+    userPreferences: number
+  }
+
+  export type BrandsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phones?: boolean | BrandsCountOutputTypeCountPhonesArgs
+    userPreferences?: boolean | BrandsCountOutputTypeCountUserPreferencesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * BrandsCountOutputType without action
+   */
+  export type BrandsCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BrandsCountOutputType
+     */
+    select?: BrandsCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * BrandsCountOutputType without action
+   */
+  export type BrandsCountOutputTypeCountPhonesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PhonesWhereInput
+  }
+
+  /**
+   * BrandsCountOutputType without action
+   */
+  export type BrandsCountOutputTypeCountUserPreferencesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserPreferenceWhereInput
+  }
+
+
+  /**
    * Count Type PhonesCountOutputType
    */
 
   export type PhonesCountOutputType = {
+    variants: number
     recommendationHistory: number
     wishlist: number
     comparedAsA: number
     comparedAsB: number
+    mostRecommendedInStats: number
+    mostComparedInStats: number
+    mostViewedInStats: number
   }
 
   export type PhonesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    variants?: boolean | PhonesCountOutputTypeCountVariantsArgs
     recommendationHistory?: boolean | PhonesCountOutputTypeCountRecommendationHistoryArgs
     wishlist?: boolean | PhonesCountOutputTypeCountWishlistArgs
     comparedAsA?: boolean | PhonesCountOutputTypeCountComparedAsAArgs
     comparedAsB?: boolean | PhonesCountOutputTypeCountComparedAsBArgs
+    mostRecommendedInStats?: boolean | PhonesCountOutputTypeCountMostRecommendedInStatsArgs
+    mostComparedInStats?: boolean | PhonesCountOutputTypeCountMostComparedInStatsArgs
+    mostViewedInStats?: boolean | PhonesCountOutputTypeCountMostViewedInStatsArgs
   }
 
   // Custom InputTypes
@@ -2066,6 +2387,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the PhonesCountOutputType
      */
     select?: PhonesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PhonesCountOutputType without action
+   */
+  export type PhonesCountOutputTypeCountVariantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PhoneVariantsWhereInput
   }
 
   /**
@@ -2094,6 +2422,27 @@ export namespace Prisma {
    */
   export type PhonesCountOutputTypeCountComparedAsBArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ComparisonHistoryWhereInput
+  }
+
+  /**
+   * PhonesCountOutputType without action
+   */
+  export type PhonesCountOutputTypeCountMostRecommendedInStatsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminStatsCacheWhereInput
+  }
+
+  /**
+   * PhonesCountOutputType without action
+   */
+  export type PhonesCountOutputTypeCountMostComparedInStatsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminStatsCacheWhereInput
+  }
+
+  /**
+   * PhonesCountOutputType without action
+   */
+  export type PhonesCountOutputTypeCountMostViewedInStatsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminStatsCacheWhereInput
   }
 
 
@@ -6501,6 +6850,5426 @@ export namespace Prisma {
 
 
   /**
+   * Model Brands
+   */
+
+  export type AggregateBrands = {
+    _count: BrandsCountAggregateOutputType | null
+    _min: BrandsMinAggregateOutputType | null
+    _max: BrandsMaxAggregateOutputType | null
+  }
+
+  export type BrandsMinAggregateOutputType = {
+    brandId: string | null
+    name: string | null
+    logoUrl: string | null
+    website: string | null
+    country: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BrandsMaxAggregateOutputType = {
+    brandId: string | null
+    name: string | null
+    logoUrl: string | null
+    website: string | null
+    country: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type BrandsCountAggregateOutputType = {
+    brandId: number
+    name: number
+    logoUrl: number
+    website: number
+    country: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BrandsMinAggregateInputType = {
+    brandId?: true
+    name?: true
+    logoUrl?: true
+    website?: true
+    country?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BrandsMaxAggregateInputType = {
+    brandId?: true
+    name?: true
+    logoUrl?: true
+    website?: true
+    country?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type BrandsCountAggregateInputType = {
+    brandId?: true
+    name?: true
+    logoUrl?: true
+    website?: true
+    country?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BrandsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Brands to aggregate.
+     */
+    where?: BrandsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Brands to fetch.
+     */
+    orderBy?: BrandsOrderByWithRelationInput | BrandsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BrandsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Brands from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Brands.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Brands
+    **/
+    _count?: true | BrandsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BrandsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BrandsMaxAggregateInputType
+  }
+
+  export type GetBrandsAggregateType<T extends BrandsAggregateArgs> = {
+        [P in keyof T & keyof AggregateBrands]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBrands[P]>
+      : GetScalarType<T[P], AggregateBrands[P]>
+  }
+
+
+
+
+  export type BrandsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BrandsWhereInput
+    orderBy?: BrandsOrderByWithAggregationInput | BrandsOrderByWithAggregationInput[]
+    by: BrandsScalarFieldEnum[] | BrandsScalarFieldEnum
+    having?: BrandsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BrandsCountAggregateInputType | true
+    _min?: BrandsMinAggregateInputType
+    _max?: BrandsMaxAggregateInputType
+  }
+
+  export type BrandsGroupByOutputType = {
+    brandId: string
+    name: string
+    logoUrl: string | null
+    website: string | null
+    country: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: BrandsCountAggregateOutputType | null
+    _min: BrandsMinAggregateOutputType | null
+    _max: BrandsMaxAggregateOutputType | null
+  }
+
+  type GetBrandsGroupByPayload<T extends BrandsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BrandsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BrandsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BrandsGroupByOutputType[P]>
+            : GetScalarType<T[P], BrandsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BrandsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    brandId?: boolean
+    name?: boolean
+    logoUrl?: boolean
+    website?: boolean
+    country?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    phones?: boolean | Brands$phonesArgs<ExtArgs>
+    userPreferences?: boolean | Brands$userPreferencesArgs<ExtArgs>
+    _count?: boolean | BrandsCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["brands"]>
+
+  export type BrandsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    brandId?: boolean
+    name?: boolean
+    logoUrl?: boolean
+    website?: boolean
+    country?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["brands"]>
+
+  export type BrandsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    brandId?: boolean
+    name?: boolean
+    logoUrl?: boolean
+    website?: boolean
+    country?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["brands"]>
+
+  export type BrandsSelectScalar = {
+    brandId?: boolean
+    name?: boolean
+    logoUrl?: boolean
+    website?: boolean
+    country?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BrandsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"brandId" | "name" | "logoUrl" | "website" | "country" | "createdAt" | "updatedAt", ExtArgs["result"]["brands"]>
+  export type BrandsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phones?: boolean | Brands$phonesArgs<ExtArgs>
+    userPreferences?: boolean | Brands$userPreferencesArgs<ExtArgs>
+    _count?: boolean | BrandsCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type BrandsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type BrandsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $BrandsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Brands"
+    objects: {
+      phones: Prisma.$PhonesPayload<ExtArgs>[]
+      userPreferences: Prisma.$UserPreferencePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      brandId: string
+      name: string
+      logoUrl: string | null
+      website: string | null
+      country: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["brands"]>
+    composites: {}
+  }
+
+  type BrandsGetPayload<S extends boolean | null | undefined | BrandsDefaultArgs> = $Result.GetResult<Prisma.$BrandsPayload, S>
+
+  type BrandsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BrandsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BrandsCountAggregateInputType | true
+    }
+
+  export interface BrandsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Brands'], meta: { name: 'Brands' } }
+    /**
+     * Find zero or one Brands that matches the filter.
+     * @param {BrandsFindUniqueArgs} args - Arguments to find a Brands
+     * @example
+     * // Get one Brands
+     * const brands = await prisma.brands.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BrandsFindUniqueArgs>(args: SelectSubset<T, BrandsFindUniqueArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Brands that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BrandsFindUniqueOrThrowArgs} args - Arguments to find a Brands
+     * @example
+     * // Get one Brands
+     * const brands = await prisma.brands.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BrandsFindUniqueOrThrowArgs>(args: SelectSubset<T, BrandsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Brands that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BrandsFindFirstArgs} args - Arguments to find a Brands
+     * @example
+     * // Get one Brands
+     * const brands = await prisma.brands.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BrandsFindFirstArgs>(args?: SelectSubset<T, BrandsFindFirstArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Brands that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BrandsFindFirstOrThrowArgs} args - Arguments to find a Brands
+     * @example
+     * // Get one Brands
+     * const brands = await prisma.brands.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BrandsFindFirstOrThrowArgs>(args?: SelectSubset<T, BrandsFindFirstOrThrowArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Brands that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BrandsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Brands
+     * const brands = await prisma.brands.findMany()
+     * 
+     * // Get first 10 Brands
+     * const brands = await prisma.brands.findMany({ take: 10 })
+     * 
+     * // Only select the `brandId`
+     * const brandsWithBrandIdOnly = await prisma.brands.findMany({ select: { brandId: true } })
+     * 
+     */
+    findMany<T extends BrandsFindManyArgs>(args?: SelectSubset<T, BrandsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Brands.
+     * @param {BrandsCreateArgs} args - Arguments to create a Brands.
+     * @example
+     * // Create one Brands
+     * const Brands = await prisma.brands.create({
+     *   data: {
+     *     // ... data to create a Brands
+     *   }
+     * })
+     * 
+     */
+    create<T extends BrandsCreateArgs>(args: SelectSubset<T, BrandsCreateArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Brands.
+     * @param {BrandsCreateManyArgs} args - Arguments to create many Brands.
+     * @example
+     * // Create many Brands
+     * const brands = await prisma.brands.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BrandsCreateManyArgs>(args?: SelectSubset<T, BrandsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Brands and returns the data saved in the database.
+     * @param {BrandsCreateManyAndReturnArgs} args - Arguments to create many Brands.
+     * @example
+     * // Create many Brands
+     * const brands = await prisma.brands.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Brands and only return the `brandId`
+     * const brandsWithBrandIdOnly = await prisma.brands.createManyAndReturn({
+     *   select: { brandId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BrandsCreateManyAndReturnArgs>(args?: SelectSubset<T, BrandsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Brands.
+     * @param {BrandsDeleteArgs} args - Arguments to delete one Brands.
+     * @example
+     * // Delete one Brands
+     * const Brands = await prisma.brands.delete({
+     *   where: {
+     *     // ... filter to delete one Brands
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BrandsDeleteArgs>(args: SelectSubset<T, BrandsDeleteArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Brands.
+     * @param {BrandsUpdateArgs} args - Arguments to update one Brands.
+     * @example
+     * // Update one Brands
+     * const brands = await prisma.brands.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BrandsUpdateArgs>(args: SelectSubset<T, BrandsUpdateArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Brands.
+     * @param {BrandsDeleteManyArgs} args - Arguments to filter Brands to delete.
+     * @example
+     * // Delete a few Brands
+     * const { count } = await prisma.brands.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BrandsDeleteManyArgs>(args?: SelectSubset<T, BrandsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Brands.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BrandsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Brands
+     * const brands = await prisma.brands.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BrandsUpdateManyArgs>(args: SelectSubset<T, BrandsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Brands and returns the data updated in the database.
+     * @param {BrandsUpdateManyAndReturnArgs} args - Arguments to update many Brands.
+     * @example
+     * // Update many Brands
+     * const brands = await prisma.brands.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Brands and only return the `brandId`
+     * const brandsWithBrandIdOnly = await prisma.brands.updateManyAndReturn({
+     *   select: { brandId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BrandsUpdateManyAndReturnArgs>(args: SelectSubset<T, BrandsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Brands.
+     * @param {BrandsUpsertArgs} args - Arguments to update or create a Brands.
+     * @example
+     * // Update or create a Brands
+     * const brands = await prisma.brands.upsert({
+     *   create: {
+     *     // ... data to create a Brands
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Brands we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BrandsUpsertArgs>(args: SelectSubset<T, BrandsUpsertArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Brands.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BrandsCountArgs} args - Arguments to filter Brands to count.
+     * @example
+     * // Count the number of Brands
+     * const count = await prisma.brands.count({
+     *   where: {
+     *     // ... the filter for the Brands we want to count
+     *   }
+     * })
+    **/
+    count<T extends BrandsCountArgs>(
+      args?: Subset<T, BrandsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BrandsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Brands.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BrandsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BrandsAggregateArgs>(args: Subset<T, BrandsAggregateArgs>): Prisma.PrismaPromise<GetBrandsAggregateType<T>>
+
+    /**
+     * Group by Brands.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BrandsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BrandsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BrandsGroupByArgs['orderBy'] }
+        : { orderBy?: BrandsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BrandsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBrandsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Brands model
+   */
+  readonly fields: BrandsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Brands.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BrandsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    phones<T extends Brands$phonesArgs<ExtArgs> = {}>(args?: Subset<T, Brands$phonesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    userPreferences<T extends Brands$userPreferencesArgs<ExtArgs> = {}>(args?: Subset<T, Brands$userPreferencesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Brands model
+   */
+  interface BrandsFieldRefs {
+    readonly brandId: FieldRef<"Brands", 'String'>
+    readonly name: FieldRef<"Brands", 'String'>
+    readonly logoUrl: FieldRef<"Brands", 'String'>
+    readonly website: FieldRef<"Brands", 'String'>
+    readonly country: FieldRef<"Brands", 'String'>
+    readonly createdAt: FieldRef<"Brands", 'DateTime'>
+    readonly updatedAt: FieldRef<"Brands", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Brands findUnique
+   */
+  export type BrandsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+    /**
+     * Filter, which Brands to fetch.
+     */
+    where: BrandsWhereUniqueInput
+  }
+
+  /**
+   * Brands findUniqueOrThrow
+   */
+  export type BrandsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+    /**
+     * Filter, which Brands to fetch.
+     */
+    where: BrandsWhereUniqueInput
+  }
+
+  /**
+   * Brands findFirst
+   */
+  export type BrandsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+    /**
+     * Filter, which Brands to fetch.
+     */
+    where?: BrandsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Brands to fetch.
+     */
+    orderBy?: BrandsOrderByWithRelationInput | BrandsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Brands.
+     */
+    cursor?: BrandsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Brands from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Brands.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Brands.
+     */
+    distinct?: BrandsScalarFieldEnum | BrandsScalarFieldEnum[]
+  }
+
+  /**
+   * Brands findFirstOrThrow
+   */
+  export type BrandsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+    /**
+     * Filter, which Brands to fetch.
+     */
+    where?: BrandsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Brands to fetch.
+     */
+    orderBy?: BrandsOrderByWithRelationInput | BrandsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Brands.
+     */
+    cursor?: BrandsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Brands from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Brands.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Brands.
+     */
+    distinct?: BrandsScalarFieldEnum | BrandsScalarFieldEnum[]
+  }
+
+  /**
+   * Brands findMany
+   */
+  export type BrandsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+    /**
+     * Filter, which Brands to fetch.
+     */
+    where?: BrandsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Brands to fetch.
+     */
+    orderBy?: BrandsOrderByWithRelationInput | BrandsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Brands.
+     */
+    cursor?: BrandsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Brands from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Brands.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Brands.
+     */
+    distinct?: BrandsScalarFieldEnum | BrandsScalarFieldEnum[]
+  }
+
+  /**
+   * Brands create
+   */
+  export type BrandsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Brands.
+     */
+    data: XOR<BrandsCreateInput, BrandsUncheckedCreateInput>
+  }
+
+  /**
+   * Brands createMany
+   */
+  export type BrandsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Brands.
+     */
+    data: BrandsCreateManyInput | BrandsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Brands createManyAndReturn
+   */
+  export type BrandsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * The data used to create many Brands.
+     */
+    data: BrandsCreateManyInput | BrandsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Brands update
+   */
+  export type BrandsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Brands.
+     */
+    data: XOR<BrandsUpdateInput, BrandsUncheckedUpdateInput>
+    /**
+     * Choose, which Brands to update.
+     */
+    where: BrandsWhereUniqueInput
+  }
+
+  /**
+   * Brands updateMany
+   */
+  export type BrandsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Brands.
+     */
+    data: XOR<BrandsUpdateManyMutationInput, BrandsUncheckedUpdateManyInput>
+    /**
+     * Filter which Brands to update
+     */
+    where?: BrandsWhereInput
+    /**
+     * Limit how many Brands to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Brands updateManyAndReturn
+   */
+  export type BrandsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * The data used to update Brands.
+     */
+    data: XOR<BrandsUpdateManyMutationInput, BrandsUncheckedUpdateManyInput>
+    /**
+     * Filter which Brands to update
+     */
+    where?: BrandsWhereInput
+    /**
+     * Limit how many Brands to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Brands upsert
+   */
+  export type BrandsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Brands to update in case it exists.
+     */
+    where: BrandsWhereUniqueInput
+    /**
+     * In case the Brands found by the `where` argument doesn't exist, create a new Brands with this data.
+     */
+    create: XOR<BrandsCreateInput, BrandsUncheckedCreateInput>
+    /**
+     * In case the Brands was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BrandsUpdateInput, BrandsUncheckedUpdateInput>
+  }
+
+  /**
+   * Brands delete
+   */
+  export type BrandsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+    /**
+     * Filter which Brands to delete.
+     */
+    where: BrandsWhereUniqueInput
+  }
+
+  /**
+   * Brands deleteMany
+   */
+  export type BrandsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Brands to delete
+     */
+    where?: BrandsWhereInput
+    /**
+     * Limit how many Brands to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Brands.phones
+   */
+  export type Brands$phonesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    where?: PhonesWhereInput
+    orderBy?: PhonesOrderByWithRelationInput | PhonesOrderByWithRelationInput[]
+    cursor?: PhonesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PhonesScalarFieldEnum | PhonesScalarFieldEnum[]
+  }
+
+  /**
+   * Brands.userPreferences
+   */
+  export type Brands$userPreferencesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserPreference
+     */
+    select?: UserPreferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserPreference
+     */
+    omit?: UserPreferenceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserPreferenceInclude<ExtArgs> | null
+    where?: UserPreferenceWhereInput
+    orderBy?: UserPreferenceOrderByWithRelationInput | UserPreferenceOrderByWithRelationInput[]
+    cursor?: UserPreferenceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserPreferenceScalarFieldEnum | UserPreferenceScalarFieldEnum[]
+  }
+
+  /**
+   * Brands without action
+   */
+  export type BrandsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Phones
+   */
+
+  export type AggregatePhones = {
+    _count: PhonesCountAggregateOutputType | null
+    _avg: PhonesAvgAggregateOutputType | null
+    _sum: PhonesSumAggregateOutputType | null
+    _min: PhonesMinAggregateOutputType | null
+    _max: PhonesMaxAggregateOutputType | null
+  }
+
+  export type PhonesAvgAggregateOutputType = {
+    antutuScore: number | null
+    batteryMah: number | null
+  }
+
+  export type PhonesSumAggregateOutputType = {
+    antutuScore: number | null
+    batteryMah: number | null
+  }
+
+  export type PhonesMinAggregateOutputType = {
+    phoneId: string | null
+    brandId: string | null
+    modelName: string | null
+    imageUrl: string | null
+    imagePath: string | null
+    antutuScore: number | null
+    batteryMah: number | null
+    source: string | null
+    sourceUrl: string | null
+    isActive: boolean | null
+    discontinuedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PhonesMaxAggregateOutputType = {
+    phoneId: string | null
+    brandId: string | null
+    modelName: string | null
+    imageUrl: string | null
+    imagePath: string | null
+    antutuScore: number | null
+    batteryMah: number | null
+    source: string | null
+    sourceUrl: string | null
+    isActive: boolean | null
+    discontinuedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PhonesCountAggregateOutputType = {
+    phoneId: number
+    brandId: number
+    modelName: number
+    imageUrl: number
+    imagePath: number
+    antutuScore: number
+    batteryMah: number
+    source: number
+    sourceUrl: number
+    isActive: number
+    discontinuedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PhonesAvgAggregateInputType = {
+    antutuScore?: true
+    batteryMah?: true
+  }
+
+  export type PhonesSumAggregateInputType = {
+    antutuScore?: true
+    batteryMah?: true
+  }
+
+  export type PhonesMinAggregateInputType = {
+    phoneId?: true
+    brandId?: true
+    modelName?: true
+    imageUrl?: true
+    imagePath?: true
+    antutuScore?: true
+    batteryMah?: true
+    source?: true
+    sourceUrl?: true
+    isActive?: true
+    discontinuedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PhonesMaxAggregateInputType = {
+    phoneId?: true
+    brandId?: true
+    modelName?: true
+    imageUrl?: true
+    imagePath?: true
+    antutuScore?: true
+    batteryMah?: true
+    source?: true
+    sourceUrl?: true
+    isActive?: true
+    discontinuedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PhonesCountAggregateInputType = {
+    phoneId?: true
+    brandId?: true
+    modelName?: true
+    imageUrl?: true
+    imagePath?: true
+    antutuScore?: true
+    batteryMah?: true
+    source?: true
+    sourceUrl?: true
+    isActive?: true
+    discontinuedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PhonesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Phones to aggregate.
+     */
+    where?: PhonesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Phones to fetch.
+     */
+    orderBy?: PhonesOrderByWithRelationInput | PhonesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PhonesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Phones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Phones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Phones
+    **/
+    _count?: true | PhonesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PhonesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PhonesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PhonesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PhonesMaxAggregateInputType
+  }
+
+  export type GetPhonesAggregateType<T extends PhonesAggregateArgs> = {
+        [P in keyof T & keyof AggregatePhones]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePhones[P]>
+      : GetScalarType<T[P], AggregatePhones[P]>
+  }
+
+
+
+
+  export type PhonesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PhonesWhereInput
+    orderBy?: PhonesOrderByWithAggregationInput | PhonesOrderByWithAggregationInput[]
+    by: PhonesScalarFieldEnum[] | PhonesScalarFieldEnum
+    having?: PhonesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PhonesCountAggregateInputType | true
+    _avg?: PhonesAvgAggregateInputType
+    _sum?: PhonesSumAggregateInputType
+    _min?: PhonesMinAggregateInputType
+    _max?: PhonesMaxAggregateInputType
+  }
+
+  export type PhonesGroupByOutputType = {
+    phoneId: string
+    brandId: string
+    modelName: string
+    imageUrl: string | null
+    imagePath: string | null
+    antutuScore: number | null
+    batteryMah: number | null
+    source: string | null
+    sourceUrl: string | null
+    isActive: boolean
+    discontinuedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: PhonesCountAggregateOutputType | null
+    _avg: PhonesAvgAggregateOutputType | null
+    _sum: PhonesSumAggregateOutputType | null
+    _min: PhonesMinAggregateOutputType | null
+    _max: PhonesMaxAggregateOutputType | null
+  }
+
+  type GetPhonesGroupByPayload<T extends PhonesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PhonesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PhonesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PhonesGroupByOutputType[P]>
+            : GetScalarType<T[P], PhonesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PhonesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    phoneId?: boolean
+    brandId?: boolean
+    modelName?: boolean
+    imageUrl?: boolean
+    imagePath?: boolean
+    antutuScore?: boolean
+    batteryMah?: boolean
+    source?: boolean
+    sourceUrl?: boolean
+    isActive?: boolean
+    discontinuedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    brand?: boolean | BrandsDefaultArgs<ExtArgs>
+    variants?: boolean | Phones$variantsArgs<ExtArgs>
+    specs?: boolean | Phones$specsArgs<ExtArgs>
+    recommendationHistory?: boolean | Phones$recommendationHistoryArgs<ExtArgs>
+    wishlist?: boolean | Phones$wishlistArgs<ExtArgs>
+    comparedAsA?: boolean | Phones$comparedAsAArgs<ExtArgs>
+    comparedAsB?: boolean | Phones$comparedAsBArgs<ExtArgs>
+    mostRecommendedInStats?: boolean | Phones$mostRecommendedInStatsArgs<ExtArgs>
+    mostComparedInStats?: boolean | Phones$mostComparedInStatsArgs<ExtArgs>
+    mostViewedInStats?: boolean | Phones$mostViewedInStatsArgs<ExtArgs>
+    _count?: boolean | PhonesCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phones"]>
+
+  export type PhonesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    phoneId?: boolean
+    brandId?: boolean
+    modelName?: boolean
+    imageUrl?: boolean
+    imagePath?: boolean
+    antutuScore?: boolean
+    batteryMah?: boolean
+    source?: boolean
+    sourceUrl?: boolean
+    isActive?: boolean
+    discontinuedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    brand?: boolean | BrandsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phones"]>
+
+  export type PhonesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    phoneId?: boolean
+    brandId?: boolean
+    modelName?: boolean
+    imageUrl?: boolean
+    imagePath?: boolean
+    antutuScore?: boolean
+    batteryMah?: boolean
+    source?: boolean
+    sourceUrl?: boolean
+    isActive?: boolean
+    discontinuedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    brand?: boolean | BrandsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phones"]>
+
+  export type PhonesSelectScalar = {
+    phoneId?: boolean
+    brandId?: boolean
+    modelName?: boolean
+    imageUrl?: boolean
+    imagePath?: boolean
+    antutuScore?: boolean
+    batteryMah?: boolean
+    source?: boolean
+    sourceUrl?: boolean
+    isActive?: boolean
+    discontinuedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PhonesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"phoneId" | "brandId" | "modelName" | "imageUrl" | "imagePath" | "antutuScore" | "batteryMah" | "source" | "sourceUrl" | "isActive" | "discontinuedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["phones"]>
+  export type PhonesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | BrandsDefaultArgs<ExtArgs>
+    variants?: boolean | Phones$variantsArgs<ExtArgs>
+    specs?: boolean | Phones$specsArgs<ExtArgs>
+    recommendationHistory?: boolean | Phones$recommendationHistoryArgs<ExtArgs>
+    wishlist?: boolean | Phones$wishlistArgs<ExtArgs>
+    comparedAsA?: boolean | Phones$comparedAsAArgs<ExtArgs>
+    comparedAsB?: boolean | Phones$comparedAsBArgs<ExtArgs>
+    mostRecommendedInStats?: boolean | Phones$mostRecommendedInStatsArgs<ExtArgs>
+    mostComparedInStats?: boolean | Phones$mostComparedInStatsArgs<ExtArgs>
+    mostViewedInStats?: boolean | Phones$mostViewedInStatsArgs<ExtArgs>
+    _count?: boolean | PhonesCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PhonesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | BrandsDefaultArgs<ExtArgs>
+  }
+  export type PhonesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    brand?: boolean | BrandsDefaultArgs<ExtArgs>
+  }
+
+  export type $PhonesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Phones"
+    objects: {
+      brand: Prisma.$BrandsPayload<ExtArgs>
+      variants: Prisma.$PhoneVariantsPayload<ExtArgs>[]
+      specs: Prisma.$PhoneSpecsPayload<ExtArgs> | null
+      recommendationHistory: Prisma.$RecommendationHistoryPayload<ExtArgs>[]
+      wishlist: Prisma.$WishlistPayload<ExtArgs>[]
+      comparedAsA: Prisma.$ComparisonHistoryPayload<ExtArgs>[]
+      comparedAsB: Prisma.$ComparisonHistoryPayload<ExtArgs>[]
+      mostRecommendedInStats: Prisma.$AdminStatsCachePayload<ExtArgs>[]
+      mostComparedInStats: Prisma.$AdminStatsCachePayload<ExtArgs>[]
+      mostViewedInStats: Prisma.$AdminStatsCachePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      phoneId: string
+      brandId: string
+      modelName: string
+      imageUrl: string | null
+      imagePath: string | null
+      antutuScore: number | null
+      batteryMah: number | null
+      source: string | null
+      sourceUrl: string | null
+      isActive: boolean
+      discontinuedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["phones"]>
+    composites: {}
+  }
+
+  type PhonesGetPayload<S extends boolean | null | undefined | PhonesDefaultArgs> = $Result.GetResult<Prisma.$PhonesPayload, S>
+
+  type PhonesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PhonesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PhonesCountAggregateInputType | true
+    }
+
+  export interface PhonesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Phones'], meta: { name: 'Phones' } }
+    /**
+     * Find zero or one Phones that matches the filter.
+     * @param {PhonesFindUniqueArgs} args - Arguments to find a Phones
+     * @example
+     * // Get one Phones
+     * const phones = await prisma.phones.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PhonesFindUniqueArgs>(args: SelectSubset<T, PhonesFindUniqueArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Phones that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PhonesFindUniqueOrThrowArgs} args - Arguments to find a Phones
+     * @example
+     * // Get one Phones
+     * const phones = await prisma.phones.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PhonesFindUniqueOrThrowArgs>(args: SelectSubset<T, PhonesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Phones that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhonesFindFirstArgs} args - Arguments to find a Phones
+     * @example
+     * // Get one Phones
+     * const phones = await prisma.phones.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PhonesFindFirstArgs>(args?: SelectSubset<T, PhonesFindFirstArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Phones that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhonesFindFirstOrThrowArgs} args - Arguments to find a Phones
+     * @example
+     * // Get one Phones
+     * const phones = await prisma.phones.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PhonesFindFirstOrThrowArgs>(args?: SelectSubset<T, PhonesFindFirstOrThrowArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Phones that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhonesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Phones
+     * const phones = await prisma.phones.findMany()
+     * 
+     * // Get first 10 Phones
+     * const phones = await prisma.phones.findMany({ take: 10 })
+     * 
+     * // Only select the `phoneId`
+     * const phonesWithPhoneIdOnly = await prisma.phones.findMany({ select: { phoneId: true } })
+     * 
+     */
+    findMany<T extends PhonesFindManyArgs>(args?: SelectSubset<T, PhonesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Phones.
+     * @param {PhonesCreateArgs} args - Arguments to create a Phones.
+     * @example
+     * // Create one Phones
+     * const Phones = await prisma.phones.create({
+     *   data: {
+     *     // ... data to create a Phones
+     *   }
+     * })
+     * 
+     */
+    create<T extends PhonesCreateArgs>(args: SelectSubset<T, PhonesCreateArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Phones.
+     * @param {PhonesCreateManyArgs} args - Arguments to create many Phones.
+     * @example
+     * // Create many Phones
+     * const phones = await prisma.phones.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PhonesCreateManyArgs>(args?: SelectSubset<T, PhonesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Phones and returns the data saved in the database.
+     * @param {PhonesCreateManyAndReturnArgs} args - Arguments to create many Phones.
+     * @example
+     * // Create many Phones
+     * const phones = await prisma.phones.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Phones and only return the `phoneId`
+     * const phonesWithPhoneIdOnly = await prisma.phones.createManyAndReturn({
+     *   select: { phoneId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PhonesCreateManyAndReturnArgs>(args?: SelectSubset<T, PhonesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Phones.
+     * @param {PhonesDeleteArgs} args - Arguments to delete one Phones.
+     * @example
+     * // Delete one Phones
+     * const Phones = await prisma.phones.delete({
+     *   where: {
+     *     // ... filter to delete one Phones
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PhonesDeleteArgs>(args: SelectSubset<T, PhonesDeleteArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Phones.
+     * @param {PhonesUpdateArgs} args - Arguments to update one Phones.
+     * @example
+     * // Update one Phones
+     * const phones = await prisma.phones.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PhonesUpdateArgs>(args: SelectSubset<T, PhonesUpdateArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Phones.
+     * @param {PhonesDeleteManyArgs} args - Arguments to filter Phones to delete.
+     * @example
+     * // Delete a few Phones
+     * const { count } = await prisma.phones.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PhonesDeleteManyArgs>(args?: SelectSubset<T, PhonesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Phones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhonesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Phones
+     * const phones = await prisma.phones.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PhonesUpdateManyArgs>(args: SelectSubset<T, PhonesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Phones and returns the data updated in the database.
+     * @param {PhonesUpdateManyAndReturnArgs} args - Arguments to update many Phones.
+     * @example
+     * // Update many Phones
+     * const phones = await prisma.phones.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Phones and only return the `phoneId`
+     * const phonesWithPhoneIdOnly = await prisma.phones.updateManyAndReturn({
+     *   select: { phoneId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PhonesUpdateManyAndReturnArgs>(args: SelectSubset<T, PhonesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Phones.
+     * @param {PhonesUpsertArgs} args - Arguments to update or create a Phones.
+     * @example
+     * // Update or create a Phones
+     * const phones = await prisma.phones.upsert({
+     *   create: {
+     *     // ... data to create a Phones
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Phones we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PhonesUpsertArgs>(args: SelectSubset<T, PhonesUpsertArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Phones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhonesCountArgs} args - Arguments to filter Phones to count.
+     * @example
+     * // Count the number of Phones
+     * const count = await prisma.phones.count({
+     *   where: {
+     *     // ... the filter for the Phones we want to count
+     *   }
+     * })
+    **/
+    count<T extends PhonesCountArgs>(
+      args?: Subset<T, PhonesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PhonesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Phones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhonesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PhonesAggregateArgs>(args: Subset<T, PhonesAggregateArgs>): Prisma.PrismaPromise<GetPhonesAggregateType<T>>
+
+    /**
+     * Group by Phones.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhonesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PhonesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PhonesGroupByArgs['orderBy'] }
+        : { orderBy?: PhonesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PhonesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPhonesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Phones model
+   */
+  readonly fields: PhonesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Phones.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PhonesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    brand<T extends BrandsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BrandsDefaultArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    variants<T extends Phones$variantsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$variantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    specs<T extends Phones$specsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$specsArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    recommendationHistory<T extends Phones$recommendationHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Phones$recommendationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    wishlist<T extends Phones$wishlistArgs<ExtArgs> = {}>(args?: Subset<T, Phones$wishlistArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WishlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    comparedAsA<T extends Phones$comparedAsAArgs<ExtArgs> = {}>(args?: Subset<T, Phones$comparedAsAArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComparisonHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    comparedAsB<T extends Phones$comparedAsBArgs<ExtArgs> = {}>(args?: Subset<T, Phones$comparedAsBArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComparisonHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    mostRecommendedInStats<T extends Phones$mostRecommendedInStatsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$mostRecommendedInStatsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminStatsCachePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    mostComparedInStats<T extends Phones$mostComparedInStatsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$mostComparedInStatsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminStatsCachePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    mostViewedInStats<T extends Phones$mostViewedInStatsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$mostViewedInStatsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminStatsCachePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Phones model
+   */
+  interface PhonesFieldRefs {
+    readonly phoneId: FieldRef<"Phones", 'String'>
+    readonly brandId: FieldRef<"Phones", 'String'>
+    readonly modelName: FieldRef<"Phones", 'String'>
+    readonly imageUrl: FieldRef<"Phones", 'String'>
+    readonly imagePath: FieldRef<"Phones", 'String'>
+    readonly antutuScore: FieldRef<"Phones", 'Int'>
+    readonly batteryMah: FieldRef<"Phones", 'Int'>
+    readonly source: FieldRef<"Phones", 'String'>
+    readonly sourceUrl: FieldRef<"Phones", 'String'>
+    readonly isActive: FieldRef<"Phones", 'Boolean'>
+    readonly discontinuedAt: FieldRef<"Phones", 'DateTime'>
+    readonly createdAt: FieldRef<"Phones", 'DateTime'>
+    readonly updatedAt: FieldRef<"Phones", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Phones findUnique
+   */
+  export type PhonesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    /**
+     * Filter, which Phones to fetch.
+     */
+    where: PhonesWhereUniqueInput
+  }
+
+  /**
+   * Phones findUniqueOrThrow
+   */
+  export type PhonesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    /**
+     * Filter, which Phones to fetch.
+     */
+    where: PhonesWhereUniqueInput
+  }
+
+  /**
+   * Phones findFirst
+   */
+  export type PhonesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    /**
+     * Filter, which Phones to fetch.
+     */
+    where?: PhonesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Phones to fetch.
+     */
+    orderBy?: PhonesOrderByWithRelationInput | PhonesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Phones.
+     */
+    cursor?: PhonesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Phones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Phones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Phones.
+     */
+    distinct?: PhonesScalarFieldEnum | PhonesScalarFieldEnum[]
+  }
+
+  /**
+   * Phones findFirstOrThrow
+   */
+  export type PhonesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    /**
+     * Filter, which Phones to fetch.
+     */
+    where?: PhonesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Phones to fetch.
+     */
+    orderBy?: PhonesOrderByWithRelationInput | PhonesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Phones.
+     */
+    cursor?: PhonesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Phones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Phones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Phones.
+     */
+    distinct?: PhonesScalarFieldEnum | PhonesScalarFieldEnum[]
+  }
+
+  /**
+   * Phones findMany
+   */
+  export type PhonesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    /**
+     * Filter, which Phones to fetch.
+     */
+    where?: PhonesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Phones to fetch.
+     */
+    orderBy?: PhonesOrderByWithRelationInput | PhonesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Phones.
+     */
+    cursor?: PhonesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Phones from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Phones.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Phones.
+     */
+    distinct?: PhonesScalarFieldEnum | PhonesScalarFieldEnum[]
+  }
+
+  /**
+   * Phones create
+   */
+  export type PhonesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Phones.
+     */
+    data: XOR<PhonesCreateInput, PhonesUncheckedCreateInput>
+  }
+
+  /**
+   * Phones createMany
+   */
+  export type PhonesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Phones.
+     */
+    data: PhonesCreateManyInput | PhonesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Phones createManyAndReturn
+   */
+  export type PhonesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * The data used to create many Phones.
+     */
+    data: PhonesCreateManyInput | PhonesCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Phones update
+   */
+  export type PhonesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Phones.
+     */
+    data: XOR<PhonesUpdateInput, PhonesUncheckedUpdateInput>
+    /**
+     * Choose, which Phones to update.
+     */
+    where: PhonesWhereUniqueInput
+  }
+
+  /**
+   * Phones updateMany
+   */
+  export type PhonesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Phones.
+     */
+    data: XOR<PhonesUpdateManyMutationInput, PhonesUncheckedUpdateManyInput>
+    /**
+     * Filter which Phones to update
+     */
+    where?: PhonesWhereInput
+    /**
+     * Limit how many Phones to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Phones updateManyAndReturn
+   */
+  export type PhonesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * The data used to update Phones.
+     */
+    data: XOR<PhonesUpdateManyMutationInput, PhonesUncheckedUpdateManyInput>
+    /**
+     * Filter which Phones to update
+     */
+    where?: PhonesWhereInput
+    /**
+     * Limit how many Phones to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Phones upsert
+   */
+  export type PhonesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Phones to update in case it exists.
+     */
+    where: PhonesWhereUniqueInput
+    /**
+     * In case the Phones found by the `where` argument doesn't exist, create a new Phones with this data.
+     */
+    create: XOR<PhonesCreateInput, PhonesUncheckedCreateInput>
+    /**
+     * In case the Phones was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PhonesUpdateInput, PhonesUncheckedUpdateInput>
+  }
+
+  /**
+   * Phones delete
+   */
+  export type PhonesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    /**
+     * Filter which Phones to delete.
+     */
+    where: PhonesWhereUniqueInput
+  }
+
+  /**
+   * Phones deleteMany
+   */
+  export type PhonesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Phones to delete
+     */
+    where?: PhonesWhereInput
+    /**
+     * Limit how many Phones to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Phones.variants
+   */
+  export type Phones$variantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+    where?: PhoneVariantsWhereInput
+    orderBy?: PhoneVariantsOrderByWithRelationInput | PhoneVariantsOrderByWithRelationInput[]
+    cursor?: PhoneVariantsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PhoneVariantsScalarFieldEnum | PhoneVariantsScalarFieldEnum[]
+  }
+
+  /**
+   * Phones.specs
+   */
+  export type Phones$specsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+    where?: PhoneSpecsWhereInput
+  }
+
+  /**
+   * Phones.recommendationHistory
+   */
+  export type Phones$recommendationHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationHistory
+     */
+    select?: RecommendationHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationHistory
+     */
+    omit?: RecommendationHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationHistoryInclude<ExtArgs> | null
+    where?: RecommendationHistoryWhereInput
+    orderBy?: RecommendationHistoryOrderByWithRelationInput | RecommendationHistoryOrderByWithRelationInput[]
+    cursor?: RecommendationHistoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RecommendationHistoryScalarFieldEnum | RecommendationHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * Phones.wishlist
+   */
+  export type Phones$wishlistArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wishlist
+     */
+    select?: WishlistSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wishlist
+     */
+    omit?: WishlistOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WishlistInclude<ExtArgs> | null
+    where?: WishlistWhereInput
+    orderBy?: WishlistOrderByWithRelationInput | WishlistOrderByWithRelationInput[]
+    cursor?: WishlistWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WishlistScalarFieldEnum | WishlistScalarFieldEnum[]
+  }
+
+  /**
+   * Phones.comparedAsA
+   */
+  export type Phones$comparedAsAArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComparisonHistory
+     */
+    select?: ComparisonHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComparisonHistory
+     */
+    omit?: ComparisonHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComparisonHistoryInclude<ExtArgs> | null
+    where?: ComparisonHistoryWhereInput
+    orderBy?: ComparisonHistoryOrderByWithRelationInput | ComparisonHistoryOrderByWithRelationInput[]
+    cursor?: ComparisonHistoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ComparisonHistoryScalarFieldEnum | ComparisonHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * Phones.comparedAsB
+   */
+  export type Phones$comparedAsBArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ComparisonHistory
+     */
+    select?: ComparisonHistorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ComparisonHistory
+     */
+    omit?: ComparisonHistoryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ComparisonHistoryInclude<ExtArgs> | null
+    where?: ComparisonHistoryWhereInput
+    orderBy?: ComparisonHistoryOrderByWithRelationInput | ComparisonHistoryOrderByWithRelationInput[]
+    cursor?: ComparisonHistoryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ComparisonHistoryScalarFieldEnum | ComparisonHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * Phones.mostRecommendedInStats
+   */
+  export type Phones$mostRecommendedInStatsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminStatsCache
+     */
+    select?: AdminStatsCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminStatsCache
+     */
+    omit?: AdminStatsCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
+    where?: AdminStatsCacheWhereInput
+    orderBy?: AdminStatsCacheOrderByWithRelationInput | AdminStatsCacheOrderByWithRelationInput[]
+    cursor?: AdminStatsCacheWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AdminStatsCacheScalarFieldEnum | AdminStatsCacheScalarFieldEnum[]
+  }
+
+  /**
+   * Phones.mostComparedInStats
+   */
+  export type Phones$mostComparedInStatsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminStatsCache
+     */
+    select?: AdminStatsCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminStatsCache
+     */
+    omit?: AdminStatsCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
+    where?: AdminStatsCacheWhereInput
+    orderBy?: AdminStatsCacheOrderByWithRelationInput | AdminStatsCacheOrderByWithRelationInput[]
+    cursor?: AdminStatsCacheWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AdminStatsCacheScalarFieldEnum | AdminStatsCacheScalarFieldEnum[]
+  }
+
+  /**
+   * Phones.mostViewedInStats
+   */
+  export type Phones$mostViewedInStatsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminStatsCache
+     */
+    select?: AdminStatsCacheSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdminStatsCache
+     */
+    omit?: AdminStatsCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
+    where?: AdminStatsCacheWhereInput
+    orderBy?: AdminStatsCacheOrderByWithRelationInput | AdminStatsCacheOrderByWithRelationInput[]
+    cursor?: AdminStatsCacheWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AdminStatsCacheScalarFieldEnum | AdminStatsCacheScalarFieldEnum[]
+  }
+
+  /**
+   * Phones without action
+   */
+  export type PhonesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PhoneVariants
+   */
+
+  export type AggregatePhoneVariants = {
+    _count: PhoneVariantsCountAggregateOutputType | null
+    _avg: PhoneVariantsAvgAggregateOutputType | null
+    _sum: PhoneVariantsSumAggregateOutputType | null
+    _min: PhoneVariantsMinAggregateOutputType | null
+    _max: PhoneVariantsMaxAggregateOutputType | null
+  }
+
+  export type PhoneVariantsAvgAggregateOutputType = {
+    ramGb: number | null
+    storageGb: number | null
+    price: Decimal | null
+  }
+
+  export type PhoneVariantsSumAggregateOutputType = {
+    ramGb: number | null
+    storageGb: number | null
+    price: Decimal | null
+  }
+
+  export type PhoneVariantsMinAggregateOutputType = {
+    variantId: string | null
+    phoneId: string | null
+    ramGb: number | null
+    storageGb: number | null
+    price: Decimal | null
+    storageType: string | null
+    isAvailable: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PhoneVariantsMaxAggregateOutputType = {
+    variantId: string | null
+    phoneId: string | null
+    ramGb: number | null
+    storageGb: number | null
+    price: Decimal | null
+    storageType: string | null
+    isAvailable: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PhoneVariantsCountAggregateOutputType = {
+    variantId: number
+    phoneId: number
+    ramGb: number
+    storageGb: number
+    price: number
+    storageType: number
+    colors: number
+    isAvailable: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PhoneVariantsAvgAggregateInputType = {
+    ramGb?: true
+    storageGb?: true
+    price?: true
+  }
+
+  export type PhoneVariantsSumAggregateInputType = {
+    ramGb?: true
+    storageGb?: true
+    price?: true
+  }
+
+  export type PhoneVariantsMinAggregateInputType = {
+    variantId?: true
+    phoneId?: true
+    ramGb?: true
+    storageGb?: true
+    price?: true
+    storageType?: true
+    isAvailable?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PhoneVariantsMaxAggregateInputType = {
+    variantId?: true
+    phoneId?: true
+    ramGb?: true
+    storageGb?: true
+    price?: true
+    storageType?: true
+    isAvailable?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PhoneVariantsCountAggregateInputType = {
+    variantId?: true
+    phoneId?: true
+    ramGb?: true
+    storageGb?: true
+    price?: true
+    storageType?: true
+    colors?: true
+    isAvailable?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PhoneVariantsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PhoneVariants to aggregate.
+     */
+    where?: PhoneVariantsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneVariants to fetch.
+     */
+    orderBy?: PhoneVariantsOrderByWithRelationInput | PhoneVariantsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PhoneVariantsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneVariants from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneVariants.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PhoneVariants
+    **/
+    _count?: true | PhoneVariantsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PhoneVariantsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PhoneVariantsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PhoneVariantsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PhoneVariantsMaxAggregateInputType
+  }
+
+  export type GetPhoneVariantsAggregateType<T extends PhoneVariantsAggregateArgs> = {
+        [P in keyof T & keyof AggregatePhoneVariants]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePhoneVariants[P]>
+      : GetScalarType<T[P], AggregatePhoneVariants[P]>
+  }
+
+
+
+
+  export type PhoneVariantsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PhoneVariantsWhereInput
+    orderBy?: PhoneVariantsOrderByWithAggregationInput | PhoneVariantsOrderByWithAggregationInput[]
+    by: PhoneVariantsScalarFieldEnum[] | PhoneVariantsScalarFieldEnum
+    having?: PhoneVariantsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PhoneVariantsCountAggregateInputType | true
+    _avg?: PhoneVariantsAvgAggregateInputType
+    _sum?: PhoneVariantsSumAggregateInputType
+    _min?: PhoneVariantsMinAggregateInputType
+    _max?: PhoneVariantsMaxAggregateInputType
+  }
+
+  export type PhoneVariantsGroupByOutputType = {
+    variantId: string
+    phoneId: string
+    ramGb: number
+    storageGb: number
+    price: Decimal | null
+    storageType: string | null
+    colors: JsonValue | null
+    isAvailable: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: PhoneVariantsCountAggregateOutputType | null
+    _avg: PhoneVariantsAvgAggregateOutputType | null
+    _sum: PhoneVariantsSumAggregateOutputType | null
+    _min: PhoneVariantsMinAggregateOutputType | null
+    _max: PhoneVariantsMaxAggregateOutputType | null
+  }
+
+  type GetPhoneVariantsGroupByPayload<T extends PhoneVariantsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PhoneVariantsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PhoneVariantsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PhoneVariantsGroupByOutputType[P]>
+            : GetScalarType<T[P], PhoneVariantsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PhoneVariantsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    variantId?: boolean
+    phoneId?: boolean
+    ramGb?: boolean
+    storageGb?: boolean
+    price?: boolean
+    storageType?: boolean
+    colors?: boolean
+    isAvailable?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phoneVariants"]>
+
+  export type PhoneVariantsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    variantId?: boolean
+    phoneId?: boolean
+    ramGb?: boolean
+    storageGb?: boolean
+    price?: boolean
+    storageType?: boolean
+    colors?: boolean
+    isAvailable?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phoneVariants"]>
+
+  export type PhoneVariantsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    variantId?: boolean
+    phoneId?: boolean
+    ramGb?: boolean
+    storageGb?: boolean
+    price?: boolean
+    storageType?: boolean
+    colors?: boolean
+    isAvailable?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phoneVariants"]>
+
+  export type PhoneVariantsSelectScalar = {
+    variantId?: boolean
+    phoneId?: boolean
+    ramGb?: boolean
+    storageGb?: boolean
+    price?: boolean
+    storageType?: boolean
+    colors?: boolean
+    isAvailable?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PhoneVariantsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"variantId" | "phoneId" | "ramGb" | "storageGb" | "price" | "storageType" | "colors" | "isAvailable" | "createdAt" | "updatedAt", ExtArgs["result"]["phoneVariants"]>
+  export type PhoneVariantsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+  export type PhoneVariantsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+  export type PhoneVariantsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+
+  export type $PhoneVariantsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PhoneVariants"
+    objects: {
+      phone: Prisma.$PhonesPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      variantId: string
+      phoneId: string
+      ramGb: number
+      storageGb: number
+      price: Prisma.Decimal | null
+      storageType: string | null
+      colors: Prisma.JsonValue | null
+      isAvailable: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["phoneVariants"]>
+    composites: {}
+  }
+
+  type PhoneVariantsGetPayload<S extends boolean | null | undefined | PhoneVariantsDefaultArgs> = $Result.GetResult<Prisma.$PhoneVariantsPayload, S>
+
+  type PhoneVariantsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PhoneVariantsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PhoneVariantsCountAggregateInputType | true
+    }
+
+  export interface PhoneVariantsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PhoneVariants'], meta: { name: 'PhoneVariants' } }
+    /**
+     * Find zero or one PhoneVariants that matches the filter.
+     * @param {PhoneVariantsFindUniqueArgs} args - Arguments to find a PhoneVariants
+     * @example
+     * // Get one PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PhoneVariantsFindUniqueArgs>(args: SelectSubset<T, PhoneVariantsFindUniqueArgs<ExtArgs>>): Prisma__PhoneVariantsClient<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PhoneVariants that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PhoneVariantsFindUniqueOrThrowArgs} args - Arguments to find a PhoneVariants
+     * @example
+     * // Get one PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PhoneVariantsFindUniqueOrThrowArgs>(args: SelectSubset<T, PhoneVariantsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PhoneVariantsClient<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PhoneVariants that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneVariantsFindFirstArgs} args - Arguments to find a PhoneVariants
+     * @example
+     * // Get one PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PhoneVariantsFindFirstArgs>(args?: SelectSubset<T, PhoneVariantsFindFirstArgs<ExtArgs>>): Prisma__PhoneVariantsClient<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PhoneVariants that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneVariantsFindFirstOrThrowArgs} args - Arguments to find a PhoneVariants
+     * @example
+     * // Get one PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PhoneVariantsFindFirstOrThrowArgs>(args?: SelectSubset<T, PhoneVariantsFindFirstOrThrowArgs<ExtArgs>>): Prisma__PhoneVariantsClient<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PhoneVariants that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneVariantsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.findMany()
+     * 
+     * // Get first 10 PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.findMany({ take: 10 })
+     * 
+     * // Only select the `variantId`
+     * const phoneVariantsWithVariantIdOnly = await prisma.phoneVariants.findMany({ select: { variantId: true } })
+     * 
+     */
+    findMany<T extends PhoneVariantsFindManyArgs>(args?: SelectSubset<T, PhoneVariantsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PhoneVariants.
+     * @param {PhoneVariantsCreateArgs} args - Arguments to create a PhoneVariants.
+     * @example
+     * // Create one PhoneVariants
+     * const PhoneVariants = await prisma.phoneVariants.create({
+     *   data: {
+     *     // ... data to create a PhoneVariants
+     *   }
+     * })
+     * 
+     */
+    create<T extends PhoneVariantsCreateArgs>(args: SelectSubset<T, PhoneVariantsCreateArgs<ExtArgs>>): Prisma__PhoneVariantsClient<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PhoneVariants.
+     * @param {PhoneVariantsCreateManyArgs} args - Arguments to create many PhoneVariants.
+     * @example
+     * // Create many PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PhoneVariantsCreateManyArgs>(args?: SelectSubset<T, PhoneVariantsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PhoneVariants and returns the data saved in the database.
+     * @param {PhoneVariantsCreateManyAndReturnArgs} args - Arguments to create many PhoneVariants.
+     * @example
+     * // Create many PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PhoneVariants and only return the `variantId`
+     * const phoneVariantsWithVariantIdOnly = await prisma.phoneVariants.createManyAndReturn({
+     *   select: { variantId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PhoneVariantsCreateManyAndReturnArgs>(args?: SelectSubset<T, PhoneVariantsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PhoneVariants.
+     * @param {PhoneVariantsDeleteArgs} args - Arguments to delete one PhoneVariants.
+     * @example
+     * // Delete one PhoneVariants
+     * const PhoneVariants = await prisma.phoneVariants.delete({
+     *   where: {
+     *     // ... filter to delete one PhoneVariants
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PhoneVariantsDeleteArgs>(args: SelectSubset<T, PhoneVariantsDeleteArgs<ExtArgs>>): Prisma__PhoneVariantsClient<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PhoneVariants.
+     * @param {PhoneVariantsUpdateArgs} args - Arguments to update one PhoneVariants.
+     * @example
+     * // Update one PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PhoneVariantsUpdateArgs>(args: SelectSubset<T, PhoneVariantsUpdateArgs<ExtArgs>>): Prisma__PhoneVariantsClient<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PhoneVariants.
+     * @param {PhoneVariantsDeleteManyArgs} args - Arguments to filter PhoneVariants to delete.
+     * @example
+     * // Delete a few PhoneVariants
+     * const { count } = await prisma.phoneVariants.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PhoneVariantsDeleteManyArgs>(args?: SelectSubset<T, PhoneVariantsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PhoneVariants.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneVariantsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PhoneVariantsUpdateManyArgs>(args: SelectSubset<T, PhoneVariantsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PhoneVariants and returns the data updated in the database.
+     * @param {PhoneVariantsUpdateManyAndReturnArgs} args - Arguments to update many PhoneVariants.
+     * @example
+     * // Update many PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PhoneVariants and only return the `variantId`
+     * const phoneVariantsWithVariantIdOnly = await prisma.phoneVariants.updateManyAndReturn({
+     *   select: { variantId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PhoneVariantsUpdateManyAndReturnArgs>(args: SelectSubset<T, PhoneVariantsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PhoneVariants.
+     * @param {PhoneVariantsUpsertArgs} args - Arguments to update or create a PhoneVariants.
+     * @example
+     * // Update or create a PhoneVariants
+     * const phoneVariants = await prisma.phoneVariants.upsert({
+     *   create: {
+     *     // ... data to create a PhoneVariants
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PhoneVariants we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PhoneVariantsUpsertArgs>(args: SelectSubset<T, PhoneVariantsUpsertArgs<ExtArgs>>): Prisma__PhoneVariantsClient<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PhoneVariants.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneVariantsCountArgs} args - Arguments to filter PhoneVariants to count.
+     * @example
+     * // Count the number of PhoneVariants
+     * const count = await prisma.phoneVariants.count({
+     *   where: {
+     *     // ... the filter for the PhoneVariants we want to count
+     *   }
+     * })
+    **/
+    count<T extends PhoneVariantsCountArgs>(
+      args?: Subset<T, PhoneVariantsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PhoneVariantsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PhoneVariants.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneVariantsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PhoneVariantsAggregateArgs>(args: Subset<T, PhoneVariantsAggregateArgs>): Prisma.PrismaPromise<GetPhoneVariantsAggregateType<T>>
+
+    /**
+     * Group by PhoneVariants.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneVariantsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PhoneVariantsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PhoneVariantsGroupByArgs['orderBy'] }
+        : { orderBy?: PhoneVariantsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PhoneVariantsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPhoneVariantsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PhoneVariants model
+   */
+  readonly fields: PhoneVariantsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PhoneVariants.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PhoneVariantsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    phone<T extends PhonesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PhonesDefaultArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PhoneVariants model
+   */
+  interface PhoneVariantsFieldRefs {
+    readonly variantId: FieldRef<"PhoneVariants", 'String'>
+    readonly phoneId: FieldRef<"PhoneVariants", 'String'>
+    readonly ramGb: FieldRef<"PhoneVariants", 'Int'>
+    readonly storageGb: FieldRef<"PhoneVariants", 'Int'>
+    readonly price: FieldRef<"PhoneVariants", 'Decimal'>
+    readonly storageType: FieldRef<"PhoneVariants", 'String'>
+    readonly colors: FieldRef<"PhoneVariants", 'Json'>
+    readonly isAvailable: FieldRef<"PhoneVariants", 'Boolean'>
+    readonly createdAt: FieldRef<"PhoneVariants", 'DateTime'>
+    readonly updatedAt: FieldRef<"PhoneVariants", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PhoneVariants findUnique
+   */
+  export type PhoneVariantsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneVariants to fetch.
+     */
+    where: PhoneVariantsWhereUniqueInput
+  }
+
+  /**
+   * PhoneVariants findUniqueOrThrow
+   */
+  export type PhoneVariantsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneVariants to fetch.
+     */
+    where: PhoneVariantsWhereUniqueInput
+  }
+
+  /**
+   * PhoneVariants findFirst
+   */
+  export type PhoneVariantsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneVariants to fetch.
+     */
+    where?: PhoneVariantsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneVariants to fetch.
+     */
+    orderBy?: PhoneVariantsOrderByWithRelationInput | PhoneVariantsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PhoneVariants.
+     */
+    cursor?: PhoneVariantsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneVariants from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneVariants.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneVariants.
+     */
+    distinct?: PhoneVariantsScalarFieldEnum | PhoneVariantsScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneVariants findFirstOrThrow
+   */
+  export type PhoneVariantsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneVariants to fetch.
+     */
+    where?: PhoneVariantsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneVariants to fetch.
+     */
+    orderBy?: PhoneVariantsOrderByWithRelationInput | PhoneVariantsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PhoneVariants.
+     */
+    cursor?: PhoneVariantsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneVariants from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneVariants.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneVariants.
+     */
+    distinct?: PhoneVariantsScalarFieldEnum | PhoneVariantsScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneVariants findMany
+   */
+  export type PhoneVariantsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneVariants to fetch.
+     */
+    where?: PhoneVariantsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneVariants to fetch.
+     */
+    orderBy?: PhoneVariantsOrderByWithRelationInput | PhoneVariantsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PhoneVariants.
+     */
+    cursor?: PhoneVariantsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneVariants from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneVariants.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneVariants.
+     */
+    distinct?: PhoneVariantsScalarFieldEnum | PhoneVariantsScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneVariants create
+   */
+  export type PhoneVariantsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PhoneVariants.
+     */
+    data: XOR<PhoneVariantsCreateInput, PhoneVariantsUncheckedCreateInput>
+  }
+
+  /**
+   * PhoneVariants createMany
+   */
+  export type PhoneVariantsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PhoneVariants.
+     */
+    data: PhoneVariantsCreateManyInput | PhoneVariantsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PhoneVariants createManyAndReturn
+   */
+  export type PhoneVariantsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * The data used to create many PhoneVariants.
+     */
+    data: PhoneVariantsCreateManyInput | PhoneVariantsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PhoneVariants update
+   */
+  export type PhoneVariantsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PhoneVariants.
+     */
+    data: XOR<PhoneVariantsUpdateInput, PhoneVariantsUncheckedUpdateInput>
+    /**
+     * Choose, which PhoneVariants to update.
+     */
+    where: PhoneVariantsWhereUniqueInput
+  }
+
+  /**
+   * PhoneVariants updateMany
+   */
+  export type PhoneVariantsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PhoneVariants.
+     */
+    data: XOR<PhoneVariantsUpdateManyMutationInput, PhoneVariantsUncheckedUpdateManyInput>
+    /**
+     * Filter which PhoneVariants to update
+     */
+    where?: PhoneVariantsWhereInput
+    /**
+     * Limit how many PhoneVariants to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PhoneVariants updateManyAndReturn
+   */
+  export type PhoneVariantsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * The data used to update PhoneVariants.
+     */
+    data: XOR<PhoneVariantsUpdateManyMutationInput, PhoneVariantsUncheckedUpdateManyInput>
+    /**
+     * Filter which PhoneVariants to update
+     */
+    where?: PhoneVariantsWhereInput
+    /**
+     * Limit how many PhoneVariants to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PhoneVariants upsert
+   */
+  export type PhoneVariantsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PhoneVariants to update in case it exists.
+     */
+    where: PhoneVariantsWhereUniqueInput
+    /**
+     * In case the PhoneVariants found by the `where` argument doesn't exist, create a new PhoneVariants with this data.
+     */
+    create: XOR<PhoneVariantsCreateInput, PhoneVariantsUncheckedCreateInput>
+    /**
+     * In case the PhoneVariants was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PhoneVariantsUpdateInput, PhoneVariantsUncheckedUpdateInput>
+  }
+
+  /**
+   * PhoneVariants delete
+   */
+  export type PhoneVariantsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+    /**
+     * Filter which PhoneVariants to delete.
+     */
+    where: PhoneVariantsWhereUniqueInput
+  }
+
+  /**
+   * PhoneVariants deleteMany
+   */
+  export type PhoneVariantsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PhoneVariants to delete
+     */
+    where?: PhoneVariantsWhereInput
+    /**
+     * Limit how many PhoneVariants to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PhoneVariants without action
+   */
+  export type PhoneVariantsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneVariants
+     */
+    select?: PhoneVariantsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneVariants
+     */
+    omit?: PhoneVariantsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneVariantsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PhoneSpecs
+   */
+
+  export type AggregatePhoneSpecs = {
+    _count: PhoneSpecsCountAggregateOutputType | null
+    _avg: PhoneSpecsAvgAggregateOutputType | null
+    _sum: PhoneSpecsSumAggregateOutputType | null
+    _min: PhoneSpecsMinAggregateOutputType | null
+    _max: PhoneSpecsMaxAggregateOutputType | null
+  }
+
+  export type PhoneSpecsAvgAggregateOutputType = {
+    refreshRate: number | null
+    displaySize: Decimal | null
+    ppiDensity: number | null
+    screenToBody: Decimal | null
+    lensCount: number | null
+    weight: Decimal | null
+    batteryMah: number | null
+    wiredCharging: number | null
+    wirelessCharging: number | null
+  }
+
+  export type PhoneSpecsSumAggregateOutputType = {
+    refreshRate: number | null
+    displaySize: Decimal | null
+    ppiDensity: number | null
+    screenToBody: Decimal | null
+    lensCount: number | null
+    weight: Decimal | null
+    batteryMah: number | null
+    wiredCharging: number | null
+    wirelessCharging: number | null
+  }
+
+  export type PhoneSpecsMinAggregateOutputType = {
+    specId: string | null
+    phoneId: string | null
+    networkTech: string | null
+    supports5g: boolean | null
+    supportsNfc: boolean | null
+    dualSim: boolean | null
+    simType: string | null
+    wifi: string | null
+    bluetooth: string | null
+    usbType: string | null
+    headphoneJack: boolean | null
+    gps: boolean | null
+    displayType: string | null
+    refreshRate: number | null
+    displaySize: Decimal | null
+    resolution: string | null
+    ppiDensity: number | null
+    screenToBody: Decimal | null
+    displayProtection: string | null
+    os: string | null
+    osVersion: string | null
+    chipset: string | null
+    processNode: string | null
+    cpu: string | null
+    gpu: string | null
+    mainCamera: string | null
+    lensCount: number | null
+    mainAperture: string | null
+    ois: boolean | null
+    sensorSize: string | null
+    camera4K: boolean | null
+    cameraVideo: string | null
+    selfieCamera: string | null
+    selfie4K: boolean | null
+    dimensions: string | null
+    weight: Decimal | null
+    buildMaterial: string | null
+    ipRating: string | null
+    batteryMah: number | null
+    wiredCharging: number | null
+    wirelessCharging: number | null
+    reverseWireless: boolean | null
+    announced: Date | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PhoneSpecsMaxAggregateOutputType = {
+    specId: string | null
+    phoneId: string | null
+    networkTech: string | null
+    supports5g: boolean | null
+    supportsNfc: boolean | null
+    dualSim: boolean | null
+    simType: string | null
+    wifi: string | null
+    bluetooth: string | null
+    usbType: string | null
+    headphoneJack: boolean | null
+    gps: boolean | null
+    displayType: string | null
+    refreshRate: number | null
+    displaySize: Decimal | null
+    resolution: string | null
+    ppiDensity: number | null
+    screenToBody: Decimal | null
+    displayProtection: string | null
+    os: string | null
+    osVersion: string | null
+    chipset: string | null
+    processNode: string | null
+    cpu: string | null
+    gpu: string | null
+    mainCamera: string | null
+    lensCount: number | null
+    mainAperture: string | null
+    ois: boolean | null
+    sensorSize: string | null
+    camera4K: boolean | null
+    cameraVideo: string | null
+    selfieCamera: string | null
+    selfie4K: boolean | null
+    dimensions: string | null
+    weight: Decimal | null
+    buildMaterial: string | null
+    ipRating: string | null
+    batteryMah: number | null
+    wiredCharging: number | null
+    wirelessCharging: number | null
+    reverseWireless: boolean | null
+    announced: Date | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PhoneSpecsCountAggregateOutputType = {
+    specId: number
+    phoneId: number
+    networkTech: number
+    supports5g: number
+    supportsNfc: number
+    dualSim: number
+    simType: number
+    wifi: number
+    bluetooth: number
+    usbType: number
+    headphoneJack: number
+    gps: number
+    sensors: number
+    displayType: number
+    refreshRate: number
+    displaySize: number
+    resolution: number
+    ppiDensity: number
+    screenToBody: number
+    displayProtection: number
+    os: number
+    osVersion: number
+    chipset: number
+    processNode: number
+    cpu: number
+    gpu: number
+    mainCamera: number
+    lensCount: number
+    mainAperture: number
+    ois: number
+    sensorSize: number
+    camera4K: number
+    cameraVideo: number
+    selfieCamera: number
+    selfie4K: number
+    dimensions: number
+    weight: number
+    buildMaterial: number
+    ipRating: number
+    batteryMah: number
+    wiredCharging: number
+    wirelessCharging: number
+    reverseWireless: number
+    announced: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PhoneSpecsAvgAggregateInputType = {
+    refreshRate?: true
+    displaySize?: true
+    ppiDensity?: true
+    screenToBody?: true
+    lensCount?: true
+    weight?: true
+    batteryMah?: true
+    wiredCharging?: true
+    wirelessCharging?: true
+  }
+
+  export type PhoneSpecsSumAggregateInputType = {
+    refreshRate?: true
+    displaySize?: true
+    ppiDensity?: true
+    screenToBody?: true
+    lensCount?: true
+    weight?: true
+    batteryMah?: true
+    wiredCharging?: true
+    wirelessCharging?: true
+  }
+
+  export type PhoneSpecsMinAggregateInputType = {
+    specId?: true
+    phoneId?: true
+    networkTech?: true
+    supports5g?: true
+    supportsNfc?: true
+    dualSim?: true
+    simType?: true
+    wifi?: true
+    bluetooth?: true
+    usbType?: true
+    headphoneJack?: true
+    gps?: true
+    displayType?: true
+    refreshRate?: true
+    displaySize?: true
+    resolution?: true
+    ppiDensity?: true
+    screenToBody?: true
+    displayProtection?: true
+    os?: true
+    osVersion?: true
+    chipset?: true
+    processNode?: true
+    cpu?: true
+    gpu?: true
+    mainCamera?: true
+    lensCount?: true
+    mainAperture?: true
+    ois?: true
+    sensorSize?: true
+    camera4K?: true
+    cameraVideo?: true
+    selfieCamera?: true
+    selfie4K?: true
+    dimensions?: true
+    weight?: true
+    buildMaterial?: true
+    ipRating?: true
+    batteryMah?: true
+    wiredCharging?: true
+    wirelessCharging?: true
+    reverseWireless?: true
+    announced?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PhoneSpecsMaxAggregateInputType = {
+    specId?: true
+    phoneId?: true
+    networkTech?: true
+    supports5g?: true
+    supportsNfc?: true
+    dualSim?: true
+    simType?: true
+    wifi?: true
+    bluetooth?: true
+    usbType?: true
+    headphoneJack?: true
+    gps?: true
+    displayType?: true
+    refreshRate?: true
+    displaySize?: true
+    resolution?: true
+    ppiDensity?: true
+    screenToBody?: true
+    displayProtection?: true
+    os?: true
+    osVersion?: true
+    chipset?: true
+    processNode?: true
+    cpu?: true
+    gpu?: true
+    mainCamera?: true
+    lensCount?: true
+    mainAperture?: true
+    ois?: true
+    sensorSize?: true
+    camera4K?: true
+    cameraVideo?: true
+    selfieCamera?: true
+    selfie4K?: true
+    dimensions?: true
+    weight?: true
+    buildMaterial?: true
+    ipRating?: true
+    batteryMah?: true
+    wiredCharging?: true
+    wirelessCharging?: true
+    reverseWireless?: true
+    announced?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PhoneSpecsCountAggregateInputType = {
+    specId?: true
+    phoneId?: true
+    networkTech?: true
+    supports5g?: true
+    supportsNfc?: true
+    dualSim?: true
+    simType?: true
+    wifi?: true
+    bluetooth?: true
+    usbType?: true
+    headphoneJack?: true
+    gps?: true
+    sensors?: true
+    displayType?: true
+    refreshRate?: true
+    displaySize?: true
+    resolution?: true
+    ppiDensity?: true
+    screenToBody?: true
+    displayProtection?: true
+    os?: true
+    osVersion?: true
+    chipset?: true
+    processNode?: true
+    cpu?: true
+    gpu?: true
+    mainCamera?: true
+    lensCount?: true
+    mainAperture?: true
+    ois?: true
+    sensorSize?: true
+    camera4K?: true
+    cameraVideo?: true
+    selfieCamera?: true
+    selfie4K?: true
+    dimensions?: true
+    weight?: true
+    buildMaterial?: true
+    ipRating?: true
+    batteryMah?: true
+    wiredCharging?: true
+    wirelessCharging?: true
+    reverseWireless?: true
+    announced?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PhoneSpecsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PhoneSpecs to aggregate.
+     */
+    where?: PhoneSpecsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneSpecs to fetch.
+     */
+    orderBy?: PhoneSpecsOrderByWithRelationInput | PhoneSpecsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PhoneSpecsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneSpecs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneSpecs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PhoneSpecs
+    **/
+    _count?: true | PhoneSpecsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PhoneSpecsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PhoneSpecsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PhoneSpecsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PhoneSpecsMaxAggregateInputType
+  }
+
+  export type GetPhoneSpecsAggregateType<T extends PhoneSpecsAggregateArgs> = {
+        [P in keyof T & keyof AggregatePhoneSpecs]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePhoneSpecs[P]>
+      : GetScalarType<T[P], AggregatePhoneSpecs[P]>
+  }
+
+
+
+
+  export type PhoneSpecsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PhoneSpecsWhereInput
+    orderBy?: PhoneSpecsOrderByWithAggregationInput | PhoneSpecsOrderByWithAggregationInput[]
+    by: PhoneSpecsScalarFieldEnum[] | PhoneSpecsScalarFieldEnum
+    having?: PhoneSpecsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PhoneSpecsCountAggregateInputType | true
+    _avg?: PhoneSpecsAvgAggregateInputType
+    _sum?: PhoneSpecsSumAggregateInputType
+    _min?: PhoneSpecsMinAggregateInputType
+    _max?: PhoneSpecsMaxAggregateInputType
+  }
+
+  export type PhoneSpecsGroupByOutputType = {
+    specId: string
+    phoneId: string
+    networkTech: string | null
+    supports5g: boolean
+    supportsNfc: boolean
+    dualSim: boolean
+    simType: string | null
+    wifi: string | null
+    bluetooth: string | null
+    usbType: string | null
+    headphoneJack: boolean | null
+    gps: boolean
+    sensors: JsonValue | null
+    displayType: string | null
+    refreshRate: number | null
+    displaySize: Decimal | null
+    resolution: string | null
+    ppiDensity: number | null
+    screenToBody: Decimal | null
+    displayProtection: string | null
+    os: string | null
+    osVersion: string | null
+    chipset: string | null
+    processNode: string | null
+    cpu: string | null
+    gpu: string | null
+    mainCamera: string | null
+    lensCount: number | null
+    mainAperture: string | null
+    ois: boolean | null
+    sensorSize: string | null
+    camera4K: boolean | null
+    cameraVideo: string | null
+    selfieCamera: string | null
+    selfie4K: boolean | null
+    dimensions: string | null
+    weight: Decimal | null
+    buildMaterial: string | null
+    ipRating: string | null
+    batteryMah: number | null
+    wiredCharging: number | null
+    wirelessCharging: number | null
+    reverseWireless: boolean | null
+    announced: Date | null
+    status: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: PhoneSpecsCountAggregateOutputType | null
+    _avg: PhoneSpecsAvgAggregateOutputType | null
+    _sum: PhoneSpecsSumAggregateOutputType | null
+    _min: PhoneSpecsMinAggregateOutputType | null
+    _max: PhoneSpecsMaxAggregateOutputType | null
+  }
+
+  type GetPhoneSpecsGroupByPayload<T extends PhoneSpecsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PhoneSpecsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PhoneSpecsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PhoneSpecsGroupByOutputType[P]>
+            : GetScalarType<T[P], PhoneSpecsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PhoneSpecsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    specId?: boolean
+    phoneId?: boolean
+    networkTech?: boolean
+    supports5g?: boolean
+    supportsNfc?: boolean
+    dualSim?: boolean
+    simType?: boolean
+    wifi?: boolean
+    bluetooth?: boolean
+    usbType?: boolean
+    headphoneJack?: boolean
+    gps?: boolean
+    sensors?: boolean
+    displayType?: boolean
+    refreshRate?: boolean
+    displaySize?: boolean
+    resolution?: boolean
+    ppiDensity?: boolean
+    screenToBody?: boolean
+    displayProtection?: boolean
+    os?: boolean
+    osVersion?: boolean
+    chipset?: boolean
+    processNode?: boolean
+    cpu?: boolean
+    gpu?: boolean
+    mainCamera?: boolean
+    lensCount?: boolean
+    mainAperture?: boolean
+    ois?: boolean
+    sensorSize?: boolean
+    camera4K?: boolean
+    cameraVideo?: boolean
+    selfieCamera?: boolean
+    selfie4K?: boolean
+    dimensions?: boolean
+    weight?: boolean
+    buildMaterial?: boolean
+    ipRating?: boolean
+    batteryMah?: boolean
+    wiredCharging?: boolean
+    wirelessCharging?: boolean
+    reverseWireless?: boolean
+    announced?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phoneSpecs"]>
+
+  export type PhoneSpecsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    specId?: boolean
+    phoneId?: boolean
+    networkTech?: boolean
+    supports5g?: boolean
+    supportsNfc?: boolean
+    dualSim?: boolean
+    simType?: boolean
+    wifi?: boolean
+    bluetooth?: boolean
+    usbType?: boolean
+    headphoneJack?: boolean
+    gps?: boolean
+    sensors?: boolean
+    displayType?: boolean
+    refreshRate?: boolean
+    displaySize?: boolean
+    resolution?: boolean
+    ppiDensity?: boolean
+    screenToBody?: boolean
+    displayProtection?: boolean
+    os?: boolean
+    osVersion?: boolean
+    chipset?: boolean
+    processNode?: boolean
+    cpu?: boolean
+    gpu?: boolean
+    mainCamera?: boolean
+    lensCount?: boolean
+    mainAperture?: boolean
+    ois?: boolean
+    sensorSize?: boolean
+    camera4K?: boolean
+    cameraVideo?: boolean
+    selfieCamera?: boolean
+    selfie4K?: boolean
+    dimensions?: boolean
+    weight?: boolean
+    buildMaterial?: boolean
+    ipRating?: boolean
+    batteryMah?: boolean
+    wiredCharging?: boolean
+    wirelessCharging?: boolean
+    reverseWireless?: boolean
+    announced?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phoneSpecs"]>
+
+  export type PhoneSpecsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    specId?: boolean
+    phoneId?: boolean
+    networkTech?: boolean
+    supports5g?: boolean
+    supportsNfc?: boolean
+    dualSim?: boolean
+    simType?: boolean
+    wifi?: boolean
+    bluetooth?: boolean
+    usbType?: boolean
+    headphoneJack?: boolean
+    gps?: boolean
+    sensors?: boolean
+    displayType?: boolean
+    refreshRate?: boolean
+    displaySize?: boolean
+    resolution?: boolean
+    ppiDensity?: boolean
+    screenToBody?: boolean
+    displayProtection?: boolean
+    os?: boolean
+    osVersion?: boolean
+    chipset?: boolean
+    processNode?: boolean
+    cpu?: boolean
+    gpu?: boolean
+    mainCamera?: boolean
+    lensCount?: boolean
+    mainAperture?: boolean
+    ois?: boolean
+    sensorSize?: boolean
+    camera4K?: boolean
+    cameraVideo?: boolean
+    selfieCamera?: boolean
+    selfie4K?: boolean
+    dimensions?: boolean
+    weight?: boolean
+    buildMaterial?: boolean
+    ipRating?: boolean
+    batteryMah?: boolean
+    wiredCharging?: boolean
+    wirelessCharging?: boolean
+    reverseWireless?: boolean
+    announced?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phoneSpecs"]>
+
+  export type PhoneSpecsSelectScalar = {
+    specId?: boolean
+    phoneId?: boolean
+    networkTech?: boolean
+    supports5g?: boolean
+    supportsNfc?: boolean
+    dualSim?: boolean
+    simType?: boolean
+    wifi?: boolean
+    bluetooth?: boolean
+    usbType?: boolean
+    headphoneJack?: boolean
+    gps?: boolean
+    sensors?: boolean
+    displayType?: boolean
+    refreshRate?: boolean
+    displaySize?: boolean
+    resolution?: boolean
+    ppiDensity?: boolean
+    screenToBody?: boolean
+    displayProtection?: boolean
+    os?: boolean
+    osVersion?: boolean
+    chipset?: boolean
+    processNode?: boolean
+    cpu?: boolean
+    gpu?: boolean
+    mainCamera?: boolean
+    lensCount?: boolean
+    mainAperture?: boolean
+    ois?: boolean
+    sensorSize?: boolean
+    camera4K?: boolean
+    cameraVideo?: boolean
+    selfieCamera?: boolean
+    selfie4K?: boolean
+    dimensions?: boolean
+    weight?: boolean
+    buildMaterial?: boolean
+    ipRating?: boolean
+    batteryMah?: boolean
+    wiredCharging?: boolean
+    wirelessCharging?: boolean
+    reverseWireless?: boolean
+    announced?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PhoneSpecsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"specId" | "phoneId" | "networkTech" | "supports5g" | "supportsNfc" | "dualSim" | "simType" | "wifi" | "bluetooth" | "usbType" | "headphoneJack" | "gps" | "sensors" | "displayType" | "refreshRate" | "displaySize" | "resolution" | "ppiDensity" | "screenToBody" | "displayProtection" | "os" | "osVersion" | "chipset" | "processNode" | "cpu" | "gpu" | "mainCamera" | "lensCount" | "mainAperture" | "ois" | "sensorSize" | "camera4K" | "cameraVideo" | "selfieCamera" | "selfie4K" | "dimensions" | "weight" | "buildMaterial" | "ipRating" | "batteryMah" | "wiredCharging" | "wirelessCharging" | "reverseWireless" | "announced" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["phoneSpecs"]>
+  export type PhoneSpecsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+  export type PhoneSpecsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+  export type PhoneSpecsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+
+  export type $PhoneSpecsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PhoneSpecs"
+    objects: {
+      phone: Prisma.$PhonesPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      specId: string
+      phoneId: string
+      networkTech: string | null
+      supports5g: boolean
+      supportsNfc: boolean
+      dualSim: boolean
+      simType: string | null
+      wifi: string | null
+      bluetooth: string | null
+      usbType: string | null
+      headphoneJack: boolean | null
+      gps: boolean
+      sensors: Prisma.JsonValue | null
+      displayType: string | null
+      refreshRate: number | null
+      displaySize: Prisma.Decimal | null
+      resolution: string | null
+      ppiDensity: number | null
+      screenToBody: Prisma.Decimal | null
+      displayProtection: string | null
+      os: string | null
+      osVersion: string | null
+      chipset: string | null
+      processNode: string | null
+      cpu: string | null
+      gpu: string | null
+      mainCamera: string | null
+      lensCount: number | null
+      mainAperture: string | null
+      ois: boolean | null
+      sensorSize: string | null
+      camera4K: boolean | null
+      cameraVideo: string | null
+      selfieCamera: string | null
+      selfie4K: boolean | null
+      dimensions: string | null
+      weight: Prisma.Decimal | null
+      buildMaterial: string | null
+      ipRating: string | null
+      batteryMah: number | null
+      wiredCharging: number | null
+      wirelessCharging: number | null
+      reverseWireless: boolean | null
+      announced: Date | null
+      status: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["phoneSpecs"]>
+    composites: {}
+  }
+
+  type PhoneSpecsGetPayload<S extends boolean | null | undefined | PhoneSpecsDefaultArgs> = $Result.GetResult<Prisma.$PhoneSpecsPayload, S>
+
+  type PhoneSpecsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PhoneSpecsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PhoneSpecsCountAggregateInputType | true
+    }
+
+  export interface PhoneSpecsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PhoneSpecs'], meta: { name: 'PhoneSpecs' } }
+    /**
+     * Find zero or one PhoneSpecs that matches the filter.
+     * @param {PhoneSpecsFindUniqueArgs} args - Arguments to find a PhoneSpecs
+     * @example
+     * // Get one PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PhoneSpecsFindUniqueArgs>(args: SelectSubset<T, PhoneSpecsFindUniqueArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PhoneSpecs that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PhoneSpecsFindUniqueOrThrowArgs} args - Arguments to find a PhoneSpecs
+     * @example
+     * // Get one PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PhoneSpecsFindUniqueOrThrowArgs>(args: SelectSubset<T, PhoneSpecsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PhoneSpecs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneSpecsFindFirstArgs} args - Arguments to find a PhoneSpecs
+     * @example
+     * // Get one PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PhoneSpecsFindFirstArgs>(args?: SelectSubset<T, PhoneSpecsFindFirstArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PhoneSpecs that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneSpecsFindFirstOrThrowArgs} args - Arguments to find a PhoneSpecs
+     * @example
+     * // Get one PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PhoneSpecsFindFirstOrThrowArgs>(args?: SelectSubset<T, PhoneSpecsFindFirstOrThrowArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PhoneSpecs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneSpecsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.findMany()
+     * 
+     * // Get first 10 PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.findMany({ take: 10 })
+     * 
+     * // Only select the `specId`
+     * const phoneSpecsWithSpecIdOnly = await prisma.phoneSpecs.findMany({ select: { specId: true } })
+     * 
+     */
+    findMany<T extends PhoneSpecsFindManyArgs>(args?: SelectSubset<T, PhoneSpecsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PhoneSpecs.
+     * @param {PhoneSpecsCreateArgs} args - Arguments to create a PhoneSpecs.
+     * @example
+     * // Create one PhoneSpecs
+     * const PhoneSpecs = await prisma.phoneSpecs.create({
+     *   data: {
+     *     // ... data to create a PhoneSpecs
+     *   }
+     * })
+     * 
+     */
+    create<T extends PhoneSpecsCreateArgs>(args: SelectSubset<T, PhoneSpecsCreateArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PhoneSpecs.
+     * @param {PhoneSpecsCreateManyArgs} args - Arguments to create many PhoneSpecs.
+     * @example
+     * // Create many PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PhoneSpecsCreateManyArgs>(args?: SelectSubset<T, PhoneSpecsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PhoneSpecs and returns the data saved in the database.
+     * @param {PhoneSpecsCreateManyAndReturnArgs} args - Arguments to create many PhoneSpecs.
+     * @example
+     * // Create many PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PhoneSpecs and only return the `specId`
+     * const phoneSpecsWithSpecIdOnly = await prisma.phoneSpecs.createManyAndReturn({
+     *   select: { specId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PhoneSpecsCreateManyAndReturnArgs>(args?: SelectSubset<T, PhoneSpecsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PhoneSpecs.
+     * @param {PhoneSpecsDeleteArgs} args - Arguments to delete one PhoneSpecs.
+     * @example
+     * // Delete one PhoneSpecs
+     * const PhoneSpecs = await prisma.phoneSpecs.delete({
+     *   where: {
+     *     // ... filter to delete one PhoneSpecs
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PhoneSpecsDeleteArgs>(args: SelectSubset<T, PhoneSpecsDeleteArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PhoneSpecs.
+     * @param {PhoneSpecsUpdateArgs} args - Arguments to update one PhoneSpecs.
+     * @example
+     * // Update one PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PhoneSpecsUpdateArgs>(args: SelectSubset<T, PhoneSpecsUpdateArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PhoneSpecs.
+     * @param {PhoneSpecsDeleteManyArgs} args - Arguments to filter PhoneSpecs to delete.
+     * @example
+     * // Delete a few PhoneSpecs
+     * const { count } = await prisma.phoneSpecs.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PhoneSpecsDeleteManyArgs>(args?: SelectSubset<T, PhoneSpecsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PhoneSpecs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneSpecsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PhoneSpecsUpdateManyArgs>(args: SelectSubset<T, PhoneSpecsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PhoneSpecs and returns the data updated in the database.
+     * @param {PhoneSpecsUpdateManyAndReturnArgs} args - Arguments to update many PhoneSpecs.
+     * @example
+     * // Update many PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PhoneSpecs and only return the `specId`
+     * const phoneSpecsWithSpecIdOnly = await prisma.phoneSpecs.updateManyAndReturn({
+     *   select: { specId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PhoneSpecsUpdateManyAndReturnArgs>(args: SelectSubset<T, PhoneSpecsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PhoneSpecs.
+     * @param {PhoneSpecsUpsertArgs} args - Arguments to update or create a PhoneSpecs.
+     * @example
+     * // Update or create a PhoneSpecs
+     * const phoneSpecs = await prisma.phoneSpecs.upsert({
+     *   create: {
+     *     // ... data to create a PhoneSpecs
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PhoneSpecs we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PhoneSpecsUpsertArgs>(args: SelectSubset<T, PhoneSpecsUpsertArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PhoneSpecs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneSpecsCountArgs} args - Arguments to filter PhoneSpecs to count.
+     * @example
+     * // Count the number of PhoneSpecs
+     * const count = await prisma.phoneSpecs.count({
+     *   where: {
+     *     // ... the filter for the PhoneSpecs we want to count
+     *   }
+     * })
+    **/
+    count<T extends PhoneSpecsCountArgs>(
+      args?: Subset<T, PhoneSpecsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PhoneSpecsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PhoneSpecs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneSpecsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PhoneSpecsAggregateArgs>(args: Subset<T, PhoneSpecsAggregateArgs>): Prisma.PrismaPromise<GetPhoneSpecsAggregateType<T>>
+
+    /**
+     * Group by PhoneSpecs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneSpecsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PhoneSpecsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PhoneSpecsGroupByArgs['orderBy'] }
+        : { orderBy?: PhoneSpecsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PhoneSpecsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPhoneSpecsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PhoneSpecs model
+   */
+  readonly fields: PhoneSpecsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PhoneSpecs.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PhoneSpecsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    phone<T extends PhonesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PhonesDefaultArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PhoneSpecs model
+   */
+  interface PhoneSpecsFieldRefs {
+    readonly specId: FieldRef<"PhoneSpecs", 'String'>
+    readonly phoneId: FieldRef<"PhoneSpecs", 'String'>
+    readonly networkTech: FieldRef<"PhoneSpecs", 'String'>
+    readonly supports5g: FieldRef<"PhoneSpecs", 'Boolean'>
+    readonly supportsNfc: FieldRef<"PhoneSpecs", 'Boolean'>
+    readonly dualSim: FieldRef<"PhoneSpecs", 'Boolean'>
+    readonly simType: FieldRef<"PhoneSpecs", 'String'>
+    readonly wifi: FieldRef<"PhoneSpecs", 'String'>
+    readonly bluetooth: FieldRef<"PhoneSpecs", 'String'>
+    readonly usbType: FieldRef<"PhoneSpecs", 'String'>
+    readonly headphoneJack: FieldRef<"PhoneSpecs", 'Boolean'>
+    readonly gps: FieldRef<"PhoneSpecs", 'Boolean'>
+    readonly sensors: FieldRef<"PhoneSpecs", 'Json'>
+    readonly displayType: FieldRef<"PhoneSpecs", 'String'>
+    readonly refreshRate: FieldRef<"PhoneSpecs", 'Int'>
+    readonly displaySize: FieldRef<"PhoneSpecs", 'Decimal'>
+    readonly resolution: FieldRef<"PhoneSpecs", 'String'>
+    readonly ppiDensity: FieldRef<"PhoneSpecs", 'Int'>
+    readonly screenToBody: FieldRef<"PhoneSpecs", 'Decimal'>
+    readonly displayProtection: FieldRef<"PhoneSpecs", 'String'>
+    readonly os: FieldRef<"PhoneSpecs", 'String'>
+    readonly osVersion: FieldRef<"PhoneSpecs", 'String'>
+    readonly chipset: FieldRef<"PhoneSpecs", 'String'>
+    readonly processNode: FieldRef<"PhoneSpecs", 'String'>
+    readonly cpu: FieldRef<"PhoneSpecs", 'String'>
+    readonly gpu: FieldRef<"PhoneSpecs", 'String'>
+    readonly mainCamera: FieldRef<"PhoneSpecs", 'String'>
+    readonly lensCount: FieldRef<"PhoneSpecs", 'Int'>
+    readonly mainAperture: FieldRef<"PhoneSpecs", 'String'>
+    readonly ois: FieldRef<"PhoneSpecs", 'Boolean'>
+    readonly sensorSize: FieldRef<"PhoneSpecs", 'String'>
+    readonly camera4K: FieldRef<"PhoneSpecs", 'Boolean'>
+    readonly cameraVideo: FieldRef<"PhoneSpecs", 'String'>
+    readonly selfieCamera: FieldRef<"PhoneSpecs", 'String'>
+    readonly selfie4K: FieldRef<"PhoneSpecs", 'Boolean'>
+    readonly dimensions: FieldRef<"PhoneSpecs", 'String'>
+    readonly weight: FieldRef<"PhoneSpecs", 'Decimal'>
+    readonly buildMaterial: FieldRef<"PhoneSpecs", 'String'>
+    readonly ipRating: FieldRef<"PhoneSpecs", 'String'>
+    readonly batteryMah: FieldRef<"PhoneSpecs", 'Int'>
+    readonly wiredCharging: FieldRef<"PhoneSpecs", 'Int'>
+    readonly wirelessCharging: FieldRef<"PhoneSpecs", 'Int'>
+    readonly reverseWireless: FieldRef<"PhoneSpecs", 'Boolean'>
+    readonly announced: FieldRef<"PhoneSpecs", 'DateTime'>
+    readonly status: FieldRef<"PhoneSpecs", 'String'>
+    readonly createdAt: FieldRef<"PhoneSpecs", 'DateTime'>
+    readonly updatedAt: FieldRef<"PhoneSpecs", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PhoneSpecs findUnique
+   */
+  export type PhoneSpecsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneSpecs to fetch.
+     */
+    where: PhoneSpecsWhereUniqueInput
+  }
+
+  /**
+   * PhoneSpecs findUniqueOrThrow
+   */
+  export type PhoneSpecsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneSpecs to fetch.
+     */
+    where: PhoneSpecsWhereUniqueInput
+  }
+
+  /**
+   * PhoneSpecs findFirst
+   */
+  export type PhoneSpecsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneSpecs to fetch.
+     */
+    where?: PhoneSpecsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneSpecs to fetch.
+     */
+    orderBy?: PhoneSpecsOrderByWithRelationInput | PhoneSpecsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PhoneSpecs.
+     */
+    cursor?: PhoneSpecsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneSpecs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneSpecs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneSpecs.
+     */
+    distinct?: PhoneSpecsScalarFieldEnum | PhoneSpecsScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneSpecs findFirstOrThrow
+   */
+  export type PhoneSpecsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneSpecs to fetch.
+     */
+    where?: PhoneSpecsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneSpecs to fetch.
+     */
+    orderBy?: PhoneSpecsOrderByWithRelationInput | PhoneSpecsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PhoneSpecs.
+     */
+    cursor?: PhoneSpecsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneSpecs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneSpecs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneSpecs.
+     */
+    distinct?: PhoneSpecsScalarFieldEnum | PhoneSpecsScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneSpecs findMany
+   */
+  export type PhoneSpecsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneSpecs to fetch.
+     */
+    where?: PhoneSpecsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneSpecs to fetch.
+     */
+    orderBy?: PhoneSpecsOrderByWithRelationInput | PhoneSpecsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PhoneSpecs.
+     */
+    cursor?: PhoneSpecsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneSpecs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneSpecs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneSpecs.
+     */
+    distinct?: PhoneSpecsScalarFieldEnum | PhoneSpecsScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneSpecs create
+   */
+  export type PhoneSpecsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PhoneSpecs.
+     */
+    data: XOR<PhoneSpecsCreateInput, PhoneSpecsUncheckedCreateInput>
+  }
+
+  /**
+   * PhoneSpecs createMany
+   */
+  export type PhoneSpecsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PhoneSpecs.
+     */
+    data: PhoneSpecsCreateManyInput | PhoneSpecsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PhoneSpecs createManyAndReturn
+   */
+  export type PhoneSpecsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * The data used to create many PhoneSpecs.
+     */
+    data: PhoneSpecsCreateManyInput | PhoneSpecsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PhoneSpecs update
+   */
+  export type PhoneSpecsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PhoneSpecs.
+     */
+    data: XOR<PhoneSpecsUpdateInput, PhoneSpecsUncheckedUpdateInput>
+    /**
+     * Choose, which PhoneSpecs to update.
+     */
+    where: PhoneSpecsWhereUniqueInput
+  }
+
+  /**
+   * PhoneSpecs updateMany
+   */
+  export type PhoneSpecsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PhoneSpecs.
+     */
+    data: XOR<PhoneSpecsUpdateManyMutationInput, PhoneSpecsUncheckedUpdateManyInput>
+    /**
+     * Filter which PhoneSpecs to update
+     */
+    where?: PhoneSpecsWhereInput
+    /**
+     * Limit how many PhoneSpecs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PhoneSpecs updateManyAndReturn
+   */
+  export type PhoneSpecsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * The data used to update PhoneSpecs.
+     */
+    data: XOR<PhoneSpecsUpdateManyMutationInput, PhoneSpecsUncheckedUpdateManyInput>
+    /**
+     * Filter which PhoneSpecs to update
+     */
+    where?: PhoneSpecsWhereInput
+    /**
+     * Limit how many PhoneSpecs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PhoneSpecs upsert
+   */
+  export type PhoneSpecsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PhoneSpecs to update in case it exists.
+     */
+    where: PhoneSpecsWhereUniqueInput
+    /**
+     * In case the PhoneSpecs found by the `where` argument doesn't exist, create a new PhoneSpecs with this data.
+     */
+    create: XOR<PhoneSpecsCreateInput, PhoneSpecsUncheckedCreateInput>
+    /**
+     * In case the PhoneSpecs was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PhoneSpecsUpdateInput, PhoneSpecsUncheckedUpdateInput>
+  }
+
+  /**
+   * PhoneSpecs delete
+   */
+  export type PhoneSpecsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+    /**
+     * Filter which PhoneSpecs to delete.
+     */
+    where: PhoneSpecsWhereUniqueInput
+  }
+
+  /**
+   * PhoneSpecs deleteMany
+   */
+  export type PhoneSpecsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PhoneSpecs to delete
+     */
+    where?: PhoneSpecsWhereInput
+    /**
+     * Limit how many PhoneSpecs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PhoneSpecs without action
+   */
+  export type PhoneSpecsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneSpecs
+     */
+    select?: PhoneSpecsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneSpecs
+     */
+    omit?: PhoneSpecsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneSpecsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model UserProfile
    */
 
@@ -7675,7 +13444,7 @@ export namespace Prisma {
     maxBudget: Decimal | null
     cameraPreference: $Enums.CameraPreference | null
     usageType: $Enums.UsageType | null
-    preferredBrand: string | null
+    preferredBrandId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7686,7 +13455,7 @@ export namespace Prisma {
     maxBudget: Decimal | null
     cameraPreference: $Enums.CameraPreference | null
     usageType: $Enums.UsageType | null
-    preferredBrand: string | null
+    preferredBrandId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7697,7 +13466,7 @@ export namespace Prisma {
     maxBudget: number
     cameraPreference: number
     usageType: number
-    preferredBrand: number
+    preferredBrandId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7718,7 +13487,7 @@ export namespace Prisma {
     maxBudget?: true
     cameraPreference?: true
     usageType?: true
-    preferredBrand?: true
+    preferredBrandId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7729,7 +13498,7 @@ export namespace Prisma {
     maxBudget?: true
     cameraPreference?: true
     usageType?: true
-    preferredBrand?: true
+    preferredBrandId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7740,7 +13509,7 @@ export namespace Prisma {
     maxBudget?: true
     cameraPreference?: true
     usageType?: true
-    preferredBrand?: true
+    preferredBrandId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -7838,7 +13607,7 @@ export namespace Prisma {
     maxBudget: Decimal
     cameraPreference: $Enums.CameraPreference
     usageType: $Enums.UsageType
-    preferredBrand: string
+    preferredBrandId: string | null
     createdAt: Date
     updatedAt: Date
     _count: UserPreferenceCountAggregateOutputType | null
@@ -7868,9 +13637,10 @@ export namespace Prisma {
     maxBudget?: boolean
     cameraPreference?: boolean
     usageType?: boolean
-    preferredBrand?: boolean
+    preferredBrandId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    preferredBrand?: boolean | UserPreference$preferredBrandArgs<ExtArgs>
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userPreference"]>
 
@@ -7880,9 +13650,10 @@ export namespace Prisma {
     maxBudget?: boolean
     cameraPreference?: boolean
     usageType?: boolean
-    preferredBrand?: boolean
+    preferredBrandId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    preferredBrand?: boolean | UserPreference$preferredBrandArgs<ExtArgs>
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userPreference"]>
 
@@ -7892,9 +13663,10 @@ export namespace Prisma {
     maxBudget?: boolean
     cameraPreference?: boolean
     usageType?: boolean
-    preferredBrand?: boolean
+    preferredBrandId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    preferredBrand?: boolean | UserPreference$preferredBrandArgs<ExtArgs>
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userPreference"]>
 
@@ -7904,25 +13676,29 @@ export namespace Prisma {
     maxBudget?: boolean
     cameraPreference?: boolean
     usageType?: boolean
-    preferredBrand?: boolean
+    preferredBrandId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserPreferenceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"preferenceId" | "userId" | "maxBudget" | "cameraPreference" | "usageType" | "preferredBrand" | "createdAt" | "updatedAt", ExtArgs["result"]["userPreference"]>
+  export type UserPreferenceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"preferenceId" | "userId" | "maxBudget" | "cameraPreference" | "usageType" | "preferredBrandId" | "createdAt" | "updatedAt", ExtArgs["result"]["userPreference"]>
   export type UserPreferenceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    preferredBrand?: boolean | UserPreference$preferredBrandArgs<ExtArgs>
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
   export type UserPreferenceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    preferredBrand?: boolean | UserPreference$preferredBrandArgs<ExtArgs>
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
   export type UserPreferenceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    preferredBrand?: boolean | UserPreference$preferredBrandArgs<ExtArgs>
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
 
   export type $UserPreferencePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "UserPreference"
     objects: {
+      preferredBrand: Prisma.$BrandsPayload<ExtArgs> | null
       user: Prisma.$UsersPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -7931,7 +13707,7 @@ export namespace Prisma {
       maxBudget: Prisma.Decimal
       cameraPreference: $Enums.CameraPreference
       usageType: $Enums.UsageType
-      preferredBrand: string
+      preferredBrandId: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["userPreference"]>
@@ -8328,6 +14104,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserPreferenceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    preferredBrand<T extends UserPreference$preferredBrandArgs<ExtArgs> = {}>(args?: Subset<T, UserPreference$preferredBrandArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -8363,7 +14140,7 @@ export namespace Prisma {
     readonly maxBudget: FieldRef<"UserPreference", 'Decimal'>
     readonly cameraPreference: FieldRef<"UserPreference", 'CameraPreference'>
     readonly usageType: FieldRef<"UserPreference", 'UsageType'>
-    readonly preferredBrand: FieldRef<"UserPreference", 'String'>
+    readonly preferredBrandId: FieldRef<"UserPreference", 'String'>
     readonly createdAt: FieldRef<"UserPreference", 'DateTime'>
     readonly updatedAt: FieldRef<"UserPreference", 'DateTime'>
   }
@@ -8767,6 +14544,25 @@ export namespace Prisma {
   }
 
   /**
+   * UserPreference.preferredBrand
+   */
+  export type UserPreference$preferredBrandArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Brands
+     */
+    select?: BrandsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Brands
+     */
+    omit?: BrandsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BrandsInclude<ExtArgs> | null
+    where?: BrandsWhereInput
+  }
+
+  /**
    * UserPreference without action
    */
   export type UserPreferenceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8782,1491 +14578,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserPreferenceInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Phones
-   */
-
-  export type AggregatePhones = {
-    _count: PhonesCountAggregateOutputType | null
-    _avg: PhonesAvgAggregateOutputType | null
-    _sum: PhonesSumAggregateOutputType | null
-    _min: PhonesMinAggregateOutputType | null
-    _max: PhonesMaxAggregateOutputType | null
-  }
-
-  export type PhonesAvgAggregateOutputType = {
-    price: Decimal | null
-    antutuScore: number | null
-    ramGb: number | null
-    storageGb: number | null
-    batteryMah: number | null
-    chargingWatts: number | null
-    displayPpi: number | null
-    cameraScore: Decimal | null
-    frontCameraScore: Decimal | null
-  }
-
-  export type PhonesSumAggregateOutputType = {
-    price: Decimal | null
-    antutuScore: number | null
-    ramGb: number | null
-    storageGb: number | null
-    batteryMah: number | null
-    chargingWatts: number | null
-    displayPpi: number | null
-    cameraScore: Decimal | null
-    frontCameraScore: Decimal | null
-  }
-
-  export type PhonesMinAggregateOutputType = {
-    phoneId: string | null
-    brand: string | null
-    modelName: string | null
-    price: Decimal | null
-    antutuScore: number | null
-    ramGb: number | null
-    storageGb: number | null
-    batteryMah: number | null
-    chargingWatts: number | null
-    displayType: string | null
-    displayPpi: number | null
-    cameraScore: Decimal | null
-    frontCameraScore: Decimal | null
-    osName: string | null
-    supports5g: boolean | null
-    supportsNfc: boolean | null
-    dualSim: boolean | null
-    source: string | null
-    sourceUrl: string | null
-    imageUrl: string | null
-    imagePath: string | null
-    isActive: boolean | null
-    discontinuedAt: Date | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type PhonesMaxAggregateOutputType = {
-    phoneId: string | null
-    brand: string | null
-    modelName: string | null
-    price: Decimal | null
-    antutuScore: number | null
-    ramGb: number | null
-    storageGb: number | null
-    batteryMah: number | null
-    chargingWatts: number | null
-    displayType: string | null
-    displayPpi: number | null
-    cameraScore: Decimal | null
-    frontCameraScore: Decimal | null
-    osName: string | null
-    supports5g: boolean | null
-    supportsNfc: boolean | null
-    dualSim: boolean | null
-    source: string | null
-    sourceUrl: string | null
-    imageUrl: string | null
-    imagePath: string | null
-    isActive: boolean | null
-    discontinuedAt: Date | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type PhonesCountAggregateOutputType = {
-    phoneId: number
-    brand: number
-    modelName: number
-    price: number
-    antutuScore: number
-    ramGb: number
-    storageGb: number
-    batteryMah: number
-    chargingWatts: number
-    displayType: number
-    displayPpi: number
-    cameraScore: number
-    frontCameraScore: number
-    osName: number
-    supports5g: number
-    supportsNfc: number
-    dualSim: number
-    source: number
-    sourceUrl: number
-    imageUrl: number
-    imagePath: number
-    isActive: number
-    discontinuedAt: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type PhonesAvgAggregateInputType = {
-    price?: true
-    antutuScore?: true
-    ramGb?: true
-    storageGb?: true
-    batteryMah?: true
-    chargingWatts?: true
-    displayPpi?: true
-    cameraScore?: true
-    frontCameraScore?: true
-  }
-
-  export type PhonesSumAggregateInputType = {
-    price?: true
-    antutuScore?: true
-    ramGb?: true
-    storageGb?: true
-    batteryMah?: true
-    chargingWatts?: true
-    displayPpi?: true
-    cameraScore?: true
-    frontCameraScore?: true
-  }
-
-  export type PhonesMinAggregateInputType = {
-    phoneId?: true
-    brand?: true
-    modelName?: true
-    price?: true
-    antutuScore?: true
-    ramGb?: true
-    storageGb?: true
-    batteryMah?: true
-    chargingWatts?: true
-    displayType?: true
-    displayPpi?: true
-    cameraScore?: true
-    frontCameraScore?: true
-    osName?: true
-    supports5g?: true
-    supportsNfc?: true
-    dualSim?: true
-    source?: true
-    sourceUrl?: true
-    imageUrl?: true
-    imagePath?: true
-    isActive?: true
-    discontinuedAt?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type PhonesMaxAggregateInputType = {
-    phoneId?: true
-    brand?: true
-    modelName?: true
-    price?: true
-    antutuScore?: true
-    ramGb?: true
-    storageGb?: true
-    batteryMah?: true
-    chargingWatts?: true
-    displayType?: true
-    displayPpi?: true
-    cameraScore?: true
-    frontCameraScore?: true
-    osName?: true
-    supports5g?: true
-    supportsNfc?: true
-    dualSim?: true
-    source?: true
-    sourceUrl?: true
-    imageUrl?: true
-    imagePath?: true
-    isActive?: true
-    discontinuedAt?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type PhonesCountAggregateInputType = {
-    phoneId?: true
-    brand?: true
-    modelName?: true
-    price?: true
-    antutuScore?: true
-    ramGb?: true
-    storageGb?: true
-    batteryMah?: true
-    chargingWatts?: true
-    displayType?: true
-    displayPpi?: true
-    cameraScore?: true
-    frontCameraScore?: true
-    osName?: true
-    supports5g?: true
-    supportsNfc?: true
-    dualSim?: true
-    source?: true
-    sourceUrl?: true
-    imageUrl?: true
-    imagePath?: true
-    isActive?: true
-    discontinuedAt?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type PhonesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Phones to aggregate.
-     */
-    where?: PhonesWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Phones to fetch.
-     */
-    orderBy?: PhonesOrderByWithRelationInput | PhonesOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: PhonesWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Phones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Phones.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Phones
-    **/
-    _count?: true | PhonesCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: PhonesAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: PhonesSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: PhonesMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: PhonesMaxAggregateInputType
-  }
-
-  export type GetPhonesAggregateType<T extends PhonesAggregateArgs> = {
-        [P in keyof T & keyof AggregatePhones]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregatePhones[P]>
-      : GetScalarType<T[P], AggregatePhones[P]>
-  }
-
-
-
-
-  export type PhonesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PhonesWhereInput
-    orderBy?: PhonesOrderByWithAggregationInput | PhonesOrderByWithAggregationInput[]
-    by: PhonesScalarFieldEnum[] | PhonesScalarFieldEnum
-    having?: PhonesScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: PhonesCountAggregateInputType | true
-    _avg?: PhonesAvgAggregateInputType
-    _sum?: PhonesSumAggregateInputType
-    _min?: PhonesMinAggregateInputType
-    _max?: PhonesMaxAggregateInputType
-  }
-
-  export type PhonesGroupByOutputType = {
-    phoneId: string
-    brand: string
-    modelName: string
-    price: Decimal | null
-    antutuScore: number | null
-    ramGb: number | null
-    storageGb: number | null
-    batteryMah: number | null
-    chargingWatts: number | null
-    displayType: string | null
-    displayPpi: number | null
-    cameraScore: Decimal | null
-    frontCameraScore: Decimal | null
-    osName: string | null
-    supports5g: boolean
-    supportsNfc: boolean
-    dualSim: boolean
-    source: string | null
-    sourceUrl: string | null
-    imageUrl: string | null
-    imagePath: string | null
-    isActive: boolean
-    discontinuedAt: Date | null
-    createdAt: Date
-    updatedAt: Date
-    _count: PhonesCountAggregateOutputType | null
-    _avg: PhonesAvgAggregateOutputType | null
-    _sum: PhonesSumAggregateOutputType | null
-    _min: PhonesMinAggregateOutputType | null
-    _max: PhonesMaxAggregateOutputType | null
-  }
-
-  type GetPhonesGroupByPayload<T extends PhonesGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<PhonesGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof PhonesGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], PhonesGroupByOutputType[P]>
-            : GetScalarType<T[P], PhonesGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type PhonesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    phoneId?: boolean
-    brand?: boolean
-    modelName?: boolean
-    price?: boolean
-    antutuScore?: boolean
-    ramGb?: boolean
-    storageGb?: boolean
-    batteryMah?: boolean
-    chargingWatts?: boolean
-    displayType?: boolean
-    displayPpi?: boolean
-    cameraScore?: boolean
-    frontCameraScore?: boolean
-    osName?: boolean
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: boolean
-    sourceUrl?: boolean
-    imageUrl?: boolean
-    imagePath?: boolean
-    isActive?: boolean
-    discontinuedAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    recommendationHistory?: boolean | Phones$recommendationHistoryArgs<ExtArgs>
-    wishlist?: boolean | Phones$wishlistArgs<ExtArgs>
-    comparedAsA?: boolean | Phones$comparedAsAArgs<ExtArgs>
-    comparedAsB?: boolean | Phones$comparedAsBArgs<ExtArgs>
-    _count?: boolean | PhonesCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["phones"]>
-
-  export type PhonesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    phoneId?: boolean
-    brand?: boolean
-    modelName?: boolean
-    price?: boolean
-    antutuScore?: boolean
-    ramGb?: boolean
-    storageGb?: boolean
-    batteryMah?: boolean
-    chargingWatts?: boolean
-    displayType?: boolean
-    displayPpi?: boolean
-    cameraScore?: boolean
-    frontCameraScore?: boolean
-    osName?: boolean
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: boolean
-    sourceUrl?: boolean
-    imageUrl?: boolean
-    imagePath?: boolean
-    isActive?: boolean
-    discontinuedAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }, ExtArgs["result"]["phones"]>
-
-  export type PhonesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    phoneId?: boolean
-    brand?: boolean
-    modelName?: boolean
-    price?: boolean
-    antutuScore?: boolean
-    ramGb?: boolean
-    storageGb?: boolean
-    batteryMah?: boolean
-    chargingWatts?: boolean
-    displayType?: boolean
-    displayPpi?: boolean
-    cameraScore?: boolean
-    frontCameraScore?: boolean
-    osName?: boolean
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: boolean
-    sourceUrl?: boolean
-    imageUrl?: boolean
-    imagePath?: boolean
-    isActive?: boolean
-    discontinuedAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }, ExtArgs["result"]["phones"]>
-
-  export type PhonesSelectScalar = {
-    phoneId?: boolean
-    brand?: boolean
-    modelName?: boolean
-    price?: boolean
-    antutuScore?: boolean
-    ramGb?: boolean
-    storageGb?: boolean
-    batteryMah?: boolean
-    chargingWatts?: boolean
-    displayType?: boolean
-    displayPpi?: boolean
-    cameraScore?: boolean
-    frontCameraScore?: boolean
-    osName?: boolean
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: boolean
-    sourceUrl?: boolean
-    imageUrl?: boolean
-    imagePath?: boolean
-    isActive?: boolean
-    discontinuedAt?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type PhonesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"phoneId" | "brand" | "modelName" | "price" | "antutuScore" | "ramGb" | "storageGb" | "batteryMah" | "chargingWatts" | "displayType" | "displayPpi" | "cameraScore" | "frontCameraScore" | "osName" | "supports5g" | "supportsNfc" | "dualSim" | "source" | "sourceUrl" | "imageUrl" | "imagePath" | "isActive" | "discontinuedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["phones"]>
-  export type PhonesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    recommendationHistory?: boolean | Phones$recommendationHistoryArgs<ExtArgs>
-    wishlist?: boolean | Phones$wishlistArgs<ExtArgs>
-    comparedAsA?: boolean | Phones$comparedAsAArgs<ExtArgs>
-    comparedAsB?: boolean | Phones$comparedAsBArgs<ExtArgs>
-    _count?: boolean | PhonesCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type PhonesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type PhonesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-
-  export type $PhonesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Phones"
-    objects: {
-      recommendationHistory: Prisma.$RecommendationHistoryPayload<ExtArgs>[]
-      wishlist: Prisma.$WishlistPayload<ExtArgs>[]
-      comparedAsA: Prisma.$ComparisonHistoryPayload<ExtArgs>[]
-      comparedAsB: Prisma.$ComparisonHistoryPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      phoneId: string
-      brand: string
-      modelName: string
-      price: Prisma.Decimal | null
-      antutuScore: number | null
-      ramGb: number | null
-      storageGb: number | null
-      batteryMah: number | null
-      chargingWatts: number | null
-      displayType: string | null
-      displayPpi: number | null
-      cameraScore: Prisma.Decimal | null
-      frontCameraScore: Prisma.Decimal | null
-      osName: string | null
-      supports5g: boolean
-      supportsNfc: boolean
-      dualSim: boolean
-      source: string | null
-      sourceUrl: string | null
-      imageUrl: string | null
-      imagePath: string | null
-      isActive: boolean
-      discontinuedAt: Date | null
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["phones"]>
-    composites: {}
-  }
-
-  type PhonesGetPayload<S extends boolean | null | undefined | PhonesDefaultArgs> = $Result.GetResult<Prisma.$PhonesPayload, S>
-
-  type PhonesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<PhonesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: PhonesCountAggregateInputType | true
-    }
-
-  export interface PhonesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Phones'], meta: { name: 'Phones' } }
-    /**
-     * Find zero or one Phones that matches the filter.
-     * @param {PhonesFindUniqueArgs} args - Arguments to find a Phones
-     * @example
-     * // Get one Phones
-     * const phones = await prisma.phones.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends PhonesFindUniqueArgs>(args: SelectSubset<T, PhonesFindUniqueArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Phones that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {PhonesFindUniqueOrThrowArgs} args - Arguments to find a Phones
-     * @example
-     * // Get one Phones
-     * const phones = await prisma.phones.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends PhonesFindUniqueOrThrowArgs>(args: SelectSubset<T, PhonesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Phones that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PhonesFindFirstArgs} args - Arguments to find a Phones
-     * @example
-     * // Get one Phones
-     * const phones = await prisma.phones.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends PhonesFindFirstArgs>(args?: SelectSubset<T, PhonesFindFirstArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Phones that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PhonesFindFirstOrThrowArgs} args - Arguments to find a Phones
-     * @example
-     * // Get one Phones
-     * const phones = await prisma.phones.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends PhonesFindFirstOrThrowArgs>(args?: SelectSubset<T, PhonesFindFirstOrThrowArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Phones that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PhonesFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Phones
-     * const phones = await prisma.phones.findMany()
-     * 
-     * // Get first 10 Phones
-     * const phones = await prisma.phones.findMany({ take: 10 })
-     * 
-     * // Only select the `phoneId`
-     * const phonesWithPhoneIdOnly = await prisma.phones.findMany({ select: { phoneId: true } })
-     * 
-     */
-    findMany<T extends PhonesFindManyArgs>(args?: SelectSubset<T, PhonesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Phones.
-     * @param {PhonesCreateArgs} args - Arguments to create a Phones.
-     * @example
-     * // Create one Phones
-     * const Phones = await prisma.phones.create({
-     *   data: {
-     *     // ... data to create a Phones
-     *   }
-     * })
-     * 
-     */
-    create<T extends PhonesCreateArgs>(args: SelectSubset<T, PhonesCreateArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Phones.
-     * @param {PhonesCreateManyArgs} args - Arguments to create many Phones.
-     * @example
-     * // Create many Phones
-     * const phones = await prisma.phones.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends PhonesCreateManyArgs>(args?: SelectSubset<T, PhonesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Phones and returns the data saved in the database.
-     * @param {PhonesCreateManyAndReturnArgs} args - Arguments to create many Phones.
-     * @example
-     * // Create many Phones
-     * const phones = await prisma.phones.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Phones and only return the `phoneId`
-     * const phonesWithPhoneIdOnly = await prisma.phones.createManyAndReturn({
-     *   select: { phoneId: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends PhonesCreateManyAndReturnArgs>(args?: SelectSubset<T, PhonesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Phones.
-     * @param {PhonesDeleteArgs} args - Arguments to delete one Phones.
-     * @example
-     * // Delete one Phones
-     * const Phones = await prisma.phones.delete({
-     *   where: {
-     *     // ... filter to delete one Phones
-     *   }
-     * })
-     * 
-     */
-    delete<T extends PhonesDeleteArgs>(args: SelectSubset<T, PhonesDeleteArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Phones.
-     * @param {PhonesUpdateArgs} args - Arguments to update one Phones.
-     * @example
-     * // Update one Phones
-     * const phones = await prisma.phones.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends PhonesUpdateArgs>(args: SelectSubset<T, PhonesUpdateArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Phones.
-     * @param {PhonesDeleteManyArgs} args - Arguments to filter Phones to delete.
-     * @example
-     * // Delete a few Phones
-     * const { count } = await prisma.phones.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends PhonesDeleteManyArgs>(args?: SelectSubset<T, PhonesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Phones.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PhonesUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Phones
-     * const phones = await prisma.phones.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends PhonesUpdateManyArgs>(args: SelectSubset<T, PhonesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Phones and returns the data updated in the database.
-     * @param {PhonesUpdateManyAndReturnArgs} args - Arguments to update many Phones.
-     * @example
-     * // Update many Phones
-     * const phones = await prisma.phones.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Phones and only return the `phoneId`
-     * const phonesWithPhoneIdOnly = await prisma.phones.updateManyAndReturn({
-     *   select: { phoneId: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends PhonesUpdateManyAndReturnArgs>(args: SelectSubset<T, PhonesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Phones.
-     * @param {PhonesUpsertArgs} args - Arguments to update or create a Phones.
-     * @example
-     * // Update or create a Phones
-     * const phones = await prisma.phones.upsert({
-     *   create: {
-     *     // ... data to create a Phones
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Phones we want to update
-     *   }
-     * })
-     */
-    upsert<T extends PhonesUpsertArgs>(args: SelectSubset<T, PhonesUpsertArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Phones.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PhonesCountArgs} args - Arguments to filter Phones to count.
-     * @example
-     * // Count the number of Phones
-     * const count = await prisma.phones.count({
-     *   where: {
-     *     // ... the filter for the Phones we want to count
-     *   }
-     * })
-    **/
-    count<T extends PhonesCountArgs>(
-      args?: Subset<T, PhonesCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], PhonesCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Phones.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PhonesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends PhonesAggregateArgs>(args: Subset<T, PhonesAggregateArgs>): Prisma.PrismaPromise<GetPhonesAggregateType<T>>
-
-    /**
-     * Group by Phones.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PhonesGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends PhonesGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: PhonesGroupByArgs['orderBy'] }
-        : { orderBy?: PhonesGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, PhonesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPhonesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Phones model
-   */
-  readonly fields: PhonesFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Phones.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__PhonesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    recommendationHistory<T extends Phones$recommendationHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Phones$recommendationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    wishlist<T extends Phones$wishlistArgs<ExtArgs> = {}>(args?: Subset<T, Phones$wishlistArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WishlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    comparedAsA<T extends Phones$comparedAsAArgs<ExtArgs> = {}>(args?: Subset<T, Phones$comparedAsAArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComparisonHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    comparedAsB<T extends Phones$comparedAsBArgs<ExtArgs> = {}>(args?: Subset<T, Phones$comparedAsBArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComparisonHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Phones model
-   */
-  interface PhonesFieldRefs {
-    readonly phoneId: FieldRef<"Phones", 'String'>
-    readonly brand: FieldRef<"Phones", 'String'>
-    readonly modelName: FieldRef<"Phones", 'String'>
-    readonly price: FieldRef<"Phones", 'Decimal'>
-    readonly antutuScore: FieldRef<"Phones", 'Int'>
-    readonly ramGb: FieldRef<"Phones", 'Int'>
-    readonly storageGb: FieldRef<"Phones", 'Int'>
-    readonly batteryMah: FieldRef<"Phones", 'Int'>
-    readonly chargingWatts: FieldRef<"Phones", 'Int'>
-    readonly displayType: FieldRef<"Phones", 'String'>
-    readonly displayPpi: FieldRef<"Phones", 'Int'>
-    readonly cameraScore: FieldRef<"Phones", 'Decimal'>
-    readonly frontCameraScore: FieldRef<"Phones", 'Decimal'>
-    readonly osName: FieldRef<"Phones", 'String'>
-    readonly supports5g: FieldRef<"Phones", 'Boolean'>
-    readonly supportsNfc: FieldRef<"Phones", 'Boolean'>
-    readonly dualSim: FieldRef<"Phones", 'Boolean'>
-    readonly source: FieldRef<"Phones", 'String'>
-    readonly sourceUrl: FieldRef<"Phones", 'String'>
-    readonly imageUrl: FieldRef<"Phones", 'String'>
-    readonly imagePath: FieldRef<"Phones", 'String'>
-    readonly isActive: FieldRef<"Phones", 'Boolean'>
-    readonly discontinuedAt: FieldRef<"Phones", 'DateTime'>
-    readonly createdAt: FieldRef<"Phones", 'DateTime'>
-    readonly updatedAt: FieldRef<"Phones", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Phones findUnique
-   */
-  export type PhonesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PhonesInclude<ExtArgs> | null
-    /**
-     * Filter, which Phones to fetch.
-     */
-    where: PhonesWhereUniqueInput
-  }
-
-  /**
-   * Phones findUniqueOrThrow
-   */
-  export type PhonesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PhonesInclude<ExtArgs> | null
-    /**
-     * Filter, which Phones to fetch.
-     */
-    where: PhonesWhereUniqueInput
-  }
-
-  /**
-   * Phones findFirst
-   */
-  export type PhonesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PhonesInclude<ExtArgs> | null
-    /**
-     * Filter, which Phones to fetch.
-     */
-    where?: PhonesWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Phones to fetch.
-     */
-    orderBy?: PhonesOrderByWithRelationInput | PhonesOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Phones.
-     */
-    cursor?: PhonesWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Phones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Phones.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Phones.
-     */
-    distinct?: PhonesScalarFieldEnum | PhonesScalarFieldEnum[]
-  }
-
-  /**
-   * Phones findFirstOrThrow
-   */
-  export type PhonesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PhonesInclude<ExtArgs> | null
-    /**
-     * Filter, which Phones to fetch.
-     */
-    where?: PhonesWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Phones to fetch.
-     */
-    orderBy?: PhonesOrderByWithRelationInput | PhonesOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Phones.
-     */
-    cursor?: PhonesWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Phones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Phones.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Phones.
-     */
-    distinct?: PhonesScalarFieldEnum | PhonesScalarFieldEnum[]
-  }
-
-  /**
-   * Phones findMany
-   */
-  export type PhonesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PhonesInclude<ExtArgs> | null
-    /**
-     * Filter, which Phones to fetch.
-     */
-    where?: PhonesWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Phones to fetch.
-     */
-    orderBy?: PhonesOrderByWithRelationInput | PhonesOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Phones.
-     */
-    cursor?: PhonesWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Phones from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Phones.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Phones.
-     */
-    distinct?: PhonesScalarFieldEnum | PhonesScalarFieldEnum[]
-  }
-
-  /**
-   * Phones create
-   */
-  export type PhonesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PhonesInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Phones.
-     */
-    data: XOR<PhonesCreateInput, PhonesUncheckedCreateInput>
-  }
-
-  /**
-   * Phones createMany
-   */
-  export type PhonesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Phones.
-     */
-    data: PhonesCreateManyInput | PhonesCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Phones createManyAndReturn
-   */
-  export type PhonesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * The data used to create many Phones.
-     */
-    data: PhonesCreateManyInput | PhonesCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Phones update
-   */
-  export type PhonesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PhonesInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Phones.
-     */
-    data: XOR<PhonesUpdateInput, PhonesUncheckedUpdateInput>
-    /**
-     * Choose, which Phones to update.
-     */
-    where: PhonesWhereUniqueInput
-  }
-
-  /**
-   * Phones updateMany
-   */
-  export type PhonesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Phones.
-     */
-    data: XOR<PhonesUpdateManyMutationInput, PhonesUncheckedUpdateManyInput>
-    /**
-     * Filter which Phones to update
-     */
-    where?: PhonesWhereInput
-    /**
-     * Limit how many Phones to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Phones updateManyAndReturn
-   */
-  export type PhonesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * The data used to update Phones.
-     */
-    data: XOR<PhonesUpdateManyMutationInput, PhonesUncheckedUpdateManyInput>
-    /**
-     * Filter which Phones to update
-     */
-    where?: PhonesWhereInput
-    /**
-     * Limit how many Phones to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Phones upsert
-   */
-  export type PhonesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PhonesInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Phones to update in case it exists.
-     */
-    where: PhonesWhereUniqueInput
-    /**
-     * In case the Phones found by the `where` argument doesn't exist, create a new Phones with this data.
-     */
-    create: XOR<PhonesCreateInput, PhonesUncheckedCreateInput>
-    /**
-     * In case the Phones was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<PhonesUpdateInput, PhonesUncheckedUpdateInput>
-  }
-
-  /**
-   * Phones delete
-   */
-  export type PhonesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PhonesInclude<ExtArgs> | null
-    /**
-     * Filter which Phones to delete.
-     */
-    where: PhonesWhereUniqueInput
-  }
-
-  /**
-   * Phones deleteMany
-   */
-  export type PhonesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Phones to delete
-     */
-    where?: PhonesWhereInput
-    /**
-     * Limit how many Phones to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Phones.recommendationHistory
-   */
-  export type Phones$recommendationHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the RecommendationHistory
-     */
-    select?: RecommendationHistorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the RecommendationHistory
-     */
-    omit?: RecommendationHistoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RecommendationHistoryInclude<ExtArgs> | null
-    where?: RecommendationHistoryWhereInput
-    orderBy?: RecommendationHistoryOrderByWithRelationInput | RecommendationHistoryOrderByWithRelationInput[]
-    cursor?: RecommendationHistoryWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: RecommendationHistoryScalarFieldEnum | RecommendationHistoryScalarFieldEnum[]
-  }
-
-  /**
-   * Phones.wishlist
-   */
-  export type Phones$wishlistArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Wishlist
-     */
-    select?: WishlistSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Wishlist
-     */
-    omit?: WishlistOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: WishlistInclude<ExtArgs> | null
-    where?: WishlistWhereInput
-    orderBy?: WishlistOrderByWithRelationInput | WishlistOrderByWithRelationInput[]
-    cursor?: WishlistWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: WishlistScalarFieldEnum | WishlistScalarFieldEnum[]
-  }
-
-  /**
-   * Phones.comparedAsA
-   */
-  export type Phones$comparedAsAArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ComparisonHistory
-     */
-    select?: ComparisonHistorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ComparisonHistory
-     */
-    omit?: ComparisonHistoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ComparisonHistoryInclude<ExtArgs> | null
-    where?: ComparisonHistoryWhereInput
-    orderBy?: ComparisonHistoryOrderByWithRelationInput | ComparisonHistoryOrderByWithRelationInput[]
-    cursor?: ComparisonHistoryWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ComparisonHistoryScalarFieldEnum | ComparisonHistoryScalarFieldEnum[]
-  }
-
-  /**
-   * Phones.comparedAsB
-   */
-  export type Phones$comparedAsBArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ComparisonHistory
-     */
-    select?: ComparisonHistorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ComparisonHistory
-     */
-    omit?: ComparisonHistoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ComparisonHistoryInclude<ExtArgs> | null
-    where?: ComparisonHistoryWhereInput
-    orderBy?: ComparisonHistoryOrderByWithRelationInput | ComparisonHistoryOrderByWithRelationInput[]
-    cursor?: ComparisonHistoryWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ComparisonHistoryScalarFieldEnum | ComparisonHistoryScalarFieldEnum[]
-  }
-
-  /**
-   * Phones without action
-   */
-  export type PhonesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Phones
-     */
-    select?: PhonesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Phones
-     */
-    omit?: PhonesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PhonesInclude<ExtArgs> | null
   }
 
 
@@ -15089,36 +19400,36 @@ export namespace Prisma {
     statId: string | null
     computedDate: Date | null
     mostRecommendedBrand: string | null
-    mostRecommendedPhone: string | null
+    mostRecommendedPhoneId: string | null
+    mostComparedPhoneId: string | null
+    mostViewedPhoneId: string | null
     avgUserBudget: Decimal | null
     mostPopularPersona: string | null
     avgCompatibility: Decimal | null
-    mostComparedPhone: string | null
-    mostViewedPhone: string | null
   }
 
   export type AdminStatsCacheMaxAggregateOutputType = {
     statId: string | null
     computedDate: Date | null
     mostRecommendedBrand: string | null
-    mostRecommendedPhone: string | null
+    mostRecommendedPhoneId: string | null
+    mostComparedPhoneId: string | null
+    mostViewedPhoneId: string | null
     avgUserBudget: Decimal | null
     mostPopularPersona: string | null
     avgCompatibility: Decimal | null
-    mostComparedPhone: string | null
-    mostViewedPhone: string | null
   }
 
   export type AdminStatsCacheCountAggregateOutputType = {
     statId: number
     computedDate: number
     mostRecommendedBrand: number
-    mostRecommendedPhone: number
+    mostRecommendedPhoneId: number
+    mostComparedPhoneId: number
+    mostViewedPhoneId: number
     avgUserBudget: number
     mostPopularPersona: number
     avgCompatibility: number
-    mostComparedPhone: number
-    mostViewedPhone: number
     _all: number
   }
 
@@ -15137,36 +19448,36 @@ export namespace Prisma {
     statId?: true
     computedDate?: true
     mostRecommendedBrand?: true
-    mostRecommendedPhone?: true
+    mostRecommendedPhoneId?: true
+    mostComparedPhoneId?: true
+    mostViewedPhoneId?: true
     avgUserBudget?: true
     mostPopularPersona?: true
     avgCompatibility?: true
-    mostComparedPhone?: true
-    mostViewedPhone?: true
   }
 
   export type AdminStatsCacheMaxAggregateInputType = {
     statId?: true
     computedDate?: true
     mostRecommendedBrand?: true
-    mostRecommendedPhone?: true
+    mostRecommendedPhoneId?: true
+    mostComparedPhoneId?: true
+    mostViewedPhoneId?: true
     avgUserBudget?: true
     mostPopularPersona?: true
     avgCompatibility?: true
-    mostComparedPhone?: true
-    mostViewedPhone?: true
   }
 
   export type AdminStatsCacheCountAggregateInputType = {
     statId?: true
     computedDate?: true
     mostRecommendedBrand?: true
-    mostRecommendedPhone?: true
+    mostRecommendedPhoneId?: true
+    mostComparedPhoneId?: true
+    mostViewedPhoneId?: true
     avgUserBudget?: true
     mostPopularPersona?: true
     avgCompatibility?: true
-    mostComparedPhone?: true
-    mostViewedPhone?: true
     _all?: true
   }
 
@@ -15260,12 +19571,12 @@ export namespace Prisma {
     statId: string
     computedDate: Date
     mostRecommendedBrand: string | null
-    mostRecommendedPhone: string | null
+    mostRecommendedPhoneId: string | null
+    mostComparedPhoneId: string | null
+    mostViewedPhoneId: string | null
     avgUserBudget: Decimal | null
     mostPopularPersona: string | null
     avgCompatibility: Decimal | null
-    mostComparedPhone: string | null
-    mostViewedPhone: string | null
     _count: AdminStatsCacheCountAggregateOutputType | null
     _avg: AdminStatsCacheAvgAggregateOutputType | null
     _sum: AdminStatsCacheSumAggregateOutputType | null
@@ -15291,65 +19602,93 @@ export namespace Prisma {
     statId?: boolean
     computedDate?: boolean
     mostRecommendedBrand?: boolean
-    mostRecommendedPhone?: boolean
+    mostRecommendedPhoneId?: boolean
+    mostComparedPhoneId?: boolean
+    mostViewedPhoneId?: boolean
     avgUserBudget?: boolean
     mostPopularPersona?: boolean
     avgCompatibility?: boolean
-    mostComparedPhone?: boolean
-    mostViewedPhone?: boolean
+    mostRecommendedPhone?: boolean | AdminStatsCache$mostRecommendedPhoneArgs<ExtArgs>
+    mostComparedPhone?: boolean | AdminStatsCache$mostComparedPhoneArgs<ExtArgs>
+    mostViewedPhone?: boolean | AdminStatsCache$mostViewedPhoneArgs<ExtArgs>
   }, ExtArgs["result"]["adminStatsCache"]>
 
   export type AdminStatsCacheSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     statId?: boolean
     computedDate?: boolean
     mostRecommendedBrand?: boolean
-    mostRecommendedPhone?: boolean
+    mostRecommendedPhoneId?: boolean
+    mostComparedPhoneId?: boolean
+    mostViewedPhoneId?: boolean
     avgUserBudget?: boolean
     mostPopularPersona?: boolean
     avgCompatibility?: boolean
-    mostComparedPhone?: boolean
-    mostViewedPhone?: boolean
+    mostRecommendedPhone?: boolean | AdminStatsCache$mostRecommendedPhoneArgs<ExtArgs>
+    mostComparedPhone?: boolean | AdminStatsCache$mostComparedPhoneArgs<ExtArgs>
+    mostViewedPhone?: boolean | AdminStatsCache$mostViewedPhoneArgs<ExtArgs>
   }, ExtArgs["result"]["adminStatsCache"]>
 
   export type AdminStatsCacheSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     statId?: boolean
     computedDate?: boolean
     mostRecommendedBrand?: boolean
-    mostRecommendedPhone?: boolean
+    mostRecommendedPhoneId?: boolean
+    mostComparedPhoneId?: boolean
+    mostViewedPhoneId?: boolean
     avgUserBudget?: boolean
     mostPopularPersona?: boolean
     avgCompatibility?: boolean
-    mostComparedPhone?: boolean
-    mostViewedPhone?: boolean
+    mostRecommendedPhone?: boolean | AdminStatsCache$mostRecommendedPhoneArgs<ExtArgs>
+    mostComparedPhone?: boolean | AdminStatsCache$mostComparedPhoneArgs<ExtArgs>
+    mostViewedPhone?: boolean | AdminStatsCache$mostViewedPhoneArgs<ExtArgs>
   }, ExtArgs["result"]["adminStatsCache"]>
 
   export type AdminStatsCacheSelectScalar = {
     statId?: boolean
     computedDate?: boolean
     mostRecommendedBrand?: boolean
-    mostRecommendedPhone?: boolean
+    mostRecommendedPhoneId?: boolean
+    mostComparedPhoneId?: boolean
+    mostViewedPhoneId?: boolean
     avgUserBudget?: boolean
     mostPopularPersona?: boolean
     avgCompatibility?: boolean
-    mostComparedPhone?: boolean
-    mostViewedPhone?: boolean
   }
 
-  export type AdminStatsCacheOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"statId" | "computedDate" | "mostRecommendedBrand" | "mostRecommendedPhone" | "avgUserBudget" | "mostPopularPersona" | "avgCompatibility" | "mostComparedPhone" | "mostViewedPhone", ExtArgs["result"]["adminStatsCache"]>
+  export type AdminStatsCacheOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"statId" | "computedDate" | "mostRecommendedBrand" | "mostRecommendedPhoneId" | "mostComparedPhoneId" | "mostViewedPhoneId" | "avgUserBudget" | "mostPopularPersona" | "avgCompatibility", ExtArgs["result"]["adminStatsCache"]>
+  export type AdminStatsCacheInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mostRecommendedPhone?: boolean | AdminStatsCache$mostRecommendedPhoneArgs<ExtArgs>
+    mostComparedPhone?: boolean | AdminStatsCache$mostComparedPhoneArgs<ExtArgs>
+    mostViewedPhone?: boolean | AdminStatsCache$mostViewedPhoneArgs<ExtArgs>
+  }
+  export type AdminStatsCacheIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mostRecommendedPhone?: boolean | AdminStatsCache$mostRecommendedPhoneArgs<ExtArgs>
+    mostComparedPhone?: boolean | AdminStatsCache$mostComparedPhoneArgs<ExtArgs>
+    mostViewedPhone?: boolean | AdminStatsCache$mostViewedPhoneArgs<ExtArgs>
+  }
+  export type AdminStatsCacheIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mostRecommendedPhone?: boolean | AdminStatsCache$mostRecommendedPhoneArgs<ExtArgs>
+    mostComparedPhone?: boolean | AdminStatsCache$mostComparedPhoneArgs<ExtArgs>
+    mostViewedPhone?: boolean | AdminStatsCache$mostViewedPhoneArgs<ExtArgs>
+  }
 
   export type $AdminStatsCachePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AdminStatsCache"
-    objects: {}
+    objects: {
+      mostRecommendedPhone: Prisma.$PhonesPayload<ExtArgs> | null
+      mostComparedPhone: Prisma.$PhonesPayload<ExtArgs> | null
+      mostViewedPhone: Prisma.$PhonesPayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
       statId: string
       computedDate: Date
       mostRecommendedBrand: string | null
-      mostRecommendedPhone: string | null
+      mostRecommendedPhoneId: string | null
+      mostComparedPhoneId: string | null
+      mostViewedPhoneId: string | null
       avgUserBudget: Prisma.Decimal | null
       mostPopularPersona: string | null
       avgCompatibility: Prisma.Decimal | null
-      mostComparedPhone: string | null
-      mostViewedPhone: string | null
     }, ExtArgs["result"]["adminStatsCache"]>
     composites: {}
   }
@@ -15744,6 +20083,9 @@ export namespace Prisma {
    */
   export interface Prisma__AdminStatsCacheClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    mostRecommendedPhone<T extends AdminStatsCache$mostRecommendedPhoneArgs<ExtArgs> = {}>(args?: Subset<T, AdminStatsCache$mostRecommendedPhoneArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    mostComparedPhone<T extends AdminStatsCache$mostComparedPhoneArgs<ExtArgs> = {}>(args?: Subset<T, AdminStatsCache$mostComparedPhoneArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    mostViewedPhone<T extends AdminStatsCache$mostViewedPhoneArgs<ExtArgs> = {}>(args?: Subset<T, AdminStatsCache$mostViewedPhoneArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15776,12 +20118,12 @@ export namespace Prisma {
     readonly statId: FieldRef<"AdminStatsCache", 'String'>
     readonly computedDate: FieldRef<"AdminStatsCache", 'DateTime'>
     readonly mostRecommendedBrand: FieldRef<"AdminStatsCache", 'String'>
-    readonly mostRecommendedPhone: FieldRef<"AdminStatsCache", 'String'>
+    readonly mostRecommendedPhoneId: FieldRef<"AdminStatsCache", 'String'>
+    readonly mostComparedPhoneId: FieldRef<"AdminStatsCache", 'String'>
+    readonly mostViewedPhoneId: FieldRef<"AdminStatsCache", 'String'>
     readonly avgUserBudget: FieldRef<"AdminStatsCache", 'Decimal'>
     readonly mostPopularPersona: FieldRef<"AdminStatsCache", 'String'>
     readonly avgCompatibility: FieldRef<"AdminStatsCache", 'Decimal'>
-    readonly mostComparedPhone: FieldRef<"AdminStatsCache", 'String'>
-    readonly mostViewedPhone: FieldRef<"AdminStatsCache", 'String'>
   }
     
 
@@ -15798,6 +20140,10 @@ export namespace Prisma {
      * Omit specific fields from the AdminStatsCache
      */
     omit?: AdminStatsCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
     /**
      * Filter, which AdminStatsCache to fetch.
      */
@@ -15817,6 +20163,10 @@ export namespace Prisma {
      */
     omit?: AdminStatsCacheOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
+    /**
      * Filter, which AdminStatsCache to fetch.
      */
     where: AdminStatsCacheWhereUniqueInput
@@ -15834,6 +20184,10 @@ export namespace Prisma {
      * Omit specific fields from the AdminStatsCache
      */
     omit?: AdminStatsCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
     /**
      * Filter, which AdminStatsCache to fetch.
      */
@@ -15883,6 +20237,10 @@ export namespace Prisma {
      */
     omit?: AdminStatsCacheOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
+    /**
      * Filter, which AdminStatsCache to fetch.
      */
     where?: AdminStatsCacheWhereInput
@@ -15930,6 +20288,10 @@ export namespace Prisma {
      * Omit specific fields from the AdminStatsCache
      */
     omit?: AdminStatsCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
     /**
      * Filter, which AdminStatsCaches to fetch.
      */
@@ -15979,6 +20341,10 @@ export namespace Prisma {
      */
     omit?: AdminStatsCacheOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
+    /**
      * The data needed to create a AdminStatsCache.
      */
     data?: XOR<AdminStatsCacheCreateInput, AdminStatsCacheUncheckedCreateInput>
@@ -16012,6 +20378,10 @@ export namespace Prisma {
      */
     data: AdminStatsCacheCreateManyInput | AdminStatsCacheCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -16026,6 +20396,10 @@ export namespace Prisma {
      * Omit specific fields from the AdminStatsCache
      */
     omit?: AdminStatsCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
     /**
      * The data needed to update a AdminStatsCache.
      */
@@ -16078,6 +20452,10 @@ export namespace Prisma {
      * Limit how many AdminStatsCaches to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -16092,6 +20470,10 @@ export namespace Prisma {
      * Omit specific fields from the AdminStatsCache
      */
     omit?: AdminStatsCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
     /**
      * The filter to search for the AdminStatsCache to update in case it exists.
      */
@@ -16119,6 +20501,10 @@ export namespace Prisma {
      */
     omit?: AdminStatsCacheOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
+    /**
      * Filter which AdminStatsCache to delete.
      */
     where: AdminStatsCacheWhereUniqueInput
@@ -16139,6 +20525,63 @@ export namespace Prisma {
   }
 
   /**
+   * AdminStatsCache.mostRecommendedPhone
+   */
+  export type AdminStatsCache$mostRecommendedPhoneArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    where?: PhonesWhereInput
+  }
+
+  /**
+   * AdminStatsCache.mostComparedPhone
+   */
+  export type AdminStatsCache$mostComparedPhoneArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    where?: PhonesWhereInput
+  }
+
+  /**
+   * AdminStatsCache.mostViewedPhone
+   */
+  export type AdminStatsCache$mostViewedPhoneArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Phones
+     */
+    select?: PhonesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Phones
+     */
+    omit?: PhonesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhonesInclude<ExtArgs> | null
+    where?: PhonesWhereInput
+  }
+
+  /**
    * AdminStatsCache without action
    */
   export type AdminStatsCacheDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16150,6 +20593,10 @@ export namespace Prisma {
      * Omit specific fields from the AdminStatsCache
      */
     omit?: AdminStatsCacheOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminStatsCacheInclude<ExtArgs> | null
   }
 
 
@@ -16211,6 +20658,107 @@ export namespace Prisma {
   export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
+  export const BrandsScalarFieldEnum: {
+    brandId: 'brandId',
+    name: 'name',
+    logoUrl: 'logoUrl',
+    website: 'website',
+    country: 'country',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BrandsScalarFieldEnum = (typeof BrandsScalarFieldEnum)[keyof typeof BrandsScalarFieldEnum]
+
+
+  export const PhonesScalarFieldEnum: {
+    phoneId: 'phoneId',
+    brandId: 'brandId',
+    modelName: 'modelName',
+    imageUrl: 'imageUrl',
+    imagePath: 'imagePath',
+    antutuScore: 'antutuScore',
+    batteryMah: 'batteryMah',
+    source: 'source',
+    sourceUrl: 'sourceUrl',
+    isActive: 'isActive',
+    discontinuedAt: 'discontinuedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PhonesScalarFieldEnum = (typeof PhonesScalarFieldEnum)[keyof typeof PhonesScalarFieldEnum]
+
+
+  export const PhoneVariantsScalarFieldEnum: {
+    variantId: 'variantId',
+    phoneId: 'phoneId',
+    ramGb: 'ramGb',
+    storageGb: 'storageGb',
+    price: 'price',
+    storageType: 'storageType',
+    colors: 'colors',
+    isAvailable: 'isAvailable',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PhoneVariantsScalarFieldEnum = (typeof PhoneVariantsScalarFieldEnum)[keyof typeof PhoneVariantsScalarFieldEnum]
+
+
+  export const PhoneSpecsScalarFieldEnum: {
+    specId: 'specId',
+    phoneId: 'phoneId',
+    networkTech: 'networkTech',
+    supports5g: 'supports5g',
+    supportsNfc: 'supportsNfc',
+    dualSim: 'dualSim',
+    simType: 'simType',
+    wifi: 'wifi',
+    bluetooth: 'bluetooth',
+    usbType: 'usbType',
+    headphoneJack: 'headphoneJack',
+    gps: 'gps',
+    sensors: 'sensors',
+    displayType: 'displayType',
+    refreshRate: 'refreshRate',
+    displaySize: 'displaySize',
+    resolution: 'resolution',
+    ppiDensity: 'ppiDensity',
+    screenToBody: 'screenToBody',
+    displayProtection: 'displayProtection',
+    os: 'os',
+    osVersion: 'osVersion',
+    chipset: 'chipset',
+    processNode: 'processNode',
+    cpu: 'cpu',
+    gpu: 'gpu',
+    mainCamera: 'mainCamera',
+    lensCount: 'lensCount',
+    mainAperture: 'mainAperture',
+    ois: 'ois',
+    sensorSize: 'sensorSize',
+    camera4K: 'camera4K',
+    cameraVideo: 'cameraVideo',
+    selfieCamera: 'selfieCamera',
+    selfie4K: 'selfie4K',
+    dimensions: 'dimensions',
+    weight: 'weight',
+    buildMaterial: 'buildMaterial',
+    ipRating: 'ipRating',
+    batteryMah: 'batteryMah',
+    wiredCharging: 'wiredCharging',
+    wirelessCharging: 'wirelessCharging',
+    reverseWireless: 'reverseWireless',
+    announced: 'announced',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PhoneSpecsScalarFieldEnum = (typeof PhoneSpecsScalarFieldEnum)[keyof typeof PhoneSpecsScalarFieldEnum]
+
+
   export const UserProfileScalarFieldEnum: {
     profileId: 'profileId',
     userId: 'userId',
@@ -16232,43 +20780,12 @@ export namespace Prisma {
     maxBudget: 'maxBudget',
     cameraPreference: 'cameraPreference',
     usageType: 'usageType',
-    preferredBrand: 'preferredBrand',
+    preferredBrandId: 'preferredBrandId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type UserPreferenceScalarFieldEnum = (typeof UserPreferenceScalarFieldEnum)[keyof typeof UserPreferenceScalarFieldEnum]
-
-
-  export const PhonesScalarFieldEnum: {
-    phoneId: 'phoneId',
-    brand: 'brand',
-    modelName: 'modelName',
-    price: 'price',
-    antutuScore: 'antutuScore',
-    ramGb: 'ramGb',
-    storageGb: 'storageGb',
-    batteryMah: 'batteryMah',
-    chargingWatts: 'chargingWatts',
-    displayType: 'displayType',
-    displayPpi: 'displayPpi',
-    cameraScore: 'cameraScore',
-    frontCameraScore: 'frontCameraScore',
-    osName: 'osName',
-    supports5g: 'supports5g',
-    supportsNfc: 'supportsNfc',
-    dualSim: 'dualSim',
-    source: 'source',
-    sourceUrl: 'sourceUrl',
-    imageUrl: 'imageUrl',
-    imagePath: 'imagePath',
-    isActive: 'isActive',
-    discontinuedAt: 'discontinuedAt',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type PhonesScalarFieldEnum = (typeof PhonesScalarFieldEnum)[keyof typeof PhonesScalarFieldEnum]
 
 
   export const RecommendationHistoryScalarFieldEnum: {
@@ -16348,12 +20865,12 @@ export namespace Prisma {
     statId: 'statId',
     computedDate: 'computedDate',
     mostRecommendedBrand: 'mostRecommendedBrand',
-    mostRecommendedPhone: 'mostRecommendedPhone',
+    mostRecommendedPhoneId: 'mostRecommendedPhoneId',
+    mostComparedPhoneId: 'mostComparedPhoneId',
+    mostViewedPhoneId: 'mostViewedPhoneId',
     avgUserBudget: 'avgUserBudget',
     mostPopularPersona: 'mostPopularPersona',
-    avgCompatibility: 'avgCompatibility',
-    mostComparedPhone: 'mostComparedPhone',
-    mostViewedPhone: 'mostViewedPhone'
+    avgCompatibility: 'avgCompatibility'
   };
 
   export type AdminStatsCacheScalarFieldEnum = (typeof AdminStatsCacheScalarFieldEnum)[keyof typeof AdminStatsCacheScalarFieldEnum]
@@ -16828,6 +21345,549 @@ export namespace Prisma {
     expire?: DateTimeWithAggregatesFilter<"Session"> | Date | string
   }
 
+  export type BrandsWhereInput = {
+    AND?: BrandsWhereInput | BrandsWhereInput[]
+    OR?: BrandsWhereInput[]
+    NOT?: BrandsWhereInput | BrandsWhereInput[]
+    brandId?: UuidFilter<"Brands"> | string
+    name?: StringFilter<"Brands"> | string
+    logoUrl?: StringNullableFilter<"Brands"> | string | null
+    website?: StringNullableFilter<"Brands"> | string | null
+    country?: StringNullableFilter<"Brands"> | string | null
+    createdAt?: DateTimeFilter<"Brands"> | Date | string
+    updatedAt?: DateTimeFilter<"Brands"> | Date | string
+    phones?: PhonesListRelationFilter
+    userPreferences?: UserPreferenceListRelationFilter
+  }
+
+  export type BrandsOrderByWithRelationInput = {
+    brandId?: SortOrder
+    name?: SortOrder
+    logoUrl?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    phones?: PhonesOrderByRelationAggregateInput
+    userPreferences?: UserPreferenceOrderByRelationAggregateInput
+  }
+
+  export type BrandsWhereUniqueInput = Prisma.AtLeast<{
+    brandId?: string
+    name?: string
+    AND?: BrandsWhereInput | BrandsWhereInput[]
+    OR?: BrandsWhereInput[]
+    NOT?: BrandsWhereInput | BrandsWhereInput[]
+    logoUrl?: StringNullableFilter<"Brands"> | string | null
+    website?: StringNullableFilter<"Brands"> | string | null
+    country?: StringNullableFilter<"Brands"> | string | null
+    createdAt?: DateTimeFilter<"Brands"> | Date | string
+    updatedAt?: DateTimeFilter<"Brands"> | Date | string
+    phones?: PhonesListRelationFilter
+    userPreferences?: UserPreferenceListRelationFilter
+  }, "brandId" | "name">
+
+  export type BrandsOrderByWithAggregationInput = {
+    brandId?: SortOrder
+    name?: SortOrder
+    logoUrl?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BrandsCountOrderByAggregateInput
+    _max?: BrandsMaxOrderByAggregateInput
+    _min?: BrandsMinOrderByAggregateInput
+  }
+
+  export type BrandsScalarWhereWithAggregatesInput = {
+    AND?: BrandsScalarWhereWithAggregatesInput | BrandsScalarWhereWithAggregatesInput[]
+    OR?: BrandsScalarWhereWithAggregatesInput[]
+    NOT?: BrandsScalarWhereWithAggregatesInput | BrandsScalarWhereWithAggregatesInput[]
+    brandId?: UuidWithAggregatesFilter<"Brands"> | string
+    name?: StringWithAggregatesFilter<"Brands"> | string
+    logoUrl?: StringNullableWithAggregatesFilter<"Brands"> | string | null
+    website?: StringNullableWithAggregatesFilter<"Brands"> | string | null
+    country?: StringNullableWithAggregatesFilter<"Brands"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Brands"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Brands"> | Date | string
+  }
+
+  export type PhonesWhereInput = {
+    AND?: PhonesWhereInput | PhonesWhereInput[]
+    OR?: PhonesWhereInput[]
+    NOT?: PhonesWhereInput | PhonesWhereInput[]
+    phoneId?: UuidFilter<"Phones"> | string
+    brandId?: UuidFilter<"Phones"> | string
+    modelName?: StringFilter<"Phones"> | string
+    imageUrl?: StringNullableFilter<"Phones"> | string | null
+    imagePath?: StringNullableFilter<"Phones"> | string | null
+    antutuScore?: IntNullableFilter<"Phones"> | number | null
+    batteryMah?: IntNullableFilter<"Phones"> | number | null
+    source?: StringNullableFilter<"Phones"> | string | null
+    sourceUrl?: StringNullableFilter<"Phones"> | string | null
+    isActive?: BoolFilter<"Phones"> | boolean
+    discontinuedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
+    createdAt?: DateTimeFilter<"Phones"> | Date | string
+    updatedAt?: DateTimeFilter<"Phones"> | Date | string
+    brand?: XOR<BrandsScalarRelationFilter, BrandsWhereInput>
+    variants?: PhoneVariantsListRelationFilter
+    specs?: XOR<PhoneSpecsNullableScalarRelationFilter, PhoneSpecsWhereInput> | null
+    recommendationHistory?: RecommendationHistoryListRelationFilter
+    wishlist?: WishlistListRelationFilter
+    comparedAsA?: ComparisonHistoryListRelationFilter
+    comparedAsB?: ComparisonHistoryListRelationFilter
+    mostRecommendedInStats?: AdminStatsCacheListRelationFilter
+    mostComparedInStats?: AdminStatsCacheListRelationFilter
+    mostViewedInStats?: AdminStatsCacheListRelationFilter
+  }
+
+  export type PhonesOrderByWithRelationInput = {
+    phoneId?: SortOrder
+    brandId?: SortOrder
+    modelName?: SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    imagePath?: SortOrderInput | SortOrder
+    antutuScore?: SortOrderInput | SortOrder
+    batteryMah?: SortOrderInput | SortOrder
+    source?: SortOrderInput | SortOrder
+    sourceUrl?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    discontinuedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    brand?: BrandsOrderByWithRelationInput
+    variants?: PhoneVariantsOrderByRelationAggregateInput
+    specs?: PhoneSpecsOrderByWithRelationInput
+    recommendationHistory?: RecommendationHistoryOrderByRelationAggregateInput
+    wishlist?: WishlistOrderByRelationAggregateInput
+    comparedAsA?: ComparisonHistoryOrderByRelationAggregateInput
+    comparedAsB?: ComparisonHistoryOrderByRelationAggregateInput
+    mostRecommendedInStats?: AdminStatsCacheOrderByRelationAggregateInput
+    mostComparedInStats?: AdminStatsCacheOrderByRelationAggregateInput
+    mostViewedInStats?: AdminStatsCacheOrderByRelationAggregateInput
+  }
+
+  export type PhonesWhereUniqueInput = Prisma.AtLeast<{
+    phoneId?: string
+    brandId_modelName?: PhonesBrandIdModelNameCompoundUniqueInput
+    AND?: PhonesWhereInput | PhonesWhereInput[]
+    OR?: PhonesWhereInput[]
+    NOT?: PhonesWhereInput | PhonesWhereInput[]
+    brandId?: UuidFilter<"Phones"> | string
+    modelName?: StringFilter<"Phones"> | string
+    imageUrl?: StringNullableFilter<"Phones"> | string | null
+    imagePath?: StringNullableFilter<"Phones"> | string | null
+    antutuScore?: IntNullableFilter<"Phones"> | number | null
+    batteryMah?: IntNullableFilter<"Phones"> | number | null
+    source?: StringNullableFilter<"Phones"> | string | null
+    sourceUrl?: StringNullableFilter<"Phones"> | string | null
+    isActive?: BoolFilter<"Phones"> | boolean
+    discontinuedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
+    createdAt?: DateTimeFilter<"Phones"> | Date | string
+    updatedAt?: DateTimeFilter<"Phones"> | Date | string
+    brand?: XOR<BrandsScalarRelationFilter, BrandsWhereInput>
+    variants?: PhoneVariantsListRelationFilter
+    specs?: XOR<PhoneSpecsNullableScalarRelationFilter, PhoneSpecsWhereInput> | null
+    recommendationHistory?: RecommendationHistoryListRelationFilter
+    wishlist?: WishlistListRelationFilter
+    comparedAsA?: ComparisonHistoryListRelationFilter
+    comparedAsB?: ComparisonHistoryListRelationFilter
+    mostRecommendedInStats?: AdminStatsCacheListRelationFilter
+    mostComparedInStats?: AdminStatsCacheListRelationFilter
+    mostViewedInStats?: AdminStatsCacheListRelationFilter
+  }, "phoneId" | "brandId_modelName">
+
+  export type PhonesOrderByWithAggregationInput = {
+    phoneId?: SortOrder
+    brandId?: SortOrder
+    modelName?: SortOrder
+    imageUrl?: SortOrderInput | SortOrder
+    imagePath?: SortOrderInput | SortOrder
+    antutuScore?: SortOrderInput | SortOrder
+    batteryMah?: SortOrderInput | SortOrder
+    source?: SortOrderInput | SortOrder
+    sourceUrl?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    discontinuedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PhonesCountOrderByAggregateInput
+    _avg?: PhonesAvgOrderByAggregateInput
+    _max?: PhonesMaxOrderByAggregateInput
+    _min?: PhonesMinOrderByAggregateInput
+    _sum?: PhonesSumOrderByAggregateInput
+  }
+
+  export type PhonesScalarWhereWithAggregatesInput = {
+    AND?: PhonesScalarWhereWithAggregatesInput | PhonesScalarWhereWithAggregatesInput[]
+    OR?: PhonesScalarWhereWithAggregatesInput[]
+    NOT?: PhonesScalarWhereWithAggregatesInput | PhonesScalarWhereWithAggregatesInput[]
+    phoneId?: UuidWithAggregatesFilter<"Phones"> | string
+    brandId?: UuidWithAggregatesFilter<"Phones"> | string
+    modelName?: StringWithAggregatesFilter<"Phones"> | string
+    imageUrl?: StringNullableWithAggregatesFilter<"Phones"> | string | null
+    imagePath?: StringNullableWithAggregatesFilter<"Phones"> | string | null
+    antutuScore?: IntNullableWithAggregatesFilter<"Phones"> | number | null
+    batteryMah?: IntNullableWithAggregatesFilter<"Phones"> | number | null
+    source?: StringNullableWithAggregatesFilter<"Phones"> | string | null
+    sourceUrl?: StringNullableWithAggregatesFilter<"Phones"> | string | null
+    isActive?: BoolWithAggregatesFilter<"Phones"> | boolean
+    discontinuedAt?: DateTimeNullableWithAggregatesFilter<"Phones"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Phones"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Phones"> | Date | string
+  }
+
+  export type PhoneVariantsWhereInput = {
+    AND?: PhoneVariantsWhereInput | PhoneVariantsWhereInput[]
+    OR?: PhoneVariantsWhereInput[]
+    NOT?: PhoneVariantsWhereInput | PhoneVariantsWhereInput[]
+    variantId?: UuidFilter<"PhoneVariants"> | string
+    phoneId?: UuidFilter<"PhoneVariants"> | string
+    ramGb?: IntFilter<"PhoneVariants"> | number
+    storageGb?: IntFilter<"PhoneVariants"> | number
+    price?: DecimalNullableFilter<"PhoneVariants"> | Decimal | DecimalJsLike | number | string | null
+    storageType?: StringNullableFilter<"PhoneVariants"> | string | null
+    colors?: JsonNullableFilter<"PhoneVariants">
+    isAvailable?: BoolFilter<"PhoneVariants"> | boolean
+    createdAt?: DateTimeFilter<"PhoneVariants"> | Date | string
+    updatedAt?: DateTimeFilter<"PhoneVariants"> | Date | string
+    phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
+  }
+
+  export type PhoneVariantsOrderByWithRelationInput = {
+    variantId?: SortOrder
+    phoneId?: SortOrder
+    ramGb?: SortOrder
+    storageGb?: SortOrder
+    price?: SortOrderInput | SortOrder
+    storageType?: SortOrderInput | SortOrder
+    colors?: SortOrderInput | SortOrder
+    isAvailable?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    phone?: PhonesOrderByWithRelationInput
+  }
+
+  export type PhoneVariantsWhereUniqueInput = Prisma.AtLeast<{
+    variantId?: string
+    phoneId_ramGb_storageGb?: PhoneVariantsPhoneIdRamGbStorageGbCompoundUniqueInput
+    AND?: PhoneVariantsWhereInput | PhoneVariantsWhereInput[]
+    OR?: PhoneVariantsWhereInput[]
+    NOT?: PhoneVariantsWhereInput | PhoneVariantsWhereInput[]
+    phoneId?: UuidFilter<"PhoneVariants"> | string
+    ramGb?: IntFilter<"PhoneVariants"> | number
+    storageGb?: IntFilter<"PhoneVariants"> | number
+    price?: DecimalNullableFilter<"PhoneVariants"> | Decimal | DecimalJsLike | number | string | null
+    storageType?: StringNullableFilter<"PhoneVariants"> | string | null
+    colors?: JsonNullableFilter<"PhoneVariants">
+    isAvailable?: BoolFilter<"PhoneVariants"> | boolean
+    createdAt?: DateTimeFilter<"PhoneVariants"> | Date | string
+    updatedAt?: DateTimeFilter<"PhoneVariants"> | Date | string
+    phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
+  }, "variantId" | "phoneId_ramGb_storageGb">
+
+  export type PhoneVariantsOrderByWithAggregationInput = {
+    variantId?: SortOrder
+    phoneId?: SortOrder
+    ramGb?: SortOrder
+    storageGb?: SortOrder
+    price?: SortOrderInput | SortOrder
+    storageType?: SortOrderInput | SortOrder
+    colors?: SortOrderInput | SortOrder
+    isAvailable?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PhoneVariantsCountOrderByAggregateInput
+    _avg?: PhoneVariantsAvgOrderByAggregateInput
+    _max?: PhoneVariantsMaxOrderByAggregateInput
+    _min?: PhoneVariantsMinOrderByAggregateInput
+    _sum?: PhoneVariantsSumOrderByAggregateInput
+  }
+
+  export type PhoneVariantsScalarWhereWithAggregatesInput = {
+    AND?: PhoneVariantsScalarWhereWithAggregatesInput | PhoneVariantsScalarWhereWithAggregatesInput[]
+    OR?: PhoneVariantsScalarWhereWithAggregatesInput[]
+    NOT?: PhoneVariantsScalarWhereWithAggregatesInput | PhoneVariantsScalarWhereWithAggregatesInput[]
+    variantId?: UuidWithAggregatesFilter<"PhoneVariants"> | string
+    phoneId?: UuidWithAggregatesFilter<"PhoneVariants"> | string
+    ramGb?: IntWithAggregatesFilter<"PhoneVariants"> | number
+    storageGb?: IntWithAggregatesFilter<"PhoneVariants"> | number
+    price?: DecimalNullableWithAggregatesFilter<"PhoneVariants"> | Decimal | DecimalJsLike | number | string | null
+    storageType?: StringNullableWithAggregatesFilter<"PhoneVariants"> | string | null
+    colors?: JsonNullableWithAggregatesFilter<"PhoneVariants">
+    isAvailable?: BoolWithAggregatesFilter<"PhoneVariants"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"PhoneVariants"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PhoneVariants"> | Date | string
+  }
+
+  export type PhoneSpecsWhereInput = {
+    AND?: PhoneSpecsWhereInput | PhoneSpecsWhereInput[]
+    OR?: PhoneSpecsWhereInput[]
+    NOT?: PhoneSpecsWhereInput | PhoneSpecsWhereInput[]
+    specId?: UuidFilter<"PhoneSpecs"> | string
+    phoneId?: UuidFilter<"PhoneSpecs"> | string
+    networkTech?: StringNullableFilter<"PhoneSpecs"> | string | null
+    supports5g?: BoolFilter<"PhoneSpecs"> | boolean
+    supportsNfc?: BoolFilter<"PhoneSpecs"> | boolean
+    dualSim?: BoolFilter<"PhoneSpecs"> | boolean
+    simType?: StringNullableFilter<"PhoneSpecs"> | string | null
+    wifi?: StringNullableFilter<"PhoneSpecs"> | string | null
+    bluetooth?: StringNullableFilter<"PhoneSpecs"> | string | null
+    usbType?: StringNullableFilter<"PhoneSpecs"> | string | null
+    headphoneJack?: BoolNullableFilter<"PhoneSpecs"> | boolean | null
+    gps?: BoolFilter<"PhoneSpecs"> | boolean
+    sensors?: JsonNullableFilter<"PhoneSpecs">
+    displayType?: StringNullableFilter<"PhoneSpecs"> | string | null
+    refreshRate?: IntNullableFilter<"PhoneSpecs"> | number | null
+    displaySize?: DecimalNullableFilter<"PhoneSpecs"> | Decimal | DecimalJsLike | number | string | null
+    resolution?: StringNullableFilter<"PhoneSpecs"> | string | null
+    ppiDensity?: IntNullableFilter<"PhoneSpecs"> | number | null
+    screenToBody?: DecimalNullableFilter<"PhoneSpecs"> | Decimal | DecimalJsLike | number | string | null
+    displayProtection?: StringNullableFilter<"PhoneSpecs"> | string | null
+    os?: StringNullableFilter<"PhoneSpecs"> | string | null
+    osVersion?: StringNullableFilter<"PhoneSpecs"> | string | null
+    chipset?: StringNullableFilter<"PhoneSpecs"> | string | null
+    processNode?: StringNullableFilter<"PhoneSpecs"> | string | null
+    cpu?: StringNullableFilter<"PhoneSpecs"> | string | null
+    gpu?: StringNullableFilter<"PhoneSpecs"> | string | null
+    mainCamera?: StringNullableFilter<"PhoneSpecs"> | string | null
+    lensCount?: IntNullableFilter<"PhoneSpecs"> | number | null
+    mainAperture?: StringNullableFilter<"PhoneSpecs"> | string | null
+    ois?: BoolNullableFilter<"PhoneSpecs"> | boolean | null
+    sensorSize?: StringNullableFilter<"PhoneSpecs"> | string | null
+    camera4K?: BoolNullableFilter<"PhoneSpecs"> | boolean | null
+    cameraVideo?: StringNullableFilter<"PhoneSpecs"> | string | null
+    selfieCamera?: StringNullableFilter<"PhoneSpecs"> | string | null
+    selfie4K?: BoolNullableFilter<"PhoneSpecs"> | boolean | null
+    dimensions?: StringNullableFilter<"PhoneSpecs"> | string | null
+    weight?: DecimalNullableFilter<"PhoneSpecs"> | Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: StringNullableFilter<"PhoneSpecs"> | string | null
+    ipRating?: StringNullableFilter<"PhoneSpecs"> | string | null
+    batteryMah?: IntNullableFilter<"PhoneSpecs"> | number | null
+    wiredCharging?: IntNullableFilter<"PhoneSpecs"> | number | null
+    wirelessCharging?: IntNullableFilter<"PhoneSpecs"> | number | null
+    reverseWireless?: BoolNullableFilter<"PhoneSpecs"> | boolean | null
+    announced?: DateTimeNullableFilter<"PhoneSpecs"> | Date | string | null
+    status?: StringNullableFilter<"PhoneSpecs"> | string | null
+    createdAt?: DateTimeFilter<"PhoneSpecs"> | Date | string
+    updatedAt?: DateTimeFilter<"PhoneSpecs"> | Date | string
+    phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
+  }
+
+  export type PhoneSpecsOrderByWithRelationInput = {
+    specId?: SortOrder
+    phoneId?: SortOrder
+    networkTech?: SortOrderInput | SortOrder
+    supports5g?: SortOrder
+    supportsNfc?: SortOrder
+    dualSim?: SortOrder
+    simType?: SortOrderInput | SortOrder
+    wifi?: SortOrderInput | SortOrder
+    bluetooth?: SortOrderInput | SortOrder
+    usbType?: SortOrderInput | SortOrder
+    headphoneJack?: SortOrderInput | SortOrder
+    gps?: SortOrder
+    sensors?: SortOrderInput | SortOrder
+    displayType?: SortOrderInput | SortOrder
+    refreshRate?: SortOrderInput | SortOrder
+    displaySize?: SortOrderInput | SortOrder
+    resolution?: SortOrderInput | SortOrder
+    ppiDensity?: SortOrderInput | SortOrder
+    screenToBody?: SortOrderInput | SortOrder
+    displayProtection?: SortOrderInput | SortOrder
+    os?: SortOrderInput | SortOrder
+    osVersion?: SortOrderInput | SortOrder
+    chipset?: SortOrderInput | SortOrder
+    processNode?: SortOrderInput | SortOrder
+    cpu?: SortOrderInput | SortOrder
+    gpu?: SortOrderInput | SortOrder
+    mainCamera?: SortOrderInput | SortOrder
+    lensCount?: SortOrderInput | SortOrder
+    mainAperture?: SortOrderInput | SortOrder
+    ois?: SortOrderInput | SortOrder
+    sensorSize?: SortOrderInput | SortOrder
+    camera4K?: SortOrderInput | SortOrder
+    cameraVideo?: SortOrderInput | SortOrder
+    selfieCamera?: SortOrderInput | SortOrder
+    selfie4K?: SortOrderInput | SortOrder
+    dimensions?: SortOrderInput | SortOrder
+    weight?: SortOrderInput | SortOrder
+    buildMaterial?: SortOrderInput | SortOrder
+    ipRating?: SortOrderInput | SortOrder
+    batteryMah?: SortOrderInput | SortOrder
+    wiredCharging?: SortOrderInput | SortOrder
+    wirelessCharging?: SortOrderInput | SortOrder
+    reverseWireless?: SortOrderInput | SortOrder
+    announced?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    phone?: PhonesOrderByWithRelationInput
+  }
+
+  export type PhoneSpecsWhereUniqueInput = Prisma.AtLeast<{
+    specId?: string
+    phoneId?: string
+    AND?: PhoneSpecsWhereInput | PhoneSpecsWhereInput[]
+    OR?: PhoneSpecsWhereInput[]
+    NOT?: PhoneSpecsWhereInput | PhoneSpecsWhereInput[]
+    networkTech?: StringNullableFilter<"PhoneSpecs"> | string | null
+    supports5g?: BoolFilter<"PhoneSpecs"> | boolean
+    supportsNfc?: BoolFilter<"PhoneSpecs"> | boolean
+    dualSim?: BoolFilter<"PhoneSpecs"> | boolean
+    simType?: StringNullableFilter<"PhoneSpecs"> | string | null
+    wifi?: StringNullableFilter<"PhoneSpecs"> | string | null
+    bluetooth?: StringNullableFilter<"PhoneSpecs"> | string | null
+    usbType?: StringNullableFilter<"PhoneSpecs"> | string | null
+    headphoneJack?: BoolNullableFilter<"PhoneSpecs"> | boolean | null
+    gps?: BoolFilter<"PhoneSpecs"> | boolean
+    sensors?: JsonNullableFilter<"PhoneSpecs">
+    displayType?: StringNullableFilter<"PhoneSpecs"> | string | null
+    refreshRate?: IntNullableFilter<"PhoneSpecs"> | number | null
+    displaySize?: DecimalNullableFilter<"PhoneSpecs"> | Decimal | DecimalJsLike | number | string | null
+    resolution?: StringNullableFilter<"PhoneSpecs"> | string | null
+    ppiDensity?: IntNullableFilter<"PhoneSpecs"> | number | null
+    screenToBody?: DecimalNullableFilter<"PhoneSpecs"> | Decimal | DecimalJsLike | number | string | null
+    displayProtection?: StringNullableFilter<"PhoneSpecs"> | string | null
+    os?: StringNullableFilter<"PhoneSpecs"> | string | null
+    osVersion?: StringNullableFilter<"PhoneSpecs"> | string | null
+    chipset?: StringNullableFilter<"PhoneSpecs"> | string | null
+    processNode?: StringNullableFilter<"PhoneSpecs"> | string | null
+    cpu?: StringNullableFilter<"PhoneSpecs"> | string | null
+    gpu?: StringNullableFilter<"PhoneSpecs"> | string | null
+    mainCamera?: StringNullableFilter<"PhoneSpecs"> | string | null
+    lensCount?: IntNullableFilter<"PhoneSpecs"> | number | null
+    mainAperture?: StringNullableFilter<"PhoneSpecs"> | string | null
+    ois?: BoolNullableFilter<"PhoneSpecs"> | boolean | null
+    sensorSize?: StringNullableFilter<"PhoneSpecs"> | string | null
+    camera4K?: BoolNullableFilter<"PhoneSpecs"> | boolean | null
+    cameraVideo?: StringNullableFilter<"PhoneSpecs"> | string | null
+    selfieCamera?: StringNullableFilter<"PhoneSpecs"> | string | null
+    selfie4K?: BoolNullableFilter<"PhoneSpecs"> | boolean | null
+    dimensions?: StringNullableFilter<"PhoneSpecs"> | string | null
+    weight?: DecimalNullableFilter<"PhoneSpecs"> | Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: StringNullableFilter<"PhoneSpecs"> | string | null
+    ipRating?: StringNullableFilter<"PhoneSpecs"> | string | null
+    batteryMah?: IntNullableFilter<"PhoneSpecs"> | number | null
+    wiredCharging?: IntNullableFilter<"PhoneSpecs"> | number | null
+    wirelessCharging?: IntNullableFilter<"PhoneSpecs"> | number | null
+    reverseWireless?: BoolNullableFilter<"PhoneSpecs"> | boolean | null
+    announced?: DateTimeNullableFilter<"PhoneSpecs"> | Date | string | null
+    status?: StringNullableFilter<"PhoneSpecs"> | string | null
+    createdAt?: DateTimeFilter<"PhoneSpecs"> | Date | string
+    updatedAt?: DateTimeFilter<"PhoneSpecs"> | Date | string
+    phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
+  }, "specId" | "phoneId">
+
+  export type PhoneSpecsOrderByWithAggregationInput = {
+    specId?: SortOrder
+    phoneId?: SortOrder
+    networkTech?: SortOrderInput | SortOrder
+    supports5g?: SortOrder
+    supportsNfc?: SortOrder
+    dualSim?: SortOrder
+    simType?: SortOrderInput | SortOrder
+    wifi?: SortOrderInput | SortOrder
+    bluetooth?: SortOrderInput | SortOrder
+    usbType?: SortOrderInput | SortOrder
+    headphoneJack?: SortOrderInput | SortOrder
+    gps?: SortOrder
+    sensors?: SortOrderInput | SortOrder
+    displayType?: SortOrderInput | SortOrder
+    refreshRate?: SortOrderInput | SortOrder
+    displaySize?: SortOrderInput | SortOrder
+    resolution?: SortOrderInput | SortOrder
+    ppiDensity?: SortOrderInput | SortOrder
+    screenToBody?: SortOrderInput | SortOrder
+    displayProtection?: SortOrderInput | SortOrder
+    os?: SortOrderInput | SortOrder
+    osVersion?: SortOrderInput | SortOrder
+    chipset?: SortOrderInput | SortOrder
+    processNode?: SortOrderInput | SortOrder
+    cpu?: SortOrderInput | SortOrder
+    gpu?: SortOrderInput | SortOrder
+    mainCamera?: SortOrderInput | SortOrder
+    lensCount?: SortOrderInput | SortOrder
+    mainAperture?: SortOrderInput | SortOrder
+    ois?: SortOrderInput | SortOrder
+    sensorSize?: SortOrderInput | SortOrder
+    camera4K?: SortOrderInput | SortOrder
+    cameraVideo?: SortOrderInput | SortOrder
+    selfieCamera?: SortOrderInput | SortOrder
+    selfie4K?: SortOrderInput | SortOrder
+    dimensions?: SortOrderInput | SortOrder
+    weight?: SortOrderInput | SortOrder
+    buildMaterial?: SortOrderInput | SortOrder
+    ipRating?: SortOrderInput | SortOrder
+    batteryMah?: SortOrderInput | SortOrder
+    wiredCharging?: SortOrderInput | SortOrder
+    wirelessCharging?: SortOrderInput | SortOrder
+    reverseWireless?: SortOrderInput | SortOrder
+    announced?: SortOrderInput | SortOrder
+    status?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PhoneSpecsCountOrderByAggregateInput
+    _avg?: PhoneSpecsAvgOrderByAggregateInput
+    _max?: PhoneSpecsMaxOrderByAggregateInput
+    _min?: PhoneSpecsMinOrderByAggregateInput
+    _sum?: PhoneSpecsSumOrderByAggregateInput
+  }
+
+  export type PhoneSpecsScalarWhereWithAggregatesInput = {
+    AND?: PhoneSpecsScalarWhereWithAggregatesInput | PhoneSpecsScalarWhereWithAggregatesInput[]
+    OR?: PhoneSpecsScalarWhereWithAggregatesInput[]
+    NOT?: PhoneSpecsScalarWhereWithAggregatesInput | PhoneSpecsScalarWhereWithAggregatesInput[]
+    specId?: UuidWithAggregatesFilter<"PhoneSpecs"> | string
+    phoneId?: UuidWithAggregatesFilter<"PhoneSpecs"> | string
+    networkTech?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    supports5g?: BoolWithAggregatesFilter<"PhoneSpecs"> | boolean
+    supportsNfc?: BoolWithAggregatesFilter<"PhoneSpecs"> | boolean
+    dualSim?: BoolWithAggregatesFilter<"PhoneSpecs"> | boolean
+    simType?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    wifi?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    bluetooth?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    usbType?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    headphoneJack?: BoolNullableWithAggregatesFilter<"PhoneSpecs"> | boolean | null
+    gps?: BoolWithAggregatesFilter<"PhoneSpecs"> | boolean
+    sensors?: JsonNullableWithAggregatesFilter<"PhoneSpecs">
+    displayType?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    refreshRate?: IntNullableWithAggregatesFilter<"PhoneSpecs"> | number | null
+    displaySize?: DecimalNullableWithAggregatesFilter<"PhoneSpecs"> | Decimal | DecimalJsLike | number | string | null
+    resolution?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    ppiDensity?: IntNullableWithAggregatesFilter<"PhoneSpecs"> | number | null
+    screenToBody?: DecimalNullableWithAggregatesFilter<"PhoneSpecs"> | Decimal | DecimalJsLike | number | string | null
+    displayProtection?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    os?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    osVersion?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    chipset?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    processNode?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    cpu?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    gpu?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    mainCamera?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    lensCount?: IntNullableWithAggregatesFilter<"PhoneSpecs"> | number | null
+    mainAperture?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    ois?: BoolNullableWithAggregatesFilter<"PhoneSpecs"> | boolean | null
+    sensorSize?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    camera4K?: BoolNullableWithAggregatesFilter<"PhoneSpecs"> | boolean | null
+    cameraVideo?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    selfieCamera?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    selfie4K?: BoolNullableWithAggregatesFilter<"PhoneSpecs"> | boolean | null
+    dimensions?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    weight?: DecimalNullableWithAggregatesFilter<"PhoneSpecs"> | Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    ipRating?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    batteryMah?: IntNullableWithAggregatesFilter<"PhoneSpecs"> | number | null
+    wiredCharging?: IntNullableWithAggregatesFilter<"PhoneSpecs"> | number | null
+    wirelessCharging?: IntNullableWithAggregatesFilter<"PhoneSpecs"> | number | null
+    reverseWireless?: BoolNullableWithAggregatesFilter<"PhoneSpecs"> | boolean | null
+    announced?: DateTimeNullableWithAggregatesFilter<"PhoneSpecs"> | Date | string | null
+    status?: StringNullableWithAggregatesFilter<"PhoneSpecs"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PhoneSpecs"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PhoneSpecs"> | Date | string
+  }
+
   export type UserProfileWhereInput = {
     AND?: UserProfileWhereInput | UserProfileWhereInput[]
     OR?: UserProfileWhereInput[]
@@ -16914,9 +21974,10 @@ export namespace Prisma {
     maxBudget?: DecimalFilter<"UserPreference"> | Decimal | DecimalJsLike | number | string
     cameraPreference?: EnumCameraPreferenceFilter<"UserPreference"> | $Enums.CameraPreference
     usageType?: EnumUsageTypeFilter<"UserPreference"> | $Enums.UsageType
-    preferredBrand?: StringFilter<"UserPreference"> | string
+    preferredBrandId?: UuidNullableFilter<"UserPreference"> | string | null
     createdAt?: DateTimeFilter<"UserPreference"> | Date | string
     updatedAt?: DateTimeFilter<"UserPreference"> | Date | string
+    preferredBrand?: XOR<BrandsNullableScalarRelationFilter, BrandsWhereInput> | null
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
   }
 
@@ -16926,9 +21987,10 @@ export namespace Prisma {
     maxBudget?: SortOrder
     cameraPreference?: SortOrder
     usageType?: SortOrder
-    preferredBrand?: SortOrder
+    preferredBrandId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    preferredBrand?: BrandsOrderByWithRelationInput
     user?: UsersOrderByWithRelationInput
   }
 
@@ -16941,9 +22003,10 @@ export namespace Prisma {
     maxBudget?: DecimalFilter<"UserPreference"> | Decimal | DecimalJsLike | number | string
     cameraPreference?: EnumCameraPreferenceFilter<"UserPreference"> | $Enums.CameraPreference
     usageType?: EnumUsageTypeFilter<"UserPreference"> | $Enums.UsageType
-    preferredBrand?: StringFilter<"UserPreference"> | string
+    preferredBrandId?: UuidNullableFilter<"UserPreference"> | string | null
     createdAt?: DateTimeFilter<"UserPreference"> | Date | string
     updatedAt?: DateTimeFilter<"UserPreference"> | Date | string
+    preferredBrand?: XOR<BrandsNullableScalarRelationFilter, BrandsWhereInput> | null
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
   }, "preferenceId" | "userId">
 
@@ -16953,7 +22016,7 @@ export namespace Prisma {
     maxBudget?: SortOrder
     cameraPreference?: SortOrder
     usageType?: SortOrder
-    preferredBrand?: SortOrder
+    preferredBrandId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserPreferenceCountOrderByAggregateInput
@@ -16972,176 +22035,9 @@ export namespace Prisma {
     maxBudget?: DecimalWithAggregatesFilter<"UserPreference"> | Decimal | DecimalJsLike | number | string
     cameraPreference?: EnumCameraPreferenceWithAggregatesFilter<"UserPreference"> | $Enums.CameraPreference
     usageType?: EnumUsageTypeWithAggregatesFilter<"UserPreference"> | $Enums.UsageType
-    preferredBrand?: StringWithAggregatesFilter<"UserPreference"> | string
+    preferredBrandId?: UuidNullableWithAggregatesFilter<"UserPreference"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"UserPreference"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"UserPreference"> | Date | string
-  }
-
-  export type PhonesWhereInput = {
-    AND?: PhonesWhereInput | PhonesWhereInput[]
-    OR?: PhonesWhereInput[]
-    NOT?: PhonesWhereInput | PhonesWhereInput[]
-    phoneId?: UuidFilter<"Phones"> | string
-    brand?: StringFilter<"Phones"> | string
-    modelName?: StringFilter<"Phones"> | string
-    price?: DecimalNullableFilter<"Phones"> | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: IntNullableFilter<"Phones"> | number | null
-    ramGb?: IntNullableFilter<"Phones"> | number | null
-    storageGb?: IntNullableFilter<"Phones"> | number | null
-    batteryMah?: IntNullableFilter<"Phones"> | number | null
-    chargingWatts?: IntNullableFilter<"Phones"> | number | null
-    displayType?: StringNullableFilter<"Phones"> | string | null
-    displayPpi?: IntNullableFilter<"Phones"> | number | null
-    cameraScore?: DecimalNullableFilter<"Phones"> | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: DecimalNullableFilter<"Phones"> | Decimal | DecimalJsLike | number | string | null
-    osName?: StringNullableFilter<"Phones"> | string | null
-    supports5g?: BoolFilter<"Phones"> | boolean
-    supportsNfc?: BoolFilter<"Phones"> | boolean
-    dualSim?: BoolFilter<"Phones"> | boolean
-    source?: StringNullableFilter<"Phones"> | string | null
-    sourceUrl?: StringNullableFilter<"Phones"> | string | null
-    imageUrl?: StringNullableFilter<"Phones"> | string | null
-    imagePath?: StringNullableFilter<"Phones"> | string | null
-    isActive?: BoolFilter<"Phones"> | boolean
-    discontinuedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
-    createdAt?: DateTimeFilter<"Phones"> | Date | string
-    updatedAt?: DateTimeFilter<"Phones"> | Date | string
-    recommendationHistory?: RecommendationHistoryListRelationFilter
-    wishlist?: WishlistListRelationFilter
-    comparedAsA?: ComparisonHistoryListRelationFilter
-    comparedAsB?: ComparisonHistoryListRelationFilter
-  }
-
-  export type PhonesOrderByWithRelationInput = {
-    phoneId?: SortOrder
-    brand?: SortOrder
-    modelName?: SortOrder
-    price?: SortOrderInput | SortOrder
-    antutuScore?: SortOrderInput | SortOrder
-    ramGb?: SortOrderInput | SortOrder
-    storageGb?: SortOrderInput | SortOrder
-    batteryMah?: SortOrderInput | SortOrder
-    chargingWatts?: SortOrderInput | SortOrder
-    displayType?: SortOrderInput | SortOrder
-    displayPpi?: SortOrderInput | SortOrder
-    cameraScore?: SortOrderInput | SortOrder
-    frontCameraScore?: SortOrderInput | SortOrder
-    osName?: SortOrderInput | SortOrder
-    supports5g?: SortOrder
-    supportsNfc?: SortOrder
-    dualSim?: SortOrder
-    source?: SortOrderInput | SortOrder
-    sourceUrl?: SortOrderInput | SortOrder
-    imageUrl?: SortOrderInput | SortOrder
-    imagePath?: SortOrderInput | SortOrder
-    isActive?: SortOrder
-    discontinuedAt?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    recommendationHistory?: RecommendationHistoryOrderByRelationAggregateInput
-    wishlist?: WishlistOrderByRelationAggregateInput
-    comparedAsA?: ComparisonHistoryOrderByRelationAggregateInput
-    comparedAsB?: ComparisonHistoryOrderByRelationAggregateInput
-  }
-
-  export type PhonesWhereUniqueInput = Prisma.AtLeast<{
-    phoneId?: string
-    brand_modelName?: PhonesBrandModelNameCompoundUniqueInput
-    AND?: PhonesWhereInput | PhonesWhereInput[]
-    OR?: PhonesWhereInput[]
-    NOT?: PhonesWhereInput | PhonesWhereInput[]
-    brand?: StringFilter<"Phones"> | string
-    modelName?: StringFilter<"Phones"> | string
-    price?: DecimalNullableFilter<"Phones"> | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: IntNullableFilter<"Phones"> | number | null
-    ramGb?: IntNullableFilter<"Phones"> | number | null
-    storageGb?: IntNullableFilter<"Phones"> | number | null
-    batteryMah?: IntNullableFilter<"Phones"> | number | null
-    chargingWatts?: IntNullableFilter<"Phones"> | number | null
-    displayType?: StringNullableFilter<"Phones"> | string | null
-    displayPpi?: IntNullableFilter<"Phones"> | number | null
-    cameraScore?: DecimalNullableFilter<"Phones"> | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: DecimalNullableFilter<"Phones"> | Decimal | DecimalJsLike | number | string | null
-    osName?: StringNullableFilter<"Phones"> | string | null
-    supports5g?: BoolFilter<"Phones"> | boolean
-    supportsNfc?: BoolFilter<"Phones"> | boolean
-    dualSim?: BoolFilter<"Phones"> | boolean
-    source?: StringNullableFilter<"Phones"> | string | null
-    sourceUrl?: StringNullableFilter<"Phones"> | string | null
-    imageUrl?: StringNullableFilter<"Phones"> | string | null
-    imagePath?: StringNullableFilter<"Phones"> | string | null
-    isActive?: BoolFilter<"Phones"> | boolean
-    discontinuedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
-    createdAt?: DateTimeFilter<"Phones"> | Date | string
-    updatedAt?: DateTimeFilter<"Phones"> | Date | string
-    recommendationHistory?: RecommendationHistoryListRelationFilter
-    wishlist?: WishlistListRelationFilter
-    comparedAsA?: ComparisonHistoryListRelationFilter
-    comparedAsB?: ComparisonHistoryListRelationFilter
-  }, "phoneId" | "brand_modelName">
-
-  export type PhonesOrderByWithAggregationInput = {
-    phoneId?: SortOrder
-    brand?: SortOrder
-    modelName?: SortOrder
-    price?: SortOrderInput | SortOrder
-    antutuScore?: SortOrderInput | SortOrder
-    ramGb?: SortOrderInput | SortOrder
-    storageGb?: SortOrderInput | SortOrder
-    batteryMah?: SortOrderInput | SortOrder
-    chargingWatts?: SortOrderInput | SortOrder
-    displayType?: SortOrderInput | SortOrder
-    displayPpi?: SortOrderInput | SortOrder
-    cameraScore?: SortOrderInput | SortOrder
-    frontCameraScore?: SortOrderInput | SortOrder
-    osName?: SortOrderInput | SortOrder
-    supports5g?: SortOrder
-    supportsNfc?: SortOrder
-    dualSim?: SortOrder
-    source?: SortOrderInput | SortOrder
-    sourceUrl?: SortOrderInput | SortOrder
-    imageUrl?: SortOrderInput | SortOrder
-    imagePath?: SortOrderInput | SortOrder
-    isActive?: SortOrder
-    discontinuedAt?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: PhonesCountOrderByAggregateInput
-    _avg?: PhonesAvgOrderByAggregateInput
-    _max?: PhonesMaxOrderByAggregateInput
-    _min?: PhonesMinOrderByAggregateInput
-    _sum?: PhonesSumOrderByAggregateInput
-  }
-
-  export type PhonesScalarWhereWithAggregatesInput = {
-    AND?: PhonesScalarWhereWithAggregatesInput | PhonesScalarWhereWithAggregatesInput[]
-    OR?: PhonesScalarWhereWithAggregatesInput[]
-    NOT?: PhonesScalarWhereWithAggregatesInput | PhonesScalarWhereWithAggregatesInput[]
-    phoneId?: UuidWithAggregatesFilter<"Phones"> | string
-    brand?: StringWithAggregatesFilter<"Phones"> | string
-    modelName?: StringWithAggregatesFilter<"Phones"> | string
-    price?: DecimalNullableWithAggregatesFilter<"Phones"> | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: IntNullableWithAggregatesFilter<"Phones"> | number | null
-    ramGb?: IntNullableWithAggregatesFilter<"Phones"> | number | null
-    storageGb?: IntNullableWithAggregatesFilter<"Phones"> | number | null
-    batteryMah?: IntNullableWithAggregatesFilter<"Phones"> | number | null
-    chargingWatts?: IntNullableWithAggregatesFilter<"Phones"> | number | null
-    displayType?: StringNullableWithAggregatesFilter<"Phones"> | string | null
-    displayPpi?: IntNullableWithAggregatesFilter<"Phones"> | number | null
-    cameraScore?: DecimalNullableWithAggregatesFilter<"Phones"> | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: DecimalNullableWithAggregatesFilter<"Phones"> | Decimal | DecimalJsLike | number | string | null
-    osName?: StringNullableWithAggregatesFilter<"Phones"> | string | null
-    supports5g?: BoolWithAggregatesFilter<"Phones"> | boolean
-    supportsNfc?: BoolWithAggregatesFilter<"Phones"> | boolean
-    dualSim?: BoolWithAggregatesFilter<"Phones"> | boolean
-    source?: StringNullableWithAggregatesFilter<"Phones"> | string | null
-    sourceUrl?: StringNullableWithAggregatesFilter<"Phones"> | string | null
-    imageUrl?: StringNullableWithAggregatesFilter<"Phones"> | string | null
-    imagePath?: StringNullableWithAggregatesFilter<"Phones"> | string | null
-    isActive?: BoolWithAggregatesFilter<"Phones"> | boolean
-    discontinuedAt?: DateTimeNullableWithAggregatesFilter<"Phones"> | Date | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"Phones"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Phones"> | Date | string
   }
 
   export type RecommendationHistoryWhereInput = {
@@ -17533,24 +22429,30 @@ export namespace Prisma {
     statId?: UuidFilter<"AdminStatsCache"> | string
     computedDate?: DateTimeFilter<"AdminStatsCache"> | Date | string
     mostRecommendedBrand?: StringNullableFilter<"AdminStatsCache"> | string | null
-    mostRecommendedPhone?: StringNullableFilter<"AdminStatsCache"> | string | null
+    mostRecommendedPhoneId?: UuidNullableFilter<"AdminStatsCache"> | string | null
+    mostComparedPhoneId?: UuidNullableFilter<"AdminStatsCache"> | string | null
+    mostViewedPhoneId?: UuidNullableFilter<"AdminStatsCache"> | string | null
     avgUserBudget?: DecimalNullableFilter<"AdminStatsCache"> | Decimal | DecimalJsLike | number | string | null
     mostPopularPersona?: StringNullableFilter<"AdminStatsCache"> | string | null
     avgCompatibility?: DecimalNullableFilter<"AdminStatsCache"> | Decimal | DecimalJsLike | number | string | null
-    mostComparedPhone?: StringNullableFilter<"AdminStatsCache"> | string | null
-    mostViewedPhone?: StringNullableFilter<"AdminStatsCache"> | string | null
+    mostRecommendedPhone?: XOR<PhonesNullableScalarRelationFilter, PhonesWhereInput> | null
+    mostComparedPhone?: XOR<PhonesNullableScalarRelationFilter, PhonesWhereInput> | null
+    mostViewedPhone?: XOR<PhonesNullableScalarRelationFilter, PhonesWhereInput> | null
   }
 
   export type AdminStatsCacheOrderByWithRelationInput = {
     statId?: SortOrder
     computedDate?: SortOrder
     mostRecommendedBrand?: SortOrderInput | SortOrder
-    mostRecommendedPhone?: SortOrderInput | SortOrder
+    mostRecommendedPhoneId?: SortOrderInput | SortOrder
+    mostComparedPhoneId?: SortOrderInput | SortOrder
+    mostViewedPhoneId?: SortOrderInput | SortOrder
     avgUserBudget?: SortOrderInput | SortOrder
     mostPopularPersona?: SortOrderInput | SortOrder
     avgCompatibility?: SortOrderInput | SortOrder
-    mostComparedPhone?: SortOrderInput | SortOrder
-    mostViewedPhone?: SortOrderInput | SortOrder
+    mostRecommendedPhone?: PhonesOrderByWithRelationInput
+    mostComparedPhone?: PhonesOrderByWithRelationInput
+    mostViewedPhone?: PhonesOrderByWithRelationInput
   }
 
   export type AdminStatsCacheWhereUniqueInput = Prisma.AtLeast<{
@@ -17560,24 +22462,27 @@ export namespace Prisma {
     NOT?: AdminStatsCacheWhereInput | AdminStatsCacheWhereInput[]
     computedDate?: DateTimeFilter<"AdminStatsCache"> | Date | string
     mostRecommendedBrand?: StringNullableFilter<"AdminStatsCache"> | string | null
-    mostRecommendedPhone?: StringNullableFilter<"AdminStatsCache"> | string | null
+    mostRecommendedPhoneId?: UuidNullableFilter<"AdminStatsCache"> | string | null
+    mostComparedPhoneId?: UuidNullableFilter<"AdminStatsCache"> | string | null
+    mostViewedPhoneId?: UuidNullableFilter<"AdminStatsCache"> | string | null
     avgUserBudget?: DecimalNullableFilter<"AdminStatsCache"> | Decimal | DecimalJsLike | number | string | null
     mostPopularPersona?: StringNullableFilter<"AdminStatsCache"> | string | null
     avgCompatibility?: DecimalNullableFilter<"AdminStatsCache"> | Decimal | DecimalJsLike | number | string | null
-    mostComparedPhone?: StringNullableFilter<"AdminStatsCache"> | string | null
-    mostViewedPhone?: StringNullableFilter<"AdminStatsCache"> | string | null
+    mostRecommendedPhone?: XOR<PhonesNullableScalarRelationFilter, PhonesWhereInput> | null
+    mostComparedPhone?: XOR<PhonesNullableScalarRelationFilter, PhonesWhereInput> | null
+    mostViewedPhone?: XOR<PhonesNullableScalarRelationFilter, PhonesWhereInput> | null
   }, "statId">
 
   export type AdminStatsCacheOrderByWithAggregationInput = {
     statId?: SortOrder
     computedDate?: SortOrder
     mostRecommendedBrand?: SortOrderInput | SortOrder
-    mostRecommendedPhone?: SortOrderInput | SortOrder
+    mostRecommendedPhoneId?: SortOrderInput | SortOrder
+    mostComparedPhoneId?: SortOrderInput | SortOrder
+    mostViewedPhoneId?: SortOrderInput | SortOrder
     avgUserBudget?: SortOrderInput | SortOrder
     mostPopularPersona?: SortOrderInput | SortOrder
     avgCompatibility?: SortOrderInput | SortOrder
-    mostComparedPhone?: SortOrderInput | SortOrder
-    mostViewedPhone?: SortOrderInput | SortOrder
     _count?: AdminStatsCacheCountOrderByAggregateInput
     _avg?: AdminStatsCacheAvgOrderByAggregateInput
     _max?: AdminStatsCacheMaxOrderByAggregateInput
@@ -17592,12 +22497,12 @@ export namespace Prisma {
     statId?: UuidWithAggregatesFilter<"AdminStatsCache"> | string
     computedDate?: DateTimeWithAggregatesFilter<"AdminStatsCache"> | Date | string
     mostRecommendedBrand?: StringNullableWithAggregatesFilter<"AdminStatsCache"> | string | null
-    mostRecommendedPhone?: StringNullableWithAggregatesFilter<"AdminStatsCache"> | string | null
+    mostRecommendedPhoneId?: UuidNullableWithAggregatesFilter<"AdminStatsCache"> | string | null
+    mostComparedPhoneId?: UuidNullableWithAggregatesFilter<"AdminStatsCache"> | string | null
+    mostViewedPhoneId?: UuidNullableWithAggregatesFilter<"AdminStatsCache"> | string | null
     avgUserBudget?: DecimalNullableWithAggregatesFilter<"AdminStatsCache"> | Decimal | DecimalJsLike | number | string | null
     mostPopularPersona?: StringNullableWithAggregatesFilter<"AdminStatsCache"> | string | null
     avgCompatibility?: DecimalNullableWithAggregatesFilter<"AdminStatsCache"> | Decimal | DecimalJsLike | number | string | null
-    mostComparedPhone?: StringNullableWithAggregatesFilter<"AdminStatsCache"> | string | null
-    mostViewedPhone?: StringNullableWithAggregatesFilter<"AdminStatsCache"> | string | null
   }
 
   export type RolesCreateInput = {
@@ -17854,6 +22759,670 @@ export namespace Prisma {
     expire?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BrandsCreateInput = {
+    brandId?: string
+    name: string
+    logoUrl?: string | null
+    website?: string | null
+    country?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    phones?: PhonesCreateNestedManyWithoutBrandInput
+    userPreferences?: UserPreferenceCreateNestedManyWithoutPreferredBrandInput
+  }
+
+  export type BrandsUncheckedCreateInput = {
+    brandId?: string
+    name: string
+    logoUrl?: string | null
+    website?: string | null
+    country?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    phones?: PhonesUncheckedCreateNestedManyWithoutBrandInput
+    userPreferences?: UserPreferenceUncheckedCreateNestedManyWithoutPreferredBrandInput
+  }
+
+  export type BrandsUpdateInput = {
+    brandId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    phones?: PhonesUpdateManyWithoutBrandNestedInput
+    userPreferences?: UserPreferenceUpdateManyWithoutPreferredBrandNestedInput
+  }
+
+  export type BrandsUncheckedUpdateInput = {
+    brandId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    phones?: PhonesUncheckedUpdateManyWithoutBrandNestedInput
+    userPreferences?: UserPreferenceUncheckedUpdateManyWithoutPreferredBrandNestedInput
+  }
+
+  export type BrandsCreateManyInput = {
+    brandId?: string
+    name: string
+    logoUrl?: string | null
+    website?: string | null
+    country?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BrandsUpdateManyMutationInput = {
+    brandId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BrandsUncheckedUpdateManyInput = {
+    brandId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhonesCreateInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesUncheckedCreateInput = {
+    phoneId?: string
+    brandId: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesUpdateInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUncheckedUpdateInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesCreateManyInput = {
+    phoneId?: string
+    brandId: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PhonesUpdateManyMutationInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhonesUncheckedUpdateManyInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneVariantsCreateInput = {
+    variantId?: string
+    ramGb: number
+    storageGb: number
+    price?: Decimal | DecimalJsLike | number | string | null
+    storageType?: string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    phone: PhonesCreateNestedOneWithoutVariantsInput
+  }
+
+  export type PhoneVariantsUncheckedCreateInput = {
+    variantId?: string
+    phoneId: string
+    ramGb: number
+    storageGb: number
+    price?: Decimal | DecimalJsLike | number | string | null
+    storageType?: string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PhoneVariantsUpdateInput = {
+    variantId?: StringFieldUpdateOperationsInput | string
+    ramGb?: IntFieldUpdateOperationsInput | number
+    storageGb?: IntFieldUpdateOperationsInput | number
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    storageType?: NullableStringFieldUpdateOperationsInput | string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    phone?: PhonesUpdateOneRequiredWithoutVariantsNestedInput
+  }
+
+  export type PhoneVariantsUncheckedUpdateInput = {
+    variantId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    ramGb?: IntFieldUpdateOperationsInput | number
+    storageGb?: IntFieldUpdateOperationsInput | number
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    storageType?: NullableStringFieldUpdateOperationsInput | string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneVariantsCreateManyInput = {
+    variantId?: string
+    phoneId: string
+    ramGb: number
+    storageGb: number
+    price?: Decimal | DecimalJsLike | number | string | null
+    storageType?: string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PhoneVariantsUpdateManyMutationInput = {
+    variantId?: StringFieldUpdateOperationsInput | string
+    ramGb?: IntFieldUpdateOperationsInput | number
+    storageGb?: IntFieldUpdateOperationsInput | number
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    storageType?: NullableStringFieldUpdateOperationsInput | string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneVariantsUncheckedUpdateManyInput = {
+    variantId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    ramGb?: IntFieldUpdateOperationsInput | number
+    storageGb?: IntFieldUpdateOperationsInput | number
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    storageType?: NullableStringFieldUpdateOperationsInput | string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneSpecsCreateInput = {
+    specId?: string
+    networkTech?: string | null
+    supports5g?: boolean
+    supportsNfc?: boolean
+    dualSim?: boolean
+    simType?: string | null
+    wifi?: string | null
+    bluetooth?: string | null
+    usbType?: string | null
+    headphoneJack?: boolean | null
+    gps?: boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: string | null
+    refreshRate?: number | null
+    displaySize?: Decimal | DecimalJsLike | number | string | null
+    resolution?: string | null
+    ppiDensity?: number | null
+    screenToBody?: Decimal | DecimalJsLike | number | string | null
+    displayProtection?: string | null
+    os?: string | null
+    osVersion?: string | null
+    chipset?: string | null
+    processNode?: string | null
+    cpu?: string | null
+    gpu?: string | null
+    mainCamera?: string | null
+    lensCount?: number | null
+    mainAperture?: string | null
+    ois?: boolean | null
+    sensorSize?: string | null
+    camera4K?: boolean | null
+    cameraVideo?: string | null
+    selfieCamera?: string | null
+    selfie4K?: boolean | null
+    dimensions?: string | null
+    weight?: Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: string | null
+    ipRating?: string | null
+    batteryMah?: number | null
+    wiredCharging?: number | null
+    wirelessCharging?: number | null
+    reverseWireless?: boolean | null
+    announced?: Date | string | null
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    phone: PhonesCreateNestedOneWithoutSpecsInput
+  }
+
+  export type PhoneSpecsUncheckedCreateInput = {
+    specId?: string
+    phoneId: string
+    networkTech?: string | null
+    supports5g?: boolean
+    supportsNfc?: boolean
+    dualSim?: boolean
+    simType?: string | null
+    wifi?: string | null
+    bluetooth?: string | null
+    usbType?: string | null
+    headphoneJack?: boolean | null
+    gps?: boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: string | null
+    refreshRate?: number | null
+    displaySize?: Decimal | DecimalJsLike | number | string | null
+    resolution?: string | null
+    ppiDensity?: number | null
+    screenToBody?: Decimal | DecimalJsLike | number | string | null
+    displayProtection?: string | null
+    os?: string | null
+    osVersion?: string | null
+    chipset?: string | null
+    processNode?: string | null
+    cpu?: string | null
+    gpu?: string | null
+    mainCamera?: string | null
+    lensCount?: number | null
+    mainAperture?: string | null
+    ois?: boolean | null
+    sensorSize?: string | null
+    camera4K?: boolean | null
+    cameraVideo?: string | null
+    selfieCamera?: string | null
+    selfie4K?: boolean | null
+    dimensions?: string | null
+    weight?: Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: string | null
+    ipRating?: string | null
+    batteryMah?: number | null
+    wiredCharging?: number | null
+    wirelessCharging?: number | null
+    reverseWireless?: boolean | null
+    announced?: Date | string | null
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PhoneSpecsUpdateInput = {
+    specId?: StringFieldUpdateOperationsInput | string
+    networkTech?: NullableStringFieldUpdateOperationsInput | string | null
+    supports5g?: BoolFieldUpdateOperationsInput | boolean
+    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
+    dualSim?: BoolFieldUpdateOperationsInput | boolean
+    simType?: NullableStringFieldUpdateOperationsInput | string | null
+    wifi?: NullableStringFieldUpdateOperationsInput | string | null
+    bluetooth?: NullableStringFieldUpdateOperationsInput | string | null
+    usbType?: NullableStringFieldUpdateOperationsInput | string | null
+    headphoneJack?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    gps?: BoolFieldUpdateOperationsInput | boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshRate?: NullableIntFieldUpdateOperationsInput | number | null
+    displaySize?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    ppiDensity?: NullableIntFieldUpdateOperationsInput | number | null
+    screenToBody?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    displayProtection?: NullableStringFieldUpdateOperationsInput | string | null
+    os?: NullableStringFieldUpdateOperationsInput | string | null
+    osVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    chipset?: NullableStringFieldUpdateOperationsInput | string | null
+    processNode?: NullableStringFieldUpdateOperationsInput | string | null
+    cpu?: NullableStringFieldUpdateOperationsInput | string | null
+    gpu?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    lensCount?: NullableIntFieldUpdateOperationsInput | number | null
+    mainAperture?: NullableStringFieldUpdateOperationsInput | string | null
+    ois?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    sensorSize?: NullableStringFieldUpdateOperationsInput | string | null
+    camera4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    cameraVideo?: NullableStringFieldUpdateOperationsInput | string | null
+    selfieCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    selfie4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    dimensions?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: NullableStringFieldUpdateOperationsInput | string | null
+    ipRating?: NullableStringFieldUpdateOperationsInput | string | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    wiredCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    wirelessCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    reverseWireless?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    announced?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    phone?: PhonesUpdateOneRequiredWithoutSpecsNestedInput
+  }
+
+  export type PhoneSpecsUncheckedUpdateInput = {
+    specId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    networkTech?: NullableStringFieldUpdateOperationsInput | string | null
+    supports5g?: BoolFieldUpdateOperationsInput | boolean
+    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
+    dualSim?: BoolFieldUpdateOperationsInput | boolean
+    simType?: NullableStringFieldUpdateOperationsInput | string | null
+    wifi?: NullableStringFieldUpdateOperationsInput | string | null
+    bluetooth?: NullableStringFieldUpdateOperationsInput | string | null
+    usbType?: NullableStringFieldUpdateOperationsInput | string | null
+    headphoneJack?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    gps?: BoolFieldUpdateOperationsInput | boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshRate?: NullableIntFieldUpdateOperationsInput | number | null
+    displaySize?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    ppiDensity?: NullableIntFieldUpdateOperationsInput | number | null
+    screenToBody?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    displayProtection?: NullableStringFieldUpdateOperationsInput | string | null
+    os?: NullableStringFieldUpdateOperationsInput | string | null
+    osVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    chipset?: NullableStringFieldUpdateOperationsInput | string | null
+    processNode?: NullableStringFieldUpdateOperationsInput | string | null
+    cpu?: NullableStringFieldUpdateOperationsInput | string | null
+    gpu?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    lensCount?: NullableIntFieldUpdateOperationsInput | number | null
+    mainAperture?: NullableStringFieldUpdateOperationsInput | string | null
+    ois?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    sensorSize?: NullableStringFieldUpdateOperationsInput | string | null
+    camera4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    cameraVideo?: NullableStringFieldUpdateOperationsInput | string | null
+    selfieCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    selfie4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    dimensions?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: NullableStringFieldUpdateOperationsInput | string | null
+    ipRating?: NullableStringFieldUpdateOperationsInput | string | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    wiredCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    wirelessCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    reverseWireless?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    announced?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneSpecsCreateManyInput = {
+    specId?: string
+    phoneId: string
+    networkTech?: string | null
+    supports5g?: boolean
+    supportsNfc?: boolean
+    dualSim?: boolean
+    simType?: string | null
+    wifi?: string | null
+    bluetooth?: string | null
+    usbType?: string | null
+    headphoneJack?: boolean | null
+    gps?: boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: string | null
+    refreshRate?: number | null
+    displaySize?: Decimal | DecimalJsLike | number | string | null
+    resolution?: string | null
+    ppiDensity?: number | null
+    screenToBody?: Decimal | DecimalJsLike | number | string | null
+    displayProtection?: string | null
+    os?: string | null
+    osVersion?: string | null
+    chipset?: string | null
+    processNode?: string | null
+    cpu?: string | null
+    gpu?: string | null
+    mainCamera?: string | null
+    lensCount?: number | null
+    mainAperture?: string | null
+    ois?: boolean | null
+    sensorSize?: string | null
+    camera4K?: boolean | null
+    cameraVideo?: string | null
+    selfieCamera?: string | null
+    selfie4K?: boolean | null
+    dimensions?: string | null
+    weight?: Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: string | null
+    ipRating?: string | null
+    batteryMah?: number | null
+    wiredCharging?: number | null
+    wirelessCharging?: number | null
+    reverseWireless?: boolean | null
+    announced?: Date | string | null
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PhoneSpecsUpdateManyMutationInput = {
+    specId?: StringFieldUpdateOperationsInput | string
+    networkTech?: NullableStringFieldUpdateOperationsInput | string | null
+    supports5g?: BoolFieldUpdateOperationsInput | boolean
+    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
+    dualSim?: BoolFieldUpdateOperationsInput | boolean
+    simType?: NullableStringFieldUpdateOperationsInput | string | null
+    wifi?: NullableStringFieldUpdateOperationsInput | string | null
+    bluetooth?: NullableStringFieldUpdateOperationsInput | string | null
+    usbType?: NullableStringFieldUpdateOperationsInput | string | null
+    headphoneJack?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    gps?: BoolFieldUpdateOperationsInput | boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshRate?: NullableIntFieldUpdateOperationsInput | number | null
+    displaySize?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    ppiDensity?: NullableIntFieldUpdateOperationsInput | number | null
+    screenToBody?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    displayProtection?: NullableStringFieldUpdateOperationsInput | string | null
+    os?: NullableStringFieldUpdateOperationsInput | string | null
+    osVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    chipset?: NullableStringFieldUpdateOperationsInput | string | null
+    processNode?: NullableStringFieldUpdateOperationsInput | string | null
+    cpu?: NullableStringFieldUpdateOperationsInput | string | null
+    gpu?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    lensCount?: NullableIntFieldUpdateOperationsInput | number | null
+    mainAperture?: NullableStringFieldUpdateOperationsInput | string | null
+    ois?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    sensorSize?: NullableStringFieldUpdateOperationsInput | string | null
+    camera4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    cameraVideo?: NullableStringFieldUpdateOperationsInput | string | null
+    selfieCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    selfie4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    dimensions?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: NullableStringFieldUpdateOperationsInput | string | null
+    ipRating?: NullableStringFieldUpdateOperationsInput | string | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    wiredCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    wirelessCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    reverseWireless?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    announced?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneSpecsUncheckedUpdateManyInput = {
+    specId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    networkTech?: NullableStringFieldUpdateOperationsInput | string | null
+    supports5g?: BoolFieldUpdateOperationsInput | boolean
+    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
+    dualSim?: BoolFieldUpdateOperationsInput | boolean
+    simType?: NullableStringFieldUpdateOperationsInput | string | null
+    wifi?: NullableStringFieldUpdateOperationsInput | string | null
+    bluetooth?: NullableStringFieldUpdateOperationsInput | string | null
+    usbType?: NullableStringFieldUpdateOperationsInput | string | null
+    headphoneJack?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    gps?: BoolFieldUpdateOperationsInput | boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshRate?: NullableIntFieldUpdateOperationsInput | number | null
+    displaySize?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    ppiDensity?: NullableIntFieldUpdateOperationsInput | number | null
+    screenToBody?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    displayProtection?: NullableStringFieldUpdateOperationsInput | string | null
+    os?: NullableStringFieldUpdateOperationsInput | string | null
+    osVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    chipset?: NullableStringFieldUpdateOperationsInput | string | null
+    processNode?: NullableStringFieldUpdateOperationsInput | string | null
+    cpu?: NullableStringFieldUpdateOperationsInput | string | null
+    gpu?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    lensCount?: NullableIntFieldUpdateOperationsInput | number | null
+    mainAperture?: NullableStringFieldUpdateOperationsInput | string | null
+    ois?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    sensorSize?: NullableStringFieldUpdateOperationsInput | string | null
+    camera4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    cameraVideo?: NullableStringFieldUpdateOperationsInput | string | null
+    selfieCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    selfie4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    dimensions?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: NullableStringFieldUpdateOperationsInput | string | null
+    ipRating?: NullableStringFieldUpdateOperationsInput | string | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    wiredCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    wirelessCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    reverseWireless?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    announced?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserProfileCreateInput = {
     profileId?: string
     age?: number | null
@@ -17942,9 +23511,9 @@ export namespace Prisma {
     maxBudget: Decimal | DecimalJsLike | number | string
     cameraPreference: $Enums.CameraPreference
     usageType: $Enums.UsageType
-    preferredBrand: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    preferredBrand?: BrandsCreateNestedOneWithoutUserPreferencesInput
     user: UsersCreateNestedOneWithoutPreferenceInput
   }
 
@@ -17954,7 +23523,7 @@ export namespace Prisma {
     maxBudget: Decimal | DecimalJsLike | number | string
     cameraPreference: $Enums.CameraPreference
     usageType: $Enums.UsageType
-    preferredBrand: string
+    preferredBrandId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17964,9 +23533,9 @@ export namespace Prisma {
     maxBudget?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cameraPreference?: EnumCameraPreferenceFieldUpdateOperationsInput | $Enums.CameraPreference
     usageType?: EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
-    preferredBrand?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    preferredBrand?: BrandsUpdateOneWithoutUserPreferencesNestedInput
     user?: UsersUpdateOneRequiredWithoutPreferenceNestedInput
   }
 
@@ -17976,7 +23545,7 @@ export namespace Prisma {
     maxBudget?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cameraPreference?: EnumCameraPreferenceFieldUpdateOperationsInput | $Enums.CameraPreference
     usageType?: EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
-    preferredBrand?: StringFieldUpdateOperationsInput | string
+    preferredBrandId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17987,7 +23556,7 @@ export namespace Prisma {
     maxBudget: Decimal | DecimalJsLike | number | string
     cameraPreference: $Enums.CameraPreference
     usageType: $Enums.UsageType
-    preferredBrand: string
+    preferredBrandId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17997,7 +23566,6 @@ export namespace Prisma {
     maxBudget?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cameraPreference?: EnumCameraPreferenceFieldUpdateOperationsInput | $Enums.CameraPreference
     usageType?: EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
-    preferredBrand?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18008,219 +23576,7 @@ export namespace Prisma {
     maxBudget?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cameraPreference?: EnumCameraPreferenceFieldUpdateOperationsInput | $Enums.CameraPreference
     usageType?: EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
-    preferredBrand?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type PhonesCreateInput = {
-    phoneId?: string
-    brand: string
-    modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
-    imageUrl?: string | null
-    imagePath?: string | null
-    isActive?: boolean
-    discontinuedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-    wishlist?: WishlistCreateNestedManyWithoutPhoneInput
-    comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
-    comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
-  }
-
-  export type PhonesUncheckedCreateInput = {
-    phoneId?: string
-    brand: string
-    modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
-    imageUrl?: string | null
-    imagePath?: string | null
-    isActive?: boolean
-    discontinuedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-    wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
-    comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
-    comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
-  }
-
-  export type PhonesUpdateInput = {
-    phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
-    modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-    wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
-    comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
-    comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
-  }
-
-  export type PhonesUncheckedUpdateInput = {
-    phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
-    modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-    wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
-    comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
-    comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
-  }
-
-  export type PhonesCreateManyInput = {
-    phoneId?: string
-    brand: string
-    modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
-    imageUrl?: string | null
-    imagePath?: string | null
-    isActive?: boolean
-    discontinuedAt?: Date | string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type PhonesUpdateManyMutationInput = {
-    phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
-    modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type PhonesUncheckedUpdateManyInput = {
-    phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
-    modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferredBrandId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18648,84 +24004,81 @@ export namespace Prisma {
     statId?: string
     computedDate?: Date | string
     mostRecommendedBrand?: string | null
-    mostRecommendedPhone?: string | null
     avgUserBudget?: Decimal | DecimalJsLike | number | string | null
     mostPopularPersona?: string | null
     avgCompatibility?: Decimal | DecimalJsLike | number | string | null
-    mostComparedPhone?: string | null
-    mostViewedPhone?: string | null
+    mostRecommendedPhone?: PhonesCreateNestedOneWithoutMostRecommendedInStatsInput
+    mostComparedPhone?: PhonesCreateNestedOneWithoutMostComparedInStatsInput
+    mostViewedPhone?: PhonesCreateNestedOneWithoutMostViewedInStatsInput
   }
 
   export type AdminStatsCacheUncheckedCreateInput = {
     statId?: string
     computedDate?: Date | string
     mostRecommendedBrand?: string | null
-    mostRecommendedPhone?: string | null
+    mostRecommendedPhoneId?: string | null
+    mostComparedPhoneId?: string | null
+    mostViewedPhoneId?: string | null
     avgUserBudget?: Decimal | DecimalJsLike | number | string | null
     mostPopularPersona?: string | null
     avgCompatibility?: Decimal | DecimalJsLike | number | string | null
-    mostComparedPhone?: string | null
-    mostViewedPhone?: string | null
   }
 
   export type AdminStatsCacheUpdateInput = {
     statId?: StringFieldUpdateOperationsInput | string
     computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
-    mostRecommendedPhone?: NullableStringFieldUpdateOperationsInput | string | null
     avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
     avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    mostComparedPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    mostViewedPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    mostRecommendedPhone?: PhonesUpdateOneWithoutMostRecommendedInStatsNestedInput
+    mostComparedPhone?: PhonesUpdateOneWithoutMostComparedInStatsNestedInput
+    mostViewedPhone?: PhonesUpdateOneWithoutMostViewedInStatsNestedInput
   }
 
   export type AdminStatsCacheUncheckedUpdateInput = {
     statId?: StringFieldUpdateOperationsInput | string
     computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
-    mostRecommendedPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    mostRecommendedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    mostComparedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    mostViewedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
     avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
     avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    mostComparedPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    mostViewedPhone?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AdminStatsCacheCreateManyInput = {
     statId?: string
     computedDate?: Date | string
     mostRecommendedBrand?: string | null
-    mostRecommendedPhone?: string | null
+    mostRecommendedPhoneId?: string | null
+    mostComparedPhoneId?: string | null
+    mostViewedPhoneId?: string | null
     avgUserBudget?: Decimal | DecimalJsLike | number | string | null
     mostPopularPersona?: string | null
     avgCompatibility?: Decimal | DecimalJsLike | number | string | null
-    mostComparedPhone?: string | null
-    mostViewedPhone?: string | null
   }
 
   export type AdminStatsCacheUpdateManyMutationInput = {
     statId?: StringFieldUpdateOperationsInput | string
     computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
-    mostRecommendedPhone?: NullableStringFieldUpdateOperationsInput | string | null
     avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
     avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    mostComparedPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    mostViewedPhone?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AdminStatsCacheUncheckedUpdateManyInput = {
     statId?: StringFieldUpdateOperationsInput | string
     computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
-    mostRecommendedPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    mostRecommendedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    mostComparedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    mostViewedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
     avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
     avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    mostComparedPhone?: NullableStringFieldUpdateOperationsInput | string | null
-    mostViewedPhone?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UuidFilter<$PrismaModel = never> = {
@@ -19126,6 +24479,56 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
+  export type PhonesListRelationFilter = {
+    every?: PhonesWhereInput
+    some?: PhonesWhereInput
+    none?: PhonesWhereInput
+  }
+
+  export type UserPreferenceListRelationFilter = {
+    every?: UserPreferenceWhereInput
+    some?: UserPreferenceWhereInput
+    none?: UserPreferenceWhereInput
+  }
+
+  export type PhonesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserPreferenceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BrandsCountOrderByAggregateInput = {
+    brandId?: SortOrder
+    name?: SortOrder
+    logoUrl?: SortOrder
+    website?: SortOrder
+    country?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BrandsMaxOrderByAggregateInput = {
+    brandId?: SortOrder
+    name?: SortOrder
+    logoUrl?: SortOrder
+    website?: SortOrder
+    country?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BrandsMinOrderByAggregateInput = {
+    brandId?: SortOrder
+    name?: SortOrder
+    logoUrl?: SortOrder
+    website?: SortOrder
+    country?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -19135,6 +24538,488 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type BrandsScalarRelationFilter = {
+    is?: BrandsWhereInput
+    isNot?: BrandsWhereInput
+  }
+
+  export type PhoneVariantsListRelationFilter = {
+    every?: PhoneVariantsWhereInput
+    some?: PhoneVariantsWhereInput
+    none?: PhoneVariantsWhereInput
+  }
+
+  export type PhoneSpecsNullableScalarRelationFilter = {
+    is?: PhoneSpecsWhereInput | null
+    isNot?: PhoneSpecsWhereInput | null
+  }
+
+  export type AdminStatsCacheListRelationFilter = {
+    every?: AdminStatsCacheWhereInput
+    some?: AdminStatsCacheWhereInput
+    none?: AdminStatsCacheWhereInput
+  }
+
+  export type PhoneVariantsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AdminStatsCacheOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PhonesBrandIdModelNameCompoundUniqueInput = {
+    brandId: string
+    modelName: string
+  }
+
+  export type PhonesCountOrderByAggregateInput = {
+    phoneId?: SortOrder
+    brandId?: SortOrder
+    modelName?: SortOrder
+    imageUrl?: SortOrder
+    imagePath?: SortOrder
+    antutuScore?: SortOrder
+    batteryMah?: SortOrder
+    source?: SortOrder
+    sourceUrl?: SortOrder
+    isActive?: SortOrder
+    discontinuedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhonesAvgOrderByAggregateInput = {
+    antutuScore?: SortOrder
+    batteryMah?: SortOrder
+  }
+
+  export type PhonesMaxOrderByAggregateInput = {
+    phoneId?: SortOrder
+    brandId?: SortOrder
+    modelName?: SortOrder
+    imageUrl?: SortOrder
+    imagePath?: SortOrder
+    antutuScore?: SortOrder
+    batteryMah?: SortOrder
+    source?: SortOrder
+    sourceUrl?: SortOrder
+    isActive?: SortOrder
+    discontinuedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhonesMinOrderByAggregateInput = {
+    phoneId?: SortOrder
+    brandId?: SortOrder
+    modelName?: SortOrder
+    imageUrl?: SortOrder
+    imagePath?: SortOrder
+    antutuScore?: SortOrder
+    batteryMah?: SortOrder
+    source?: SortOrder
+    sourceUrl?: SortOrder
+    isActive?: SortOrder
+    discontinuedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhonesSumOrderByAggregateInput = {
+    antutuScore?: SortOrder
+    batteryMah?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type DecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type PhonesScalarRelationFilter = {
+    is?: PhonesWhereInput
+    isNot?: PhonesWhereInput
+  }
+
+  export type PhoneVariantsPhoneIdRamGbStorageGbCompoundUniqueInput = {
+    phoneId: string
+    ramGb: number
+    storageGb: number
+  }
+
+  export type PhoneVariantsCountOrderByAggregateInput = {
+    variantId?: SortOrder
+    phoneId?: SortOrder
+    ramGb?: SortOrder
+    storageGb?: SortOrder
+    price?: SortOrder
+    storageType?: SortOrder
+    colors?: SortOrder
+    isAvailable?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhoneVariantsAvgOrderByAggregateInput = {
+    ramGb?: SortOrder
+    storageGb?: SortOrder
+    price?: SortOrder
+  }
+
+  export type PhoneVariantsMaxOrderByAggregateInput = {
+    variantId?: SortOrder
+    phoneId?: SortOrder
+    ramGb?: SortOrder
+    storageGb?: SortOrder
+    price?: SortOrder
+    storageType?: SortOrder
+    isAvailable?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhoneVariantsMinOrderByAggregateInput = {
+    variantId?: SortOrder
+    phoneId?: SortOrder
+    ramGb?: SortOrder
+    storageGb?: SortOrder
+    price?: SortOrder
+    storageType?: SortOrder
+    isAvailable?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhoneVariantsSumOrderByAggregateInput = {
+    ramGb?: SortOrder
+    storageGb?: SortOrder
+    price?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type PhoneSpecsCountOrderByAggregateInput = {
+    specId?: SortOrder
+    phoneId?: SortOrder
+    networkTech?: SortOrder
+    supports5g?: SortOrder
+    supportsNfc?: SortOrder
+    dualSim?: SortOrder
+    simType?: SortOrder
+    wifi?: SortOrder
+    bluetooth?: SortOrder
+    usbType?: SortOrder
+    headphoneJack?: SortOrder
+    gps?: SortOrder
+    sensors?: SortOrder
+    displayType?: SortOrder
+    refreshRate?: SortOrder
+    displaySize?: SortOrder
+    resolution?: SortOrder
+    ppiDensity?: SortOrder
+    screenToBody?: SortOrder
+    displayProtection?: SortOrder
+    os?: SortOrder
+    osVersion?: SortOrder
+    chipset?: SortOrder
+    processNode?: SortOrder
+    cpu?: SortOrder
+    gpu?: SortOrder
+    mainCamera?: SortOrder
+    lensCount?: SortOrder
+    mainAperture?: SortOrder
+    ois?: SortOrder
+    sensorSize?: SortOrder
+    camera4K?: SortOrder
+    cameraVideo?: SortOrder
+    selfieCamera?: SortOrder
+    selfie4K?: SortOrder
+    dimensions?: SortOrder
+    weight?: SortOrder
+    buildMaterial?: SortOrder
+    ipRating?: SortOrder
+    batteryMah?: SortOrder
+    wiredCharging?: SortOrder
+    wirelessCharging?: SortOrder
+    reverseWireless?: SortOrder
+    announced?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhoneSpecsAvgOrderByAggregateInput = {
+    refreshRate?: SortOrder
+    displaySize?: SortOrder
+    ppiDensity?: SortOrder
+    screenToBody?: SortOrder
+    lensCount?: SortOrder
+    weight?: SortOrder
+    batteryMah?: SortOrder
+    wiredCharging?: SortOrder
+    wirelessCharging?: SortOrder
+  }
+
+  export type PhoneSpecsMaxOrderByAggregateInput = {
+    specId?: SortOrder
+    phoneId?: SortOrder
+    networkTech?: SortOrder
+    supports5g?: SortOrder
+    supportsNfc?: SortOrder
+    dualSim?: SortOrder
+    simType?: SortOrder
+    wifi?: SortOrder
+    bluetooth?: SortOrder
+    usbType?: SortOrder
+    headphoneJack?: SortOrder
+    gps?: SortOrder
+    displayType?: SortOrder
+    refreshRate?: SortOrder
+    displaySize?: SortOrder
+    resolution?: SortOrder
+    ppiDensity?: SortOrder
+    screenToBody?: SortOrder
+    displayProtection?: SortOrder
+    os?: SortOrder
+    osVersion?: SortOrder
+    chipset?: SortOrder
+    processNode?: SortOrder
+    cpu?: SortOrder
+    gpu?: SortOrder
+    mainCamera?: SortOrder
+    lensCount?: SortOrder
+    mainAperture?: SortOrder
+    ois?: SortOrder
+    sensorSize?: SortOrder
+    camera4K?: SortOrder
+    cameraVideo?: SortOrder
+    selfieCamera?: SortOrder
+    selfie4K?: SortOrder
+    dimensions?: SortOrder
+    weight?: SortOrder
+    buildMaterial?: SortOrder
+    ipRating?: SortOrder
+    batteryMah?: SortOrder
+    wiredCharging?: SortOrder
+    wirelessCharging?: SortOrder
+    reverseWireless?: SortOrder
+    announced?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhoneSpecsMinOrderByAggregateInput = {
+    specId?: SortOrder
+    phoneId?: SortOrder
+    networkTech?: SortOrder
+    supports5g?: SortOrder
+    supportsNfc?: SortOrder
+    dualSim?: SortOrder
+    simType?: SortOrder
+    wifi?: SortOrder
+    bluetooth?: SortOrder
+    usbType?: SortOrder
+    headphoneJack?: SortOrder
+    gps?: SortOrder
+    displayType?: SortOrder
+    refreshRate?: SortOrder
+    displaySize?: SortOrder
+    resolution?: SortOrder
+    ppiDensity?: SortOrder
+    screenToBody?: SortOrder
+    displayProtection?: SortOrder
+    os?: SortOrder
+    osVersion?: SortOrder
+    chipset?: SortOrder
+    processNode?: SortOrder
+    cpu?: SortOrder
+    gpu?: SortOrder
+    mainCamera?: SortOrder
+    lensCount?: SortOrder
+    mainAperture?: SortOrder
+    ois?: SortOrder
+    sensorSize?: SortOrder
+    camera4K?: SortOrder
+    cameraVideo?: SortOrder
+    selfieCamera?: SortOrder
+    selfie4K?: SortOrder
+    dimensions?: SortOrder
+    weight?: SortOrder
+    buildMaterial?: SortOrder
+    ipRating?: SortOrder
+    batteryMah?: SortOrder
+    wiredCharging?: SortOrder
+    wirelessCharging?: SortOrder
+    reverseWireless?: SortOrder
+    announced?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhoneSpecsSumOrderByAggregateInput = {
+    refreshRate?: SortOrder
+    displaySize?: SortOrder
+    ppiDensity?: SortOrder
+    screenToBody?: SortOrder
+    lensCount?: SortOrder
+    weight?: SortOrder
+    batteryMah?: SortOrder
+    wiredCharging?: SortOrder
+    wirelessCharging?: SortOrder
+  }
+
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type UserProfileCountOrderByAggregateInput = {
@@ -19181,22 +25066,6 @@ export namespace Prisma {
     age?: SortOrder
   }
 
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
   export type DecimalFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
@@ -19222,13 +25091,18 @@ export namespace Prisma {
     not?: NestedEnumUsageTypeFilter<$PrismaModel> | $Enums.UsageType
   }
 
+  export type BrandsNullableScalarRelationFilter = {
+    is?: BrandsWhereInput | null
+    isNot?: BrandsWhereInput | null
+  }
+
   export type UserPreferenceCountOrderByAggregateInput = {
     preferenceId?: SortOrder
     userId?: SortOrder
     maxBudget?: SortOrder
     cameraPreference?: SortOrder
     usageType?: SortOrder
-    preferredBrand?: SortOrder
+    preferredBrandId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19243,7 +25117,7 @@ export namespace Prisma {
     maxBudget?: SortOrder
     cameraPreference?: SortOrder
     usageType?: SortOrder
-    preferredBrand?: SortOrder
+    preferredBrandId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19254,7 +25128,7 @@ export namespace Prisma {
     maxBudget?: SortOrder
     cameraPreference?: SortOrder
     usageType?: SortOrder
-    preferredBrand?: SortOrder
+    preferredBrandId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -19297,199 +25171,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumUsageTypeFilter<$PrismaModel>
     _max?: NestedEnumUsageTypeFilter<$PrismaModel>
-  }
-
-  export type DecimalNullableFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type PhonesBrandModelNameCompoundUniqueInput = {
-    brand: string
-    modelName: string
-  }
-
-  export type PhonesCountOrderByAggregateInput = {
-    phoneId?: SortOrder
-    brand?: SortOrder
-    modelName?: SortOrder
-    price?: SortOrder
-    antutuScore?: SortOrder
-    ramGb?: SortOrder
-    storageGb?: SortOrder
-    batteryMah?: SortOrder
-    chargingWatts?: SortOrder
-    displayType?: SortOrder
-    displayPpi?: SortOrder
-    cameraScore?: SortOrder
-    frontCameraScore?: SortOrder
-    osName?: SortOrder
-    supports5g?: SortOrder
-    supportsNfc?: SortOrder
-    dualSim?: SortOrder
-    source?: SortOrder
-    sourceUrl?: SortOrder
-    imageUrl?: SortOrder
-    imagePath?: SortOrder
-    isActive?: SortOrder
-    discontinuedAt?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type PhonesAvgOrderByAggregateInput = {
-    price?: SortOrder
-    antutuScore?: SortOrder
-    ramGb?: SortOrder
-    storageGb?: SortOrder
-    batteryMah?: SortOrder
-    chargingWatts?: SortOrder
-    displayPpi?: SortOrder
-    cameraScore?: SortOrder
-    frontCameraScore?: SortOrder
-  }
-
-  export type PhonesMaxOrderByAggregateInput = {
-    phoneId?: SortOrder
-    brand?: SortOrder
-    modelName?: SortOrder
-    price?: SortOrder
-    antutuScore?: SortOrder
-    ramGb?: SortOrder
-    storageGb?: SortOrder
-    batteryMah?: SortOrder
-    chargingWatts?: SortOrder
-    displayType?: SortOrder
-    displayPpi?: SortOrder
-    cameraScore?: SortOrder
-    frontCameraScore?: SortOrder
-    osName?: SortOrder
-    supports5g?: SortOrder
-    supportsNfc?: SortOrder
-    dualSim?: SortOrder
-    source?: SortOrder
-    sourceUrl?: SortOrder
-    imageUrl?: SortOrder
-    imagePath?: SortOrder
-    isActive?: SortOrder
-    discontinuedAt?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type PhonesMinOrderByAggregateInput = {
-    phoneId?: SortOrder
-    brand?: SortOrder
-    modelName?: SortOrder
-    price?: SortOrder
-    antutuScore?: SortOrder
-    ramGb?: SortOrder
-    storageGb?: SortOrder
-    batteryMah?: SortOrder
-    chargingWatts?: SortOrder
-    displayType?: SortOrder
-    displayPpi?: SortOrder
-    cameraScore?: SortOrder
-    frontCameraScore?: SortOrder
-    osName?: SortOrder
-    supports5g?: SortOrder
-    supportsNfc?: SortOrder
-    dualSim?: SortOrder
-    source?: SortOrder
-    sourceUrl?: SortOrder
-    imageUrl?: SortOrder
-    imagePath?: SortOrder
-    isActive?: SortOrder
-    discontinuedAt?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type PhonesSumOrderByAggregateInput = {
-    price?: SortOrder
-    antutuScore?: SortOrder
-    ramGb?: SortOrder
-    storageGb?: SortOrder
-    batteryMah?: SortOrder
-    chargingWatts?: SortOrder
-    displayPpi?: SortOrder
-    cameraScore?: SortOrder
-    frontCameraScore?: SortOrder
-  }
-
-  export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedDecimalNullableFilter<$PrismaModel>
-    _sum?: NestedDecimalNullableFilter<$PrismaModel>
-    _min?: NestedDecimalNullableFilter<$PrismaModel>
-    _max?: NestedDecimalNullableFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type PhonesScalarRelationFilter = {
-    is?: PhonesWhereInput
-    isNot?: PhonesWhereInput
   }
 
   export type RecommendationHistoryCountOrderByAggregateInput = {
@@ -19572,32 +25253,6 @@ export namespace Prisma {
     brandMatch?: SortOrder
     overallCompatibility?: SortOrder
   }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
-  }
 
   export type EnumBudgetSegmentNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.BudgetSegment | EnumBudgetSegmentFieldRefInput<$PrismaModel> | null
@@ -19625,17 +25280,6 @@ export namespace Prisma {
     in?: $Enums.SegmentConfidence[] | ListEnumSegmentConfidenceFieldRefInput<$PrismaModel>
     notIn?: $Enums.SegmentConfidence[] | ListEnumSegmentConfidenceFieldRefInput<$PrismaModel>
     not?: NestedEnumSegmentConfidenceFilter<$PrismaModel> | $Enums.SegmentConfidence
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type CustomerProfileCountOrderByAggregateInput = {
@@ -19783,22 +25427,6 @@ export namespace Prisma {
     _max?: NestedEnumSegmentConfidenceFilter<$PrismaModel>
   }
 
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
   export type WishlistUserIdPhoneIdCompoundUniqueInput = {
     userId: string
     phoneId: string
@@ -19849,16 +25477,21 @@ export namespace Prisma {
     comparedDate?: SortOrder
   }
 
+  export type PhonesNullableScalarRelationFilter = {
+    is?: PhonesWhereInput | null
+    isNot?: PhonesWhereInput | null
+  }
+
   export type AdminStatsCacheCountOrderByAggregateInput = {
     statId?: SortOrder
     computedDate?: SortOrder
     mostRecommendedBrand?: SortOrder
-    mostRecommendedPhone?: SortOrder
+    mostRecommendedPhoneId?: SortOrder
+    mostComparedPhoneId?: SortOrder
+    mostViewedPhoneId?: SortOrder
     avgUserBudget?: SortOrder
     mostPopularPersona?: SortOrder
     avgCompatibility?: SortOrder
-    mostComparedPhone?: SortOrder
-    mostViewedPhone?: SortOrder
   }
 
   export type AdminStatsCacheAvgOrderByAggregateInput = {
@@ -19870,24 +25503,24 @@ export namespace Prisma {
     statId?: SortOrder
     computedDate?: SortOrder
     mostRecommendedBrand?: SortOrder
-    mostRecommendedPhone?: SortOrder
+    mostRecommendedPhoneId?: SortOrder
+    mostComparedPhoneId?: SortOrder
+    mostViewedPhoneId?: SortOrder
     avgUserBudget?: SortOrder
     mostPopularPersona?: SortOrder
     avgCompatibility?: SortOrder
-    mostComparedPhone?: SortOrder
-    mostViewedPhone?: SortOrder
   }
 
   export type AdminStatsCacheMinOrderByAggregateInput = {
     statId?: SortOrder
     computedDate?: SortOrder
     mostRecommendedBrand?: SortOrder
-    mostRecommendedPhone?: SortOrder
+    mostRecommendedPhoneId?: SortOrder
+    mostComparedPhoneId?: SortOrder
+    mostViewedPhoneId?: SortOrder
     avgUserBudget?: SortOrder
     mostPopularPersona?: SortOrder
     avgCompatibility?: SortOrder
-    mostComparedPhone?: SortOrder
-    mostViewedPhone?: SortOrder
   }
 
   export type AdminStatsCacheSumOrderByAggregateInput = {
@@ -20251,56 +25884,107 @@ export namespace Prisma {
     update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutOtpsInput, UsersUpdateWithoutOtpsInput>, UsersUncheckedUpdateWithoutOtpsInput>
   }
 
-  export type UsersCreateNestedOneWithoutProfileInput = {
-    create?: XOR<UsersCreateWithoutProfileInput, UsersUncheckedCreateWithoutProfileInput>
-    connectOrCreate?: UsersCreateOrConnectWithoutProfileInput
-    connect?: UsersWhereUniqueInput
+  export type PhonesCreateNestedManyWithoutBrandInput = {
+    create?: XOR<PhonesCreateWithoutBrandInput, PhonesUncheckedCreateWithoutBrandInput> | PhonesCreateWithoutBrandInput[] | PhonesUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: PhonesCreateOrConnectWithoutBrandInput | PhonesCreateOrConnectWithoutBrandInput[]
+    createMany?: PhonesCreateManyBrandInputEnvelope
+    connect?: PhonesWhereUniqueInput | PhonesWhereUniqueInput[]
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type UserPreferenceCreateNestedManyWithoutPreferredBrandInput = {
+    create?: XOR<UserPreferenceCreateWithoutPreferredBrandInput, UserPreferenceUncheckedCreateWithoutPreferredBrandInput> | UserPreferenceCreateWithoutPreferredBrandInput[] | UserPreferenceUncheckedCreateWithoutPreferredBrandInput[]
+    connectOrCreate?: UserPreferenceCreateOrConnectWithoutPreferredBrandInput | UserPreferenceCreateOrConnectWithoutPreferredBrandInput[]
+    createMany?: UserPreferenceCreateManyPreferredBrandInputEnvelope
+    connect?: UserPreferenceWhereUniqueInput | UserPreferenceWhereUniqueInput[]
   }
 
-  export type UsersUpdateOneRequiredWithoutProfileNestedInput = {
-    create?: XOR<UsersCreateWithoutProfileInput, UsersUncheckedCreateWithoutProfileInput>
-    connectOrCreate?: UsersCreateOrConnectWithoutProfileInput
-    upsert?: UsersUpsertWithoutProfileInput
-    connect?: UsersWhereUniqueInput
-    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutProfileInput, UsersUpdateWithoutProfileInput>, UsersUncheckedUpdateWithoutProfileInput>
+  export type PhonesUncheckedCreateNestedManyWithoutBrandInput = {
+    create?: XOR<PhonesCreateWithoutBrandInput, PhonesUncheckedCreateWithoutBrandInput> | PhonesCreateWithoutBrandInput[] | PhonesUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: PhonesCreateOrConnectWithoutBrandInput | PhonesCreateOrConnectWithoutBrandInput[]
+    createMany?: PhonesCreateManyBrandInputEnvelope
+    connect?: PhonesWhereUniqueInput | PhonesWhereUniqueInput[]
   }
 
-  export type UsersCreateNestedOneWithoutPreferenceInput = {
-    create?: XOR<UsersCreateWithoutPreferenceInput, UsersUncheckedCreateWithoutPreferenceInput>
-    connectOrCreate?: UsersCreateOrConnectWithoutPreferenceInput
-    connect?: UsersWhereUniqueInput
+  export type UserPreferenceUncheckedCreateNestedManyWithoutPreferredBrandInput = {
+    create?: XOR<UserPreferenceCreateWithoutPreferredBrandInput, UserPreferenceUncheckedCreateWithoutPreferredBrandInput> | UserPreferenceCreateWithoutPreferredBrandInput[] | UserPreferenceUncheckedCreateWithoutPreferredBrandInput[]
+    connectOrCreate?: UserPreferenceCreateOrConnectWithoutPreferredBrandInput | UserPreferenceCreateOrConnectWithoutPreferredBrandInput[]
+    createMany?: UserPreferenceCreateManyPreferredBrandInputEnvelope
+    connect?: UserPreferenceWhereUniqueInput | UserPreferenceWhereUniqueInput[]
   }
 
-  export type DecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
+  export type PhonesUpdateManyWithoutBrandNestedInput = {
+    create?: XOR<PhonesCreateWithoutBrandInput, PhonesUncheckedCreateWithoutBrandInput> | PhonesCreateWithoutBrandInput[] | PhonesUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: PhonesCreateOrConnectWithoutBrandInput | PhonesCreateOrConnectWithoutBrandInput[]
+    upsert?: PhonesUpsertWithWhereUniqueWithoutBrandInput | PhonesUpsertWithWhereUniqueWithoutBrandInput[]
+    createMany?: PhonesCreateManyBrandInputEnvelope
+    set?: PhonesWhereUniqueInput | PhonesWhereUniqueInput[]
+    disconnect?: PhonesWhereUniqueInput | PhonesWhereUniqueInput[]
+    delete?: PhonesWhereUniqueInput | PhonesWhereUniqueInput[]
+    connect?: PhonesWhereUniqueInput | PhonesWhereUniqueInput[]
+    update?: PhonesUpdateWithWhereUniqueWithoutBrandInput | PhonesUpdateWithWhereUniqueWithoutBrandInput[]
+    updateMany?: PhonesUpdateManyWithWhereWithoutBrandInput | PhonesUpdateManyWithWhereWithoutBrandInput[]
+    deleteMany?: PhonesScalarWhereInput | PhonesScalarWhereInput[]
   }
 
-  export type EnumCameraPreferenceFieldUpdateOperationsInput = {
-    set?: $Enums.CameraPreference
+  export type UserPreferenceUpdateManyWithoutPreferredBrandNestedInput = {
+    create?: XOR<UserPreferenceCreateWithoutPreferredBrandInput, UserPreferenceUncheckedCreateWithoutPreferredBrandInput> | UserPreferenceCreateWithoutPreferredBrandInput[] | UserPreferenceUncheckedCreateWithoutPreferredBrandInput[]
+    connectOrCreate?: UserPreferenceCreateOrConnectWithoutPreferredBrandInput | UserPreferenceCreateOrConnectWithoutPreferredBrandInput[]
+    upsert?: UserPreferenceUpsertWithWhereUniqueWithoutPreferredBrandInput | UserPreferenceUpsertWithWhereUniqueWithoutPreferredBrandInput[]
+    createMany?: UserPreferenceCreateManyPreferredBrandInputEnvelope
+    set?: UserPreferenceWhereUniqueInput | UserPreferenceWhereUniqueInput[]
+    disconnect?: UserPreferenceWhereUniqueInput | UserPreferenceWhereUniqueInput[]
+    delete?: UserPreferenceWhereUniqueInput | UserPreferenceWhereUniqueInput[]
+    connect?: UserPreferenceWhereUniqueInput | UserPreferenceWhereUniqueInput[]
+    update?: UserPreferenceUpdateWithWhereUniqueWithoutPreferredBrandInput | UserPreferenceUpdateWithWhereUniqueWithoutPreferredBrandInput[]
+    updateMany?: UserPreferenceUpdateManyWithWhereWithoutPreferredBrandInput | UserPreferenceUpdateManyWithWhereWithoutPreferredBrandInput[]
+    deleteMany?: UserPreferenceScalarWhereInput | UserPreferenceScalarWhereInput[]
   }
 
-  export type EnumUsageTypeFieldUpdateOperationsInput = {
-    set?: $Enums.UsageType
+  export type PhonesUncheckedUpdateManyWithoutBrandNestedInput = {
+    create?: XOR<PhonesCreateWithoutBrandInput, PhonesUncheckedCreateWithoutBrandInput> | PhonesCreateWithoutBrandInput[] | PhonesUncheckedCreateWithoutBrandInput[]
+    connectOrCreate?: PhonesCreateOrConnectWithoutBrandInput | PhonesCreateOrConnectWithoutBrandInput[]
+    upsert?: PhonesUpsertWithWhereUniqueWithoutBrandInput | PhonesUpsertWithWhereUniqueWithoutBrandInput[]
+    createMany?: PhonesCreateManyBrandInputEnvelope
+    set?: PhonesWhereUniqueInput | PhonesWhereUniqueInput[]
+    disconnect?: PhonesWhereUniqueInput | PhonesWhereUniqueInput[]
+    delete?: PhonesWhereUniqueInput | PhonesWhereUniqueInput[]
+    connect?: PhonesWhereUniqueInput | PhonesWhereUniqueInput[]
+    update?: PhonesUpdateWithWhereUniqueWithoutBrandInput | PhonesUpdateWithWhereUniqueWithoutBrandInput[]
+    updateMany?: PhonesUpdateManyWithWhereWithoutBrandInput | PhonesUpdateManyWithWhereWithoutBrandInput[]
+    deleteMany?: PhonesScalarWhereInput | PhonesScalarWhereInput[]
   }
 
-  export type UsersUpdateOneRequiredWithoutPreferenceNestedInput = {
-    create?: XOR<UsersCreateWithoutPreferenceInput, UsersUncheckedCreateWithoutPreferenceInput>
-    connectOrCreate?: UsersCreateOrConnectWithoutPreferenceInput
-    upsert?: UsersUpsertWithoutPreferenceInput
-    connect?: UsersWhereUniqueInput
-    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutPreferenceInput, UsersUpdateWithoutPreferenceInput>, UsersUncheckedUpdateWithoutPreferenceInput>
+  export type UserPreferenceUncheckedUpdateManyWithoutPreferredBrandNestedInput = {
+    create?: XOR<UserPreferenceCreateWithoutPreferredBrandInput, UserPreferenceUncheckedCreateWithoutPreferredBrandInput> | UserPreferenceCreateWithoutPreferredBrandInput[] | UserPreferenceUncheckedCreateWithoutPreferredBrandInput[]
+    connectOrCreate?: UserPreferenceCreateOrConnectWithoutPreferredBrandInput | UserPreferenceCreateOrConnectWithoutPreferredBrandInput[]
+    upsert?: UserPreferenceUpsertWithWhereUniqueWithoutPreferredBrandInput | UserPreferenceUpsertWithWhereUniqueWithoutPreferredBrandInput[]
+    createMany?: UserPreferenceCreateManyPreferredBrandInputEnvelope
+    set?: UserPreferenceWhereUniqueInput | UserPreferenceWhereUniqueInput[]
+    disconnect?: UserPreferenceWhereUniqueInput | UserPreferenceWhereUniqueInput[]
+    delete?: UserPreferenceWhereUniqueInput | UserPreferenceWhereUniqueInput[]
+    connect?: UserPreferenceWhereUniqueInput | UserPreferenceWhereUniqueInput[]
+    update?: UserPreferenceUpdateWithWhereUniqueWithoutPreferredBrandInput | UserPreferenceUpdateWithWhereUniqueWithoutPreferredBrandInput[]
+    updateMany?: UserPreferenceUpdateManyWithWhereWithoutPreferredBrandInput | UserPreferenceUpdateManyWithWhereWithoutPreferredBrandInput[]
+    deleteMany?: UserPreferenceScalarWhereInput | UserPreferenceScalarWhereInput[]
+  }
+
+  export type BrandsCreateNestedOneWithoutPhonesInput = {
+    create?: XOR<BrandsCreateWithoutPhonesInput, BrandsUncheckedCreateWithoutPhonesInput>
+    connectOrCreate?: BrandsCreateOrConnectWithoutPhonesInput
+    connect?: BrandsWhereUniqueInput
+  }
+
+  export type PhoneVariantsCreateNestedManyWithoutPhoneInput = {
+    create?: XOR<PhoneVariantsCreateWithoutPhoneInput, PhoneVariantsUncheckedCreateWithoutPhoneInput> | PhoneVariantsCreateWithoutPhoneInput[] | PhoneVariantsUncheckedCreateWithoutPhoneInput[]
+    connectOrCreate?: PhoneVariantsCreateOrConnectWithoutPhoneInput | PhoneVariantsCreateOrConnectWithoutPhoneInput[]
+    createMany?: PhoneVariantsCreateManyPhoneInputEnvelope
+    connect?: PhoneVariantsWhereUniqueInput | PhoneVariantsWhereUniqueInput[]
+  }
+
+  export type PhoneSpecsCreateNestedOneWithoutPhoneInput = {
+    create?: XOR<PhoneSpecsCreateWithoutPhoneInput, PhoneSpecsUncheckedCreateWithoutPhoneInput>
+    connectOrCreate?: PhoneSpecsCreateOrConnectWithoutPhoneInput
+    connect?: PhoneSpecsWhereUniqueInput
   }
 
   export type RecommendationHistoryCreateNestedManyWithoutPhoneInput = {
@@ -20331,6 +26015,40 @@ export namespace Prisma {
     connect?: ComparisonHistoryWhereUniqueInput | ComparisonHistoryWhereUniqueInput[]
   }
 
+  export type AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostRecommendedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput> | AdminStatsCacheCreateWithoutMostRecommendedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostRecommendedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostRecommendedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostRecommendedPhoneInputEnvelope
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+  }
+
+  export type AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostComparedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput> | AdminStatsCacheCreateWithoutMostComparedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostComparedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostComparedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostComparedPhoneInputEnvelope
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+  }
+
+  export type AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostViewedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput> | AdminStatsCacheCreateWithoutMostViewedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostViewedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostViewedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostViewedPhoneInputEnvelope
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+  }
+
+  export type PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput = {
+    create?: XOR<PhoneVariantsCreateWithoutPhoneInput, PhoneVariantsUncheckedCreateWithoutPhoneInput> | PhoneVariantsCreateWithoutPhoneInput[] | PhoneVariantsUncheckedCreateWithoutPhoneInput[]
+    connectOrCreate?: PhoneVariantsCreateOrConnectWithoutPhoneInput | PhoneVariantsCreateOrConnectWithoutPhoneInput[]
+    createMany?: PhoneVariantsCreateManyPhoneInputEnvelope
+    connect?: PhoneVariantsWhereUniqueInput | PhoneVariantsWhereUniqueInput[]
+  }
+
+  export type PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput = {
+    create?: XOR<PhoneSpecsCreateWithoutPhoneInput, PhoneSpecsUncheckedCreateWithoutPhoneInput>
+    connectOrCreate?: PhoneSpecsCreateOrConnectWithoutPhoneInput
+    connect?: PhoneSpecsWhereUniqueInput
+  }
+
   export type RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput = {
     create?: XOR<RecommendationHistoryCreateWithoutPhoneInput, RecommendationHistoryUncheckedCreateWithoutPhoneInput> | RecommendationHistoryCreateWithoutPhoneInput[] | RecommendationHistoryUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: RecommendationHistoryCreateOrConnectWithoutPhoneInput | RecommendationHistoryCreateOrConnectWithoutPhoneInput[]
@@ -20359,16 +26077,69 @@ export namespace Prisma {
     connect?: ComparisonHistoryWhereUniqueInput | ComparisonHistoryWhereUniqueInput[]
   }
 
-  export type NullableDecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string | null
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
+  export type AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostRecommendedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput> | AdminStatsCacheCreateWithoutMostRecommendedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostRecommendedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostRecommendedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostRecommendedPhoneInputEnvelope
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+  }
+
+  export type AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostComparedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput> | AdminStatsCacheCreateWithoutMostComparedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostComparedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostComparedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostComparedPhoneInputEnvelope
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+  }
+
+  export type AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostViewedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput> | AdminStatsCacheCreateWithoutMostViewedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostViewedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostViewedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostViewedPhoneInputEnvelope
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type BrandsUpdateOneRequiredWithoutPhonesNestedInput = {
+    create?: XOR<BrandsCreateWithoutPhonesInput, BrandsUncheckedCreateWithoutPhonesInput>
+    connectOrCreate?: BrandsCreateOrConnectWithoutPhonesInput
+    upsert?: BrandsUpsertWithoutPhonesInput
+    connect?: BrandsWhereUniqueInput
+    update?: XOR<XOR<BrandsUpdateToOneWithWhereWithoutPhonesInput, BrandsUpdateWithoutPhonesInput>, BrandsUncheckedUpdateWithoutPhonesInput>
+  }
+
+  export type PhoneVariantsUpdateManyWithoutPhoneNestedInput = {
+    create?: XOR<PhoneVariantsCreateWithoutPhoneInput, PhoneVariantsUncheckedCreateWithoutPhoneInput> | PhoneVariantsCreateWithoutPhoneInput[] | PhoneVariantsUncheckedCreateWithoutPhoneInput[]
+    connectOrCreate?: PhoneVariantsCreateOrConnectWithoutPhoneInput | PhoneVariantsCreateOrConnectWithoutPhoneInput[]
+    upsert?: PhoneVariantsUpsertWithWhereUniqueWithoutPhoneInput | PhoneVariantsUpsertWithWhereUniqueWithoutPhoneInput[]
+    createMany?: PhoneVariantsCreateManyPhoneInputEnvelope
+    set?: PhoneVariantsWhereUniqueInput | PhoneVariantsWhereUniqueInput[]
+    disconnect?: PhoneVariantsWhereUniqueInput | PhoneVariantsWhereUniqueInput[]
+    delete?: PhoneVariantsWhereUniqueInput | PhoneVariantsWhereUniqueInput[]
+    connect?: PhoneVariantsWhereUniqueInput | PhoneVariantsWhereUniqueInput[]
+    update?: PhoneVariantsUpdateWithWhereUniqueWithoutPhoneInput | PhoneVariantsUpdateWithWhereUniqueWithoutPhoneInput[]
+    updateMany?: PhoneVariantsUpdateManyWithWhereWithoutPhoneInput | PhoneVariantsUpdateManyWithWhereWithoutPhoneInput[]
+    deleteMany?: PhoneVariantsScalarWhereInput | PhoneVariantsScalarWhereInput[]
+  }
+
+  export type PhoneSpecsUpdateOneWithoutPhoneNestedInput = {
+    create?: XOR<PhoneSpecsCreateWithoutPhoneInput, PhoneSpecsUncheckedCreateWithoutPhoneInput>
+    connectOrCreate?: PhoneSpecsCreateOrConnectWithoutPhoneInput
+    upsert?: PhoneSpecsUpsertWithoutPhoneInput
+    disconnect?: PhoneSpecsWhereInput | boolean
+    delete?: PhoneSpecsWhereInput | boolean
+    connect?: PhoneSpecsWhereUniqueInput
+    update?: XOR<XOR<PhoneSpecsUpdateToOneWithWhereWithoutPhoneInput, PhoneSpecsUpdateWithoutPhoneInput>, PhoneSpecsUncheckedUpdateWithoutPhoneInput>
   }
 
   export type RecommendationHistoryUpdateManyWithoutPhoneNestedInput = {
@@ -20427,6 +26198,72 @@ export namespace Prisma {
     deleteMany?: ComparisonHistoryScalarWhereInput | ComparisonHistoryScalarWhereInput[]
   }
 
+  export type AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostRecommendedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput> | AdminStatsCacheCreateWithoutMostRecommendedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostRecommendedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostRecommendedPhoneInput[]
+    upsert?: AdminStatsCacheUpsertWithWhereUniqueWithoutMostRecommendedPhoneInput | AdminStatsCacheUpsertWithWhereUniqueWithoutMostRecommendedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostRecommendedPhoneInputEnvelope
+    set?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    disconnect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    delete?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    update?: AdminStatsCacheUpdateWithWhereUniqueWithoutMostRecommendedPhoneInput | AdminStatsCacheUpdateWithWhereUniqueWithoutMostRecommendedPhoneInput[]
+    updateMany?: AdminStatsCacheUpdateManyWithWhereWithoutMostRecommendedPhoneInput | AdminStatsCacheUpdateManyWithWhereWithoutMostRecommendedPhoneInput[]
+    deleteMany?: AdminStatsCacheScalarWhereInput | AdminStatsCacheScalarWhereInput[]
+  }
+
+  export type AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostComparedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput> | AdminStatsCacheCreateWithoutMostComparedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostComparedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostComparedPhoneInput[]
+    upsert?: AdminStatsCacheUpsertWithWhereUniqueWithoutMostComparedPhoneInput | AdminStatsCacheUpsertWithWhereUniqueWithoutMostComparedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostComparedPhoneInputEnvelope
+    set?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    disconnect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    delete?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    update?: AdminStatsCacheUpdateWithWhereUniqueWithoutMostComparedPhoneInput | AdminStatsCacheUpdateWithWhereUniqueWithoutMostComparedPhoneInput[]
+    updateMany?: AdminStatsCacheUpdateManyWithWhereWithoutMostComparedPhoneInput | AdminStatsCacheUpdateManyWithWhereWithoutMostComparedPhoneInput[]
+    deleteMany?: AdminStatsCacheScalarWhereInput | AdminStatsCacheScalarWhereInput[]
+  }
+
+  export type AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostViewedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput> | AdminStatsCacheCreateWithoutMostViewedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostViewedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostViewedPhoneInput[]
+    upsert?: AdminStatsCacheUpsertWithWhereUniqueWithoutMostViewedPhoneInput | AdminStatsCacheUpsertWithWhereUniqueWithoutMostViewedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostViewedPhoneInputEnvelope
+    set?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    disconnect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    delete?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    update?: AdminStatsCacheUpdateWithWhereUniqueWithoutMostViewedPhoneInput | AdminStatsCacheUpdateWithWhereUniqueWithoutMostViewedPhoneInput[]
+    updateMany?: AdminStatsCacheUpdateManyWithWhereWithoutMostViewedPhoneInput | AdminStatsCacheUpdateManyWithWhereWithoutMostViewedPhoneInput[]
+    deleteMany?: AdminStatsCacheScalarWhereInput | AdminStatsCacheScalarWhereInput[]
+  }
+
+  export type PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput = {
+    create?: XOR<PhoneVariantsCreateWithoutPhoneInput, PhoneVariantsUncheckedCreateWithoutPhoneInput> | PhoneVariantsCreateWithoutPhoneInput[] | PhoneVariantsUncheckedCreateWithoutPhoneInput[]
+    connectOrCreate?: PhoneVariantsCreateOrConnectWithoutPhoneInput | PhoneVariantsCreateOrConnectWithoutPhoneInput[]
+    upsert?: PhoneVariantsUpsertWithWhereUniqueWithoutPhoneInput | PhoneVariantsUpsertWithWhereUniqueWithoutPhoneInput[]
+    createMany?: PhoneVariantsCreateManyPhoneInputEnvelope
+    set?: PhoneVariantsWhereUniqueInput | PhoneVariantsWhereUniqueInput[]
+    disconnect?: PhoneVariantsWhereUniqueInput | PhoneVariantsWhereUniqueInput[]
+    delete?: PhoneVariantsWhereUniqueInput | PhoneVariantsWhereUniqueInput[]
+    connect?: PhoneVariantsWhereUniqueInput | PhoneVariantsWhereUniqueInput[]
+    update?: PhoneVariantsUpdateWithWhereUniqueWithoutPhoneInput | PhoneVariantsUpdateWithWhereUniqueWithoutPhoneInput[]
+    updateMany?: PhoneVariantsUpdateManyWithWhereWithoutPhoneInput | PhoneVariantsUpdateManyWithWhereWithoutPhoneInput[]
+    deleteMany?: PhoneVariantsScalarWhereInput | PhoneVariantsScalarWhereInput[]
+  }
+
+  export type PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput = {
+    create?: XOR<PhoneSpecsCreateWithoutPhoneInput, PhoneSpecsUncheckedCreateWithoutPhoneInput>
+    connectOrCreate?: PhoneSpecsCreateOrConnectWithoutPhoneInput
+    upsert?: PhoneSpecsUpsertWithoutPhoneInput
+    disconnect?: PhoneSpecsWhereInput | boolean
+    delete?: PhoneSpecsWhereInput | boolean
+    connect?: PhoneSpecsWhereUniqueInput
+    update?: XOR<XOR<PhoneSpecsUpdateToOneWithWhereWithoutPhoneInput, PhoneSpecsUpdateWithoutPhoneInput>, PhoneSpecsUncheckedUpdateWithoutPhoneInput>
+  }
+
   export type RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput = {
     create?: XOR<RecommendationHistoryCreateWithoutPhoneInput, RecommendationHistoryUncheckedCreateWithoutPhoneInput> | RecommendationHistoryCreateWithoutPhoneInput[] | RecommendationHistoryUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: RecommendationHistoryCreateOrConnectWithoutPhoneInput | RecommendationHistoryCreateOrConnectWithoutPhoneInput[]
@@ -20483,6 +26320,156 @@ export namespace Prisma {
     deleteMany?: ComparisonHistoryScalarWhereInput | ComparisonHistoryScalarWhereInput[]
   }
 
+  export type AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostRecommendedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput> | AdminStatsCacheCreateWithoutMostRecommendedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostRecommendedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostRecommendedPhoneInput[]
+    upsert?: AdminStatsCacheUpsertWithWhereUniqueWithoutMostRecommendedPhoneInput | AdminStatsCacheUpsertWithWhereUniqueWithoutMostRecommendedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostRecommendedPhoneInputEnvelope
+    set?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    disconnect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    delete?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    update?: AdminStatsCacheUpdateWithWhereUniqueWithoutMostRecommendedPhoneInput | AdminStatsCacheUpdateWithWhereUniqueWithoutMostRecommendedPhoneInput[]
+    updateMany?: AdminStatsCacheUpdateManyWithWhereWithoutMostRecommendedPhoneInput | AdminStatsCacheUpdateManyWithWhereWithoutMostRecommendedPhoneInput[]
+    deleteMany?: AdminStatsCacheScalarWhereInput | AdminStatsCacheScalarWhereInput[]
+  }
+
+  export type AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostComparedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput> | AdminStatsCacheCreateWithoutMostComparedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostComparedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostComparedPhoneInput[]
+    upsert?: AdminStatsCacheUpsertWithWhereUniqueWithoutMostComparedPhoneInput | AdminStatsCacheUpsertWithWhereUniqueWithoutMostComparedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostComparedPhoneInputEnvelope
+    set?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    disconnect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    delete?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    update?: AdminStatsCacheUpdateWithWhereUniqueWithoutMostComparedPhoneInput | AdminStatsCacheUpdateWithWhereUniqueWithoutMostComparedPhoneInput[]
+    updateMany?: AdminStatsCacheUpdateManyWithWhereWithoutMostComparedPhoneInput | AdminStatsCacheUpdateManyWithWhereWithoutMostComparedPhoneInput[]
+    deleteMany?: AdminStatsCacheScalarWhereInput | AdminStatsCacheScalarWhereInput[]
+  }
+
+  export type AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput = {
+    create?: XOR<AdminStatsCacheCreateWithoutMostViewedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput> | AdminStatsCacheCreateWithoutMostViewedPhoneInput[] | AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput[]
+    connectOrCreate?: AdminStatsCacheCreateOrConnectWithoutMostViewedPhoneInput | AdminStatsCacheCreateOrConnectWithoutMostViewedPhoneInput[]
+    upsert?: AdminStatsCacheUpsertWithWhereUniqueWithoutMostViewedPhoneInput | AdminStatsCacheUpsertWithWhereUniqueWithoutMostViewedPhoneInput[]
+    createMany?: AdminStatsCacheCreateManyMostViewedPhoneInputEnvelope
+    set?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    disconnect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    delete?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    connect?: AdminStatsCacheWhereUniqueInput | AdminStatsCacheWhereUniqueInput[]
+    update?: AdminStatsCacheUpdateWithWhereUniqueWithoutMostViewedPhoneInput | AdminStatsCacheUpdateWithWhereUniqueWithoutMostViewedPhoneInput[]
+    updateMany?: AdminStatsCacheUpdateManyWithWhereWithoutMostViewedPhoneInput | AdminStatsCacheUpdateManyWithWhereWithoutMostViewedPhoneInput[]
+    deleteMany?: AdminStatsCacheScalarWhereInput | AdminStatsCacheScalarWhereInput[]
+  }
+
+  export type PhonesCreateNestedOneWithoutVariantsInput = {
+    create?: XOR<PhonesCreateWithoutVariantsInput, PhonesUncheckedCreateWithoutVariantsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutVariantsInput
+    connect?: PhonesWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableDecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string | null
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type PhonesUpdateOneRequiredWithoutVariantsNestedInput = {
+    create?: XOR<PhonesCreateWithoutVariantsInput, PhonesUncheckedCreateWithoutVariantsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutVariantsInput
+    upsert?: PhonesUpsertWithoutVariantsInput
+    connect?: PhonesWhereUniqueInput
+    update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutVariantsInput, PhonesUpdateWithoutVariantsInput>, PhonesUncheckedUpdateWithoutVariantsInput>
+  }
+
+  export type PhonesCreateNestedOneWithoutSpecsInput = {
+    create?: XOR<PhonesCreateWithoutSpecsInput, PhonesUncheckedCreateWithoutSpecsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutSpecsInput
+    connect?: PhonesWhereUniqueInput
+  }
+
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
+  export type PhonesUpdateOneRequiredWithoutSpecsNestedInput = {
+    create?: XOR<PhonesCreateWithoutSpecsInput, PhonesUncheckedCreateWithoutSpecsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutSpecsInput
+    upsert?: PhonesUpsertWithoutSpecsInput
+    connect?: PhonesWhereUniqueInput
+    update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutSpecsInput, PhonesUpdateWithoutSpecsInput>, PhonesUncheckedUpdateWithoutSpecsInput>
+  }
+
+  export type UsersCreateNestedOneWithoutProfileInput = {
+    create?: XOR<UsersCreateWithoutProfileInput, UsersUncheckedCreateWithoutProfileInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutProfileInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type UsersUpdateOneRequiredWithoutProfileNestedInput = {
+    create?: XOR<UsersCreateWithoutProfileInput, UsersUncheckedCreateWithoutProfileInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutProfileInput
+    upsert?: UsersUpsertWithoutProfileInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutProfileInput, UsersUpdateWithoutProfileInput>, UsersUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type BrandsCreateNestedOneWithoutUserPreferencesInput = {
+    create?: XOR<BrandsCreateWithoutUserPreferencesInput, BrandsUncheckedCreateWithoutUserPreferencesInput>
+    connectOrCreate?: BrandsCreateOrConnectWithoutUserPreferencesInput
+    connect?: BrandsWhereUniqueInput
+  }
+
+  export type UsersCreateNestedOneWithoutPreferenceInput = {
+    create?: XOR<UsersCreateWithoutPreferenceInput, UsersUncheckedCreateWithoutPreferenceInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutPreferenceInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type EnumCameraPreferenceFieldUpdateOperationsInput = {
+    set?: $Enums.CameraPreference
+  }
+
+  export type EnumUsageTypeFieldUpdateOperationsInput = {
+    set?: $Enums.UsageType
+  }
+
+  export type BrandsUpdateOneWithoutUserPreferencesNestedInput = {
+    create?: XOR<BrandsCreateWithoutUserPreferencesInput, BrandsUncheckedCreateWithoutUserPreferencesInput>
+    connectOrCreate?: BrandsCreateOrConnectWithoutUserPreferencesInput
+    upsert?: BrandsUpsertWithoutUserPreferencesInput
+    disconnect?: BrandsWhereInput | boolean
+    delete?: BrandsWhereInput | boolean
+    connect?: BrandsWhereUniqueInput
+    update?: XOR<XOR<BrandsUpdateToOneWithWhereWithoutUserPreferencesInput, BrandsUpdateWithoutUserPreferencesInput>, BrandsUncheckedUpdateWithoutUserPreferencesInput>
+  }
+
+  export type UsersUpdateOneRequiredWithoutPreferenceNestedInput = {
+    create?: XOR<UsersCreateWithoutPreferenceInput, UsersUncheckedCreateWithoutPreferenceInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutPreferenceInput
+    upsert?: UsersUpsertWithoutPreferenceInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutPreferenceInput, UsersUpdateWithoutPreferenceInput>, UsersUncheckedUpdateWithoutPreferenceInput>
+  }
+
   export type UsersCreateNestedOneWithoutRecommendationHistoryInput = {
     create?: XOR<UsersCreateWithoutRecommendationHistoryInput, UsersUncheckedCreateWithoutRecommendationHistoryInput>
     connectOrCreate?: UsersCreateOrConnectWithoutRecommendationHistoryInput
@@ -20531,14 +26518,6 @@ export namespace Prisma {
 
   export type EnumSegmentConfidenceFieldUpdateOperationsInput = {
     set?: $Enums.SegmentConfidence
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type UsersUpdateOneRequiredWithoutCustomerProfileNestedInput = {
@@ -20617,6 +26596,54 @@ export namespace Prisma {
     upsert?: PhonesUpsertWithoutComparedAsBInput
     connect?: PhonesWhereUniqueInput
     update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutComparedAsBInput, PhonesUpdateWithoutComparedAsBInput>, PhonesUncheckedUpdateWithoutComparedAsBInput>
+  }
+
+  export type PhonesCreateNestedOneWithoutMostRecommendedInStatsInput = {
+    create?: XOR<PhonesCreateWithoutMostRecommendedInStatsInput, PhonesUncheckedCreateWithoutMostRecommendedInStatsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutMostRecommendedInStatsInput
+    connect?: PhonesWhereUniqueInput
+  }
+
+  export type PhonesCreateNestedOneWithoutMostComparedInStatsInput = {
+    create?: XOR<PhonesCreateWithoutMostComparedInStatsInput, PhonesUncheckedCreateWithoutMostComparedInStatsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutMostComparedInStatsInput
+    connect?: PhonesWhereUniqueInput
+  }
+
+  export type PhonesCreateNestedOneWithoutMostViewedInStatsInput = {
+    create?: XOR<PhonesCreateWithoutMostViewedInStatsInput, PhonesUncheckedCreateWithoutMostViewedInStatsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutMostViewedInStatsInput
+    connect?: PhonesWhereUniqueInput
+  }
+
+  export type PhonesUpdateOneWithoutMostRecommendedInStatsNestedInput = {
+    create?: XOR<PhonesCreateWithoutMostRecommendedInStatsInput, PhonesUncheckedCreateWithoutMostRecommendedInStatsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutMostRecommendedInStatsInput
+    upsert?: PhonesUpsertWithoutMostRecommendedInStatsInput
+    disconnect?: PhonesWhereInput | boolean
+    delete?: PhonesWhereInput | boolean
+    connect?: PhonesWhereUniqueInput
+    update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutMostRecommendedInStatsInput, PhonesUpdateWithoutMostRecommendedInStatsInput>, PhonesUncheckedUpdateWithoutMostRecommendedInStatsInput>
+  }
+
+  export type PhonesUpdateOneWithoutMostComparedInStatsNestedInput = {
+    create?: XOR<PhonesCreateWithoutMostComparedInStatsInput, PhonesUncheckedCreateWithoutMostComparedInStatsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutMostComparedInStatsInput
+    upsert?: PhonesUpsertWithoutMostComparedInStatsInput
+    disconnect?: PhonesWhereInput | boolean
+    delete?: PhonesWhereInput | boolean
+    connect?: PhonesWhereUniqueInput
+    update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutMostComparedInStatsInput, PhonesUpdateWithoutMostComparedInStatsInput>, PhonesUncheckedUpdateWithoutMostComparedInStatsInput>
+  }
+
+  export type PhonesUpdateOneWithoutMostViewedInStatsNestedInput = {
+    create?: XOR<PhonesCreateWithoutMostViewedInStatsInput, PhonesUncheckedCreateWithoutMostViewedInStatsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutMostViewedInStatsInput
+    upsert?: PhonesUpsertWithoutMostViewedInStatsInput
+    disconnect?: PhonesWhereInput | boolean
+    delete?: PhonesWhereInput | boolean
+    connect?: PhonesWhereUniqueInput
+    update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutMostViewedInStatsInput, PhonesUpdateWithoutMostViewedInStatsInput>, PhonesUncheckedUpdateWithoutMostViewedInStatsInput>
   }
 
   export type NestedUuidFilter<$PrismaModel = never> = {
@@ -20831,6 +26858,17 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -20856,6 +26894,110 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type NestedDecimalFilter<$PrismaModel = never> = {
@@ -20917,81 +27059,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumUsageTypeFilter<$PrismaModel>
     _max?: NestedEnumUsageTypeFilter<$PrismaModel>
-  }
-
-  export type NestedDecimalNullableFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedDecimalNullableFilter<$PrismaModel>
-    _sum?: NestedDecimalNullableFilter<$PrismaModel>
-    _min?: NestedDecimalNullableFilter<$PrismaModel>
-    _max?: NestedDecimalNullableFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumBudgetSegmentNullableFilter<$PrismaModel = never> = {
@@ -21060,33 +27127,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumSegmentConfidenceFilter<$PrismaModel>
     _max?: NestedEnumSegmentConfidenceFilter<$PrismaModel>
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type UsersCreateWithoutRoleInput = {
@@ -21238,9 +27278,9 @@ export namespace Prisma {
     maxBudget: Decimal | DecimalJsLike | number | string
     cameraPreference: $Enums.CameraPreference
     usageType: $Enums.UsageType
-    preferredBrand: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    preferredBrand?: BrandsCreateNestedOneWithoutUserPreferencesInput
   }
 
   export type UserPreferenceUncheckedCreateWithoutUserInput = {
@@ -21248,7 +27288,7 @@ export namespace Prisma {
     maxBudget: Decimal | DecimalJsLike | number | string
     cameraPreference: $Enums.CameraPreference
     usageType: $Enums.UsageType
-    preferredBrand: string
+    preferredBrandId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -21506,9 +27546,9 @@ export namespace Prisma {
     maxBudget?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cameraPreference?: EnumCameraPreferenceFieldUpdateOperationsInput | $Enums.CameraPreference
     usageType?: EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
-    preferredBrand?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    preferredBrand?: BrandsUpdateOneWithoutUserPreferencesNestedInput
   }
 
   export type UserPreferenceUncheckedUpdateWithoutUserInput = {
@@ -21516,7 +27556,7 @@ export namespace Prisma {
     maxBudget?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     cameraPreference?: EnumCameraPreferenceFieldUpdateOperationsInput | $Enums.CameraPreference
     usageType?: EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
-    preferredBrand?: StringFieldUpdateOperationsInput | string
+    preferredBrandId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21757,172 +27797,321 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type UsersCreateWithoutProfileInput = {
-    name: string
-    userId?: string
-    email: string
-    password: string
-    phoneNo?: string | null
+  export type PhonesCreateWithoutBrandInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
     isActive?: boolean
-    isVerified?: boolean
-    role?: RolesCreateNestedOneWithoutUsersInput
-    otps?: OtpCreateNestedManyWithoutUserInput
-    preference?: UserPreferenceCreateNestedOneWithoutUserInput
-    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
-    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutUserInput
-    wishlist?: WishlistCreateNestedManyWithoutUserInput
-    comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
   }
 
-  export type UsersUncheckedCreateWithoutProfileInput = {
-    name: string
-    userId?: string
-    email: string
-    password: string
-    phoneNo?: string | null
+  export type PhonesUncheckedCreateWithoutBrandInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
     isActive?: boolean
-    isVerified?: boolean
-    roleId?: string | null
-    otps?: OtpUncheckedCreateNestedManyWithoutUserInput
-    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
-    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
-    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutUserInput
-    wishlist?: WishlistUncheckedCreateNestedManyWithoutUserInput
-    comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
   }
 
-  export type UsersCreateOrConnectWithoutProfileInput = {
-    where: UsersWhereUniqueInput
-    create: XOR<UsersCreateWithoutProfileInput, UsersUncheckedCreateWithoutProfileInput>
+  export type PhonesCreateOrConnectWithoutBrandInput = {
+    where: PhonesWhereUniqueInput
+    create: XOR<PhonesCreateWithoutBrandInput, PhonesUncheckedCreateWithoutBrandInput>
   }
 
-  export type UsersUpsertWithoutProfileInput = {
-    update: XOR<UsersUpdateWithoutProfileInput, UsersUncheckedUpdateWithoutProfileInput>
-    create: XOR<UsersCreateWithoutProfileInput, UsersUncheckedCreateWithoutProfileInput>
-    where?: UsersWhereInput
+  export type PhonesCreateManyBrandInputEnvelope = {
+    data: PhonesCreateManyBrandInput | PhonesCreateManyBrandInput[]
+    skipDuplicates?: boolean
   }
 
-  export type UsersUpdateToOneWithWhereWithoutProfileInput = {
-    where?: UsersWhereInput
-    data: XOR<UsersUpdateWithoutProfileInput, UsersUncheckedUpdateWithoutProfileInput>
+  export type UserPreferenceCreateWithoutPreferredBrandInput = {
+    preferenceId?: string
+    maxBudget: Decimal | DecimalJsLike | number | string
+    cameraPreference: $Enums.CameraPreference
+    usageType: $Enums.UsageType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UsersCreateNestedOneWithoutPreferenceInput
   }
 
-  export type UsersUpdateWithoutProfileInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    isVerified?: BoolFieldUpdateOperationsInput | boolean
-    role?: RolesUpdateOneWithoutUsersNestedInput
-    otps?: OtpUpdateManyWithoutUserNestedInput
-    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
-    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
-    recommendationHistory?: RecommendationHistoryUpdateManyWithoutUserNestedInput
-    wishlist?: WishlistUpdateManyWithoutUserNestedInput
-    comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
+  export type UserPreferenceUncheckedCreateWithoutPreferredBrandInput = {
+    preferenceId?: string
+    userId: string
+    maxBudget: Decimal | DecimalJsLike | number | string
+    cameraPreference: $Enums.CameraPreference
+    usageType: $Enums.UsageType
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type UsersUncheckedUpdateWithoutProfileInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    isVerified?: BoolFieldUpdateOperationsInput | boolean
-    roleId?: NullableStringFieldUpdateOperationsInput | string | null
-    otps?: OtpUncheckedUpdateManyWithoutUserNestedInput
-    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
-    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
-    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutUserNestedInput
-    wishlist?: WishlistUncheckedUpdateManyWithoutUserNestedInput
-    comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
+  export type UserPreferenceCreateOrConnectWithoutPreferredBrandInput = {
+    where: UserPreferenceWhereUniqueInput
+    create: XOR<UserPreferenceCreateWithoutPreferredBrandInput, UserPreferenceUncheckedCreateWithoutPreferredBrandInput>
   }
 
-  export type UsersCreateWithoutPreferenceInput = {
+  export type UserPreferenceCreateManyPreferredBrandInputEnvelope = {
+    data: UserPreferenceCreateManyPreferredBrandInput | UserPreferenceCreateManyPreferredBrandInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PhonesUpsertWithWhereUniqueWithoutBrandInput = {
+    where: PhonesWhereUniqueInput
+    update: XOR<PhonesUpdateWithoutBrandInput, PhonesUncheckedUpdateWithoutBrandInput>
+    create: XOR<PhonesCreateWithoutBrandInput, PhonesUncheckedCreateWithoutBrandInput>
+  }
+
+  export type PhonesUpdateWithWhereUniqueWithoutBrandInput = {
+    where: PhonesWhereUniqueInput
+    data: XOR<PhonesUpdateWithoutBrandInput, PhonesUncheckedUpdateWithoutBrandInput>
+  }
+
+  export type PhonesUpdateManyWithWhereWithoutBrandInput = {
+    where: PhonesScalarWhereInput
+    data: XOR<PhonesUpdateManyMutationInput, PhonesUncheckedUpdateManyWithoutBrandInput>
+  }
+
+  export type PhonesScalarWhereInput = {
+    AND?: PhonesScalarWhereInput | PhonesScalarWhereInput[]
+    OR?: PhonesScalarWhereInput[]
+    NOT?: PhonesScalarWhereInput | PhonesScalarWhereInput[]
+    phoneId?: UuidFilter<"Phones"> | string
+    brandId?: UuidFilter<"Phones"> | string
+    modelName?: StringFilter<"Phones"> | string
+    imageUrl?: StringNullableFilter<"Phones"> | string | null
+    imagePath?: StringNullableFilter<"Phones"> | string | null
+    antutuScore?: IntNullableFilter<"Phones"> | number | null
+    batteryMah?: IntNullableFilter<"Phones"> | number | null
+    source?: StringNullableFilter<"Phones"> | string | null
+    sourceUrl?: StringNullableFilter<"Phones"> | string | null
+    isActive?: BoolFilter<"Phones"> | boolean
+    discontinuedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
+    createdAt?: DateTimeFilter<"Phones"> | Date | string
+    updatedAt?: DateTimeFilter<"Phones"> | Date | string
+  }
+
+  export type UserPreferenceUpsertWithWhereUniqueWithoutPreferredBrandInput = {
+    where: UserPreferenceWhereUniqueInput
+    update: XOR<UserPreferenceUpdateWithoutPreferredBrandInput, UserPreferenceUncheckedUpdateWithoutPreferredBrandInput>
+    create: XOR<UserPreferenceCreateWithoutPreferredBrandInput, UserPreferenceUncheckedCreateWithoutPreferredBrandInput>
+  }
+
+  export type UserPreferenceUpdateWithWhereUniqueWithoutPreferredBrandInput = {
+    where: UserPreferenceWhereUniqueInput
+    data: XOR<UserPreferenceUpdateWithoutPreferredBrandInput, UserPreferenceUncheckedUpdateWithoutPreferredBrandInput>
+  }
+
+  export type UserPreferenceUpdateManyWithWhereWithoutPreferredBrandInput = {
+    where: UserPreferenceScalarWhereInput
+    data: XOR<UserPreferenceUpdateManyMutationInput, UserPreferenceUncheckedUpdateManyWithoutPreferredBrandInput>
+  }
+
+  export type UserPreferenceScalarWhereInput = {
+    AND?: UserPreferenceScalarWhereInput | UserPreferenceScalarWhereInput[]
+    OR?: UserPreferenceScalarWhereInput[]
+    NOT?: UserPreferenceScalarWhereInput | UserPreferenceScalarWhereInput[]
+    preferenceId?: UuidFilter<"UserPreference"> | string
+    userId?: UuidFilter<"UserPreference"> | string
+    maxBudget?: DecimalFilter<"UserPreference"> | Decimal | DecimalJsLike | number | string
+    cameraPreference?: EnumCameraPreferenceFilter<"UserPreference"> | $Enums.CameraPreference
+    usageType?: EnumUsageTypeFilter<"UserPreference"> | $Enums.UsageType
+    preferredBrandId?: UuidNullableFilter<"UserPreference"> | string | null
+    createdAt?: DateTimeFilter<"UserPreference"> | Date | string
+    updatedAt?: DateTimeFilter<"UserPreference"> | Date | string
+  }
+
+  export type BrandsCreateWithoutPhonesInput = {
+    brandId?: string
     name: string
-    userId?: string
-    email: string
-    password: string
-    phoneNo?: string | null
-    isActive?: boolean
-    isVerified?: boolean
-    role?: RolesCreateNestedOneWithoutUsersInput
-    otps?: OtpCreateNestedManyWithoutUserInput
-    profile?: UserProfileCreateNestedOneWithoutUserInput
-    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
-    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutUserInput
-    wishlist?: WishlistCreateNestedManyWithoutUserInput
-    comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
+    logoUrl?: string | null
+    website?: string | null
+    country?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userPreferences?: UserPreferenceCreateNestedManyWithoutPreferredBrandInput
   }
 
-  export type UsersUncheckedCreateWithoutPreferenceInput = {
+  export type BrandsUncheckedCreateWithoutPhonesInput = {
+    brandId?: string
     name: string
-    userId?: string
-    email: string
-    password: string
-    phoneNo?: string | null
-    isActive?: boolean
-    isVerified?: boolean
-    roleId?: string | null
-    otps?: OtpUncheckedCreateNestedManyWithoutUserInput
-    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
-    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
-    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutUserInput
-    wishlist?: WishlistUncheckedCreateNestedManyWithoutUserInput
-    comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
+    logoUrl?: string | null
+    website?: string | null
+    country?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userPreferences?: UserPreferenceUncheckedCreateNestedManyWithoutPreferredBrandInput
   }
 
-  export type UsersCreateOrConnectWithoutPreferenceInput = {
-    where: UsersWhereUniqueInput
-    create: XOR<UsersCreateWithoutPreferenceInput, UsersUncheckedCreateWithoutPreferenceInput>
+  export type BrandsCreateOrConnectWithoutPhonesInput = {
+    where: BrandsWhereUniqueInput
+    create: XOR<BrandsCreateWithoutPhonesInput, BrandsUncheckedCreateWithoutPhonesInput>
   }
 
-  export type UsersUpsertWithoutPreferenceInput = {
-    update: XOR<UsersUpdateWithoutPreferenceInput, UsersUncheckedUpdateWithoutPreferenceInput>
-    create: XOR<UsersCreateWithoutPreferenceInput, UsersUncheckedCreateWithoutPreferenceInput>
-    where?: UsersWhereInput
+  export type PhoneVariantsCreateWithoutPhoneInput = {
+    variantId?: string
+    ramGb: number
+    storageGb: number
+    price?: Decimal | DecimalJsLike | number | string | null
+    storageType?: string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type UsersUpdateToOneWithWhereWithoutPreferenceInput = {
-    where?: UsersWhereInput
-    data: XOR<UsersUpdateWithoutPreferenceInput, UsersUncheckedUpdateWithoutPreferenceInput>
+  export type PhoneVariantsUncheckedCreateWithoutPhoneInput = {
+    variantId?: string
+    ramGb: number
+    storageGb: number
+    price?: Decimal | DecimalJsLike | number | string | null
+    storageType?: string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type UsersUpdateWithoutPreferenceInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    isVerified?: BoolFieldUpdateOperationsInput | boolean
-    role?: RolesUpdateOneWithoutUsersNestedInput
-    otps?: OtpUpdateManyWithoutUserNestedInput
-    profile?: UserProfileUpdateOneWithoutUserNestedInput
-    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
-    recommendationHistory?: RecommendationHistoryUpdateManyWithoutUserNestedInput
-    wishlist?: WishlistUpdateManyWithoutUserNestedInput
-    comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
+  export type PhoneVariantsCreateOrConnectWithoutPhoneInput = {
+    where: PhoneVariantsWhereUniqueInput
+    create: XOR<PhoneVariantsCreateWithoutPhoneInput, PhoneVariantsUncheckedCreateWithoutPhoneInput>
   }
 
-  export type UsersUncheckedUpdateWithoutPreferenceInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    isVerified?: BoolFieldUpdateOperationsInput | boolean
-    roleId?: NullableStringFieldUpdateOperationsInput | string | null
-    otps?: OtpUncheckedUpdateManyWithoutUserNestedInput
-    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
-    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
-    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutUserNestedInput
-    wishlist?: WishlistUncheckedUpdateManyWithoutUserNestedInput
-    comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
+  export type PhoneVariantsCreateManyPhoneInputEnvelope = {
+    data: PhoneVariantsCreateManyPhoneInput | PhoneVariantsCreateManyPhoneInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PhoneSpecsCreateWithoutPhoneInput = {
+    specId?: string
+    networkTech?: string | null
+    supports5g?: boolean
+    supportsNfc?: boolean
+    dualSim?: boolean
+    simType?: string | null
+    wifi?: string | null
+    bluetooth?: string | null
+    usbType?: string | null
+    headphoneJack?: boolean | null
+    gps?: boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: string | null
+    refreshRate?: number | null
+    displaySize?: Decimal | DecimalJsLike | number | string | null
+    resolution?: string | null
+    ppiDensity?: number | null
+    screenToBody?: Decimal | DecimalJsLike | number | string | null
+    displayProtection?: string | null
+    os?: string | null
+    osVersion?: string | null
+    chipset?: string | null
+    processNode?: string | null
+    cpu?: string | null
+    gpu?: string | null
+    mainCamera?: string | null
+    lensCount?: number | null
+    mainAperture?: string | null
+    ois?: boolean | null
+    sensorSize?: string | null
+    camera4K?: boolean | null
+    cameraVideo?: string | null
+    selfieCamera?: string | null
+    selfie4K?: boolean | null
+    dimensions?: string | null
+    weight?: Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: string | null
+    ipRating?: string | null
+    batteryMah?: number | null
+    wiredCharging?: number | null
+    wirelessCharging?: number | null
+    reverseWireless?: boolean | null
+    announced?: Date | string | null
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PhoneSpecsUncheckedCreateWithoutPhoneInput = {
+    specId?: string
+    networkTech?: string | null
+    supports5g?: boolean
+    supportsNfc?: boolean
+    dualSim?: boolean
+    simType?: string | null
+    wifi?: string | null
+    bluetooth?: string | null
+    usbType?: string | null
+    headphoneJack?: boolean | null
+    gps?: boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: string | null
+    refreshRate?: number | null
+    displaySize?: Decimal | DecimalJsLike | number | string | null
+    resolution?: string | null
+    ppiDensity?: number | null
+    screenToBody?: Decimal | DecimalJsLike | number | string | null
+    displayProtection?: string | null
+    os?: string | null
+    osVersion?: string | null
+    chipset?: string | null
+    processNode?: string | null
+    cpu?: string | null
+    gpu?: string | null
+    mainCamera?: string | null
+    lensCount?: number | null
+    mainAperture?: string | null
+    ois?: boolean | null
+    sensorSize?: string | null
+    camera4K?: boolean | null
+    cameraVideo?: string | null
+    selfieCamera?: string | null
+    selfie4K?: boolean | null
+    dimensions?: string | null
+    weight?: Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: string | null
+    ipRating?: string | null
+    batteryMah?: number | null
+    wiredCharging?: number | null
+    wirelessCharging?: number | null
+    reverseWireless?: boolean | null
+    announced?: Date | string | null
+    status?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PhoneSpecsCreateOrConnectWithoutPhoneInput = {
+    where: PhoneSpecsWhereUniqueInput
+    create: XOR<PhoneSpecsCreateWithoutPhoneInput, PhoneSpecsUncheckedCreateWithoutPhoneInput>
   }
 
   export type RecommendationHistoryCreateWithoutPhoneInput = {
@@ -22045,6 +28234,276 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AdminStatsCacheCreateWithoutMostRecommendedPhoneInput = {
+    statId?: string
+    computedDate?: Date | string
+    mostRecommendedBrand?: string | null
+    avgUserBudget?: Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: string | null
+    avgCompatibility?: Decimal | DecimalJsLike | number | string | null
+    mostComparedPhone?: PhonesCreateNestedOneWithoutMostComparedInStatsInput
+    mostViewedPhone?: PhonesCreateNestedOneWithoutMostViewedInStatsInput
+  }
+
+  export type AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput = {
+    statId?: string
+    computedDate?: Date | string
+    mostRecommendedBrand?: string | null
+    mostComparedPhoneId?: string | null
+    mostViewedPhoneId?: string | null
+    avgUserBudget?: Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: string | null
+    avgCompatibility?: Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheCreateOrConnectWithoutMostRecommendedPhoneInput = {
+    where: AdminStatsCacheWhereUniqueInput
+    create: XOR<AdminStatsCacheCreateWithoutMostRecommendedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput>
+  }
+
+  export type AdminStatsCacheCreateManyMostRecommendedPhoneInputEnvelope = {
+    data: AdminStatsCacheCreateManyMostRecommendedPhoneInput | AdminStatsCacheCreateManyMostRecommendedPhoneInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AdminStatsCacheCreateWithoutMostComparedPhoneInput = {
+    statId?: string
+    computedDate?: Date | string
+    mostRecommendedBrand?: string | null
+    avgUserBudget?: Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: string | null
+    avgCompatibility?: Decimal | DecimalJsLike | number | string | null
+    mostRecommendedPhone?: PhonesCreateNestedOneWithoutMostRecommendedInStatsInput
+    mostViewedPhone?: PhonesCreateNestedOneWithoutMostViewedInStatsInput
+  }
+
+  export type AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput = {
+    statId?: string
+    computedDate?: Date | string
+    mostRecommendedBrand?: string | null
+    mostRecommendedPhoneId?: string | null
+    mostViewedPhoneId?: string | null
+    avgUserBudget?: Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: string | null
+    avgCompatibility?: Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheCreateOrConnectWithoutMostComparedPhoneInput = {
+    where: AdminStatsCacheWhereUniqueInput
+    create: XOR<AdminStatsCacheCreateWithoutMostComparedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput>
+  }
+
+  export type AdminStatsCacheCreateManyMostComparedPhoneInputEnvelope = {
+    data: AdminStatsCacheCreateManyMostComparedPhoneInput | AdminStatsCacheCreateManyMostComparedPhoneInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AdminStatsCacheCreateWithoutMostViewedPhoneInput = {
+    statId?: string
+    computedDate?: Date | string
+    mostRecommendedBrand?: string | null
+    avgUserBudget?: Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: string | null
+    avgCompatibility?: Decimal | DecimalJsLike | number | string | null
+    mostRecommendedPhone?: PhonesCreateNestedOneWithoutMostRecommendedInStatsInput
+    mostComparedPhone?: PhonesCreateNestedOneWithoutMostComparedInStatsInput
+  }
+
+  export type AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput = {
+    statId?: string
+    computedDate?: Date | string
+    mostRecommendedBrand?: string | null
+    mostRecommendedPhoneId?: string | null
+    mostComparedPhoneId?: string | null
+    avgUserBudget?: Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: string | null
+    avgCompatibility?: Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheCreateOrConnectWithoutMostViewedPhoneInput = {
+    where: AdminStatsCacheWhereUniqueInput
+    create: XOR<AdminStatsCacheCreateWithoutMostViewedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput>
+  }
+
+  export type AdminStatsCacheCreateManyMostViewedPhoneInputEnvelope = {
+    data: AdminStatsCacheCreateManyMostViewedPhoneInput | AdminStatsCacheCreateManyMostViewedPhoneInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BrandsUpsertWithoutPhonesInput = {
+    update: XOR<BrandsUpdateWithoutPhonesInput, BrandsUncheckedUpdateWithoutPhonesInput>
+    create: XOR<BrandsCreateWithoutPhonesInput, BrandsUncheckedCreateWithoutPhonesInput>
+    where?: BrandsWhereInput
+  }
+
+  export type BrandsUpdateToOneWithWhereWithoutPhonesInput = {
+    where?: BrandsWhereInput
+    data: XOR<BrandsUpdateWithoutPhonesInput, BrandsUncheckedUpdateWithoutPhonesInput>
+  }
+
+  export type BrandsUpdateWithoutPhonesInput = {
+    brandId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userPreferences?: UserPreferenceUpdateManyWithoutPreferredBrandNestedInput
+  }
+
+  export type BrandsUncheckedUpdateWithoutPhonesInput = {
+    brandId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userPreferences?: UserPreferenceUncheckedUpdateManyWithoutPreferredBrandNestedInput
+  }
+
+  export type PhoneVariantsUpsertWithWhereUniqueWithoutPhoneInput = {
+    where: PhoneVariantsWhereUniqueInput
+    update: XOR<PhoneVariantsUpdateWithoutPhoneInput, PhoneVariantsUncheckedUpdateWithoutPhoneInput>
+    create: XOR<PhoneVariantsCreateWithoutPhoneInput, PhoneVariantsUncheckedCreateWithoutPhoneInput>
+  }
+
+  export type PhoneVariantsUpdateWithWhereUniqueWithoutPhoneInput = {
+    where: PhoneVariantsWhereUniqueInput
+    data: XOR<PhoneVariantsUpdateWithoutPhoneInput, PhoneVariantsUncheckedUpdateWithoutPhoneInput>
+  }
+
+  export type PhoneVariantsUpdateManyWithWhereWithoutPhoneInput = {
+    where: PhoneVariantsScalarWhereInput
+    data: XOR<PhoneVariantsUpdateManyMutationInput, PhoneVariantsUncheckedUpdateManyWithoutPhoneInput>
+  }
+
+  export type PhoneVariantsScalarWhereInput = {
+    AND?: PhoneVariantsScalarWhereInput | PhoneVariantsScalarWhereInput[]
+    OR?: PhoneVariantsScalarWhereInput[]
+    NOT?: PhoneVariantsScalarWhereInput | PhoneVariantsScalarWhereInput[]
+    variantId?: UuidFilter<"PhoneVariants"> | string
+    phoneId?: UuidFilter<"PhoneVariants"> | string
+    ramGb?: IntFilter<"PhoneVariants"> | number
+    storageGb?: IntFilter<"PhoneVariants"> | number
+    price?: DecimalNullableFilter<"PhoneVariants"> | Decimal | DecimalJsLike | number | string | null
+    storageType?: StringNullableFilter<"PhoneVariants"> | string | null
+    colors?: JsonNullableFilter<"PhoneVariants">
+    isAvailable?: BoolFilter<"PhoneVariants"> | boolean
+    createdAt?: DateTimeFilter<"PhoneVariants"> | Date | string
+    updatedAt?: DateTimeFilter<"PhoneVariants"> | Date | string
+  }
+
+  export type PhoneSpecsUpsertWithoutPhoneInput = {
+    update: XOR<PhoneSpecsUpdateWithoutPhoneInput, PhoneSpecsUncheckedUpdateWithoutPhoneInput>
+    create: XOR<PhoneSpecsCreateWithoutPhoneInput, PhoneSpecsUncheckedCreateWithoutPhoneInput>
+    where?: PhoneSpecsWhereInput
+  }
+
+  export type PhoneSpecsUpdateToOneWithWhereWithoutPhoneInput = {
+    where?: PhoneSpecsWhereInput
+    data: XOR<PhoneSpecsUpdateWithoutPhoneInput, PhoneSpecsUncheckedUpdateWithoutPhoneInput>
+  }
+
+  export type PhoneSpecsUpdateWithoutPhoneInput = {
+    specId?: StringFieldUpdateOperationsInput | string
+    networkTech?: NullableStringFieldUpdateOperationsInput | string | null
+    supports5g?: BoolFieldUpdateOperationsInput | boolean
+    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
+    dualSim?: BoolFieldUpdateOperationsInput | boolean
+    simType?: NullableStringFieldUpdateOperationsInput | string | null
+    wifi?: NullableStringFieldUpdateOperationsInput | string | null
+    bluetooth?: NullableStringFieldUpdateOperationsInput | string | null
+    usbType?: NullableStringFieldUpdateOperationsInput | string | null
+    headphoneJack?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    gps?: BoolFieldUpdateOperationsInput | boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshRate?: NullableIntFieldUpdateOperationsInput | number | null
+    displaySize?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    ppiDensity?: NullableIntFieldUpdateOperationsInput | number | null
+    screenToBody?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    displayProtection?: NullableStringFieldUpdateOperationsInput | string | null
+    os?: NullableStringFieldUpdateOperationsInput | string | null
+    osVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    chipset?: NullableStringFieldUpdateOperationsInput | string | null
+    processNode?: NullableStringFieldUpdateOperationsInput | string | null
+    cpu?: NullableStringFieldUpdateOperationsInput | string | null
+    gpu?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    lensCount?: NullableIntFieldUpdateOperationsInput | number | null
+    mainAperture?: NullableStringFieldUpdateOperationsInput | string | null
+    ois?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    sensorSize?: NullableStringFieldUpdateOperationsInput | string | null
+    camera4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    cameraVideo?: NullableStringFieldUpdateOperationsInput | string | null
+    selfieCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    selfie4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    dimensions?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: NullableStringFieldUpdateOperationsInput | string | null
+    ipRating?: NullableStringFieldUpdateOperationsInput | string | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    wiredCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    wirelessCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    reverseWireless?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    announced?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneSpecsUncheckedUpdateWithoutPhoneInput = {
+    specId?: StringFieldUpdateOperationsInput | string
+    networkTech?: NullableStringFieldUpdateOperationsInput | string | null
+    supports5g?: BoolFieldUpdateOperationsInput | boolean
+    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
+    dualSim?: BoolFieldUpdateOperationsInput | boolean
+    simType?: NullableStringFieldUpdateOperationsInput | string | null
+    wifi?: NullableStringFieldUpdateOperationsInput | string | null
+    bluetooth?: NullableStringFieldUpdateOperationsInput | string | null
+    usbType?: NullableStringFieldUpdateOperationsInput | string | null
+    headphoneJack?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    gps?: BoolFieldUpdateOperationsInput | boolean
+    sensors?: NullableJsonNullValueInput | InputJsonValue
+    displayType?: NullableStringFieldUpdateOperationsInput | string | null
+    refreshRate?: NullableIntFieldUpdateOperationsInput | number | null
+    displaySize?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    ppiDensity?: NullableIntFieldUpdateOperationsInput | number | null
+    screenToBody?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    displayProtection?: NullableStringFieldUpdateOperationsInput | string | null
+    os?: NullableStringFieldUpdateOperationsInput | string | null
+    osVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    chipset?: NullableStringFieldUpdateOperationsInput | string | null
+    processNode?: NullableStringFieldUpdateOperationsInput | string | null
+    cpu?: NullableStringFieldUpdateOperationsInput | string | null
+    gpu?: NullableStringFieldUpdateOperationsInput | string | null
+    mainCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    lensCount?: NullableIntFieldUpdateOperationsInput | number | null
+    mainAperture?: NullableStringFieldUpdateOperationsInput | string | null
+    ois?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    sensorSize?: NullableStringFieldUpdateOperationsInput | string | null
+    camera4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    cameraVideo?: NullableStringFieldUpdateOperationsInput | string | null
+    selfieCamera?: NullableStringFieldUpdateOperationsInput | string | null
+    selfie4K?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    dimensions?: NullableStringFieldUpdateOperationsInput | string | null
+    weight?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    buildMaterial?: NullableStringFieldUpdateOperationsInput | string | null
+    ipRating?: NullableStringFieldUpdateOperationsInput | string | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    wiredCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    wirelessCharging?: NullableIntFieldUpdateOperationsInput | number | null
+    reverseWireless?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    announced?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type RecommendationHistoryUpsertWithWhereUniqueWithoutPhoneInput = {
     where: RecommendationHistoryWhereUniqueInput
     update: XOR<RecommendationHistoryUpdateWithoutPhoneInput, RecommendationHistoryUncheckedUpdateWithoutPhoneInput>
@@ -22109,6 +28568,521 @@ export namespace Prisma {
     data: XOR<ComparisonHistoryUpdateManyMutationInput, ComparisonHistoryUncheckedUpdateManyWithoutPhoneBInput>
   }
 
+  export type AdminStatsCacheUpsertWithWhereUniqueWithoutMostRecommendedPhoneInput = {
+    where: AdminStatsCacheWhereUniqueInput
+    update: XOR<AdminStatsCacheUpdateWithoutMostRecommendedPhoneInput, AdminStatsCacheUncheckedUpdateWithoutMostRecommendedPhoneInput>
+    create: XOR<AdminStatsCacheCreateWithoutMostRecommendedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostRecommendedPhoneInput>
+  }
+
+  export type AdminStatsCacheUpdateWithWhereUniqueWithoutMostRecommendedPhoneInput = {
+    where: AdminStatsCacheWhereUniqueInput
+    data: XOR<AdminStatsCacheUpdateWithoutMostRecommendedPhoneInput, AdminStatsCacheUncheckedUpdateWithoutMostRecommendedPhoneInput>
+  }
+
+  export type AdminStatsCacheUpdateManyWithWhereWithoutMostRecommendedPhoneInput = {
+    where: AdminStatsCacheScalarWhereInput
+    data: XOR<AdminStatsCacheUpdateManyMutationInput, AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneInput>
+  }
+
+  export type AdminStatsCacheScalarWhereInput = {
+    AND?: AdminStatsCacheScalarWhereInput | AdminStatsCacheScalarWhereInput[]
+    OR?: AdminStatsCacheScalarWhereInput[]
+    NOT?: AdminStatsCacheScalarWhereInput | AdminStatsCacheScalarWhereInput[]
+    statId?: UuidFilter<"AdminStatsCache"> | string
+    computedDate?: DateTimeFilter<"AdminStatsCache"> | Date | string
+    mostRecommendedBrand?: StringNullableFilter<"AdminStatsCache"> | string | null
+    mostRecommendedPhoneId?: UuidNullableFilter<"AdminStatsCache"> | string | null
+    mostComparedPhoneId?: UuidNullableFilter<"AdminStatsCache"> | string | null
+    mostViewedPhoneId?: UuidNullableFilter<"AdminStatsCache"> | string | null
+    avgUserBudget?: DecimalNullableFilter<"AdminStatsCache"> | Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: StringNullableFilter<"AdminStatsCache"> | string | null
+    avgCompatibility?: DecimalNullableFilter<"AdminStatsCache"> | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheUpsertWithWhereUniqueWithoutMostComparedPhoneInput = {
+    where: AdminStatsCacheWhereUniqueInput
+    update: XOR<AdminStatsCacheUpdateWithoutMostComparedPhoneInput, AdminStatsCacheUncheckedUpdateWithoutMostComparedPhoneInput>
+    create: XOR<AdminStatsCacheCreateWithoutMostComparedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostComparedPhoneInput>
+  }
+
+  export type AdminStatsCacheUpdateWithWhereUniqueWithoutMostComparedPhoneInput = {
+    where: AdminStatsCacheWhereUniqueInput
+    data: XOR<AdminStatsCacheUpdateWithoutMostComparedPhoneInput, AdminStatsCacheUncheckedUpdateWithoutMostComparedPhoneInput>
+  }
+
+  export type AdminStatsCacheUpdateManyWithWhereWithoutMostComparedPhoneInput = {
+    where: AdminStatsCacheScalarWhereInput
+    data: XOR<AdminStatsCacheUpdateManyMutationInput, AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneInput>
+  }
+
+  export type AdminStatsCacheUpsertWithWhereUniqueWithoutMostViewedPhoneInput = {
+    where: AdminStatsCacheWhereUniqueInput
+    update: XOR<AdminStatsCacheUpdateWithoutMostViewedPhoneInput, AdminStatsCacheUncheckedUpdateWithoutMostViewedPhoneInput>
+    create: XOR<AdminStatsCacheCreateWithoutMostViewedPhoneInput, AdminStatsCacheUncheckedCreateWithoutMostViewedPhoneInput>
+  }
+
+  export type AdminStatsCacheUpdateWithWhereUniqueWithoutMostViewedPhoneInput = {
+    where: AdminStatsCacheWhereUniqueInput
+    data: XOR<AdminStatsCacheUpdateWithoutMostViewedPhoneInput, AdminStatsCacheUncheckedUpdateWithoutMostViewedPhoneInput>
+  }
+
+  export type AdminStatsCacheUpdateManyWithWhereWithoutMostViewedPhoneInput = {
+    where: AdminStatsCacheScalarWhereInput
+    data: XOR<AdminStatsCacheUpdateManyMutationInput, AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneInput>
+  }
+
+  export type PhonesCreateWithoutVariantsInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesUncheckedCreateWithoutVariantsInput = {
+    phoneId?: string
+    brandId: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesCreateOrConnectWithoutVariantsInput = {
+    where: PhonesWhereUniqueInput
+    create: XOR<PhonesCreateWithoutVariantsInput, PhonesUncheckedCreateWithoutVariantsInput>
+  }
+
+  export type PhonesUpsertWithoutVariantsInput = {
+    update: XOR<PhonesUpdateWithoutVariantsInput, PhonesUncheckedUpdateWithoutVariantsInput>
+    create: XOR<PhonesCreateWithoutVariantsInput, PhonesUncheckedCreateWithoutVariantsInput>
+    where?: PhonesWhereInput
+  }
+
+  export type PhonesUpdateToOneWithWhereWithoutVariantsInput = {
+    where?: PhonesWhereInput
+    data: XOR<PhonesUpdateWithoutVariantsInput, PhonesUncheckedUpdateWithoutVariantsInput>
+  }
+
+  export type PhonesUpdateWithoutVariantsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUncheckedUpdateWithoutVariantsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesCreateWithoutSpecsInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesUncheckedCreateWithoutSpecsInput = {
+    phoneId?: string
+    brandId: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesCreateOrConnectWithoutSpecsInput = {
+    where: PhonesWhereUniqueInput
+    create: XOR<PhonesCreateWithoutSpecsInput, PhonesUncheckedCreateWithoutSpecsInput>
+  }
+
+  export type PhonesUpsertWithoutSpecsInput = {
+    update: XOR<PhonesUpdateWithoutSpecsInput, PhonesUncheckedUpdateWithoutSpecsInput>
+    create: XOR<PhonesCreateWithoutSpecsInput, PhonesUncheckedCreateWithoutSpecsInput>
+    where?: PhonesWhereInput
+  }
+
+  export type PhonesUpdateToOneWithWhereWithoutSpecsInput = {
+    where?: PhonesWhereInput
+    data: XOR<PhonesUpdateWithoutSpecsInput, PhonesUncheckedUpdateWithoutSpecsInput>
+  }
+
+  export type PhonesUpdateWithoutSpecsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUncheckedUpdateWithoutSpecsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type UsersCreateWithoutProfileInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    role?: RolesCreateNestedOneWithoutUsersInput
+    otps?: OtpCreateNestedManyWithoutUserInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutProfileInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    roleId?: string | null
+    otps?: OtpUncheckedCreateNestedManyWithoutUserInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutProfileInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutProfileInput, UsersUncheckedCreateWithoutProfileInput>
+  }
+
+  export type UsersUpsertWithoutProfileInput = {
+    update: XOR<UsersUpdateWithoutProfileInput, UsersUncheckedUpdateWithoutProfileInput>
+    create: XOR<UsersCreateWithoutProfileInput, UsersUncheckedCreateWithoutProfileInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutProfileInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutProfileInput, UsersUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type UsersUpdateWithoutProfileInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    role?: RolesUpdateOneWithoutUsersNestedInput
+    otps?: OtpUpdateManyWithoutUserNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutProfileInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    otps?: OtpUncheckedUpdateManyWithoutUserNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type BrandsCreateWithoutUserPreferencesInput = {
+    brandId?: string
+    name: string
+    logoUrl?: string | null
+    website?: string | null
+    country?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    phones?: PhonesCreateNestedManyWithoutBrandInput
+  }
+
+  export type BrandsUncheckedCreateWithoutUserPreferencesInput = {
+    brandId?: string
+    name: string
+    logoUrl?: string | null
+    website?: string | null
+    country?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    phones?: PhonesUncheckedCreateNestedManyWithoutBrandInput
+  }
+
+  export type BrandsCreateOrConnectWithoutUserPreferencesInput = {
+    where: BrandsWhereUniqueInput
+    create: XOR<BrandsCreateWithoutUserPreferencesInput, BrandsUncheckedCreateWithoutUserPreferencesInput>
+  }
+
+  export type UsersCreateWithoutPreferenceInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    role?: RolesCreateNestedOneWithoutUsersInput
+    otps?: OtpCreateNestedManyWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutPreferenceInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    roleId?: string | null
+    otps?: OtpUncheckedCreateNestedManyWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutPreferenceInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutPreferenceInput, UsersUncheckedCreateWithoutPreferenceInput>
+  }
+
+  export type BrandsUpsertWithoutUserPreferencesInput = {
+    update: XOR<BrandsUpdateWithoutUserPreferencesInput, BrandsUncheckedUpdateWithoutUserPreferencesInput>
+    create: XOR<BrandsCreateWithoutUserPreferencesInput, BrandsUncheckedCreateWithoutUserPreferencesInput>
+    where?: BrandsWhereInput
+  }
+
+  export type BrandsUpdateToOneWithWhereWithoutUserPreferencesInput = {
+    where?: BrandsWhereInput
+    data: XOR<BrandsUpdateWithoutUserPreferencesInput, BrandsUncheckedUpdateWithoutUserPreferencesInput>
+  }
+
+  export type BrandsUpdateWithoutUserPreferencesInput = {
+    brandId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    phones?: PhonesUpdateManyWithoutBrandNestedInput
+  }
+
+  export type BrandsUncheckedUpdateWithoutUserPreferencesInput = {
+    brandId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    phones?: PhonesUncheckedUpdateManyWithoutBrandNestedInput
+  }
+
+  export type UsersUpsertWithoutPreferenceInput = {
+    update: XOR<UsersUpdateWithoutPreferenceInput, UsersUncheckedUpdateWithoutPreferenceInput>
+    create: XOR<UsersCreateWithoutPreferenceInput, UsersUncheckedCreateWithoutPreferenceInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutPreferenceInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutPreferenceInput, UsersUncheckedUpdateWithoutPreferenceInput>
+  }
+
+  export type UsersUpdateWithoutPreferenceInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    role?: RolesUpdateOneWithoutUsersNestedInput
+    otps?: OtpUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutPreferenceInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    otps?: OtpUncheckedUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type UsersCreateWithoutRecommendationHistoryInput = {
     name: string
     userId?: string
@@ -22150,64 +29124,50 @@ export namespace Prisma {
 
   export type PhonesCreateWithoutRecommendationHistoryInput = {
     phoneId?: string
-    brand: string
     modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
     imageUrl?: string | null
     imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
   }
 
   export type PhonesUncheckedCreateWithoutRecommendationHistoryInput = {
     phoneId?: string
-    brand: string
+    brandId: string
     modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
     imageUrl?: string | null
     imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
   }
 
   export type PhonesCreateOrConnectWithoutRecommendationHistoryInput = {
@@ -22273,64 +29233,50 @@ export namespace Prisma {
 
   export type PhonesUpdateWithoutRecommendationHistoryInput = {
     phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
   }
 
   export type PhonesUncheckedUpdateWithoutRecommendationHistoryInput = {
     phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
   }
 
   export type UsersCreateWithoutCustomerProfileInput = {
@@ -22458,64 +29404,50 @@ export namespace Prisma {
 
   export type PhonesCreateWithoutWishlistInput = {
     phoneId?: string
-    brand: string
     modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
     imageUrl?: string | null
     imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
   }
 
   export type PhonesUncheckedCreateWithoutWishlistInput = {
     phoneId?: string
-    brand: string
+    brandId: string
     modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
     imageUrl?: string | null
     imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
   }
 
   export type PhonesCreateOrConnectWithoutWishlistInput = {
@@ -22581,64 +29513,50 @@ export namespace Prisma {
 
   export type PhonesUpdateWithoutWishlistInput = {
     phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
   }
 
   export type PhonesUncheckedUpdateWithoutWishlistInput = {
     phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
   }
 
   export type UsersCreateWithoutComparisonHistoryInput = {
@@ -22682,64 +29600,50 @@ export namespace Prisma {
 
   export type PhonesCreateWithoutComparedAsAInput = {
     phoneId?: string
-    brand: string
     modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
     imageUrl?: string | null
     imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
   }
 
   export type PhonesUncheckedCreateWithoutComparedAsAInput = {
     phoneId?: string
-    brand: string
+    brandId: string
     modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
     imageUrl?: string | null
     imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
   }
 
   export type PhonesCreateOrConnectWithoutComparedAsAInput = {
@@ -22749,64 +29653,50 @@ export namespace Prisma {
 
   export type PhonesCreateWithoutComparedAsBInput = {
     phoneId?: string
-    brand: string
     modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
     imageUrl?: string | null
     imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
   }
 
   export type PhonesUncheckedCreateWithoutComparedAsBInput = {
     phoneId?: string
-    brand: string
+    brandId: string
     modelName: string
-    price?: Decimal | DecimalJsLike | number | string | null
-    antutuScore?: number | null
-    ramGb?: number | null
-    storageGb?: number | null
-    batteryMah?: number | null
-    chargingWatts?: number | null
-    displayType?: string | null
-    displayPpi?: number | null
-    cameraScore?: Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: Decimal | DecimalJsLike | number | string | null
-    osName?: string | null
-    supports5g?: boolean
-    supportsNfc?: boolean
-    dualSim?: boolean
-    source?: string | null
-    sourceUrl?: string | null
     imageUrl?: string | null
     imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
   }
 
   export type PhonesCreateOrConnectWithoutComparedAsBInput = {
@@ -22872,64 +29762,50 @@ export namespace Prisma {
 
   export type PhonesUpdateWithoutComparedAsAInput = {
     phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
   }
 
   export type PhonesUncheckedUpdateWithoutComparedAsAInput = {
     phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
   }
 
   export type PhonesUpsertWithoutComparedAsBInput = {
@@ -22945,64 +29821,386 @@ export namespace Prisma {
 
   export type PhonesUpdateWithoutComparedAsBInput = {
     phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
   }
 
   export type PhonesUncheckedUpdateWithoutComparedAsBInput = {
     phoneId?: StringFieldUpdateOperationsInput | string
-    brand?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
     modelName?: StringFieldUpdateOperationsInput | string
-    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
-    ramGb?: NullableIntFieldUpdateOperationsInput | number | null
-    storageGb?: NullableIntFieldUpdateOperationsInput | number | null
-    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
-    chargingWatts?: NullableIntFieldUpdateOperationsInput | number | null
-    displayType?: NullableStringFieldUpdateOperationsInput | string | null
-    displayPpi?: NullableIntFieldUpdateOperationsInput | number | null
-    cameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    frontCameraScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    osName?: NullableStringFieldUpdateOperationsInput | string | null
-    supports5g?: BoolFieldUpdateOperationsInput | boolean
-    supportsNfc?: BoolFieldUpdateOperationsInput | boolean
-    dualSim?: BoolFieldUpdateOperationsInput | boolean
-    source?: NullableStringFieldUpdateOperationsInput | string | null
-    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesCreateWithoutMostRecommendedInStatsInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesUncheckedCreateWithoutMostRecommendedInStatsInput = {
+    phoneId?: string
+    brandId: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesCreateOrConnectWithoutMostRecommendedInStatsInput = {
+    where: PhonesWhereUniqueInput
+    create: XOR<PhonesCreateWithoutMostRecommendedInStatsInput, PhonesUncheckedCreateWithoutMostRecommendedInStatsInput>
+  }
+
+  export type PhonesCreateWithoutMostComparedInStatsInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesUncheckedCreateWithoutMostComparedInStatsInput = {
+    phoneId?: string
+    brandId: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesCreateOrConnectWithoutMostComparedInStatsInput = {
+    where: PhonesWhereUniqueInput
+    create: XOR<PhonesCreateWithoutMostComparedInStatsInput, PhonesUncheckedCreateWithoutMostComparedInStatsInput>
+  }
+
+  export type PhonesCreateWithoutMostViewedInStatsInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+  }
+
+  export type PhonesUncheckedCreateWithoutMostViewedInStatsInput = {
+    phoneId?: string
+    brandId: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+  }
+
+  export type PhonesCreateOrConnectWithoutMostViewedInStatsInput = {
+    where: PhonesWhereUniqueInput
+    create: XOR<PhonesCreateWithoutMostViewedInStatsInput, PhonesUncheckedCreateWithoutMostViewedInStatsInput>
+  }
+
+  export type PhonesUpsertWithoutMostRecommendedInStatsInput = {
+    update: XOR<PhonesUpdateWithoutMostRecommendedInStatsInput, PhonesUncheckedUpdateWithoutMostRecommendedInStatsInput>
+    create: XOR<PhonesCreateWithoutMostRecommendedInStatsInput, PhonesUncheckedCreateWithoutMostRecommendedInStatsInput>
+    where?: PhonesWhereInput
+  }
+
+  export type PhonesUpdateToOneWithWhereWithoutMostRecommendedInStatsInput = {
+    where?: PhonesWhereInput
+    data: XOR<PhonesUpdateWithoutMostRecommendedInStatsInput, PhonesUncheckedUpdateWithoutMostRecommendedInStatsInput>
+  }
+
+  export type PhonesUpdateWithoutMostRecommendedInStatsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUncheckedUpdateWithoutMostRecommendedInStatsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUpsertWithoutMostComparedInStatsInput = {
+    update: XOR<PhonesUpdateWithoutMostComparedInStatsInput, PhonesUncheckedUpdateWithoutMostComparedInStatsInput>
+    create: XOR<PhonesCreateWithoutMostComparedInStatsInput, PhonesUncheckedCreateWithoutMostComparedInStatsInput>
+    where?: PhonesWhereInput
+  }
+
+  export type PhonesUpdateToOneWithWhereWithoutMostComparedInStatsInput = {
+    where?: PhonesWhereInput
+    data: XOR<PhonesUpdateWithoutMostComparedInStatsInput, PhonesUncheckedUpdateWithoutMostComparedInStatsInput>
+  }
+
+  export type PhonesUpdateWithoutMostComparedInStatsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUncheckedUpdateWithoutMostComparedInStatsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUpsertWithoutMostViewedInStatsInput = {
+    update: XOR<PhonesUpdateWithoutMostViewedInStatsInput, PhonesUncheckedUpdateWithoutMostViewedInStatsInput>
+    create: XOR<PhonesCreateWithoutMostViewedInStatsInput, PhonesUncheckedCreateWithoutMostViewedInStatsInput>
+    where?: PhonesWhereInput
+  }
+
+  export type PhonesUpdateToOneWithWhereWithoutMostViewedInStatsInput = {
+    where?: PhonesWhereInput
+    data: XOR<PhonesUpdateWithoutMostViewedInStatsInput, PhonesUncheckedUpdateWithoutMostViewedInStatsInput>
+  }
+
+  export type PhonesUpdateWithoutMostViewedInStatsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+  }
+
+  export type PhonesUncheckedUpdateWithoutMostViewedInStatsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
   }
 
   export type UsersCreateManyRoleInput = {
@@ -23227,6 +30425,136 @@ export namespace Prisma {
     comparedDate?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PhonesCreateManyBrandInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserPreferenceCreateManyPreferredBrandInput = {
+    preferenceId?: string
+    userId: string
+    maxBudget: Decimal | DecimalJsLike | number | string
+    cameraPreference: $Enums.CameraPreference
+    usageType: $Enums.UsageType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PhonesUpdateWithoutBrandInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUncheckedUpdateWithoutBrandInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUncheckedUpdateManyWithoutBrandInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPreferenceUpdateWithoutPreferredBrandInput = {
+    preferenceId?: StringFieldUpdateOperationsInput | string
+    maxBudget?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    cameraPreference?: EnumCameraPreferenceFieldUpdateOperationsInput | $Enums.CameraPreference
+    usageType?: EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutPreferenceNestedInput
+  }
+
+  export type UserPreferenceUncheckedUpdateWithoutPreferredBrandInput = {
+    preferenceId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    maxBudget?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    cameraPreference?: EnumCameraPreferenceFieldUpdateOperationsInput | $Enums.CameraPreference
+    usageType?: EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserPreferenceUncheckedUpdateManyWithoutPreferredBrandInput = {
+    preferenceId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    maxBudget?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    cameraPreference?: EnumCameraPreferenceFieldUpdateOperationsInput | $Enums.CameraPreference
+    usageType?: EnumUsageTypeFieldUpdateOperationsInput | $Enums.UsageType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneVariantsCreateManyPhoneInput = {
+    variantId?: string
+    ramGb: number
+    storageGb: number
+    price?: Decimal | DecimalJsLike | number | string | null
+    storageType?: string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type RecommendationHistoryCreateManyPhoneInput = {
     historyId?: string
     userId: string
@@ -23265,6 +30593,75 @@ export namespace Prisma {
     userId: string
     phoneIdA: string
     comparedDate?: Date | string
+  }
+
+  export type AdminStatsCacheCreateManyMostRecommendedPhoneInput = {
+    statId?: string
+    computedDate?: Date | string
+    mostRecommendedBrand?: string | null
+    mostComparedPhoneId?: string | null
+    mostViewedPhoneId?: string | null
+    avgUserBudget?: Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: string | null
+    avgCompatibility?: Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheCreateManyMostComparedPhoneInput = {
+    statId?: string
+    computedDate?: Date | string
+    mostRecommendedBrand?: string | null
+    mostRecommendedPhoneId?: string | null
+    mostViewedPhoneId?: string | null
+    avgUserBudget?: Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: string | null
+    avgCompatibility?: Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheCreateManyMostViewedPhoneInput = {
+    statId?: string
+    computedDate?: Date | string
+    mostRecommendedBrand?: string | null
+    mostRecommendedPhoneId?: string | null
+    mostComparedPhoneId?: string | null
+    avgUserBudget?: Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: string | null
+    avgCompatibility?: Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type PhoneVariantsUpdateWithoutPhoneInput = {
+    variantId?: StringFieldUpdateOperationsInput | string
+    ramGb?: IntFieldUpdateOperationsInput | number
+    storageGb?: IntFieldUpdateOperationsInput | number
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    storageType?: NullableStringFieldUpdateOperationsInput | string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneVariantsUncheckedUpdateWithoutPhoneInput = {
+    variantId?: StringFieldUpdateOperationsInput | string
+    ramGb?: IntFieldUpdateOperationsInput | number
+    storageGb?: IntFieldUpdateOperationsInput | number
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    storageType?: NullableStringFieldUpdateOperationsInput | string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneVariantsUncheckedUpdateManyWithoutPhoneInput = {
+    variantId?: StringFieldUpdateOperationsInput | string
+    ramGb?: IntFieldUpdateOperationsInput | number
+    storageGb?: IntFieldUpdateOperationsInput | number
+    price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    storageType?: NullableStringFieldUpdateOperationsInput | string | null
+    colors?: NullableJsonNullValueInput | InputJsonValue
+    isAvailable?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RecommendationHistoryUpdateWithoutPhoneInput = {
@@ -23385,6 +30782,105 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     phoneIdA?: StringFieldUpdateOperationsInput | string
     comparedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminStatsCacheUpdateWithoutMostRecommendedPhoneInput = {
+    statId?: StringFieldUpdateOperationsInput | string
+    computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostComparedPhone?: PhonesUpdateOneWithoutMostComparedInStatsNestedInput
+    mostViewedPhone?: PhonesUpdateOneWithoutMostViewedInStatsNestedInput
+  }
+
+  export type AdminStatsCacheUncheckedUpdateWithoutMostRecommendedPhoneInput = {
+    statId?: StringFieldUpdateOperationsInput | string
+    computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    mostComparedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    mostViewedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneInput = {
+    statId?: StringFieldUpdateOperationsInput | string
+    computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    mostComparedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    mostViewedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheUpdateWithoutMostComparedPhoneInput = {
+    statId?: StringFieldUpdateOperationsInput | string
+    computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostRecommendedPhone?: PhonesUpdateOneWithoutMostRecommendedInStatsNestedInput
+    mostViewedPhone?: PhonesUpdateOneWithoutMostViewedInStatsNestedInput
+  }
+
+  export type AdminStatsCacheUncheckedUpdateWithoutMostComparedPhoneInput = {
+    statId?: StringFieldUpdateOperationsInput | string
+    computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    mostRecommendedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    mostViewedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneInput = {
+    statId?: StringFieldUpdateOperationsInput | string
+    computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    mostRecommendedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    mostViewedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheUpdateWithoutMostViewedPhoneInput = {
+    statId?: StringFieldUpdateOperationsInput | string
+    computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostRecommendedPhone?: PhonesUpdateOneWithoutMostRecommendedInStatsNestedInput
+    mostComparedPhone?: PhonesUpdateOneWithoutMostComparedInStatsNestedInput
+  }
+
+  export type AdminStatsCacheUncheckedUpdateWithoutMostViewedPhoneInput = {
+    statId?: StringFieldUpdateOperationsInput | string
+    computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    mostRecommendedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    mostComparedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneInput = {
+    statId?: StringFieldUpdateOperationsInput | string
+    computedDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    mostRecommendedBrand?: NullableStringFieldUpdateOperationsInput | string | null
+    mostRecommendedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    mostComparedPhoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    avgUserBudget?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    mostPopularPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
 
