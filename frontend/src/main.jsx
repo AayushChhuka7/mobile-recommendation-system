@@ -26,7 +26,7 @@ function Root() {
   return (
     <Routes>
       <Route
-        path="/"
+        path="/*"
         element={
           <PublicOnlyRoute>
             <App />
