@@ -1,0 +1,28 @@
+{
+  "model_config": {
+    "max_depth": 6,
+    "n_estimators": 300,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 2.0,
+    "random_state": 42,
+    "tree_method": "hist"
+  },
+  "n_train": 3744,
+  "n_test": 936,
+  "n_features": 120,
+  "n_categorical_columns": 28,
+  "train_r2": 0.9904498806124257,
+  "test_r2": 0.8522074347765061,
+  "test_mae_log": 0.19102536711990023,
+  "cv_r2_mean": 0.8502450298588136,
+  "cv_r2_std": 0.015758836778649886,
+  "cv_r2_folds": [
+    0.8529393174827071,
+    0.8497063694623939,
+    0.8655038157178441,
+    0.8621496391597836,
+    0.8209260074713394
+  ]
+}
