@@ -8,7 +8,7 @@ datasource db {
 }
 
 // ============================================================
-// Enums — existing
+// Enums — Existing
 // ============================================================
 enum OtpPurpose {
   Registration
@@ -17,7 +17,7 @@ enum OtpPurpose {
 }
 
 // ============================================================
-// Enums — smartphone recommendation system
+// Enums — Smartphone Recommendation System
 // ============================================================
 enum CameraPreference {
   Sensible
@@ -55,7 +55,7 @@ enum SegmentConfidence {
 }
 
 // ============================================================
-// Existing — Auth / RBAC / Sessions
+// Models — Auth / RBAC / Sessions
 // ============================================================
 model Roles {
   roleId   String  @id @default(uuid()) @map("role_id") @db.Uuid
@@ -74,14 +74,12 @@ model Users {
   isActive   Boolean @default(true) @map("is_active")
   isVerified Boolean @default(false) @map("is_verified")
 
-  // Phase 1 RBAC: direct FK to Roles. Optional so existing rows can be
-  // backfilled by the seed script without a schema-level DEFAULT.
   roleId String? @map("role_id") @db.Uuid
   role   Roles?  @relation(fields: [roleId], references: [roleId], onDelete: SetNull)
 
   otps Otp[]
 
-  // --- smartphone recommendation system relations ---
+  // Smartphone recommendation system relations
   profile               UserProfile?
   preference            UserPreference?
   customerProfile       CustomerProfile?
@@ -108,10 +106,6 @@ model Otp {
   @@map("otps")
 }
 
-// Owned by Prisma. Previously connect-pg-simple created this at runtime
-// (createTableIfMissing: true) which caused migration-history drift.
-// Shape mirrors the columns the library was issuing: sid PK, sess json,
-// expire timestamp. The `IDX_session_expire` index is preserved.
 model Session {
   sid    String   @id @map("sid") @db.VarChar
   sess   Json     @map("sess")
@@ -122,10 +116,178 @@ model Session {
 }
 
 // ============================================================
-// Smartphone Recommendation System
+// Normalized Phone Data Models
 // ============================================================
 
-// Demographics (split out from Users; not auth-relevant)
+// Brand master table
+model Brands {
+  brandId   String   @id @default(uuid()) @map("brand_id") @db.Uuid
+  name      String   @unique @db.VarChar(60)
+  logoUrl   String?  @map("logo_url") @db.VarChar(500)
+  website   String?  @db.VarChar(200)
+  country   String?  @db.VarChar(80)
+  createdAt DateTime @default(now()) @map("created_date")
+  updatedAt DateTime @updatedAt @map("updated_date")
+
+  phones          Phones[]
+  userPreferences UserPreference[]
+
+  @@map("brands")
+}
+
+// Main phone model - each phone model (e.g., "Galaxy S24 Ultra")
+model Phones {
+  phoneId   String @id @default(uuid()) @map("phone_id") @db.Uuid
+  brandId   String @map("brand_id") @db.Uuid
+  modelName String @map("model_name") @db.VarChar(120)
+
+  // Display image
+  imageUrl  String? @map("image_url") @db.VarChar(500)
+  imagePath String? @map("image_path") @db.VarChar(500)
+
+  // Aggregated/derived fields for quick filtering
+  antutuScore Int? @map("antutu_score") // Best score across all variants
+  batteryMah  Int? @map("battery_mah") // From specs
+
+  // Data provenance
+  source    String? @db.VarChar(40) // e.g., "gsmarena", "admin", "api"
+  sourceUrl String? @map("source_url") @db.VarChar(500) // Original page URL
+
+  // Soft delete & lifecycle
+  isActive       Boolean   @default(true) @map("is_active")
+  discontinuedAt DateTime? @map("discontinued_at")
+  createdAt      DateTime  @default(now()) @map("created_date")
+  updatedAt      DateTime  @updatedAt @map("updated_date")
+
+  // Relations
+  brand    Brands          @relation(fields: [brandId], references: [brandId], onDelete: Cascade)
+  variants PhoneVariants[]
+  specs    PhoneSpecs?
+
+  // Recommendation relations
+  recommendationHistory RecommendationHistory[]
+  wishlist              Wishlist[]
+  comparedAsA           ComparisonHistory[]     @relation("ComparisonPhoneA")
+  comparedAsB           ComparisonHistory[]     @relation("ComparisonPhoneB")
+
+  // Admin stats cache back-relations (cache stores phoneId; relations are
+  // nullable so hard-deletion of a phone does not cascade into historical
+  // cache rows).
+  mostRecommendedInStats AdminStatsCache[] @relation("MostRecommendedPhone")
+  mostComparedInStats    AdminStatsCache[] @relation("MostComparedPhone")
+  mostViewedInStats      AdminStatsCache[] @relation("MostViewedPhone")
+
+  @@unique([brandId, modelName])
+  @@index([brandId])
+  @@index([antutuScore])
+  @@index([isActive])
+  @@map("phones")
+}
+
+// Phone variants - different RAM/Storage/Price combinations for each phone
+model PhoneVariants {
+  variantId String @id @default(uuid()) @map("variant_id") @db.Uuid
+  phoneId   String @map("phone_id") @db.Uuid
+
+  // Specifications that vary by variant
+  ramGb       Int      @map("ram_gb")
+  storageGb   Int      @map("storage_gb")
+  price       Decimal? @db.Decimal(10, 2)
+  storageType String?  @map("storage_type") @db.VarChar(20) // e.g., "UFS 3.1"
+
+  // Color options (could be JSON array or separate table)
+  colors Json? @db.Json // e.g., ["Black", "White", "Blue"]
+
+  // Availability
+  isAvailable Boolean @default(true) @map("is_available")
+
+  createdAt DateTime @default(now()) @map("created_date")
+  updatedAt DateTime @updatedAt @map("updated_date")
+
+  phone Phones @relation(fields: [phoneId], references: [phoneId], onDelete: Cascade)
+
+  @@unique([phoneId, ramGb, storageGb])
+  @@index([phoneId])
+  @@index([price])
+  @@map("phone_variants")
+}
+
+// Detailed phone specifications (1-to-1 with Phones)
+model PhoneSpecs {
+  specId  String @id @default(uuid()) @map("spec_id") @db.Uuid
+  phoneId String @unique @map("phone_id") @db.Uuid
+
+  // Network & Connectivity
+  networkTech   String?  @map("network_technology") @db.VarChar(100)
+  supports5g    Boolean  @default(false) @map("supports_5g")
+  supportsNfc   Boolean  @default(false) @map("supports_nfc")
+  dualSim       Boolean  @default(false) @map("dual_sim")
+  simType       String?  @map("sim_type") @db.VarChar(50)
+  wifi          String?  @db.VarChar(100)
+  bluetooth     String?  @map("bluetooth_version") @db.VarChar(20)
+  usbType       String?  @map("usb_type") @db.VarChar(50)
+  headphoneJack Boolean? @map("headphone_jack")
+  gps           Boolean  @default(true)
+  sensors       Json?    @db.Json // Array of sensors: ["Accelerometer", "Gyro", "Proximity"]
+
+  // Display
+  displayType       String?  @map("display_type") @db.VarChar(50)
+  refreshRate       Int?     @map("refresh_rate_hz")
+  displaySize       Decimal? @map("display_size_inch") @db.Decimal(4, 2)
+  resolution        String?  @db.VarChar(30) // e.g., "1080x2400"
+  ppiDensity        Int?     @map("ppi_density")
+  screenToBody      Decimal? @map("screen_to_body_pct") @db.Decimal(5, 2)
+  displayProtection String?  @map("display_protection") @db.VarChar(100)
+
+  // Platform
+  os          String? @db.VarChar(40)
+  osVersion   String? @map("os_version") @db.VarChar(40)
+  chipset     String? @db.VarChar(100)
+  processNode String? @map("process_node_nm") @db.VarChar(20) // e.g., "4nm"
+  cpu         String? @db.VarChar(200)
+  gpu         String? @db.VarChar(200)
+
+  // Camera
+  mainCamera   String?  @map("main_camera_mp") @db.VarChar(50) // "50MP + 12MP + 8MP"
+  lensCount    Int?     @map("lens_count")
+  mainAperture String?  @map("main_aperture") @db.VarChar(20)
+  ois          Boolean? @default(false)
+  sensorSize   String?  @map("sensor_size") @db.VarChar(50)
+  camera4K     Boolean? @map("camera_4k_video")
+  cameraVideo  String?  @map("camera_video") @db.VarChar(200)
+  selfieCamera String?  @map("selfie_camera_mp") @db.VarChar(50)
+  selfie4K     Boolean? @map("selfie_4k_video")
+
+  // Physical
+  dimensions    String?  @db.VarChar(100) // "163.2 x 76.8 x 8.6"
+  weight        Decimal? @db.Decimal(6, 2)
+  buildMaterial String?  @map("build_material") @db.VarChar(100) // e.g., "Glass front, aluminum frame"
+  ipRating      String?  @map("ip_rating") @db.VarChar(10) // e.g., "IP68"
+
+  // Battery
+  batteryMah       Int?     @map("battery_mah")
+  wiredCharging    Int?     @map("wired_charging_w")
+  wirelessCharging Int?     @map("wireless_charging_w")
+  reverseWireless  Boolean? @map("reverse_wireless_charging")
+
+  // Metadata
+  announced DateTime? @db.Date
+  status    String?   @db.VarChar(50) // "Available", "Discontinued", "Upcoming"
+
+  createdAt DateTime @default(now()) @map("created_date")
+  updatedAt DateTime @updatedAt @map("updated_date")
+
+  phone Phones @relation(fields: [phoneId], references: [phoneId], onDelete: Cascade)
+
+  @@index([supports5g])
+  @@index([os])
+  @@map("phone_specs")
+}
+
+// ============================================================
+// User Profile & Preferences
+// ============================================================
+
 model UserProfile {
   profileId String   @id @default(uuid()) @map("profile_id") @db.Uuid
   userId    String   @unique @map("user_id") @db.Uuid
@@ -142,9 +304,6 @@ model UserProfile {
   @@map("user_profiles")
 }
 
-// Cold-start preference questionnaire (4 questions)
-// updatedAt lets the rec engine detect "user re-took the questionnaire
-// and their answers changed" and decide whether to recompute persona.
 model UserPreference {
   preferenceId String @id @default(uuid()) @map("preference_id") @db.Uuid
   userId       String @unique @map("user_id") @db.Uuid
@@ -152,7 +311,12 @@ model UserPreference {
   maxBudget        Decimal          @map("max_budget") @db.Decimal(10, 2)
   cameraPreference CameraPreference @map("camera_preference")
   usageType        UsageType        @map("usage_type")
-  preferredBrand   String           @map("preferred_brand") @db.VarChar(60)
+
+  // FK to Brands. Nullable so a user can submit the questionnaire before the
+  // Brands table is fully seeded, or skip the brand question. The questionnaire
+  // UI is responsible for not submitting a brand name that isn't in `Brands`.
+  preferredBrandId String? @map("preferred_brand_id") @db.Uuid
+  preferredBrand   Brands? @relation(fields: [preferredBrandId], references: [brandId], onDelete: SetNull)
 
   createdAt DateTime @default(now()) @map("created_date")
   updatedAt DateTime @updatedAt @map("updated_date")
@@ -160,78 +324,14 @@ model UserPreference {
   user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@index([userId])
+  @@index([preferredBrandId])
   @@map("user_preferences")
 }
 
-// Phones — reference dataset (scraped GSMArena data + manual entries).
-// `isActive` is the soft-delete flag: hiding a phone from filters and
-// rec results without breaking historical FKs in RecommendationHistory /
-// Wishlist / ComparisonHistory.
-model Phones {
-  phoneId          String   @id @default(uuid()) @map("phone_id") @db.Uuid
-  brand            String   @db.VarChar(60)
-  modelName        String   @map("model_name") @db.VarChar(120)
-  price            Decimal? @db.Decimal(10, 2)
-  antutuScore      Int?     @map("antutu_score")
-  ramGb            Int?     @map("ram_gb")
-  storageGb        Int?     @map("storage_gb")
-  batteryMah       Int?     @map("battery_mah")
-  chargingWatts    Int?     @map("charging_watts")
-  displayType      String?  @map("display_type") @db.VarChar(40)
-  displayPpi       Int?     @map("display_ppi")
-  cameraScore      Decimal? @map("camera_score") @db.Decimal(5, 2)
-  frontCameraScore Decimal? @map("front_camera_score") @db.Decimal(5, 2)
-  osName           String?  @map("os_name") @db.VarChar(40)
-  supports5g       Boolean  @default(false) @map("supports_5g")
-  supportsNfc      Boolean  @default(false) @map("supports_nfc")
-  dualSim          Boolean  @default(false) @map("dual_sim")
+// ============================================================
+// Recommendation & Analytics
+// ============================================================
 
-  // Data provenance. P1: lets the admin see which rows came from the
-  // scraper vs. which a Salesman typed in by hand.
-  source    String? @db.VarChar(40)
-  sourceUrl String? @map("source_url") @db.VarChar(500)
-
-  // Public image URL the FE renders directly. For scraped rows this is
-  // the GSMArena CDN URL. For admin-uploaded rows (Phase 2) the upload
-  // handler copies the file to storage and stores the resulting public
-  // URL here. Nullable so admin can create a phone row first and add
-  // the image in a follow-up PATCH.
-  imageUrl  String? @map("image_url") @db.VarChar(500)
-  imagePath String? @map("image_path") @db.VarChar(500)
-
-  // Soft-delete + admin lifecycle. `isActive=false` hides the phone
-  // from filters and rec results. `discontinuedAt` is informational
-  // only — does not affect visibility on its own.
-  isActive       Boolean   @default(true) @map("is_active")
-  discontinuedAt DateTime? @map("discontinued_at")
-  createdAt      DateTime  @default(now()) @map("created_date")
-  updatedAt      DateTime  @updatedAt @map("updated_date")
-
-  recommendationHistory RecommendationHistory[]
-  wishlist              Wishlist[]
-  comparedAsA           ComparisonHistory[]     @relation("ComparisonPhoneA")
-  comparedAsB           ComparisonHistory[]     @relation("ComparisonPhoneB")
-
-  @@unique([brand, modelName])
-  // Filter / sort indexes — without these every "filter by brand" /
-  // "sort by price" / "sort by performance" query seq-scans the table.
-  @@index([brand], map: "idx_phones_brand")
-  @@index([price], map: "idx_phones_price")
-  @@index([antutuScore], map: "idx_phones_antutu")
-  @@index([cameraScore], map: "idx_phones_camera")
-  @@index([isActive], map: "idx_phones_is_active")
-  @@map("phones")
-}
-
-// One row per (search event, phone shown). Source of truth for the
-// recency-weighted profile update job.
-//
-// `queryId` groups the rows produced by a single search call, so the
-// profile-update job can reproduce "what filters produced these match
-// scores" later. `filtersJson` is a denormalized snapshot of the
-// filters the user submitted (budget cap, brand, usage, etc.) so
-// individual rows stay self-describing even after the live search
-// is gone.
 model RecommendationHistory {
   historyId  String   @id @default(uuid()) @map("history_id") @db.Uuid
   userId     String   @map("user_id") @db.Uuid
@@ -259,13 +359,12 @@ model RecommendationHistory {
   user  Users  @relation(fields: [userId], references: [userId], onDelete: Cascade)
   phone Phones @relation(fields: [phoneId], references: [phoneId])
 
-  @@index([userId, searchDate(sort: Desc)], map: "idx_rec_history_user_date")
-  @@index([phoneId], map: "idx_rec_history_phone")
-  @@index([queryId], map: "idx_rec_history_query")
+  @@index([userId, searchDate(sort: Desc)])
+  @@index([phoneId])
+  @@index([queryId])
   @@map("recommendation_history")
 }
 
-// Static identity + dynamic, recency-weighted segment state (admin-only view)
 model CustomerProfile {
   profileId String @id @default(uuid()) @map("profile_id") @db.Uuid
   userId    String @unique @map("user_id") @db.Uuid
@@ -281,8 +380,7 @@ model CustomerProfile {
 
   recommendationPersona String? @map("recommendation_persona") @db.VarChar(60)
 
-  // internal running state (recency-weighted averages that drive the
-  // labels above — not shown directly to the user)
+  // Internal running state
   avgPerformanceMatch Decimal? @map("avg_performance_match") @db.Decimal(5, 2)
   avgCameraMatch      Decimal? @map("avg_camera_match") @db.Decimal(5, 2)
   avgFrontCameraMatch Decimal? @map("avg_front_camera_match") @db.Decimal(5, 2)
@@ -304,7 +402,6 @@ model CustomerProfile {
   @@map("customer_profile")
 }
 
-// Wishlist / Favorites
 model Wishlist {
   wishlistId String   @id @default(uuid()) @map("wishlist_id") @db.Uuid
   userId     String   @map("user_id") @db.Uuid
@@ -318,7 +415,6 @@ model Wishlist {
   @@map("wishlist")
 }
 
-// Comparison History ("Recently Compared" + "Most Compared Phones")
 model ComparisonHistory {
   comparisonId String   @id @default(uuid()) @map("comparison_id") @db.Uuid
   userId       String   @map("user_id") @db.Uuid
@@ -330,43 +426,57 @@ model ComparisonHistory {
   phoneA Phones @relation("ComparisonPhoneA", fields: [phoneIdA], references: [phoneId])
   phoneB Phones @relation("ComparisonPhoneB", fields: [phoneIdB], references: [phoneId])
 
-  @@index([userId, comparedDate(sort: Desc)], map: "idx_comparison_user")
+  @@index([userId, comparedDate(sort: Desc)])
   @@map("comparison_history")
 }
 
-// Admin Dashboard cache (optional; views can also serve this live)
 model AdminStatsCache {
   statId               String   @id @default(uuid()) @map("stat_id") @db.Uuid
   computedDate         DateTime @default(now()) @map("computed_date")
   mostRecommendedBrand String?  @map("most_recommended_brand") @db.VarChar(60)
-  mostRecommendedPhone String?  @map("most_recommended_phone") @db.VarChar(120)
-  avgUserBudget        Decimal? @map("avg_user_budget") @db.Decimal(10, 2)
-  mostPopularPersona   String?  @map("most_popular_persona") @db.VarChar(60)
-  avgCompatibility     Decimal? @map("avg_compatibility") @db.Decimal(5, 2)
-  mostComparedPhone    String?  @map("most_compared_phone") @db.VarChar(120)
-  mostViewedPhone      String?  @map("most_viewed_phone") @db.VarChar(120)
 
+  // FKs into Phones (nullable — the cache row is "as-of computedDate";
+  // the phone may have been hard-removed later, and the cache should still
+  // display the historical snapshot).
+  mostRecommendedPhoneId String? @map("most_recommended_phone_id") @db.Uuid
+  mostComparedPhoneId    String? @map("most_compared_phone_id") @db.Uuid
+  mostViewedPhoneId      String? @map("most_viewed_phone_id") @db.Uuid
+
+  avgUserBudget      Decimal? @map("avg_user_budget") @db.Decimal(10, 2)
+  mostPopularPersona String?  @map("most_popular_persona") @db.VarChar(60)
+  avgCompatibility   Decimal? @map("avg_compatibility") @db.Decimal(5, 2)
+
+  // Relations — back-relation only. The Phone→AdminStatsCache FK is intentionally
+  // NOT modeled (admin cache is a denormalized snapshot, not a hot FK). The cache
+  // row stores the phoneId; the consumer joins on `Phones.phoneId` at read time.
+  mostRecommendedPhone Phones? @relation("MostRecommendedPhone", fields: [mostRecommendedPhoneId], references: [phoneId], onDelete: SetNull)
+  mostComparedPhone    Phones? @relation("MostComparedPhone", fields: [mostComparedPhoneId], references: [phoneId], onDelete: SetNull)
+  mostViewedPhone      Phones? @relation("MostViewedPhone", fields: [mostViewedPhoneId], references: [phoneId], onDelete: SetNull)
+
+  @@index([computedDate(sort: Desc)])
   @@map("admin_stats_cache")
 }
 
 // ============================================================
-// NOTE — Reporting views (user_analytics, admin_live_stats) are
-// intentionally NOT modeled here. They're added as hand-written
-// raw SQL inside a Prisma migration file (not schema.prisma),
-// since Prisma can't express SQL views as models. See the
-// migration.sql generated via:
-//   npx prisma migrate dev --create-only --name add_reporting_views
-// Query them from application code with prisma.$queryRaw.
+// Notes:
+// 
+// 1. This schema normalizes phone data into:
+//    - Brands: Master brand list
+//    - Phones: Each phone model (unique by brand + modelName)
+//    - PhoneVariants: RAM/Storage/Price combinations
+//    - PhoneSpecs: Detailed specifications (1-to-1 with Phones)
 //
-// The recommendation / filter / source columns added in this
-// revision (2026-07-07) are listed below for grep:
+// 2. Data Import Example:
+//    Insert brand → Insert phone → Insert variants → Insert specs
 //
-//   Phones.source / sourceUrl        — data provenance
-//   Phones.isActive / discontinuedAt — soft-delete / admin lifecycle
-//   Phones indexes                    — brand, price, antutu, camera, isActive
-//   UserProfile.updatedAt            — audit trail on demographic edits
-//   UserPreference.updatedAt         — detect "user re-took the questionnaire"
-//   RecommendationHistory.queryId    — groups rows from one search call
-//   RecommendationHistory.filtersJson — snapshot of submitted filters
-//   RecommendationHistory @@index([queryId])
+// 3. For filtering by variant attributes (RAM, storage, price):
+//    Query PhoneVariants with conditions and join to Phones
+//
+// 4. For phone listings that show "from $X" pricing:
+//    SELECT MIN(price) FROM phone_variants WHERE phone_id = ?
+//
+// 5. Common queries:
+//    - "Find phones with 5G and 8GB+ RAM": Join phones → specs (5G) and variants (RAM)
+//    - "Find phones under $800": Filter variants by price, get unique phones
+//    - "Best camera phones": Sort by cameraScore in specs
 // ============================================================
