@@ -1,0 +1,2561 @@
+2026-06-01 16:00:33,926 | INFO | ============================================================
+2026-06-01 16:00:33,927 | INFO | BATCH 12 — BlackBerry | QMobile | Meizu | Vodafone
+2026-06-01 16:00:33,927 | INFO | Phones ~356  |  Time: 2–3 hours
+2026-06-01 16:00:33,927 | INFO | Columns: 68 | Method: data-spec attributes
+2026-06-01 16:00:33,928 | INFO | Started: 2026-06-01 16:00:33
+2026-06-01 16:00:33,928 | INFO | ============================================================
+2026-06-01 16:00:33,928 | INFO | Checking connection ...
+2026-06-01 16:00:33,928 | INFO |   ⏸  Warm-up wait 60s ...
+2026-06-01 16:00:39,691 | INFO | ============================================================
+2026-06-01 16:00:39,691 | INFO | BATCH 12 — BlackBerry | QMobile | Meizu | Vodafone
+2026-06-01 16:00:39,691 | INFO | Phones ~356  |  Time: 2–3 hours
+2026-06-01 16:00:39,691 | INFO | Columns: 68 | Method: data-spec attributes
+2026-06-01 16:00:39,692 | INFO | Started: 2026-06-01 16:00:39
+2026-06-01 16:00:39,692 | INFO | ============================================================
+2026-06-01 16:00:39,692 | INFO | Checking connection ...
+2026-06-01 16:00:39,692 | INFO |   ⏸  Warm-up wait 60s ...
+2026-06-01 16:01:41,748 | INFO |   ✅ Connected (attempt 1)
+2026-06-01 16:01:41,750 | INFO | Resuming: 0 done | 0 retry queue
+2026-06-01 16:01:41,750 | INFO |   ▶ First request — no delay
+2026-06-01 16:01:42,987 | INFO |   GET https://www.gsmarena.com/makers.php3 → 200
+2026-06-01 16:01:43,006 | INFO | ✅ 126 brands
+2026-06-01 16:01:43,006 | INFO | Matched: ['Blackberry', 'Meizu', 'Qmobile', 'Vodafone']
+2026-06-01 16:01:43,007 | INFO | 
+============================================================
+2026-06-01 16:01:43,007 | INFO | [1/4] Blackberry (92 phones)
+2026-06-01 16:01:43,007 | INFO | Elapsed: 0min
+2026-06-01 16:01:43,007 | INFO | ============================================================
+2026-06-01 16:01:43,008 | INFO |   Fetching phone links for: Blackberry (~92 phones)
+2026-06-01 16:01:43,008 | INFO |   ⏳ 49.7s (req #2)
+2026-06-01 16:02:33,722 | INFO |   GET https://www.gsmarena.com/blackberry-phones-36.php → 200
+2026-06-01 16:02:33,739 | INFO |     Found 3 listing pages
+2026-06-01 16:02:33,740 | INFO |     Page 1/3: 50 links so far
+2026-06-01 16:02:33,741 | INFO |   ⏳ 52.9s (req #3)
+2026-06-01 16:03:28,398 | INFO |   GET https://www.gsmarena.com/# → 200
+2026-06-01 16:03:28,433 | INFO |     Page 2/3: 85 links so far
+2026-06-01 16:03:28,435 | INFO |   ⏳ 40.0s (req #4)
+2026-06-01 16:04:09,770 | INFO |   GET https://www.gsmarena.com/blackberry-phones-f-36-0-p2.php → 200
+2026-06-01 16:04:09,791 | INFO |     Page 3/3: 127 links so far
+2026-06-01 16:04:09,792 | INFO |   ✅ 127 valid phone spec links for Blackberry
+2026-06-01 16:04:09,794 | INFO |   💾 Link list cached → GSMArenaDataset_BATCH12\_links_blackberry.json
+2026-06-01 16:04:09,794 | INFO | 
+  [1/127]
+2026-06-01 16:04:09,795 | INFO |   ⏳ 35.3s (req #5)
+2026-06-01 16:04:46,488 | INFO |   GET https://www.gsmarena.com/blackberry_key2_le-9292.php → 200
+2026-06-01 16:04:46,531 | INFO |       📱 BlackBerry KEY2 LE | Main=13.0MP | Selfie=8.0MP | AnTuTu=116764 | Price=$None | IP=None | Populated=52/68 fields
+2026-06-01 16:04:46,538 | INFO |   💾 [1/127] saved
+2026-06-01 16:04:46,538 | INFO | 
+  [2/127]
+2026-06-01 16:04:46,538 | INFO |   ⏳ 26.2s (req #6)
+2026-06-01 16:05:13,858 | INFO |   GET https://www.gsmarena.com/blackberry_evolve_x-9282.php → 200
+2026-06-01 16:05:13,888 | INFO |       📱 BlackBerry Evolve X | Main=12.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=None | Populated=47/68 fields
+2026-06-01 16:05:13,891 | INFO |   💾 [2/127] saved
+2026-06-01 16:05:13,891 | INFO | 
+  [3/127]
+2026-06-01 16:05:13,892 | INFO |   ⏳ 50.1s (req #7)
+2026-06-01 16:06:05,547 | INFO |   GET https://www.gsmarena.com/blackberry_evolve-9281.php → 200
+2026-06-01 16:06:05,570 | INFO |       📱 BlackBerry Evolve | Main=13.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 16:06:05,574 | INFO |   💾 [3/127] saved
+2026-06-01 16:06:05,574 | INFO | 
+  [4/127]
+2026-06-01 16:06:05,574 | INFO |   ⏳ 57.7s (req #8)
+2026-06-01 16:07:04,835 | INFO |   GET https://www.gsmarena.com/blackberry_key2-9187.php → 200
+2026-06-01 16:07:04,868 | INFO |       📱 BlackBerry KEY2 | Main=12.0MP | Selfie=8.0MP | AnTuTu=140984 | Price=$None | IP=None | Populated=52/68 fields
+2026-06-01 16:07:04,871 | INFO |   💾 [4/127] saved
+2026-06-01 16:07:04,872 | INFO | 
+  [5/127]
+2026-06-01 16:07:04,873 | INFO |   ⏳ 57.8s (req #9)
+2026-06-01 16:08:04,439 | INFO |   GET https://www.gsmarena.com/blackberry_motion-8891.php → 200
+2026-06-01 16:08:04,476 | INFO |       📱 BlackBerry Motion | Main=12.0MP | Selfie=8.0MP | AnTuTu=75057 | Price=$None | IP=IP67 | Populated=51/68 fields
+2026-06-01 16:08:04,479 | INFO |   💾 [5/127] saved
+2026-06-01 16:08:04,479 | INFO | 
+  [6/127]
+2026-06-01 16:08:04,480 | INFO |   ⏳ 40.1s (req #10)
+2026-06-01 16:08:46,112 | INFO |   GET https://www.gsmarena.com/blackberry_aurora-8612.php → 200
+2026-06-01 16:08:46,139 | INFO |       📱 BlackBerry Aurora | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 16:08:46,143 | INFO |   💾 [6/127] saved
+2026-06-01 16:08:46,144 | INFO | 
+  [7/127]
+2026-06-01 16:08:46,144 | INFO |   ⏳ 31.0s (req #11)
+2026-06-01 16:09:18,821 | INFO |   GET https://www.gsmarena.com/blackberry_keyone-8508.php → 200
+2026-06-01 16:09:18,851 | INFO |       📱 BlackBerry Keyone | Main=12.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=49/68 fields
+2026-06-01 16:09:18,855 | INFO |   💾 [7/127] saved
+2026-06-01 16:09:18,856 | INFO | 
+  [8/127]
+2026-06-01 16:09:18,856 | INFO |   ⏳ 40.5s (req #12)
+2026-06-01 16:10:00,713 | INFO |   GET https://www.gsmarena.com/blackberry_dtek60-8351.php → 200
+2026-06-01 16:10:00,738 | INFO |       📱 BlackBerry DTEK60 | Main=21.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=45/68 fields
+2026-06-01 16:10:00,741 | INFO |   💾 [8/127] saved
+2026-06-01 16:10:00,742 | INFO | 
+  [9/127]
+2026-06-01 16:10:00,742 | INFO |   ⏳ 45.4s (req #13)
+2026-06-01 16:10:47,293 | INFO |   GET https://www.gsmarena.com/blackberry_dtek50-8229.php → 200
+2026-06-01 16:10:47,314 | INFO |       📱 BlackBerry DTEK50 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 16:10:47,319 | INFO |   💾 [9/127] saved
+2026-06-01 16:10:47,320 | INFO | 
+  [10/127]
+2026-06-01 16:10:47,320 | INFO |   ⏳ 25.8s (req #14)
+2026-06-01 16:11:14,160 | INFO |   GET https://www.gsmarena.com/blackberry_priv-7587.php → 200
+2026-06-01 16:11:14,183 | INFO |       📱 BlackBerry Priv | Main=18.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=49/68 fields
+2026-06-01 16:11:14,187 | INFO |   💾 [10/127] saved
+2026-06-01 16:11:14,187 | INFO | 
+  [11/127]
+2026-06-01 16:11:14,187 | INFO |   ⏳ 58.1s (req #15)
+2026-06-01 16:12:13,926 | INFO |   GET https://www.gsmarena.com/blackberry_leap-7099.php → 200
+2026-06-01 16:12:13,954 | INFO |       📱 BlackBerry Leap | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 16:12:13,958 | INFO |   💾 [11/127] saved
+2026-06-01 16:12:13,959 | INFO | 
+  [12/127]
+2026-06-01 16:12:13,960 | INFO |   ⏳ 59.0s (req #16)
+2026-06-01 16:13:14,078 | INFO |   GET https://www.gsmarena.com/blackberry_classic_non_camera-7066.php → 200
+2026-06-01 16:13:14,098 | INFO |       📱 BlackBerry Classic Non Camera | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 16:13:14,101 | INFO |   💾 [12/127] saved
+2026-06-01 16:13:14,102 | INFO | 
+  [13/127]
+2026-06-01 16:13:14,102 | INFO |   ⏳ 46.4s (req #17)
+2026-06-01 16:14:01,704 | INFO |   GET https://www.gsmarena.com/blackberry_porsche_design_p_9983-6691.php → 200
+2026-06-01 16:14:01,729 | INFO |       📱 BlackBerry Porsche Design P'9983 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 16:14:01,732 | INFO |   💾 [13/127] saved
+2026-06-01 16:14:01,732 | INFO | 
+  [14/127]
+2026-06-01 16:14:01,732 | INFO |   ⏳ 29.3s (req #18)
+2026-06-01 16:14:32,267 | INFO |   GET https://www.gsmarena.com/blackberry_passport-6457.php → 200
+2026-06-01 16:14:32,292 | INFO |       📱 BlackBerry Passport | Main=13.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 16:14:32,295 | INFO |   💾 [14/127] saved
+2026-06-01 16:14:32,296 | INFO | 
+  [15/127]
+2026-06-01 16:14:32,296 | INFO |   ⏳ 56.3s (req #19)
+2026-06-01 16:15:29,929 | INFO |   GET https://www.gsmarena.com/blackberry_classic-6458.php → 200
+2026-06-01 16:15:29,950 | INFO |       📱 BlackBerry Classic | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 16:15:29,954 | INFO |   💾 [15/127] saved
+2026-06-01 16:15:29,955 | INFO | 
+  [16/127]
+2026-06-01 16:15:29,956 | INFO |   ⏳ 36.4s (req #20)
+2026-06-01 16:16:07,408 | INFO |   GET https://www.gsmarena.com/blackberry_z3-6163.php → 200
+2026-06-01 16:16:07,439 | INFO |       📱 BlackBerry Z3 | Main=5.0MP | Selfie=1.1MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 16:16:07,443 | INFO |   💾 [16/127] saved
+2026-06-01 16:16:07,443 | INFO | 
+  [17/127]
+2026-06-01 16:16:07,443 | INFO |   ⏳ 35.1s (req #21)
+2026-06-01 16:16:43,750 | INFO |   GET https://www.gsmarena.com/blackberry_porsche_design_p_9982-5856.php → 200
+2026-06-01 16:16:43,773 | INFO |       📱 BlackBerry Porsche Design P'9982 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 16:16:43,777 | INFO |   💾 [17/127] saved
+2026-06-01 16:16:43,777 | INFO | 
+  [18/127]
+2026-06-01 16:16:43,777 | INFO |   ⏳ 57.7s (req #22)
+2026-06-01 16:17:42,800 | INFO |   GET https://www.gsmarena.com/blackberry_z30-5711.php → 200
+2026-06-01 16:17:42,826 | INFO |       📱 BlackBerry Z30 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 16:17:42,831 | INFO |   💾 [18/127] saved
+2026-06-01 16:17:42,831 | INFO | 
+  [19/127]
+2026-06-01 16:17:42,832 | INFO |   ⏳ 25.7s (req #23)
+2026-06-01 16:18:09,656 | INFO |   GET https://www.gsmarena.com/blackberry_9720-5625.php → 200
+2026-06-01 16:18:09,676 | INFO |       📱 BlackBerry 9720 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=32/68 fields
+2026-06-01 16:18:09,680 | INFO |   💾 [19/127] saved
+2026-06-01 16:18:09,681 | INFO | 
+  [20/127]
+2026-06-01 16:18:09,681 | INFO |   ⏳ 44.4s (req #24)
+2026-06-01 16:18:55,472 | INFO |   GET https://www.gsmarena.com/blackberry_q5-5452.php → 200
+2026-06-01 16:18:55,495 | INFO |       📱 BlackBerry Q5 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 16:18:55,499 | INFO |   💾 [20/127] saved
+2026-06-01 16:18:55,499 | INFO | 
+  [21/127]
+2026-06-01 16:18:55,500 | INFO |   ⏳ 48.1s (req #25)
+2026-06-01 16:19:45,082 | INFO |   GET https://www.gsmarena.com/blackberry_z10-5251.php → 200
+2026-06-01 16:19:45,106 | INFO |       📱 BlackBerry Z10 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 16:19:45,109 | INFO |   💾 [21/127] saved
+2026-06-01 16:19:45,110 | INFO | 
+  [22/127]
+2026-06-01 16:19:45,110 | INFO |   ⏳ 30.7s (req #26)
+2026-06-01 16:20:17,162 | INFO |   GET https://www.gsmarena.com/blackberry_q10-5274.php → 200
+2026-06-01 16:20:17,192 | INFO |       📱 BlackBerry Q10 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 16:20:17,195 | INFO |   💾 [22/127] saved
+2026-06-01 16:20:17,196 | INFO | 
+  [23/127]
+2026-06-01 16:20:17,197 | INFO |   ⏳ 29.8s (req #27)
+2026-06-01 16:20:48,101 | INFO |   GET https://www.gsmarena.com/blackberry_4g_lte_playbook-3846.php → 200
+2026-06-01 16:20:48,127 | INFO |       📱 BlackBerry 4G LTE Playbook | Main=5.0MP | Selfie=3.0MP | AnTuTu=None | Price=$None | IP=None | Populated=32/68 fields
+2026-06-01 16:20:48,131 | INFO |   💾 [23/127] saved
+2026-06-01 16:20:48,131 | INFO | 
+  [24/127]
+2026-06-01 16:20:48,131 | INFO |   ⏳ 30.2s (req #28)
+2026-06-01 16:21:19,384 | INFO |   GET https://www.gsmarena.com/blackberry_curve_9320-4458.php → 200
+2026-06-01 16:21:19,406 | INFO |       📱 BlackBerry Curve 9320 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=32/68 fields
+2026-06-01 16:21:19,409 | INFO |   💾 [24/127] saved
+2026-06-01 16:21:19,410 | INFO | 
+  [25/127]
+2026-06-01 16:21:19,410 | INFO |   ⏳ 46.6s (req #29)
+2026-06-01 16:22:07,269 | INFO |   GET https://www.gsmarena.com/blackberry_curve_9220-4459.php → 200
+2026-06-01 16:22:07,296 | INFO |       📱 BlackBerry Curve 9220 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=30/68 fields
+2026-06-01 16:22:07,300 | INFO |   💾 [25/127] saved
+2026-06-01 16:22:07,301 | INFO | 
+  [26/127]
+2026-06-01 16:22:07,301 | INFO |   ☕ Long pause 229s ...
+2026-06-01 16:25:58,750 | INFO |   GET https://www.gsmarena.com/blackberry_curve_9380-4331.php → 200
+2026-06-01 16:25:58,776 | INFO |       📱 BlackBerry Curve 9380 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 16:25:58,780 | INFO |   💾 [26/127] saved
+2026-06-01 16:25:58,780 | INFO | 
+  [27/127]
+2026-06-01 16:25:58,781 | INFO |   ⏳ 36.0s (req #31)
+2026-06-01 16:26:35,717 | INFO |   GET https://www.gsmarena.com/blackberry_bold_9790-4332.php → 200
+2026-06-01 16:26:35,744 | INFO |       📱 BlackBerry Bold 9790 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=33/68 fields
+2026-06-01 16:26:35,748 | INFO |   💾 [27/127] saved
+2026-06-01 16:26:35,750 | INFO | 
+  [28/127]
+2026-06-01 16:26:35,750 | INFO |   ⏳ 26.1s (req #32)
+2026-06-01 16:27:02,875 | INFO |   GET https://www.gsmarena.com/blackberry_porsche_design_p_9981-4288.php → 200
+2026-06-01 16:27:02,935 | INFO |       📱 BlackBerry Porsche Design P'9981 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 16:27:02,939 | INFO |   💾 [28/127] saved
+2026-06-01 16:27:02,940 | INFO | 
+  [29/127]
+2026-06-01 16:27:02,940 | INFO |   ⏳ 43.5s (req #33)
+2026-06-01 16:27:48,537 | INFO |   GET https://www.gsmarena.com/blackberry_curve_9370-4112.php → 200
+2026-06-01 16:27:48,562 | INFO |       📱 BlackBerry Curve 9370 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 16:27:48,566 | INFO |   💾 [29/127] saved
+2026-06-01 16:27:48,566 | INFO | 
+  [30/127]
+2026-06-01 16:27:48,567 | INFO |   ⏳ 31.7s (req #34)
+2026-06-01 16:28:21,293 | INFO |   GET https://www.gsmarena.com/blackberry_curve_9360-3722.php → 200
+2026-06-01 16:28:21,319 | INFO |       📱 BlackBerry Curve 9360 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=32/68 fields
+2026-06-01 16:28:21,322 | INFO |   💾 [30/127] saved
+2026-06-01 16:28:21,323 | INFO | 
+  [31/127]
+2026-06-01 16:28:21,323 | INFO |   ⏳ 46.9s (req #35)
+2026-06-01 16:29:09,461 | INFO |   GET https://www.gsmarena.com/blackberry_curve_9350-3756.php → 200
+2026-06-01 16:29:09,484 | INFO |       📱 BlackBerry Curve 9350 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 16:29:09,488 | INFO |   💾 [31/127] saved
+2026-06-01 16:29:09,488 | INFO | 
+  [32/127]
+2026-06-01 16:29:09,488 | INFO |   ⏳ 32.1s (req #36)
+2026-06-01 16:29:42,685 | INFO |   GET https://www.gsmarena.com/blackberry_torch_9810-3723.php → 200
+2026-06-01 16:29:42,711 | INFO |       📱 BlackBerry Torch 9810 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 16:29:42,714 | INFO |   💾 [32/127] saved
+2026-06-01 16:29:42,714 | INFO | 
+  [33/127]
+2026-06-01 16:29:42,715 | INFO |   ⏳ 42.4s (req #37)
+2026-06-01 16:30:26,742 | INFO |   GET https://www.gsmarena.com/blackberry_torch_9860-3926.php → 200
+2026-06-01 16:30:26,770 | INFO |       📱 BlackBerry Torch 9860 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 16:30:26,774 | INFO |   💾 [33/127] saved
+2026-06-01 16:30:26,776 | INFO | 
+  [34/127]
+2026-06-01 16:30:26,776 | INFO |   ⏳ 50.0s (req #38)
+2026-06-01 16:31:18,580 | INFO |   GET https://www.gsmarena.com/blackberry_torch_9850-4088.php → 200
+2026-06-01 16:31:18,603 | INFO |       📱 BlackBerry Torch 9850 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=36/68 fields
+2026-06-01 16:31:18,608 | INFO |   💾 [34/127] saved
+2026-06-01 16:31:18,608 | INFO | 
+  [35/127]
+2026-06-01 16:31:18,608 | INFO |   ⏳ 57.6s (req #39)
+2026-06-01 16:32:17,311 | INFO |   GET https://www.gsmarena.com/blackberry_bold_touch_9900-3116.php → 200
+2026-06-01 16:32:17,334 | INFO |       📱 BlackBerry Bold Touch 9900 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 16:32:17,338 | INFO |   💾 [35/127] saved
+2026-06-01 16:32:17,339 | INFO | 
+  [36/127]
+2026-06-01 16:32:17,339 | INFO |   ⏳ 35.2s (req #40)
+2026-06-01 16:32:53,553 | INFO |   GET https://www.gsmarena.com/blackberry_bold_touch_9930-3755.php → 200
+2026-06-01 16:32:53,580 | INFO |       📱 BlackBerry Bold Touch 9930 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 16:32:53,584 | INFO |   💾 [36/127] saved
+2026-06-01 16:32:53,585 | INFO | 
+  [37/127]
+2026-06-01 16:32:53,585 | INFO |   ⏳ 34.5s (req #41)
+2026-06-01 16:33:29,214 | INFO |   GET https://www.gsmarena.com/blackberry_4g_playbook_hspa+-3900.php → 200
+2026-06-01 16:33:29,236 | INFO |       📱 BlackBerry 4G Playbook HSPA+ | Main=5.0MP | Selfie=3.0MP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 16:33:29,239 | INFO |   💾 [37/127] saved
+2026-06-01 16:33:29,240 | INFO | 
+  [38/127]
+2026-06-01 16:33:29,240 | INFO |   ⏳ 32.3s (req #42)
+2026-06-01 16:34:02,644 | INFO |   GET https://www.gsmarena.com/blackberry_playbook_wimax-3899.php → 200
+2026-06-01 16:34:02,667 | INFO |       📱 BlackBerry Playbook Wimax | Main=5.0MP | Selfie=3.0MP | AnTuTu=None | Price=$None | IP=None | Populated=33/68 fields
+2026-06-01 16:34:02,671 | INFO |   💾 [38/127] saved
+2026-06-01 16:34:02,672 | INFO | 
+  [39/127]
+2026-06-01 16:34:02,672 | INFO |   ⏳ 57.4s (req #43)
+2026-06-01 16:35:01,255 | INFO |   GET https://www.gsmarena.com/blackberry_playbook-3830.php → 200
+2026-06-01 16:35:01,281 | INFO |       📱 BlackBerry Playbook | Main=5.0MP | Selfie=3.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 16:35:01,285 | INFO |   💾 [39/127] saved
+2026-06-01 16:35:01,286 | INFO | 
+  [40/127]
+2026-06-01 16:35:01,286 | INFO |   ⏳ 28.9s (req #44)
+2026-06-01 16:35:31,474 | INFO |   GET https://www.gsmarena.com/blackberry_bold_9780-3431.php → 200
+2026-06-01 16:35:31,509 | INFO |       📱 BlackBerry Bold 9780 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 16:35:31,514 | INFO |   💾 [40/127] saved
+2026-06-01 16:35:31,514 | INFO | 
+  [41/127]
+2026-06-01 16:35:31,514 | INFO |   ⏳ 50.6s (req #45)
+2026-06-01 16:36:23,081 | INFO |   GET https://www.gsmarena.com/blackberry_style_9670-3326.php → 200
+2026-06-01 16:36:23,106 | INFO |       📱 BlackBerry Style 9670 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=26/68 fields
+2026-06-01 16:36:23,110 | INFO |   💾 [41/127] saved
+2026-06-01 16:36:23,111 | INFO | 
+  [42/127]
+2026-06-01 16:36:23,111 | INFO |   ⏳ 34.6s (req #46)
+2026-06-01 16:36:59,021 | INFO |   GET https://www.gsmarena.com/blackberry_curve_3g_9330-3591.php → 200
+2026-06-01 16:36:59,047 | INFO |       📱 BlackBerry Curve 3G 9330 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=28/68 fields
+2026-06-01 16:36:59,051 | INFO |   💾 [42/127] saved
+2026-06-01 16:36:59,051 | INFO | 
+  [43/127]
+2026-06-01 16:36:59,051 | INFO |   ⏳ 28.4s (req #47)
+2026-06-01 16:37:28,782 | INFO |   GET https://www.gsmarena.com/blackberry_curve_3g_9300-3422.php → 200
+2026-06-01 16:37:28,811 | INFO |       📱 BlackBerry Curve 3G 9300 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=29/68 fields
+2026-06-01 16:37:28,815 | INFO |   💾 [43/127] saved
+2026-06-01 16:37:28,815 | INFO | 
+  [44/127]
+2026-06-01 16:37:28,816 | INFO |   ⏳ 30.3s (req #48)
+2026-06-01 16:38:00,474 | INFO |   GET https://www.gsmarena.com/blackberry_torch_9800-3203.php → 200
+2026-06-01 16:38:00,500 | INFO |       📱 BlackBerry Torch 9800 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 16:38:00,503 | INFO |   💾 [44/127] saved
+2026-06-01 16:38:00,504 | INFO | 
+  [45/127]
+2026-06-01 16:38:00,504 | INFO |   ⏳ 45.4s (req #49)
+2026-06-01 16:38:46,928 | INFO |   GET https://www.gsmarena.com/blackberry_pearl_3g_9105-3287.php → 200
+2026-06-01 16:38:46,956 | INFO |       📱 BlackBerry Pearl 3G 9105 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 16:38:46,960 | INFO |   💾 [45/127] saved
+2026-06-01 16:38:46,961 | INFO | 
+  [46/127]
+2026-06-01 16:38:46,961 | INFO |   ⏳ 29.5s (req #50)
+2026-06-01 16:39:17,736 | INFO |   GET https://www.gsmarena.com/blackberry_pearl_3g_9100-3032.php → 200
+2026-06-01 16:39:17,784 | INFO |       📱 BlackBerry Pearl 3G 9100 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=30/68 fields
+2026-06-01 16:39:17,788 | INFO |   💾 [46/127] saved
+2026-06-01 16:39:17,789 | INFO | 
+  [47/127]
+2026-06-01 16:39:17,790 | INFO |   ⏳ 59.9s (req #51)
+2026-06-01 16:40:18,943 | INFO |   GET https://www.gsmarena.com/blackberry_bold_9650-3284.php → 200
+2026-06-01 16:40:18,965 | INFO |       📱 BlackBerry Bold 9650 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=30/68 fields
+2026-06-01 16:40:18,968 | INFO |   💾 [47/127] saved
+2026-06-01 16:40:18,968 | INFO | 
+  [48/127]
+2026-06-01 16:40:18,969 | INFO |   ⏳ 39.1s (req #52)
+2026-06-01 16:40:59,253 | INFO |   GET https://www.gsmarena.com/blackberry_bold_9700-2963.php → 200
+2026-06-01 16:40:59,278 | INFO |       📱 BlackBerry Bold 9700 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 16:40:59,288 | INFO |   💾 [48/127] saved
+2026-06-01 16:40:59,288 | INFO | 
+  [49/127]
+2026-06-01 16:40:59,288 | INFO |   ⏳ 26.0s (req #53)
+2026-06-01 16:41:26,560 | INFO |   GET https://www.gsmarena.com/blackberry_storm2_9520-2962.php → 200
+2026-06-01 16:41:26,583 | INFO |       📱 BlackBerry Storm2 9520 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=33/68 fields
+2026-06-01 16:41:26,587 | INFO |   💾 [49/127] saved
+2026-06-01 16:41:26,588 | INFO | 
+  [50/127]
+2026-06-01 16:41:26,588 | INFO |   ⏳ 32.8s (req #54)
+2026-06-01 16:42:01,417 | INFO |   GET https://www.gsmarena.com/blackberry_storm2_9550-2970.php → 200
+2026-06-01 16:42:01,439 | INFO |       📱 BlackBerry Storm2 9550 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=33/68 fields
+2026-06-01 16:42:01,443 | INFO |   💾 [50/127] saved
+2026-06-01 16:42:01,444 | INFO | 
+  [51/127]
+2026-06-01 16:42:01,444 | INFO |   ⏳ 45.5s (req #55)
+2026-06-01 16:42:47,933 | INFO |   GET https://www.gsmarena.com/huawei_nova_16_ultra_5g-14698.php → 200
+2026-06-01 16:42:47,953 | INFO |       📱 Huawei nova 16 Ultra | Main=200.0MP | Selfie=50.0MP | AnTuTu=None | Price=$None | IP=IP68 | Populated=51/68 fields
+2026-06-01 16:42:47,957 | INFO |   💾 [51/127] saved
+2026-06-01 16:42:47,957 | INFO | 
+  [52/127]
+2026-06-01 16:42:47,957 | INFO |   ⏳ 45.0s (req #56)
+2026-06-01 16:43:34,056 | INFO |   GET https://www.gsmarena.com/huawei_nova_16_pro_5g-14699.php → 200
+2026-06-01 16:43:34,089 | INFO |       📱 Huawei nova 16 Pro | Main=200.0MP | Selfie=50.0MP | AnTuTu=None | Price=$None | IP=IP65 | Populated=49/68 fields
+2026-06-01 16:43:34,093 | INFO |   💾 [52/127] saved
+2026-06-01 16:43:34,094 | INFO | 
+  [53/127]
+2026-06-01 16:43:34,094 | INFO |   ⏳ 30.4s (req #57)
+2026-06-01 16:44:05,720 | INFO |   GET https://www.gsmarena.com/huawei_nova_16_5g-14700.php → 200
+2026-06-01 16:44:05,743 | INFO |       📱 Huawei nova 16 | Main=50.0MP | Selfie=50.0MP | AnTuTu=None | Price=$None | IP=IP65 | Populated=49/68 fields
+2026-06-01 16:44:05,747 | INFO |   💾 [53/127] saved
+2026-06-01 16:44:05,747 | INFO | 
+  [54/127]
+2026-06-01 16:44:05,747 | INFO |   ⏳ 44.6s (req #58)
+2026-06-01 16:44:51,894 | INFO |   GET https://www.gsmarena.com/honor_win_turbo_5g-14684.php → 200
+2026-06-01 16:44:51,916 | INFO |       📱 Honor Win Turbo | Main=50.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=IP66 | Populated=49/68 fields
+2026-06-01 16:44:51,920 | INFO |   💾 [54/127] saved
+2026-06-01 16:44:51,921 | INFO | 
+  [55/127]
+2026-06-01 16:44:51,921 | INFO |   ⏳ 34.3s (req #59)
+2026-06-01 16:45:27,583 | INFO |   GET https://www.gsmarena.com/vivo_s60_vitality_5g-14693.php → 200
+2026-06-01 16:45:27,605 | INFO |       📱 vivo S60 Vitality | Main=50.0MP | Selfie=50.0MP | AnTuTu=None | Price=$None | IP=IP68 | Populated=52/68 fields
+2026-06-01 16:45:27,608 | INFO |   💾 [55/127] saved
+2026-06-01 16:45:27,608 | INFO | 
+  [56/127]
+2026-06-01 16:45:27,609 | INFO |   ☕ Long pause 176s ...
+2026-06-01 16:48:24,887 | INFO |   GET https://www.gsmarena.com/vivo_s60_5g-14692.php → 200
+2026-06-01 16:48:24,909 | INFO |       📱 vivo S60 | Main=50.0MP | Selfie=50.0MP | AnTuTu=None | Price=$None | IP=IP68 | Populated=51/68 fields
+2026-06-01 16:48:24,913 | INFO |   💾 [56/127] saved
+2026-06-01 16:48:24,913 | INFO | 
+  [57/127]
+2026-06-01 16:48:24,914 | INFO |   ⏳ 31.5s (req #61)
+2026-06-01 16:48:57,605 | INFO |   GET https://www.gsmarena.com/vivo_t5-14697.php → 200
+2026-06-01 16:48:57,627 | INFO |       📱 vivo T5 | Main=50.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP68 | Populated=47/68 fields
+2026-06-01 16:48:57,631 | INFO |   💾 [57/127] saved
+2026-06-01 16:48:57,631 | INFO | 
+  [58/127]
+2026-06-01 16:48:57,632 | INFO |   ⏳ 28.4s (req #62)
+2026-06-01 16:49:27,624 | INFO |   GET https://www.gsmarena.com/zte_nubia_redmagic_11s_pro_5g-14669.php → 200
+2026-06-01 16:49:27,656 | INFO |       📱 ZTE nubia RedMagic 11S Pro | Main=50.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=None | Populated=53/68 fields
+2026-06-01 16:49:27,659 | INFO |   💾 [58/127] saved
+2026-06-01 16:49:27,660 | INFO | 
+  [59/127]
+2026-06-01 16:49:27,660 | INFO |   ⏳ 52.3s (req #63)
+2026-06-01 16:50:21,314 | INFO |   GET https://www.gsmarena.com/xiaomi_17_max_5g-14667.php → 200
+2026-06-01 16:50:21,360 | INFO |       📱 Xiaomi 17 Max | Main=200.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP68 | Populated=53/68 fields
+2026-06-01 16:50:21,364 | INFO |   💾 [59/127] saved
+2026-06-01 16:50:21,364 | INFO | 
+  [60/127]
+2026-06-01 16:50:21,364 | INFO |   ⏳ 34.8s (req #64)
+2026-06-01 16:51:03,094 | INFO |   GET https://www.gsmarena.com/xiaomi_17t_pro_5g-14651.php → 200
+2026-06-01 16:51:03,123 | INFO |       📱 Xiaomi 17T Pro | Main=50.0MP | Selfie=32.0MP | AnTuTu=2795030 | Price=$None | IP=IP68 | Populated=61/68 fields
+2026-06-01 16:51:03,127 | INFO |   💾 [60/127] saved
+2026-06-01 16:51:03,127 | INFO | 
+  [61/127]
+2026-06-01 16:51:03,127 | INFO |   ⏳ 53.4s (req #65)
+2026-06-01 16:51:57,810 | INFO |   GET https://www.gsmarena.com/xiaomi_17t_5g-14652.php → 200
+2026-06-01 16:51:57,836 | INFO |       📱 Xiaomi 17T | Main=50.0MP | Selfie=32.0MP | AnTuTu=1640834 | Price=$None | IP=IP68 | Populated=60/68 fields
+2026-06-01 16:51:57,840 | INFO |   💾 [61/127] saved
+2026-06-01 16:51:57,840 | INFO | 
+  [62/127]
+2026-06-01 16:51:57,840 | INFO |   ⏳ 50.9s (req #66)
+2026-06-01 16:52:49,825 | INFO |   GET https://www.gsmarena.com/xiaomi_watch_s5-14696.php → 200
+2026-06-01 16:52:49,847 | INFO |       📱 Xiaomi Watch S5 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=25/68 fields
+2026-06-01 16:52:49,852 | INFO |   💾 [62/127] saved
+2026-06-01 16:52:49,852 | INFO | 
+  [63/127]
+2026-06-01 16:52:49,853 | INFO |   ⏳ 33.8s (req #67)
+2026-06-01 16:53:25,061 | INFO |   GET https://www.gsmarena.com/realme_16t_5g-14674.php → 200
+2026-06-01 16:53:25,093 | INFO |       📱 Realme 16T | Main=50.0MP | Selfie=16.0MP | AnTuTu=438780 | Price=$None | IP=IP68 | Populated=52/68 fields
+2026-06-01 16:53:25,096 | INFO |   💾 [63/127] saved
+2026-06-01 16:53:25,098 | INFO | 
+  [64/127]
+2026-06-01 16:53:25,099 | INFO |   ⏳ 59.2s (req #68)
+2026-06-01 16:54:25,559 | INFO |   GET https://www.gsmarena.com/honor_600_5g-14605.php → 200
+2026-06-01 16:54:25,586 | INFO |       📱 Honor 600 | Main=200.0MP | Selfie=50.0MP | AnTuTu=1087148 | Price=$505.72 | IP=IP68 | Populated=60/68 fields
+2026-06-01 16:54:25,590 | INFO |   💾 [64/127] saved
+2026-06-01 16:54:25,591 | INFO | 
+  [65/127]
+2026-06-01 16:54:25,592 | INFO |   ⏳ 59.7s (req #69)
+2026-06-01 16:55:26,533 | INFO |   GET https://www.gsmarena.com/sony_xperia_1_viii_5g-14660.php → 200
+2026-06-01 16:55:26,560 | INFO |       📱 Sony Xperia 1 VIII | Main=48.0MP | Selfie=12.0MP | AnTuTu=2312684 | Price=$None | IP=IP65 | Populated=63/68 fields
+2026-06-01 16:55:26,564 | INFO |   💾 [65/127] saved
+2026-06-01 16:55:26,566 | INFO | 
+  [66/127]
+2026-06-01 16:55:26,566 | INFO |   ⏳ 50.1s (req #70)
+2026-06-01 16:56:18,268 | INFO |   GET https://www.gsmarena.com/honor_600_pro_5g-14604.php → 200
+2026-06-01 16:56:18,331 | INFO |       📱 Honor 600 Pro | Main=200.0MP | Selfie=50.0MP | AnTuTu=2221352 | Price=$797.29 | IP=IP68 | Populated=60/68 fields
+2026-06-01 16:56:18,335 | INFO |   💾 [66/127] saved
+2026-06-01 16:56:18,336 | INFO | 
+  [67/127]
+2026-06-01 16:56:18,336 | INFO |   ⏳ 29.5s (req #71)
+2026-06-01 16:56:48,964 | INFO |   GET https://www.gsmarena.com/motorola_moto_g87_5g-14644.php → 200
+2026-06-01 16:56:48,987 | INFO |       📱 Motorola Moto G87 | Main=200.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP68 | Populated=50/68 fields
+2026-06-01 16:56:48,990 | INFO |   💾 [67/127] saved
+2026-06-01 16:56:48,991 | INFO | 
+  [68/127]
+2026-06-01 16:56:48,991 | INFO |   ⏳ 32.2s (req #72)
+2026-06-01 16:57:23,682 | INFO |   GET https://www.gsmarena.com/xiaomi_17t_pro-14651.php → 200
+2026-06-01 16:57:23,718 | INFO |       📱 Xiaomi 17T Pro | Main=50.0MP | Selfie=32.0MP | AnTuTu=2795030 | Price=$None | IP=IP68 | Populated=61/68 fields
+2026-06-01 16:57:23,722 | INFO |   💾 [68/127] saved
+2026-06-01 16:57:23,723 | INFO | 
+  [69/127]
+2026-06-01 16:57:23,723 | INFO |   ⏳ 52.5s (req #73)
+2026-06-01 16:58:18,627 | INFO |   GET https://www.gsmarena.com/xiaomi_17t-14652.php → 200
+2026-06-01 16:58:18,658 | INFO |       📱 Xiaomi 17T | Main=50.0MP | Selfie=32.0MP | AnTuTu=1640834 | Price=$None | IP=IP68 | Populated=60/68 fields
+2026-06-01 16:58:18,661 | INFO |   💾 [69/127] saved
+2026-06-01 16:58:18,662 | INFO | 
+  [70/127]
+2026-06-01 16:58:18,662 | INFO |   ⏳ 25.1s (req #74)
+2026-06-01 16:58:46,356 | INFO |   GET https://www.gsmarena.com/samsung_galaxy_a57-14379.php → 200
+2026-06-01 16:58:46,386 | INFO |       📱 Samsung Galaxy A57 | Main=50.0MP | Selfie=12.0MP | AnTuTu=1001995 | Price=$489.99 | IP=IP68 | Populated=63/68 fields
+2026-06-01 16:58:46,390 | INFO |   💾 [70/127] saved
+2026-06-01 16:58:46,391 | INFO | 
+  [71/127]
+2026-06-01 16:58:46,391 | INFO |   ⏳ 49.9s (req #75)
+2026-06-01 16:59:38,872 | INFO |   GET https://www.gsmarena.com/samsung_galaxy_s26_ultra-14320.php → 200
+2026-06-01 16:59:38,919 | INFO |       📱 Samsung Galaxy S26 Ultra | Main=200.0MP | Selfie=12.0MP | AnTuTu=2627986 | Price=$1049.99 | IP=IP68 | Populated=66/68 fields
+2026-06-01 16:59:38,924 | INFO |   💾 [71/127] saved
+2026-06-01 16:59:38,924 | INFO | 
+  [72/127]
+2026-06-01 16:59:38,924 | INFO |   ⏳ 50.3s (req #76)
+2026-06-01 17:00:31,684 | INFO |   GET https://www.gsmarena.com/samsung_galaxy_a17-14041.php → 200
+2026-06-01 17:00:31,720 | INFO |       📱 Samsung Galaxy A17 | Main=50.0MP | Selfie=13.0MP | AnTuTu=435787 | Price=$99.88 | IP=IP54 | Populated=59/68 fields
+2026-06-01 17:00:31,724 | INFO |   💾 [72/127] saved
+2026-06-01 17:00:31,724 | INFO | 
+  [73/127]
+2026-06-01 17:00:31,725 | INFO |   ⏳ 55.8s (req #77)
+2026-06-01 17:01:28,959 | INFO |   GET https://www.gsmarena.com/apple_iphone_17_pro_max-13964.php → 200
+2026-06-01 17:01:28,993 | INFO |       📱 Apple iPhone 17 Pro Max | Main=48.0MP | Selfie=18.0MP | AnTuTu=2600583 | Price=$965.55 | IP=IP68 | Populated=65/68 fields
+2026-06-01 17:01:28,997 | INFO |   💾 [73/127] saved
+2026-06-01 17:01:28,998 | INFO | 
+  [74/127]
+2026-06-01 17:01:28,998 | INFO |   ⏳ 33.5s (req #78)
+2026-06-01 17:02:05,168 | INFO |   GET https://www.gsmarena.com/xiaomi_17_max-14667.php → 200
+2026-06-01 17:02:05,196 | INFO |       📱 Xiaomi 17 Max | Main=200.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP68 | Populated=53/68 fields
+2026-06-01 17:02:05,200 | INFO |   💾 [74/127] saved
+2026-06-01 17:02:05,201 | INFO | 
+  [75/127]
+2026-06-01 17:02:05,201 | INFO |   ⏳ 29.7s (req #79)
+2026-06-01 17:02:37,297 | INFO |   GET https://www.gsmarena.com/xiaomi_redmi_note_15-14328.php → 200
+2026-06-01 17:02:37,332 | INFO |       📱 Xiaomi Redmi Note 15 | Main=108.0MP | Selfie=20.0MP | AnTuTu=637266 | Price=$252.5 | IP=IP66 | Populated=61/68 fields
+2026-06-01 17:02:37,336 | INFO |   💾 [75/127] saved
+2026-06-01 17:02:37,336 | INFO | 
+  [76/127]
+2026-06-01 17:02:37,336 | INFO |   ⏳ 27.9s (req #80)
+2026-06-01 17:03:07,780 | INFO |   GET https://www.gsmarena.com/xiaomi_poco_x8_pro-14506.php → 200
+2026-06-01 17:03:07,811 | INFO |       📱 Xiaomi Poco X8 Pro | Main=50.0MP | Selfie=20.0MP | AnTuTu=1663640 | Price=$367.5 | IP=IP68 | Populated=59/68 fields
+2026-06-01 17:03:07,816 | INFO |   💾 [76/127] saved
+2026-06-01 17:03:07,816 | INFO | 
+  [77/127]
+2026-06-01 17:03:07,816 | INFO |   ⏳ 30.9s (req #81)
+2026-06-01 17:03:41,238 | INFO |   GET https://www.gsmarena.com/honor_600_pro-14604.php → 200
+2026-06-01 17:03:41,281 | INFO |       📱 Honor 600 Pro | Main=200.0MP | Selfie=50.0MP | AnTuTu=2221352 | Price=$797.29 | IP=IP68 | Populated=60/68 fields
+2026-06-01 17:03:41,285 | INFO |   💾 [77/127] saved
+2026-06-01 17:03:41,285 | INFO | 
+  [78/127]
+2026-06-01 17:03:41,285 | INFO |   ⏳ 27.0s (req #82)
+2026-06-01 17:04:09,805 | INFO |   GET https://www.gsmarena.com/samsung_galaxy_a56-13603.php → 200
+2026-06-01 17:04:09,838 | INFO |       📱 Samsung Galaxy A56 | Main=50.0MP | Selfie=12.0MP | AnTuTu=908689 | Price=$359.5 | IP=IP67 | Populated=63/68 fields
+2026-06-01 17:04:09,842 | INFO |   💾 [78/127] saved
+2026-06-01 17:04:09,842 | INFO | 
+  [79/127]
+2026-06-01 17:04:09,842 | INFO |   ⏳ 53.8s (req #83)
+2026-06-01 17:05:05,222 | INFO |   GET https://www.gsmarena.com/xiaomi_15_ultra-13657.php → 200
+2026-06-01 17:05:05,251 | INFO |       📱 Xiaomi 15 Ultra | Main=50.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP68 | Populated=59/68 fields
+2026-06-01 17:05:05,256 | INFO |   💾 [79/127] saved
+2026-06-01 17:05:05,256 | INFO | 
+  [80/127]
+2026-06-01 17:05:05,256 | INFO |   ⏳ 28.9s (req #84)
+2026-06-01 17:05:35,514 | INFO |   GET https://www.gsmarena.com/xiaomi_poco_x7_pro-13582.php → 200
+2026-06-01 17:05:35,546 | INFO |       📱 Xiaomi Poco X7 Pro | Main=50.0MP | Selfie=20.0MP | AnTuTu=1568331 | Price=$374.0 | IP=IP68 | Populated=62/68 fields
+2026-06-01 17:05:35,549 | INFO |   💾 [80/127] saved
+2026-06-01 17:05:35,550 | INFO | 
+  [81/127]
+2026-06-01 17:05:35,550 | INFO |   ⏳ 54.7s (req #85)
+2026-06-01 17:06:33,276 | INFO |   GET https://www.gsmarena.com/xiaomi_17_pro_max-14181.php → 200
+2026-06-01 17:06:33,311 | INFO |       📱 Xiaomi 17 Pro Max | Main=50.0MP | Selfie=50.0MP | AnTuTu=2456317 | Price=$None | IP=IP68 | Populated=61/68 fields
+2026-06-01 17:06:33,314 | INFO |   💾 [81/127] saved
+2026-06-01 17:06:33,315 | INFO | 
+  [82/127]
+2026-06-01 17:06:33,315 | INFO |   ⏳ 54.9s (req #86)
+2026-06-01 17:07:31,043 | INFO |   GET https://www.gsmarena.com/oneplus_15-14206.php → 200
+2026-06-01 17:07:31,077 | INFO |       📱 OnePlus 15 | Main=50.0MP | Selfie=32.0MP | AnTuTu=2790237 | Price=$729.95 | IP=IP68 | Populated=65/68 fields
+2026-06-01 17:07:31,081 | INFO |   💾 [82/127] saved
+2026-06-01 17:07:31,081 | INFO | 
+  [83/127]
+2026-06-01 17:07:31,081 | INFO |   ⏳ 53.3s (req #87)
+2026-06-01 17:08:26,265 | INFO |   GET https://www.gsmarena.com/samsung_galaxy_s25-13610.php → 200
+2026-06-01 17:08:26,299 | INFO |       📱 Samsung Galaxy S25 | Main=50.0MP | Selfie=12.0MP | AnTuTu=2193701 | Price=$417.09 | IP=IP68 | Populated=66/68 fields
+2026-06-01 17:08:26,303 | INFO |   💾 [83/127] saved
+2026-06-01 17:08:26,303 | INFO | 
+  [84/127]
+2026-06-01 17:08:26,303 | INFO |   ⏳ 39.2s (req #88)
+2026-06-01 17:09:07,857 | INFO |   GET https://www.gsmarena.com/xiaomi_17_ultra-14380.php → 200
+2026-06-01 17:09:07,886 | INFO |       📱 Xiaomi 17 Ultra | Main=50.0MP | Selfie=50.0MP | AnTuTu=2777490 | Price=$None | IP=IP68 | Populated=63/68 fields
+2026-06-01 17:09:07,889 | INFO |   💾 [84/127] saved
+2026-06-01 17:09:07,890 | INFO | 
+  [85/127]
+2026-06-01 17:09:07,890 | INFO |   ⏳ 38.2s (req #89)
+2026-06-01 17:09:47,738 | INFO |   GET https://www.gsmarena.com/oppo_find_x9_pro-14094.php → 200
+2026-06-01 17:09:47,770 | INFO |       📱 Oppo Find X9 Pro | Main=50.0MP | Selfie=50.0MP | AnTuTu=2719560 | Price=$None | IP=IP68 | Populated=62/68 fields
+2026-06-01 17:09:47,773 | INFO |   💾 [85/127] saved
+2026-06-01 17:09:47,775 | INFO | 
+  [86/127]
+2026-06-01 17:09:47,775 | INFO |   ☕ Long pause 178s ...
+2026-06-01 17:12:46,947 | INFO |   GET https://www.gsmarena.com/blackberry_curve_8530-3592.php → 200
+2026-06-01 17:12:46,978 | INFO |       📱 BlackBerry Curve 8530 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=29/68 fields
+2026-06-01 17:12:46,982 | INFO |   💾 [86/127] saved
+2026-06-01 17:12:46,982 | INFO | 
+  [87/127]
+2026-06-01 17:12:46,983 | INFO |   ⏳ 32.3s (req #91)
+2026-06-01 17:13:20,388 | INFO |   GET https://www.gsmarena.com/blackberry_curve_8520-2889.php → 200
+2026-06-01 17:13:20,412 | INFO |       📱 BlackBerry Curve 8520 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=29/68 fields
+2026-06-01 17:13:20,415 | INFO |   💾 [87/127] saved
+2026-06-01 17:13:20,416 | INFO | 
+  [88/127]
+2026-06-01 17:13:20,416 | INFO |   ⏳ 27.5s (req #92)
+2026-06-01 17:13:49,215 | INFO |   GET https://www.gsmarena.com/blackberry_tour_9630-2868.php → 200
+2026-06-01 17:13:49,239 | INFO |       📱 BlackBerry Tour 9630 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=29/68 fields
+2026-06-01 17:13:49,242 | INFO |   💾 [88/127] saved
+2026-06-01 17:13:49,243 | INFO | 
+  [89/127]
+2026-06-01 17:13:49,243 | INFO |   ⏳ 52.0s (req #93)
+2026-06-01 17:14:42,264 | INFO |   GET https://www.gsmarena.com/blackberry_curve_8980-3675.php → 200
+2026-06-01 17:14:42,286 | INFO |       📱 BlackBerry Curve 8980 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=28/68 fields
+2026-06-01 17:14:42,289 | INFO |   💾 [89/127] saved
+2026-06-01 17:14:42,289 | INFO | 
+  [90/127]
+2026-06-01 17:14:42,290 | INFO |   ⏳ 55.7s (req #94)
+2026-06-01 17:15:39,069 | INFO |   GET https://www.gsmarena.com/blackberry_curve_8900-2604.php → 200
+2026-06-01 17:15:39,091 | INFO |       📱 BlackBerry Curve 8900 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 17:15:39,096 | INFO |   💾 [90/127] saved
+2026-06-01 17:15:39,097 | INFO | 
+  [91/127]
+2026-06-01 17:15:39,097 | INFO |   ⏳ 36.9s (req #95)
+2026-06-01 17:16:17,034 | INFO |   GET https://www.gsmarena.com/blackberry_storm3-3529.php → 200
+2026-06-01 17:16:17,054 | INFO |       📱 BlackBerry Storm3 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=28/68 fields
+2026-06-01 17:16:17,058 | INFO |   💾 [91/127] saved
+2026-06-01 17:16:17,058 | INFO | 
+  [92/127]
+2026-06-01 17:16:17,059 | INFO |   ⏳ 54.1s (req #96)
+2026-06-01 17:17:12,644 | INFO |   GET https://www.gsmarena.com/blackberry_storm_9500-2534.php → 200
+2026-06-01 17:17:12,675 | INFO |       📱 BlackBerry Storm 9500 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 17:17:12,679 | INFO |   💾 [92/127] saved
+2026-06-01 17:17:12,679 | INFO | 
+  [93/127]
+2026-06-01 17:17:12,679 | INFO |   ⏳ 33.2s (req #97)
+2026-06-01 17:17:46,974 | INFO |   GET https://www.gsmarena.com/blackberry_storm_9530-2540.php → 200
+2026-06-01 17:17:46,996 | INFO |       📱 BlackBerry Storm 9530 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 17:17:47,000 | INFO |   💾 [93/127] saved
+2026-06-01 17:17:47,000 | INFO | 
+  [94/127]
+2026-06-01 17:17:47,000 | INFO |   ⏳ 39.2s (req #98)
+2026-06-01 17:18:27,393 | INFO |   GET https://www.gsmarena.com/blackberry_pearl_flip_8230-3593.php → 200
+2026-06-01 17:18:27,416 | INFO |       📱 BlackBerry Pearl Flip 8230 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=27/68 fields
+2026-06-01 17:18:27,419 | INFO |   💾 [94/127] saved
+2026-06-01 17:18:27,420 | INFO | 
+  [95/127]
+2026-06-01 17:18:27,421 | INFO |   ⏳ 35.3s (req #99)
+2026-06-01 17:19:03,842 | INFO |   GET https://www.gsmarena.com/blackberry_pearl_flip_8220-2521.php → 200
+2026-06-01 17:19:03,864 | INFO |       📱 BlackBerry Pearl Flip 8220 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=30/68 fields
+2026-06-01 17:19:03,868 | INFO |   💾 [95/127] saved
+2026-06-01 17:19:03,868 | INFO | 
+  [96/127]
+2026-06-01 17:19:03,868 | INFO |   ⏳ 55.7s (req #100)
+2026-06-01 17:20:00,889 | INFO |   GET https://www.gsmarena.com/blackberry_bold_9000-2370.php → 200
+2026-06-01 17:20:00,914 | INFO |       📱 BlackBerry Bold 9000 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=33/68 fields
+2026-06-01 17:20:00,918 | INFO |   💾 [96/127] saved
+2026-06-01 17:20:00,918 | INFO | 
+  [97/127]
+2026-06-01 17:20:00,919 | INFO |   ⏳ 42.5s (req #101)
+2026-06-01 17:20:44,819 | INFO |   GET https://www.gsmarena.com/blackberry_volt-3754.php → 200
+2026-06-01 17:20:44,842 | INFO |       📱 BlackBerry Volt | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=30/68 fields
+2026-06-01 17:20:44,845 | INFO |   💾 [97/127] saved
+2026-06-01 17:20:44,845 | INFO | 
+  [98/127]
+2026-06-01 17:20:44,846 | INFO |   ⏳ 47.8s (req #102)
+2026-06-01 17:21:33,872 | INFO |   GET https://www.gsmarena.com/blackberry_pearl_8130-3933.php → 200
+2026-06-01 17:21:33,906 | INFO |       📱 BlackBerry Pearl 8130 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=27/68 fields
+2026-06-01 17:21:33,912 | INFO |   💾 [98/127] saved
+2026-06-01 17:21:33,912 | INFO | 
+  [99/127]
+2026-06-01 17:21:33,912 | INFO |   ⏳ 56.7s (req #103)
+2026-06-01 17:22:32,155 | INFO |   GET https://www.gsmarena.com/blackberry_pearl_8110-2226.php → 200
+2026-06-01 17:22:32,182 | INFO |       📱 BlackBerry Pearl 8110 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=30/68 fields
+2026-06-01 17:22:32,187 | INFO |   💾 [99/127] saved
+2026-06-01 17:22:32,189 | INFO | 
+  [100/127]
+2026-06-01 17:22:32,189 | INFO |   ⏳ 25.3s (req #104)
+2026-06-01 17:22:58,450 | INFO |   GET https://www.gsmarena.com/blackberry_pearl_8120-2136.php → 200
+2026-06-01 17:22:58,481 | INFO |       📱 BlackBerry Pearl 8120 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=30/68 fields
+2026-06-01 17:22:58,484 | INFO |   💾 [100/127] saved
+2026-06-01 17:22:58,484 | INFO | 
+  [101/127]
+2026-06-01 17:22:58,485 | INFO |   ⏳ 50.3s (req #105)
+2026-06-01 17:23:50,121 | INFO |   GET https://www.gsmarena.com/blackberry_curve_8330-3594.php → 200
+2026-06-01 17:23:50,156 | INFO |       📱 BlackBerry Curve 8330 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=26/68 fields
+2026-06-01 17:23:50,160 | INFO |   💾 [101/127] saved
+2026-06-01 17:23:50,161 | INFO | 
+  [102/127]
+2026-06-01 17:23:50,161 | INFO |   ⏳ 34.5s (req #106)
+2026-06-01 17:24:25,970 | INFO |   GET https://www.gsmarena.com/blackberry_curve_8320-2121.php → 200
+2026-06-01 17:24:26,006 | INFO |       📱 BlackBerry Curve 8320 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=30/68 fields
+2026-06-01 17:24:26,009 | INFO |   💾 [102/127] saved
+2026-06-01 17:24:26,009 | INFO | 
+  [103/127]
+2026-06-01 17:24:26,009 | INFO |   ⏳ 36.5s (req #107)
+2026-06-01 17:25:03,845 | INFO |   GET https://www.gsmarena.com/blackberry_curve_8310-2050.php → 200
+2026-06-01 17:25:03,879 | INFO |       📱 BlackBerry Curve 8310 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=29/68 fields
+2026-06-01 17:25:03,883 | INFO |   💾 [103/127] saved
+2026-06-01 17:25:03,884 | INFO | 
+  [104/127]
+2026-06-01 17:25:03,884 | INFO |   ⏳ 31.8s (req #108)
+2026-06-01 17:25:37,734 | INFO |   GET https://www.gsmarena.com/blackberry_curve_8300-1979.php → 200
+2026-06-01 17:25:37,772 | INFO |       📱 BlackBerry Curve 8300 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=29/68 fields
+2026-06-01 17:25:37,776 | INFO |   💾 [104/127] saved
+2026-06-01 17:25:37,776 | INFO | 
+  [105/127]
+2026-06-01 17:25:37,776 | INFO |   ⏳ 25.2s (req #109)
+2026-06-01 17:26:04,476 | INFO |   GET https://www.gsmarena.com/blackberry_8820-2033.php → 200
+2026-06-01 17:26:04,551 | INFO |       📱 BlackBerry 8820 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=26/68 fields
+2026-06-01 17:26:04,554 | INFO |   💾 [105/127] saved
+2026-06-01 17:26:04,555 | INFO | 
+  [106/127]
+2026-06-01 17:26:04,555 | INFO |   ⏳ 35.5s (req #110)
+2026-06-01 17:26:41,189 | INFO |   GET https://www.gsmarena.com/blackberry_8830_world_edition-1968.php → 200
+2026-06-01 17:26:41,214 | INFO |       📱 BlackBerry 8830 World Edition | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=24/68 fields
+2026-06-01 17:26:41,222 | INFO |   💾 [106/127] saved
+2026-06-01 17:26:41,223 | INFO | 
+  [107/127]
+2026-06-01 17:26:41,223 | INFO |   ⏳ 40.3s (req #111)
+2026-06-01 17:27:22,581 | INFO |   GET https://www.gsmarena.com/blackberry_8800-1911.php → 200
+2026-06-01 17:27:22,610 | INFO |       📱 BlackBerry 8800 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=24/68 fields
+2026-06-01 17:27:22,613 | INFO |   💾 [107/127] saved
+2026-06-01 17:27:22,613 | INFO | 
+  [108/127]
+2026-06-01 17:27:22,614 | INFO |   ⏳ 50.2s (req #112)
+2026-06-01 17:28:14,309 | INFO |   GET https://www.gsmarena.com/blackberry_pearl_8100-1701.php → 200
+2026-06-01 17:28:14,359 | INFO |       📱 BlackBerry Pearl 8100 | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=25/68 fields
+2026-06-01 17:28:14,374 | INFO |   💾 [108/127] saved
+2026-06-01 17:28:14,387 | INFO | 
+  [109/127]
+2026-06-01 17:28:14,397 | INFO |   ⏳ 33.6s (req #113)
+2026-06-01 17:28:49,327 | INFO |   GET https://www.gsmarena.com/blackberry_7130g-1622.php → 200
+2026-06-01 17:28:49,352 | INFO |       📱 BlackBerry 7130g | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=20/68 fields
+2026-06-01 17:28:49,356 | INFO |   💾 [109/127] saved
+2026-06-01 17:28:49,357 | INFO | 
+  [110/127]
+2026-06-01 17:28:49,357 | INFO |   ⏳ 50.1s (req #114)
+2026-06-01 17:29:40,623 | INFO |   GET https://www.gsmarena.com/blackberry_7130c-1623.php → 200
+2026-06-01 17:29:40,647 | INFO |       📱 BlackBerry 7130c | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=20/68 fields
+2026-06-01 17:29:40,651 | INFO |   💾 [110/127] saved
+2026-06-01 17:29:40,651 | INFO | 
+  [111/127]
+2026-06-01 17:29:40,652 | INFO |   ⏳ 52.4s (req #115)
+2026-06-01 17:30:34,001 | INFO |   GET https://www.gsmarena.com/blackberry_7130v-1621.php → 200
+2026-06-01 17:30:34,036 | INFO |       📱 BlackBerry 7130v | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=20/68 fields
+2026-06-01 17:30:34,040 | INFO |   💾 [111/127] saved
+2026-06-01 17:30:34,040 | INFO | 
+  [112/127]
+2026-06-01 17:30:34,040 | INFO |   ⏳ 36.5s (req #116)
+2026-06-01 17:31:11,469 | INFO |   GET https://www.gsmarena.com/blackberry_8707v-1575.php → 200
+2026-06-01 17:31:11,491 | INFO |       📱 BlackBerry 8707v | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=21/68 fields
+2026-06-01 17:31:11,495 | INFO |   💾 [112/127] saved
+2026-06-01 17:31:11,495 | INFO | 
+  [113/127]
+2026-06-01 17:31:11,495 | INFO |   ⏳ 43.4s (req #117)
+2026-06-01 17:31:55,842 | INFO |   GET https://www.gsmarena.com/blackberry_8700c-1349.php → 200
+2026-06-01 17:31:55,867 | INFO |       📱 BlackBerry 8700c | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 17:31:55,872 | INFO |   💾 [113/127] saved
+2026-06-01 17:31:55,872 | INFO | 
+  [114/127]
+2026-06-01 17:31:55,872 | INFO |   ⏳ 54.1s (req #118)
+2026-06-01 17:32:52,224 | INFO |   GET https://www.gsmarena.com/blackberry_7100x-1013.php → 200
+2026-06-01 17:32:52,248 | INFO |       📱 BlackBerry 7100x | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=18/68 fields
+2026-06-01 17:32:52,252 | INFO |   💾 [114/127] saved
+2026-06-01 17:32:52,254 | INFO | 
+  [115/127]
+2026-06-01 17:32:52,254 | INFO |   ⏳ 35.6s (req #119)
+2026-06-01 17:33:28,936 | INFO |   GET https://www.gsmarena.com/blackberry_7100t-1011.php → 200
+2026-06-01 17:33:28,961 | INFO |       📱 BlackBerry 7100t | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=17/68 fields
+2026-06-01 17:33:28,965 | INFO |   💾 [115/127] saved
+2026-06-01 17:33:28,965 | INFO | 
+  [116/127]
+2026-06-01 17:33:28,966 | INFO |   ☕ Long pause 145s ...
+2026-06-01 17:35:55,337 | INFO |   GET https://www.gsmarena.com/blackberry_7100v-1012.php → 200
+2026-06-01 17:35:55,364 | INFO |       📱 BlackBerry 7100v | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=18/68 fields
+2026-06-01 17:35:55,369 | INFO |   💾 [116/127] saved
+2026-06-01 17:35:55,370 | INFO | 
+  [117/127]
+2026-06-01 17:35:55,370 | INFO |   ⏳ 27.7s (req #121)
+2026-06-01 17:36:25,101 | INFO |   GET https://www.gsmarena.com/blackberry_7290-1348.php → 200
+2026-06-01 17:36:25,129 | INFO |       📱 BlackBerry 7290 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=18/68 fields
+2026-06-01 17:36:25,132 | INFO |   💾 [117/127] saved
+2026-06-01 17:36:25,132 | INFO | 
+  [118/127]
+2026-06-01 17:36:25,133 | INFO |   ⏳ 46.5s (req #122)
+2026-06-01 17:37:12,755 | INFO |   GET https://www.gsmarena.com/blackberry_7730-1010.php → 200
+2026-06-01 17:37:12,794 | INFO |       📱 BlackBerry 7730 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=17/68 fields
+2026-06-01 17:37:12,797 | INFO |   💾 [118/127] saved
+2026-06-01 17:37:12,798 | INFO | 
+  [119/127]
+2026-06-01 17:37:12,798 | INFO |   ⏳ 38.6s (req #123)
+2026-06-01 17:37:52,746 | INFO |   GET https://www.gsmarena.com/blackberry_7230-1009.php → 200
+2026-06-01 17:37:52,773 | INFO |       📱 BlackBerry 7230 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=18/68 fields
+2026-06-01 17:37:52,777 | INFO |   💾 [119/127] saved
+2026-06-01 17:37:52,777 | INFO | 
+  [120/127]
+2026-06-01 17:37:52,777 | INFO |   ⏳ 43.6s (req #124)
+2026-06-01 17:38:37,343 | INFO |   GET https://www.gsmarena.com/blackberry_6720-1008.php → 200
+2026-06-01 17:38:37,372 | INFO |       📱 BlackBerry 6720 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=17/68 fields
+2026-06-01 17:38:37,376 | INFO |   💾 [120/127] saved
+2026-06-01 17:38:37,376 | INFO | 
+  [121/127]
+2026-06-01 17:38:37,377 | INFO |   ⏳ 52.7s (req #125)
+2026-06-01 17:39:31,332 | INFO |   GET https://www.gsmarena.com/blackberry_6230-1007.php → 200
+2026-06-01 17:39:31,359 | INFO |       📱 BlackBerry 6230 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=14/68 fields
+2026-06-01 17:39:31,362 | INFO |   💾 [121/127] saved
+2026-06-01 17:39:31,363 | INFO | 
+  [122/127]
+2026-06-01 17:39:31,364 | INFO |   ⏳ 47.1s (req #126)
+2026-06-01 17:40:19,455 | INFO |   GET https://www.gsmarena.com/blackberry_z20-6895.php → 200
+2026-06-01 17:40:19,482 | INFO |       📱 BlackBerry Z20 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 17:40:19,486 | INFO |   💾 [122/127] saved
+2026-06-01 17:40:19,487 | INFO | 
+  [123/127]
+2026-06-01 17:40:19,487 | INFO |   ⏳ 44.2s (req #127)
+2026-06-01 17:41:04,634 | INFO |   GET https://www.gsmarena.com/blackberry_a10-5595.php → 200
+2026-06-01 17:41:04,660 | INFO |       📱 BlackBerry A10 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=36/68 fields
+2026-06-01 17:41:04,663 | INFO |   💾 [123/127] saved
+2026-06-01 17:41:04,663 | INFO | 
+  [124/127]
+2026-06-01 17:41:04,663 | INFO |   ⏳ 46.6s (req #128)
+2026-06-01 17:41:52,203 | INFO |   GET https://www.gsmarena.com/blackberry_porsche_design_p_9531-4463.php → 200
+2026-06-01 17:41:52,247 | INFO |       📱 BlackBerry Porsche Design P'9531 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 17:41:52,250 | INFO |   💾 [124/127] saved
+2026-06-01 17:41:52,250 | INFO | 
+  [125/127]
+2026-06-01 17:41:52,251 | INFO |   ⏳ 34.9s (req #129)
+2026-06-01 17:42:28,209 | INFO |   GET https://www.gsmarena.com/blackberry_playbook_2012-4460.php → 200
+2026-06-01 17:42:28,236 | INFO |       📱 BlackBerry Playbook 2012 | Main=5.0MP | Selfie=3.0MP | AnTuTu=None | Price=$None | IP=None | Populated=32/68 fields
+2026-06-01 17:42:28,240 | INFO |   💾 [125/127] saved
+2026-06-01 17:42:28,240 | INFO | 
+  [126/127]
+2026-06-01 17:42:28,240 | INFO |   ⏳ 36.0s (req #130)
+2026-06-01 17:43:05,431 | INFO |   GET https://www.gsmarena.com/blackberry_curve_touch-3934.php → 200
+2026-06-01 17:43:05,481 | INFO |       📱 BlackBerry Curve Touch | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 17:43:05,499 | INFO |   💾 [126/127] saved
+2026-06-01 17:43:05,507 | INFO | 
+  [127/127]
+2026-06-01 17:43:05,509 | INFO |   ⏳ 50.0s (req #131)
+2026-06-01 17:43:56,619 | INFO |   GET https://www.gsmarena.com/blackberry_curve_touch_cdma-3757.php → 200
+2026-06-01 17:43:56,651 | INFO |       📱 BlackBerry Curve Touch CDMA | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=30/68 fields
+2026-06-01 17:43:56,656 | INFO |   💾 [127/127] saved
+2026-06-01 17:43:56,657 | INFO |   ✅ Blackberry — 127 phones saved
+2026-06-01 17:43:56,658 | INFO | 
+============================================================
+2026-06-01 17:43:56,658 | INFO | [2/4] Meizu (87 phones)
+2026-06-01 17:43:56,658 | INFO | Elapsed: 102min
+2026-06-01 17:43:56,659 | INFO | ============================================================
+2026-06-01 17:43:56,659 | INFO |   Fetching phone links for: Meizu (~87 phones)
+2026-06-01 17:43:56,659 | INFO |   ⏳ 51.7s (req #132)
+2026-06-01 17:44:49,481 | INFO |   GET https://www.gsmarena.com/meizu-phones-74.php → 200
+2026-06-01 17:44:49,497 | INFO |     Found 3 listing pages
+2026-06-01 17:44:49,500 | INFO |     Page 1/3: 50 links so far
+2026-06-01 17:44:49,500 | INFO |   ⏳ 40.8s (req #133)
+2026-06-01 17:45:31,430 | INFO |   GET https://www.gsmarena.com/# → 200
+2026-06-01 17:45:31,467 | INFO |     Page 2/3: 85 links so far
+2026-06-01 17:45:31,468 | INFO |   ⏳ 51.8s (req #134)
+2026-06-01 17:46:24,229 | INFO |   GET https://www.gsmarena.com/meizu-phones-f-74-0-p2.php → 200
+2026-06-01 17:46:24,249 | INFO |     Page 3/3: 122 links so far
+2026-06-01 17:46:24,249 | INFO |   ✅ 122 valid phone spec links for Meizu
+2026-06-01 17:46:24,251 | INFO |   💾 Link list cached → GSMArenaDataset_BATCH12\_links_meizu.json
+2026-06-01 17:46:24,251 | INFO | 
+  [1/122]
+2026-06-01 17:46:24,252 | INFO |   ⏳ 27.6s (req #135)
+2026-06-01 17:46:53,076 | INFO |   GET https://www.gsmarena.com/meizu_22_5g-14150.php → 200
+2026-06-01 17:46:53,117 | INFO |       📱 Meizu 22 | Main=50.0MP | Selfie=50.0MP | AnTuTu=None | Price=$None | IP=IP66 | Populated=53/68 fields
+2026-06-01 17:46:53,122 | INFO |   💾 [1/122] saved
+2026-06-01 17:46:53,122 | INFO | 
+  [2/122]
+2026-06-01 17:46:53,122 | INFO |   ⏳ 27.0s (req #136)
+2026-06-01 17:47:21,241 | INFO |   GET https://www.gsmarena.com/meizu_note_22_pro_5g-13884.php → 200
+2026-06-01 17:47:21,275 | INFO |       📱 Meizu Note 22 Pro | Main=50.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=IP66 | Populated=46/68 fields
+2026-06-01 17:47:21,279 | INFO |   💾 [2/122] saved
+2026-06-01 17:47:21,279 | INFO | 
+  [3/122]
+2026-06-01 17:47:21,280 | INFO |   ⏳ 57.9s (req #137)
+2026-06-01 17:48:20,573 | INFO |   GET https://www.gsmarena.com/meizu_note_22_5g-13883.php → 200
+2026-06-01 17:48:20,608 | INFO |       📱 Meizu Note 22 | Main=50.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=IP65 | Populated=46/68 fields
+2026-06-01 17:48:20,613 | INFO |   💾 [3/122] saved
+2026-06-01 17:48:20,614 | INFO | 
+  [4/122]
+2026-06-01 17:48:20,614 | INFO |   ⏳ 48.6s (req #138)
+2026-06-01 17:49:10,794 | INFO |   GET https://www.gsmarena.com/meizu_mblu_22_pro-13700.php → 200
+2026-06-01 17:49:10,834 | INFO |       📱 Meizu Mblu 22 Pro | Main=50.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 17:49:10,838 | INFO |   💾 [4/122] saved
+2026-06-01 17:49:10,838 | INFO | 
+  [5/122]
+2026-06-01 17:49:10,839 | INFO |   ⏳ 47.6s (req #139)
+2026-06-01 17:49:59,562 | INFO |   GET https://www.gsmarena.com/meizu_mblu_22-13699.php → 200
+2026-06-01 17:49:59,597 | INFO |       📱 Meizu Mblu 22 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 17:49:59,602 | INFO |   💾 [5/122] saved
+2026-06-01 17:49:59,602 | INFO | 
+  [6/122]
+2026-06-01 17:49:59,603 | INFO |   ⏳ 35.9s (req #140)
+2026-06-01 17:50:36,782 | INFO |   GET https://www.gsmarena.com/meizu_note_22-13698.php → 200
+2026-06-01 17:50:36,821 | INFO |       📱 Meizu Note 22 4G | Main=108.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP54 | Populated=46/68 fields
+2026-06-01 17:50:36,825 | INFO |   💾 [6/122] saved
+2026-06-01 17:50:36,825 | INFO | 
+  [7/122]
+2026-06-01 17:50:36,825 | INFO |   ⏳ 26.5s (req #141)
+2026-06-01 17:51:04,492 | INFO |   GET https://www.gsmarena.com/meizu_note_16_5g-13862.php → 200
+2026-06-01 17:51:04,542 | INFO |       📱 Meizu Note 16 | Main=50.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=IP65 | Populated=47/68 fields
+2026-06-01 17:51:04,546 | INFO |   💾 [7/122] saved
+2026-06-01 17:51:04,546 | INFO | 
+  [8/122]
+2026-06-01 17:51:04,546 | INFO |   ⏳ 48.5s (req #142)
+2026-06-01 17:51:54,459 | INFO |   GET https://www.gsmarena.com/meizu_note_16_pro_5g-13861.php → 200
+2026-06-01 17:51:54,517 | INFO |       📱 Meizu Note 16 Pro | Main=50.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=IP66 | Populated=46/68 fields
+2026-06-01 17:51:54,523 | INFO |   💾 [8/122] saved
+2026-06-01 17:51:54,524 | INFO | 
+  [9/122]
+2026-06-01 17:51:54,524 | INFO |   ⏳ 50.9s (req #143)
+2026-06-01 17:52:46,441 | INFO |   GET https://www.gsmarena.com/meizu_mblu_21-13530.php → 200
+2026-06-01 17:52:46,472 | INFO |       📱 Meizu mblu 21 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 17:52:46,478 | INFO |   💾 [9/122] saved
+2026-06-01 17:52:46,479 | INFO | 
+  [10/122]
+2026-06-01 17:52:46,479 | INFO |   ⏳ 40.1s (req #144)
+2026-06-01 17:53:28,165 | INFO |   GET https://www.gsmarena.com/meizu_lucky_08-13365.php → 200
+2026-06-01 17:53:28,197 | INFO |       📱 Meizu Lucky 08 | Main=108.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 17:53:28,202 | INFO |   💾 [10/122] saved
+2026-06-01 17:53:28,203 | INFO | 
+  [11/122]
+2026-06-01 17:53:28,203 | INFO |   ⏳ 49.2s (req #145)
+2026-06-01 17:54:18,616 | INFO |   GET https://www.gsmarena.com/meizu_note_21_pro-13341.php → 200
+2026-06-01 17:54:18,647 | INFO |       📱 Meizu Note 21 Pro | Main=64.0MP | Selfie=13.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 17:54:18,651 | INFO |   💾 [11/122] saved
+2026-06-01 17:54:18,652 | INFO | 
+  [12/122]
+2026-06-01 17:54:18,652 | INFO |   ⏳ 38.9s (req #146)
+2026-06-01 17:54:58,940 | INFO |   GET https://www.gsmarena.com/meizu_note_21-13342.php → 200
+2026-06-01 17:54:58,985 | INFO |       📱 Meizu Note 21 | Main=50.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 17:54:58,992 | INFO |   💾 [12/122] saved
+2026-06-01 17:54:58,993 | INFO | 
+  [13/122]
+2026-06-01 17:54:58,993 | INFO |   ⏳ 39.9s (req #147)
+2026-06-01 17:55:40,191 | INFO |   GET https://www.gsmarena.com/meizu_blue_20-13212.php → 200
+2026-06-01 17:55:40,241 | INFO |       📱 Meizu Blue 20 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 17:55:40,247 | INFO |   💾 [13/122] saved
+2026-06-01 17:55:40,248 | INFO | 
+  [14/122]
+2026-06-01 17:55:40,250 | INFO |   ⏳ 59.9s (req #148)
+2026-06-01 17:56:41,327 | INFO |   GET https://www.gsmarena.com/meizu_21_note-13007.php → 200
+2026-06-01 17:56:41,368 | INFO |       📱 Meizu 21 Note | Main=50.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=IP65 | Populated=50/68 fields
+2026-06-01 17:56:41,372 | INFO |   💾 [14/122] saved
+2026-06-01 17:56:41,372 | INFO | 
+  [15/122]
+2026-06-01 17:56:41,373 | INFO |   ⏳ 25.4s (req #149)
+2026-06-01 17:57:08,019 | INFO |   GET https://www.gsmarena.com/meizu_21_pro-12805.php → 200
+2026-06-01 17:57:08,073 | INFO |       📱 Meizu 21 Pro | Main=50.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP68 | Populated=52/68 fields
+2026-06-01 17:57:08,078 | INFO |   💾 [15/122] saved
+2026-06-01 17:57:08,078 | INFO | 
+  [16/122]
+2026-06-01 17:57:08,078 | INFO |   ☕ Long pause 246s ...
+2026-06-01 18:01:15,569 | INFO |   GET https://www.gsmarena.com/meizu_21-12719.php → 200
+2026-06-01 18:01:15,604 | INFO |       📱 Meizu 21 | Main=200.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP54 | Populated=51/68 fields
+2026-06-01 18:01:15,608 | INFO |   💾 [16/122] saved
+2026-06-01 18:01:15,608 | INFO | 
+  [17/122]
+2026-06-01 18:01:15,609 | INFO |   ⏳ 30.4s (req #151)
+2026-06-01 18:01:47,130 | INFO |   GET https://www.gsmarena.com/meizu_20_classic-12630.php → 200
+2026-06-01 18:01:47,162 | INFO |       📱 Meizu 20 Classic | Main=50.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP54 | Populated=49/68 fields
+2026-06-01 18:01:47,167 | INFO |   💾 [17/122] saved
+2026-06-01 18:01:47,167 | INFO | 
+  [18/122]
+2026-06-01 18:01:47,168 | INFO |   ⏳ 45.9s (req #152)
+2026-06-01 18:02:34,301 | INFO |   GET https://www.gsmarena.com/meizu_20_infinity-12207.php → 200
+2026-06-01 18:02:34,343 | INFO |       📱 Meizu 20 Infinity | Main=50.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=None | Populated=49/68 fields
+2026-06-01 18:02:34,347 | INFO |   💾 [18/122] saved
+2026-06-01 18:02:34,348 | INFO | 
+  [19/122]
+2026-06-01 18:02:34,348 | INFO |   ⏳ 32.5s (req #153)
+2026-06-01 18:03:07,969 | INFO |   GET https://www.gsmarena.com/meizu_20_pro-12161.php → 200
+2026-06-01 18:03:08,019 | INFO |       📱 Meizu 20 Pro | Main=50.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP54 | Populated=49/68 fields
+2026-06-01 18:03:08,023 | INFO |   💾 [19/122] saved
+2026-06-01 18:03:08,023 | INFO | 
+  [20/122]
+2026-06-01 18:03:08,023 | INFO |   ⏳ 58.8s (req #154)
+2026-06-01 18:04:08,418 | INFO |   GET https://www.gsmarena.com/meizu_20-12206.php → 200
+2026-06-01 18:04:08,449 | INFO |       📱 Meizu 20 | Main=50.0MP | Selfie=32.0MP | AnTuTu=None | Price=$None | IP=IP54 | Populated=49/68 fields
+2026-06-01 18:04:08,454 | INFO |   💾 [20/122] saved
+2026-06-01 18:04:08,455 | INFO | 
+  [21/122]
+2026-06-01 18:04:08,455 | INFO |   ⏳ 38.9s (req #155)
+2026-06-01 18:04:48,443 | INFO |   GET https://www.gsmarena.com/meizu_18s_pro-11075.php → 200
+2026-06-01 18:04:48,477 | INFO |       📱 Meizu 18s Pro | Main=50.0MP | Selfie=44.0MP | AnTuTu=None | Price=$None | IP=None | Populated=53/68 fields
+2026-06-01 18:04:48,482 | INFO |   💾 [21/122] saved
+2026-06-01 18:04:48,483 | INFO | 
+  [22/122]
+2026-06-01 18:04:48,483 | INFO |   ⏳ 37.4s (req #156)
+2026-06-01 18:05:26,834 | INFO |   GET https://www.gsmarena.com/meizu_18s-11115.php → 200
+2026-06-01 18:05:26,865 | INFO |       📱 Meizu 18s | Main=64.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=48/68 fields
+2026-06-01 18:05:26,870 | INFO |   💾 [22/122] saved
+2026-06-01 18:05:26,870 | INFO | 
+  [23/122]
+2026-06-01 18:05:26,871 | INFO |   ⏳ 35.1s (req #157)
+2026-06-01 18:06:02,957 | INFO |   GET https://www.gsmarena.com/meizu_18x-11116.php → 200
+2026-06-01 18:06:02,985 | INFO |       📱 Meizu 18x | Main=64.0MP | Selfie=13.0MP | AnTuTu=None | Price=$None | IP=None | Populated=45/68 fields
+2026-06-01 18:06:02,991 | INFO |   💾 [23/122] saved
+2026-06-01 18:06:02,991 | INFO | 
+  [24/122]
+2026-06-01 18:06:02,991 | INFO |   ⏳ 39.0s (req #158)
+2026-06-01 18:06:42,967 | INFO |   GET https://www.gsmarena.com/meizu_watch-10939.php → 200
+2026-06-01 18:06:42,995 | INFO |       📱 Meizu Watch | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 18:06:43,000 | INFO |   💾 [24/122] saved
+2026-06-01 18:06:43,001 | INFO | 
+  [25/122]
+2026-06-01 18:06:43,001 | INFO |   ⏳ 32.0s (req #159)
+2026-06-01 18:07:16,023 | INFO |   GET https://www.gsmarena.com/meizu_18_pro-10751.php → 200
+2026-06-01 18:07:16,067 | INFO |       📱 Meizu 18 Pro | Main=50.0MP | Selfie=44.0MP | AnTuTu=None | Price=$None | IP=None | Populated=52/68 fields
+2026-06-01 18:07:16,071 | INFO |   💾 [25/122] saved
+2026-06-01 18:07:16,071 | INFO | 
+  [26/122]
+2026-06-01 18:07:16,071 | INFO |   ⏳ 46.8s (req #160)
+2026-06-01 18:08:03,943 | INFO |   GET https://www.gsmarena.com/meizu_18-10766.php → 200
+2026-06-01 18:08:03,977 | INFO |       📱 Meizu 18 | Main=64.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=48/68 fields
+2026-06-01 18:08:03,981 | INFO |   💾 [26/122] saved
+2026-06-01 18:08:03,983 | INFO | 
+  [27/122]
+2026-06-01 18:08:03,983 | INFO |   ⏳ 31.6s (req #161)
+2026-06-01 18:08:36,678 | INFO |   GET https://www.gsmarena.com/meizu_17_pro-10232.php → 200
+2026-06-01 18:08:36,709 | INFO |       📱 Meizu 17 Pro | Main=64.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=48/68 fields
+2026-06-01 18:08:36,714 | INFO |   💾 [27/122] saved
+2026-06-01 18:08:36,714 | INFO | 
+  [28/122]
+2026-06-01 18:08:36,714 | INFO |   ⏳ 29.1s (req #162)
+2026-06-01 18:09:07,226 | INFO |   GET https://www.gsmarena.com/meizu_17-10129.php → 200
+2026-06-01 18:09:07,259 | INFO |       📱 Meizu 17 | Main=64.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 18:09:07,264 | INFO |   💾 [28/122] saved
+2026-06-01 18:09:07,264 | INFO | 
+  [29/122]
+2026-06-01 18:09:07,264 | INFO |   ⏳ 49.9s (req #163)
+2026-06-01 18:09:58,148 | INFO |   GET https://www.gsmarena.com/meizu_16t-9926.php → 200
+2026-06-01 18:09:58,179 | INFO |       📱 Meizu 16T | Main=12.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=None | Populated=45/68 fields
+2026-06-01 18:09:58,184 | INFO |   💾 [29/122] saved
+2026-06-01 18:09:58,184 | INFO | 
+  [30/122]
+2026-06-01 18:09:58,185 | INFO |   ⏳ 34.3s (req #164)
+2026-06-01 18:10:33,671 | INFO |   GET https://www.gsmarena.com/meizu_m10-9953.php → 200
+2026-06-01 18:10:33,703 | INFO |       📱 Meizu M10 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 18:10:33,708 | INFO |   💾 [30/122] saved
+2026-06-01 18:10:33,708 | INFO | 
+  [31/122]
+2026-06-01 18:10:33,709 | INFO |   ⏳ 41.0s (req #165)
+2026-06-01 18:11:15,779 | INFO |   GET https://www.gsmarena.com/meizu_16s_pro-9792.php → 200
+2026-06-01 18:11:15,810 | INFO |       📱 Meizu 16s Pro | Main=48.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 18:11:15,815 | INFO |   💾 [31/122] saved
+2026-06-01 18:11:15,815 | INFO | 
+  [32/122]
+2026-06-01 18:11:15,816 | INFO |   ⏳ 34.0s (req #166)
+2026-06-01 18:11:51,075 | INFO |   GET https://www.gsmarena.com/meizu_16xs-9724.php → 200
+2026-06-01 18:11:51,117 | INFO |       📱 Meizu 16Xs | Main=48.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 18:11:51,122 | INFO |   💾 [32/122] saved
+2026-06-01 18:11:51,122 | INFO | 
+  [33/122]
+2026-06-01 18:11:51,122 | INFO |   ⏳ 58.2s (req #167)
+2026-06-01 18:12:50,459 | INFO |   GET https://www.gsmarena.com/meizu_16s-9424.php → 200
+2026-06-01 18:12:50,487 | INFO |       📱 Meizu 16s | Main=48.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 18:12:50,491 | INFO |   💾 [33/122] saved
+2026-06-01 18:12:50,491 | INFO | 
+  [34/122]
+2026-06-01 18:12:50,491 | INFO |   ⏳ 28.7s (req #168)
+2026-06-01 18:13:20,290 | INFO |   GET https://www.gsmarena.com/meizu_note_9-9555.php → 200
+2026-06-01 18:13:20,325 | INFO |       📱 Meizu Note 9 | Main=48.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:13:20,329 | INFO |   💾 [34/122] saved
+2026-06-01 18:13:20,330 | INFO | 
+  [35/122]
+2026-06-01 18:13:20,330 | INFO |   ⏳ 43.7s (req #169)
+2026-06-01 18:14:05,160 | INFO |   GET https://www.gsmarena.com/meizu_zero-9528.php → 200
+2026-06-01 18:14:05,192 | INFO |       📱 Meizu Zero | Main=12.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=IP68 | Populated=41/68 fields
+2026-06-01 18:14:05,197 | INFO |   💾 [35/122] saved
+2026-06-01 18:14:05,198 | INFO | 
+  [36/122]
+2026-06-01 18:14:05,198 | INFO |   ⏳ 56.9s (req #170)
+2026-06-01 18:15:03,140 | INFO |   GET https://www.gsmarena.com/meizu_c9_pro-9453.php → 200
+2026-06-01 18:15:03,187 | INFO |       📱 Meizu C9 Pro | Main=13.0MP | Selfie=13.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 18:15:03,190 | INFO |   💾 [36/122] saved
+2026-06-01 18:15:03,191 | INFO | 
+  [37/122]
+2026-06-01 18:15:03,191 | INFO |   ⏳ 38.6s (req #171)
+2026-06-01 18:15:42,745 | INFO |   GET https://www.gsmarena.com/meizu_c9-9454.php → 200
+2026-06-01 18:15:42,783 | INFO |       📱 Meizu C9 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 18:15:42,789 | INFO |   💾 [37/122] saved
+2026-06-01 18:15:42,789 | INFO | 
+  [38/122]
+2026-06-01 18:15:42,790 | INFO |   ⏳ 48.7s (req #172)
+2026-06-01 18:16:32,718 | INFO |   GET https://www.gsmarena.com/meizu_note_8-9384.php → 200
+2026-06-01 18:16:32,757 | INFO |       📱 Meizu Note 8 | Main=12.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:16:32,761 | INFO |   💾 [38/122] saved
+2026-06-01 18:16:32,761 | INFO | 
+  [39/122]
+2026-06-01 18:16:32,762 | INFO |   ⏳ 55.8s (req #173)
+2026-06-01 18:17:29,941 | INFO |   GET https://www.gsmarena.com/meizu_x8-9341.php → 200
+2026-06-01 18:17:29,974 | INFO |       📱 Meizu X8 | Main=12.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 18:17:29,978 | INFO |   💾 [39/122] saved
+2026-06-01 18:17:29,978 | INFO | 
+  [40/122]
+2026-06-01 18:17:29,978 | INFO |   ⏳ 42.3s (req #174)
+2026-06-01 18:18:13,337 | INFO |   GET https://www.gsmarena.com/meizu_v8_pro-9338.php → 200
+2026-06-01 18:18:13,368 | INFO |       📱 Meizu V8 Pro | Main=12.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 18:18:13,373 | INFO |   💾 [40/122] saved
+2026-06-01 18:18:13,373 | INFO | 
+  [41/122]
+2026-06-01 18:18:13,373 | INFO |   ⏳ 55.1s (req #175)
+2026-06-01 18:19:09,696 | INFO |   GET https://www.gsmarena.com/meizu_v8-9339.php → 200
+2026-06-01 18:19:09,727 | INFO |       📱 Meizu V8 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 18:19:09,731 | INFO |   💾 [41/122] saved
+2026-06-01 18:19:09,731 | INFO | 
+  [42/122]
+2026-06-01 18:19:09,732 | INFO |   ⏳ 35.4s (req #176)
+2026-06-01 18:19:46,157 | INFO |   GET https://www.gsmarena.com/meizu_16x-9337.php → 200
+2026-06-01 18:19:46,188 | INFO |       📱 Meizu 16X | Main=12.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 18:19:46,192 | INFO |   💾 [42/122] saved
+2026-06-01 18:19:46,192 | INFO | 
+  [43/122]
+2026-06-01 18:19:46,192 | INFO |   ⏳ 55.7s (req #177)
+2026-06-01 18:20:42,932 | INFO |   GET https://www.gsmarena.com/meizu_16-9280.php → 200
+2026-06-01 18:20:43,047 | INFO |       📱 Meizu 16 | Main=12.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=45/68 fields
+2026-06-01 18:20:43,052 | INFO |   💾 [43/122] saved
+2026-06-01 18:20:43,053 | INFO | 
+  [44/122]
+2026-06-01 18:20:43,053 | INFO |   ⏳ 54.1s (req #178)
+2026-06-01 18:21:38,345 | INFO |   GET https://www.gsmarena.com/meizu_16_plus-9279.php → 200
+2026-06-01 18:21:38,381 | INFO |       📱 Meizu 16 Plus | Main=12.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 18:21:38,385 | INFO |   💾 [44/122] saved
+2026-06-01 18:21:38,386 | INFO | 
+  [45/122]
+2026-06-01 18:21:38,386 | INFO |   ⏳ 34.8s (req #179)
+2026-06-01 18:22:14,315 | INFO |   GET https://www.gsmarena.com/meizu_m6t-9213.php → 200
+2026-06-01 18:22:14,342 | INFO |       📱 Meizu M6T | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 18:22:14,348 | INFO |   💾 [45/122] saved
+2026-06-01 18:22:14,348 | INFO | 
+  [46/122]
+2026-06-01 18:22:14,350 | INFO |   ☕ Long pause 261s ...
+2026-06-01 18:26:36,642 | INFO |   GET https://www.gsmarena.com/meizu_m8c-9210.php → 200
+2026-06-01 18:26:36,667 | INFO |       📱 Meizu M8c | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 18:26:36,671 | INFO |   💾 [46/122] saved
+2026-06-01 18:26:36,671 | INFO | 
+  [47/122]
+2026-06-01 18:26:36,671 | INFO |   ⏳ 56.9s (req #181)
+2026-06-01 18:27:34,823 | INFO |   GET https://www.gsmarena.com/meizu_15_plus-9160.php → 200
+2026-06-01 18:27:34,853 | INFO |       📱 Meizu 15 Plus | Main=12.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 18:27:34,856 | INFO |   💾 [47/122] saved
+2026-06-01 18:27:34,856 | INFO | 
+  [48/122]
+2026-06-01 18:27:34,856 | INFO |   ⏳ 31.9s (req #182)
+2026-06-01 18:28:07,866 | INFO |   GET https://www.gsmarena.com/meizu_15-9159.php → 200
+2026-06-01 18:28:07,896 | INFO |       📱 Meizu 15 | Main=12.0MP | Selfie=20.0MP | AnTuTu=128680 | Price=$None | IP=None | Populated=47/68 fields
+2026-06-01 18:28:07,901 | INFO |   💾 [48/122] saved
+2026-06-01 18:28:07,901 | INFO | 
+  [49/122]
+2026-06-01 18:28:07,902 | INFO |   ⏳ 25.8s (req #183)
+2026-06-01 18:28:35,010 | INFO |   GET https://www.gsmarena.com/meizu_15_lite-9158.php → 200
+2026-06-01 18:28:35,046 | INFO |       📱 Meizu 15 Lite | Main=12.0MP | Selfie=20.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 18:28:35,051 | INFO |   💾 [49/122] saved
+2026-06-01 18:28:35,052 | INFO | 
+  [50/122]
+2026-06-01 18:28:35,052 | INFO |   ⏳ 44.7s (req #184)
+2026-06-01 18:29:21,174 | INFO |   GET https://www.gsmarena.com/meizu_e3-9066.php → 200
+2026-06-01 18:29:21,206 | INFO |       📱 Meizu E3 | Main=12.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 18:29:21,210 | INFO |   💾 [50/122] saved
+2026-06-01 18:29:21,211 | INFO |   [51/122] SKIP huawei_nova_16_ultra_5g-14698.php
+2026-06-01 18:29:21,211 | INFO |   [52/122] SKIP huawei_nova_16_pro_5g-14699.php
+2026-06-01 18:29:21,212 | INFO |   [53/122] SKIP huawei_nova_16_5g-14700.php
+2026-06-01 18:29:21,212 | INFO | 
+  [54/122]
+2026-06-01 18:29:21,212 | INFO |   ⏳ 55.2s (req #185)
+2026-06-01 18:30:17,338 | INFO |   GET https://www.gsmarena.com/huawei_nova_16z_5g-14701.php → 200
+2026-06-01 18:30:17,361 | INFO |       📱 Huawei nova 16z | Main=50.0MP | Selfie=50.0MP | AnTuTu=None | Price=$None | IP=IP65 | Populated=49/68 fields
+2026-06-01 18:30:17,365 | INFO |   💾 [51/122] saved
+2026-06-01 18:30:17,365 | INFO |   [55/122] SKIP honor_win_turbo_5g-14684.php
+2026-06-01 18:30:17,365 | INFO |   [56/122] SKIP vivo_s60_vitality_5g-14693.php
+2026-06-01 18:30:17,365 | INFO |   [57/122] SKIP vivo_s60_5g-14692.php
+2026-06-01 18:30:17,366 | INFO |   [58/122] SKIP vivo_t5-14697.php
+2026-06-01 18:30:17,366 | INFO |   [59/122] SKIP zte_nubia_redmagic_11s_pro_5g-14669.php
+2026-06-01 18:30:17,367 | INFO |   [60/122] SKIP xiaomi_17t_pro_5g-14651.php
+2026-06-01 18:30:17,367 | INFO |   [61/122] SKIP xiaomi_17t_5g-14652.php
+2026-06-01 18:30:17,367 | INFO |   [62/122] SKIP xiaomi_watch_s5-14696.php
+2026-06-01 18:30:17,368 | INFO |   [63/122] SKIP realme_16t_5g-14674.php
+2026-06-01 18:30:17,368 | INFO |   [64/122] SKIP honor_600_5g-14605.php
+2026-06-01 18:30:17,368 | INFO |   [65/122] SKIP sony_xperia_1_viii_5g-14660.php
+2026-06-01 18:30:17,368 | INFO |   [66/122] SKIP honor_600_pro_5g-14604.php
+2026-06-01 18:30:17,369 | INFO |   [67/122] SKIP motorola_moto_g87_5g-14644.php
+2026-06-01 18:30:17,369 | INFO |   [68/122] SKIP xiaomi_17t_pro-14651.php
+2026-06-01 18:30:17,369 | INFO |   [69/122] SKIP xiaomi_17t-14652.php
+2026-06-01 18:30:17,370 | INFO |   [70/122] SKIP samsung_galaxy_a57-14379.php
+2026-06-01 18:30:17,370 | INFO |   [71/122] SKIP samsung_galaxy_s26_ultra-14320.php
+2026-06-01 18:30:17,370 | INFO |   [72/122] SKIP samsung_galaxy_a17-14041.php
+2026-06-01 18:30:17,370 | INFO |   [73/122] SKIP apple_iphone_17_pro_max-13964.php
+2026-06-01 18:30:17,371 | INFO |   [74/122] SKIP xiaomi_17_max-14667.php
+2026-06-01 18:30:17,371 | INFO |   [75/122] SKIP xiaomi_redmi_note_15-14328.php
+2026-06-01 18:30:17,371 | INFO |   [76/122] SKIP xiaomi_poco_x8_pro-14506.php
+2026-06-01 18:30:17,371 | INFO |   [77/122] SKIP honor_600_pro-14604.php
+2026-06-01 18:30:17,371 | INFO |   [78/122] SKIP samsung_galaxy_a56-13603.php
+2026-06-01 18:30:17,372 | INFO |   [79/122] SKIP xiaomi_15_ultra-13657.php
+2026-06-01 18:30:17,372 | INFO |   [80/122] SKIP xiaomi_poco_x7_pro-13582.php
+2026-06-01 18:30:17,372 | INFO |   [81/122] SKIP xiaomi_17_pro_max-14181.php
+2026-06-01 18:30:17,373 | INFO |   [82/122] SKIP oneplus_15-14206.php
+2026-06-01 18:30:17,373 | INFO |   [83/122] SKIP samsung_galaxy_s25-13610.php
+2026-06-01 18:30:17,373 | INFO |   [84/122] SKIP xiaomi_17_ultra-14380.php
+2026-06-01 18:30:17,373 | INFO |   [85/122] SKIP oppo_find_x9_pro-14094.php
+2026-06-01 18:30:17,374 | INFO | 
+  [86/122]
+2026-06-01 18:30:17,374 | INFO |   ⏳ 35.0s (req #186)
+2026-06-01 18:30:53,424 | INFO |   GET https://www.gsmarena.com/meizu_m6s-8998.php → 200
+2026-06-01 18:30:53,459 | INFO |       📱 Meizu M6s | Main=16.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 18:30:53,462 | INFO |   💾 [52/122] saved
+2026-06-01 18:30:53,463 | INFO | 
+  [87/122]
+2026-06-01 18:30:53,463 | INFO |   ⏳ 34.7s (req #187)
+2026-06-01 18:31:29,302 | INFO |   GET https://www.gsmarena.com/meizu_m6-8868.php → 200
+2026-06-01 18:31:29,327 | INFO |       📱 Meizu M6 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:31:29,332 | INFO |   💾 [53/122] saved
+2026-06-01 18:31:29,332 | INFO | 
+  [88/122]
+2026-06-01 18:31:29,332 | INFO |   ⏳ 33.5s (req #188)
+2026-06-01 18:32:03,902 | INFO |   GET https://www.gsmarena.com/meizu_m6_note-8802.php → 200
+2026-06-01 18:32:03,927 | INFO |       📱 Meizu M6 Note | Main=12.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=None | Populated=45/68 fields
+2026-06-01 18:32:03,931 | INFO |   💾 [54/122] saved
+2026-06-01 18:32:03,932 | INFO | 
+  [89/122]
+2026-06-01 18:32:03,932 | INFO |   ⏳ 47.3s (req #189)
+2026-06-01 18:32:52,586 | INFO |   GET https://www.gsmarena.com/meizu_pro_7_plus-8791.php → 200
+2026-06-01 18:32:52,621 | INFO |       📱 Meizu Pro 7 Plus | Main=12.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 18:32:52,625 | INFO |   💾 [55/122] saved
+2026-06-01 18:32:52,625 | INFO | 
+  [90/122]
+2026-06-01 18:32:52,625 | INFO |   ⏳ 44.7s (req #190)
+2026-06-01 18:33:38,437 | INFO |   GET https://www.gsmarena.com/meizu_pro_7-8445.php → 200
+2026-06-01 18:33:38,463 | INFO |       📱 Meizu Pro 7 | Main=12.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 18:33:38,466 | INFO |   💾 [56/122] saved
+2026-06-01 18:33:38,467 | INFO | 
+  [91/122]
+2026-06-01 18:33:38,467 | INFO |   ⏳ 58.4s (req #191)
+2026-06-01 18:34:37,979 | INFO |   GET https://www.gsmarena.com/meizu_m5c-8697.php → 200
+2026-06-01 18:34:38,004 | INFO |       📱 Meizu M5c | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:34:38,007 | INFO |   💾 [57/122] saved
+2026-06-01 18:34:38,007 | INFO | 
+  [92/122]
+2026-06-01 18:34:38,007 | INFO |   ⏳ 52.9s (req #192)
+2026-06-01 18:35:32,063 | INFO |   GET https://www.gsmarena.com/meizu_e2-8659.php → 200
+2026-06-01 18:35:32,088 | INFO |       📱 Meizu E2 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 18:35:32,092 | INFO |   💾 [58/122] saved
+2026-06-01 18:35:32,093 | INFO | 
+  [93/122]
+2026-06-01 18:35:32,093 | INFO |   ⏳ 31.5s (req #193)
+2026-06-01 18:36:05,053 | INFO |   GET https://www.gsmarena.com/meizu_m5s-8500.php → 200
+2026-06-01 18:36:05,088 | INFO |       📱 Meizu M5s | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 18:36:05,092 | INFO |   💾 [59/122] saved
+2026-06-01 18:36:05,092 | INFO | 
+  [94/122]
+2026-06-01 18:36:05,092 | INFO |   ⏳ 32.5s (req #194)
+2026-06-01 18:36:38,821 | INFO |   GET https://www.gsmarena.com/meizu_m5_note-8450.php → 200
+2026-06-01 18:36:38,864 | INFO |       📱 Meizu M5 Note | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:36:38,868 | INFO |   💾 [60/122] saved
+2026-06-01 18:36:38,870 | INFO | 
+  [95/122]
+2026-06-01 18:36:38,870 | INFO |   ⏳ 46.9s (req #195)
+2026-06-01 18:37:26,738 | INFO |   GET https://www.gsmarena.com/meizu_m3x-8452.php → 200
+2026-06-01 18:37:26,764 | INFO |       📱 Meizu M3x | Main=12.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:37:26,768 | INFO |   💾 [61/122] saved
+2026-06-01 18:37:26,768 | INFO | 
+  [96/122]
+2026-06-01 18:37:26,769 | INFO |   ⏳ 36.4s (req #196)
+2026-06-01 18:38:04,253 | INFO |   GET https://www.gsmarena.com/meizu_pro_6_plus-8451.php → 200
+2026-06-01 18:38:04,280 | INFO |       📱 Meizu Pro 6 Plus | Main=12.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=47/68 fields
+2026-06-01 18:38:04,285 | INFO |   💾 [62/122] saved
+2026-06-01 18:38:04,286 | INFO | 
+  [97/122]
+2026-06-01 18:38:04,286 | INFO |   ⏳ 28.7s (req #197)
+2026-06-01 18:38:34,048 | INFO |   GET https://www.gsmarena.com/meizu_mx5e-8446.php → 200
+2026-06-01 18:38:34,073 | INFO |       📱 Meizu MX5e | Main=16.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 18:38:34,077 | INFO |   💾 [63/122] saved
+2026-06-01 18:38:34,077 | INFO | 
+  [98/122]
+2026-06-01 18:38:34,077 | INFO |   ⏳ 33.0s (req #198)
+2026-06-01 18:39:08,091 | INFO |   GET https://www.gsmarena.com/meizu_u10-8441.php → 200
+2026-06-01 18:39:08,116 | INFO |       📱 Meizu U10 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 18:39:08,121 | INFO |   💾 [64/122] saved
+2026-06-01 18:39:08,121 | INFO | 
+  [99/122]
+2026-06-01 18:39:08,121 | INFO |   ⏳ 51.3s (req #199)
+2026-06-01 18:40:00,722 | INFO |   GET https://www.gsmarena.com/meizu_u20-8440.php → 200
+2026-06-01 18:40:00,747 | INFO |       📱 Meizu U20 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:40:00,750 | INFO |   💾 [65/122] saved
+2026-06-01 18:40:00,750 | INFO | 
+  [100/122]
+2026-06-01 18:40:00,751 | INFO |   ⏳ 47.4s (req #200)
+2026-06-01 18:40:49,340 | INFO |   GET https://www.gsmarena.com/meizu_pro_6s-8389.php → 200
+2026-06-01 18:40:49,374 | INFO |       📱 Meizu Pro 6s | Main=12.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 18:40:49,378 | INFO |   💾 [66/122] saved
+2026-06-01 18:40:49,379 | INFO | 
+  [101/122]
+2026-06-01 18:40:49,379 | INFO |   ⏳ 47.3s (req #201)
+2026-06-01 18:41:37,677 | INFO |   GET https://www.gsmarena.com/meizu_m5-8408.php → 200
+2026-06-01 18:41:37,705 | INFO |       📱 Meizu M5 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 18:41:37,709 | INFO |   💾 [67/122] saved
+2026-06-01 18:41:37,709 | INFO | 
+  [102/122]
+2026-06-01 18:41:37,710 | INFO |   ⏳ 42.9s (req #202)
+2026-06-01 18:42:21,720 | INFO |   GET https://www.gsmarena.com/meizu_m3_max-8321.php → 200
+2026-06-01 18:42:21,751 | INFO |       📱 Meizu M3 Max | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:42:21,755 | INFO |   💾 [68/122] saved
+2026-06-01 18:42:21,755 | INFO | 
+  [103/122]
+2026-06-01 18:42:21,755 | INFO |   ⏳ 42.1s (req #203)
+2026-06-01 18:43:05,128 | INFO |   GET https://www.gsmarena.com/meizu_m3e-8264.php → 200
+2026-06-01 18:43:05,152 | INFO |       📱 Meizu M3e | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:43:05,155 | INFO |   💾 [69/122] saved
+2026-06-01 18:43:05,156 | INFO | 
+  [104/122]
+2026-06-01 18:43:05,156 | INFO |   ⏳ 27.1s (req #204)
+2026-06-01 18:43:33,524 | INFO |   GET https://www.gsmarena.com/meizu_mx6-8078.php → 200
+2026-06-01 18:43:33,552 | INFO |       📱 Meizu MX6 | Main=12.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 18:43:33,555 | INFO |   💾 [70/122] saved
+2026-06-01 18:43:33,556 | INFO | 
+  [105/122]
+2026-06-01 18:43:33,556 | INFO |   ⏳ 51.5s (req #205)
+2026-06-01 18:44:26,077 | INFO |   GET https://www.gsmarena.com/meizu_m3s-8148.php → 200
+2026-06-01 18:44:26,101 | INFO |       📱 Meizu M3s | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 18:44:26,105 | INFO |   💾 [71/122] saved
+2026-06-01 18:44:26,106 | INFO | 
+  [106/122]
+2026-06-01 18:44:26,106 | INFO |   ⏳ 53.0s (req #206)
+2026-06-01 18:45:20,241 | INFO |   GET https://www.gsmarena.com/meizu_m3-8062.php → 200
+2026-06-01 18:45:20,273 | INFO |       📱 Meizu M3 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 18:45:20,276 | INFO |   💾 [72/122] saved
+2026-06-01 18:45:20,277 | INFO | 
+  [107/122]
+2026-06-01 18:45:20,277 | INFO |   ⏳ 25.2s (req #207)
+2026-06-01 18:45:46,792 | INFO |   GET https://www.gsmarena.com/meizu_pro_6-7971.php → 200
+2026-06-01 18:45:46,819 | INFO |       📱 Meizu Pro 6 | Main=21.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 18:45:46,823 | INFO |   💾 [73/122] saved
+2026-06-01 18:45:46,823 | INFO | 
+  [108/122]
+2026-06-01 18:45:46,824 | INFO |   ⏳ 40.2s (req #208)
+2026-06-01 18:46:28,260 | INFO |   GET https://www.gsmarena.com/meizu_m3_note-8005.php → 200
+2026-06-01 18:46:28,289 | INFO |       📱 Meizu M3 Note | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 18:46:28,294 | INFO |   💾 [74/122] saved
+2026-06-01 18:46:28,294 | INFO | 
+  [109/122]
+2026-06-01 18:46:28,294 | INFO |   ⏳ 56.1s (req #209)
+2026-06-01 18:47:24,368 | ERROR |   ❌ HTTPSConnectionPool(host='www.gsmarena.com', port=443): Max retries exceeded with url: /meizu_m1_metal-7674.php (Caused by NameResolutionError("HTTPSConnection(host='www.gsmarena.com', port=443): Failed to resolve 'www.gsmarena.com' ([Errno 11001] getaddrinfo failed)"))
+2026-06-01 18:47:44,369 | INFO |   ☕ Long pause 232s ...
+2026-06-01 18:51:37,444 | INFO |   GET https://www.gsmarena.com/meizu_m1_metal-7674.php → 200
+2026-06-01 18:51:37,472 | INFO |       📱 Meizu M1 Metal | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:51:37,476 | INFO |   💾 [75/122] saved
+2026-06-01 18:51:37,477 | INFO | 
+  [110/122]
+2026-06-01 18:51:37,477 | INFO |   ⏳ 32.4s (req #211)
+2026-06-01 18:52:10,939 | INFO |   GET https://www.gsmarena.com/meizu_pro_5-7573.php → 200
+2026-06-01 18:52:10,966 | INFO |       📱 Meizu PRO 5 | Main=21.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 18:52:10,971 | INFO |   💾 [76/122] saved
+2026-06-01 18:52:10,971 | INFO | 
+  [111/122]
+2026-06-01 18:52:10,971 | INFO |   ⏳ 40.8s (req #212)
+2026-06-01 18:52:52,904 | INFO |   GET https://www.gsmarena.com/meizu_m2-7455.php → 200
+2026-06-01 18:52:52,938 | INFO |       📱 Meizu M2 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 18:52:52,942 | INFO |   💾 [77/122] saved
+2026-06-01 18:52:52,943 | INFO | 
+  [112/122]
+2026-06-01 18:52:52,943 | INFO |   ⏳ 38.2s (req #213)
+2026-06-01 18:53:32,422 | INFO |   GET https://www.gsmarena.com/meizu_mx5-7240.php → 200
+2026-06-01 18:53:32,451 | INFO |       📱 Meizu MX5 | Main=20.7MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 18:53:32,455 | INFO |   💾 [78/122] saved
+2026-06-01 18:53:32,455 | INFO | 
+  [113/122]
+2026-06-01 18:53:32,455 | INFO |   ⏳ 25.6s (req #214)
+2026-06-01 18:53:59,142 | INFO |   GET https://www.gsmarena.com/meizu_m2_note-7266.php → 200
+2026-06-01 18:53:59,169 | INFO |       📱 Meizu M2 Note | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 18:53:59,173 | INFO |   💾 [79/122] saved
+2026-06-01 18:53:59,173 | INFO | 
+  [114/122]
+2026-06-01 18:53:59,174 | INFO |   ⏳ 37.6s (req #215)
+2026-06-01 18:54:37,723 | INFO |   GET https://www.gsmarena.com/meizu_m1-6978.php → 200
+2026-06-01 18:54:37,747 | INFO |       📱 Meizu M1 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 18:54:37,751 | INFO |   💾 [80/122] saved
+2026-06-01 18:54:37,751 | INFO | 
+  [115/122]
+2026-06-01 18:54:37,751 | INFO |   ⏳ 27.3s (req #216)
+2026-06-01 18:55:06,164 | INFO |   GET https://www.gsmarena.com/meizu_m1_note-6890.php → 200
+2026-06-01 18:55:06,191 | INFO |       📱 Meizu M1 Note | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 18:55:06,195 | INFO |   💾 [81/122] saved
+2026-06-01 18:55:06,195 | INFO | 
+  [116/122]
+2026-06-01 18:55:06,195 | INFO |   ⏳ 33.1s (req #217)
+2026-06-01 18:55:40,448 | INFO |   GET https://www.gsmarena.com/meizu_mx4_pro-6815.php → 200
+2026-06-01 18:55:40,476 | INFO |       📱 Meizu MX4 Pro | Main=20.7MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=46/68 fields
+2026-06-01 18:55:40,480 | INFO |   💾 [82/122] saved
+2026-06-01 18:55:40,480 | INFO | 
+  [117/122]
+2026-06-01 18:55:40,480 | INFO |   ⏳ 27.4s (req #218)
+2026-06-01 18:56:09,017 | INFO |   GET https://www.gsmarena.com/meizu_mx4-6627.php → 200
+2026-06-01 18:56:09,052 | INFO |       📱 Meizu MX4 | Main=20.7MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 18:56:09,056 | INFO |   💾 [83/122] saved
+2026-06-01 18:56:09,057 | INFO | 
+  [118/122]
+2026-06-01 18:56:09,057 | INFO |   ⏳ 45.2s (req #219)
+2026-06-01 18:56:55,305 | INFO |   GET https://www.gsmarena.com/meizu_mx3-5679.php → 200
+2026-06-01 18:56:55,332 | INFO |       📱 Meizu MX3 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 18:56:55,337 | INFO |   💾 [84/122] saved
+2026-06-01 18:56:55,337 | INFO | 
+  [119/122]
+2026-06-01 18:56:55,337 | INFO |   ⏳ 37.6s (req #220)
+2026-06-01 18:57:33,839 | INFO |   GET https://www.gsmarena.com/meizu_mx2-5142.php → 200
+2026-06-01 18:57:33,864 | INFO |       📱 Meizu MX2 | Main=8.0MP | Selfie=1.2MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 18:57:33,867 | INFO |   💾 [85/122] saved
+2026-06-01 18:57:33,867 | INFO | 
+  [120/122]
+2026-06-01 18:57:33,867 | INFO |   ⏳ 25.7s (req #221)
+2026-06-01 18:58:00,642 | INFO |   GET https://www.gsmarena.com/meizu_mx_4_core-4697.php → 200
+2026-06-01 18:58:00,668 | INFO |       📱 Meizu MX 4-core | Main=8.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 18:58:00,672 | INFO |   💾 [86/122] saved
+2026-06-01 18:58:00,672 | INFO | 
+  [121/122]
+2026-06-01 18:58:00,673 | INFO |   ⏳ 51.0s (req #222)
+2026-06-01 18:58:52,753 | INFO |   GET https://www.gsmarena.com/meizu_mx-4373.php → 200
+2026-06-01 18:58:52,780 | INFO |       📱 Meizu MX | Main=8.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 18:58:52,783 | INFO |   💾 [87/122] saved
+2026-06-01 18:58:52,783 | INFO | 
+  [122/122]
+2026-06-01 18:58:52,784 | INFO |   ⏳ 42.7s (req #223)
+2026-06-01 18:59:36,692 | INFO |   GET https://www.gsmarena.com/meizu_pro_5_mini-7741.php → 200
+2026-06-01 18:59:36,717 | INFO |       📱 Meizu PRO 5 mini | Main=16.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 18:59:36,721 | INFO |   💾 [88/122] saved
+2026-06-01 18:59:36,722 | INFO |   ✅ Meizu — 88 phones saved
+2026-06-01 18:59:36,723 | INFO | 
+============================================================
+2026-06-01 18:59:36,723 | INFO | [3/4] Qmobile (90 phones)
+2026-06-01 18:59:36,723 | INFO | Elapsed: 177min
+2026-06-01 18:59:36,724 | INFO | ============================================================
+2026-06-01 18:59:36,724 | INFO |   Fetching phone links for: Qmobile (~90 phones)
+2026-06-01 18:59:36,724 | INFO |   ⏳ 53.3s (req #224)
+2026-06-01 19:00:31,055 | INFO |   GET https://www.gsmarena.com/qmobile-phones-103.php → 200
+2026-06-01 19:00:31,082 | INFO |     Found 3 listing pages
+2026-06-01 19:00:31,084 | INFO |     Page 1/3: 50 links so far
+2026-06-01 19:00:31,084 | INFO |   ⏳ 42.1s (req #225)
+2026-06-01 19:01:14,876 | INFO |   GET https://www.gsmarena.com/# → 200
+2026-06-01 19:01:14,908 | INFO |     Page 2/3: 85 links so far
+2026-06-01 19:01:14,908 | INFO |   ⏳ 38.1s (req #226)
+2026-06-01 19:01:54,291 | INFO |   GET https://www.gsmarena.com/qmobile-phones-f-103-0-p2.php → 200
+2026-06-01 19:01:54,306 | INFO |     Page 3/3: 125 links so far
+2026-06-01 19:01:54,306 | INFO |   ✅ 125 valid phone spec links for Qmobile
+2026-06-01 19:01:54,308 | INFO |   💾 Link list cached → GSMArenaDataset_BATCH12\_links_qmobile.json
+2026-06-01 19:01:54,308 | INFO | 
+  [1/125]
+2026-06-01 19:01:54,308 | INFO |   ⏳ 47.6s (req #227)
+2026-06-01 19:02:43,231 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a1-8757.php → 200
+2026-06-01 19:02:43,258 | INFO |       📱 QMobile Noir A1 | Main=13.0MP | Selfie=16.0MP | AnTuTu=None | Price=$None | IP=None | Populated=45/68 fields
+2026-06-01 19:02:43,262 | INFO |   💾 [1/125] saved
+2026-06-01 19:02:43,262 | INFO | 
+  [2/125]
+2026-06-01 19:02:43,263 | INFO |   ⏳ 55.7s (req #228)
+2026-06-01 19:03:40,151 | INFO |   GET https://www.gsmarena.com/qmobile_noir_e2-8758.php → 200
+2026-06-01 19:03:40,176 | INFO |       📱 QMobile Noir E2 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 19:03:40,180 | INFO |   💾 [2/125] saved
+2026-06-01 19:03:40,180 | INFO | 
+  [3/125]
+2026-06-01 19:03:40,180 | INFO |   ⏳ 56.3s (req #229)
+2026-06-01 19:04:37,483 | INFO |   GET https://www.gsmarena.com/qmobile_j7_pro-8759.php → 200
+2026-06-01 19:04:37,509 | INFO |       📱 QMobile J7 Pro | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 19:04:37,512 | INFO |   💾 [3/125] saved
+2026-06-01 19:04:37,513 | INFO | 
+  [4/125]
+2026-06-01 19:04:37,513 | INFO |   ⏳ 45.6s (req #230)
+2026-06-01 19:05:24,478 | INFO |   GET https://www.gsmarena.com/qmobile_m6-8760.php → 200
+2026-06-01 19:05:24,510 | INFO |       📱 QMobile M6 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 19:05:24,514 | INFO |   💾 [4/125] saved
+2026-06-01 19:05:24,515 | INFO | 
+  [5/125]
+2026-06-01 19:05:24,515 | INFO |   ⏳ 25.9s (req #231)
+2026-06-01 19:05:51,803 | INFO |   GET https://www.gsmarena.com/qmobile_m6_lite-8761.php → 200
+2026-06-01 19:05:51,825 | INFO |       📱 QMobile M6 Lite | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 19:05:51,829 | INFO |   💾 [5/125] saved
+2026-06-01 19:05:51,829 | INFO | 
+  [6/125]
+2026-06-01 19:05:51,829 | INFO |   ⏳ 32.5s (req #232)
+2026-06-01 19:06:25,303 | INFO |   GET https://www.gsmarena.com/qmobile_king_kong_max-8762.php → 200
+2026-06-01 19:06:25,327 | INFO |       📱 QMobile King Kong Max | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 19:06:25,332 | INFO |   💾 [6/125] saved
+2026-06-01 19:06:25,332 | INFO | 
+  [7/125]
+2026-06-01 19:06:25,332 | INFO |   ⏳ 44.5s (req #233)
+2026-06-01 19:07:10,823 | INFO |   GET https://www.gsmarena.com/qmobile_m350_pro-8764.php → 200
+2026-06-01 19:07:10,846 | INFO |       📱 QMobile M350 Pro | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 19:07:10,849 | INFO |   💾 [7/125] saved
+2026-06-01 19:07:10,850 | INFO | 
+  [8/125]
+2026-06-01 19:07:10,850 | INFO |   ⏳ 49.4s (req #234)
+2026-06-01 19:08:01,241 | INFO |   GET https://www.gsmarena.com/qmobile_energy_x2-8763.php → 200
+2026-06-01 19:08:01,266 | INFO |       📱 QMobile Energy X2 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 19:08:01,269 | INFO |   💾 [8/125] saved
+2026-06-01 19:08:01,269 | INFO | 
+  [9/125]
+2026-06-01 19:08:01,269 | INFO |   ⏳ 32.3s (req #235)
+2026-06-01 19:08:34,520 | INFO |   GET https://www.gsmarena.com/qmobile_e1-8765.php → 200
+2026-06-01 19:08:34,545 | INFO |       📱 QMobile E1 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 19:08:34,549 | INFO |   💾 [9/125] saved
+2026-06-01 19:08:34,549 | INFO | 
+  [10/125]
+2026-06-01 19:08:34,549 | INFO |   ⏳ 55.3s (req #236)
+2026-06-01 19:09:30,793 | INFO |   GET https://www.gsmarena.com/qmobile_noir_s6_plus-8766.php → 200
+2026-06-01 19:09:30,815 | INFO |       📱 QMobile Noir S6 Plus | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 19:09:30,819 | INFO |   💾 [10/125] saved
+2026-06-01 19:09:30,820 | INFO | 
+  [11/125]
+2026-06-01 19:09:30,820 | INFO |   ⏳ 28.1s (req #237)
+2026-06-01 19:09:59,960 | INFO |   GET https://www.gsmarena.com/qmobile_noir_j7-8767.php → 200
+2026-06-01 19:09:59,993 | INFO |       📱 QMobile Noir J7 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 19:09:59,998 | INFO |   💾 [11/125] saved
+2026-06-01 19:09:59,998 | INFO | 
+  [12/125]
+2026-06-01 19:09:59,998 | INFO |   ⏳ 53.8s (req #238)
+2026-06-01 19:10:54,742 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z12_pro-8353.php → 200
+2026-06-01 19:10:54,769 | INFO |       📱 QMobile Noir Z12 Pro | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 19:10:54,773 | INFO |   💾 [12/125] saved
+2026-06-01 19:10:54,773 | INFO | 
+  [13/125]
+2026-06-01 19:10:54,774 | INFO |   ⏳ 27.0s (req #239)
+2026-06-01 19:11:22,825 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z14-8354.php → 200
+2026-06-01 19:11:22,850 | INFO |       📱 QMobile Noir Z14 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 19:11:22,853 | INFO |   💾 [13/125] saved
+2026-06-01 19:11:22,853 | INFO | 
+  [14/125]
+2026-06-01 19:11:22,854 | INFO |   ☕ Long pause 299s ...
+2026-06-01 19:16:23,516 | INFO |   GET https://www.gsmarena.com/qmobile_noir_lt680-8355.php → 200
+2026-06-01 19:16:23,538 | INFO |       📱 QMobile Noir LT680 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 19:16:23,542 | INFO |   💾 [14/125] saved
+2026-06-01 19:16:23,543 | INFO | 
+  [15/125]
+2026-06-01 19:16:23,543 | INFO |   ⏳ 57.5s (req #241)
+2026-06-01 19:17:22,597 | INFO |   GET https://www.gsmarena.com/qmobile_noir_lt700_pro-8356.php → 200
+2026-06-01 19:17:22,622 | INFO |       📱 QMobile Noir LT700 Pro | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 19:17:22,626 | INFO |   💾 [15/125] saved
+2026-06-01 19:17:22,626 | INFO | 
+  [16/125]
+2026-06-01 19:17:22,626 | INFO |   ⏳ 30.1s (req #242)
+2026-06-01 19:17:54,308 | INFO |   GET https://www.gsmarena.com/qmobile_noir_s4-8358.php → 200
+2026-06-01 19:17:54,334 | INFO |       📱 QMobile Noir S4 | Main=8.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 19:17:54,338 | INFO |   💾 [16/125] saved
+2026-06-01 19:17:54,338 | INFO | 
+  [17/125]
+2026-06-01 19:17:54,339 | INFO |   ⏳ 52.3s (req #243)
+2026-06-01 19:18:48,065 | INFO |   GET https://www.gsmarena.com/qmobile_noir_lt750-8357.php → 200
+2026-06-01 19:18:48,100 | INFO |       📱 QMobile Noir LT750 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:18:48,103 | INFO |   💾 [17/125] saved
+2026-06-01 19:18:48,104 | INFO | 
+  [18/125]
+2026-06-01 19:18:48,104 | INFO |   ⏳ 44.2s (req #244)
+2026-06-01 19:19:33,366 | INFO |   GET https://www.gsmarena.com/qmobile_noir_i6_metal_hd-8359.php → 200
+2026-06-01 19:19:33,431 | INFO |       📱 QMobile Noir i6 Metal HD | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:19:33,435 | INFO |   💾 [18/125] saved
+2026-06-01 19:19:33,435 | INFO | 
+  [19/125]
+2026-06-01 19:19:33,436 | INFO |   ⏳ 39.7s (req #245)
+2026-06-01 19:20:14,713 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a6-8360.php → 200
+2026-06-01 19:20:14,737 | INFO |       📱 QMobile Noir A6 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:20:14,741 | INFO |   💾 [19/125] saved
+2026-06-01 19:20:14,741 | INFO | 
+  [20/125]
+2026-06-01 19:20:14,742 | INFO |   ⏳ 36.6s (req #246)
+2026-06-01 19:20:52,622 | INFO |   GET https://www.gsmarena.com/qmobile_noir_s9-8027.php → 200
+2026-06-01 19:20:52,647 | INFO |       📱 QMobile Noir S9 | Main=13.0MP | Selfie=13.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 19:20:52,651 | INFO |   💾 [20/125] saved
+2026-06-01 19:20:52,652 | INFO | 
+  [21/125]
+2026-06-01 19:20:52,652 | INFO |   ⏳ 33.9s (req #247)
+2026-06-01 19:21:27,614 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z9_plus-8026.php → 200
+2026-06-01 19:21:27,638 | INFO |       📱 QMobile Noir Z9 Plus | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 19:21:27,642 | INFO |   💾 [21/125] saved
+2026-06-01 19:21:27,642 | INFO | 
+  [22/125]
+2026-06-01 19:21:27,642 | INFO |   ⏳ 48.4s (req #248)
+2026-06-01 19:22:17,006 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z12-7985.php → 200
+2026-06-01 19:22:17,032 | INFO |       📱 QMobile Noir Z12 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 19:22:17,037 | INFO |   💾 [22/125] saved
+2026-06-01 19:22:17,038 | INFO | 
+  [23/125]
+2026-06-01 19:22:17,038 | INFO |   ⏳ 35.8s (req #249)
+2026-06-01 19:22:53,998 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z10-7874.php → 200
+2026-06-01 19:22:54,023 | INFO |       📱 QMobile Noir Z10 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 19:22:54,027 | INFO |   💾 [23/125] saved
+2026-06-01 19:22:54,027 | INFO | 
+  [24/125]
+2026-06-01 19:22:54,027 | INFO |   ⏳ 49.1s (req #250)
+2026-06-01 19:23:44,056 | INFO |   GET https://www.gsmarena.com/qmobile_noir_e8-7787.php → 200
+2026-06-01 19:23:44,089 | INFO |       📱 QMobile Noir E8 | Main=24.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 19:23:44,092 | INFO |   💾 [24/125] saved
+2026-06-01 19:23:44,093 | INFO | 
+  [25/125]
+2026-06-01 19:23:44,093 | INFO |   ⏳ 46.5s (req #251)
+2026-06-01 19:24:31,624 | INFO |   GET https://www.gsmarena.com/qmobile_noir_s2-7786.php → 200
+2026-06-01 19:24:31,647 | INFO |       📱 QMobile Noir S2 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:24:31,651 | INFO |   💾 [25/125] saved
+2026-06-01 19:24:31,651 | INFO | 
+  [26/125]
+2026-06-01 19:24:31,652 | INFO |   ⏳ 30.3s (req #252)
+2026-06-01 19:25:02,946 | INFO |   GET https://www.gsmarena.com/qmobile_noir_s5-7500.php → 200
+2026-06-01 19:25:02,970 | INFO |       📱 QMobile Noir S5 | Main=8.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 19:25:02,973 | INFO |   💾 [26/125] saved
+2026-06-01 19:25:02,974 | INFO | 
+  [27/125]
+2026-06-01 19:25:02,974 | INFO |   ⏳ 27.6s (req #253)
+2026-06-01 19:25:31,726 | INFO |   GET https://www.gsmarena.com/qmobile_linq_l15-7458.php → 200
+2026-06-01 19:25:31,752 | INFO |       📱 QMobile Linq L15 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:25:31,756 | INFO |   💾 [27/125] saved
+2026-06-01 19:25:31,756 | INFO | 
+  [28/125]
+2026-06-01 19:25:31,756 | INFO |   ⏳ 42.7s (req #254)
+2026-06-01 19:26:15,539 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z9-7429.php → 200
+2026-06-01 19:26:15,562 | INFO |       📱 QMobile Noir Z9 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 19:26:15,567 | INFO |   💾 [28/125] saved
+2026-06-01 19:26:15,567 | INFO | 
+  [29/125]
+2026-06-01 19:26:15,567 | INFO |   ⏳ 27.4s (req #255)
+2026-06-01 19:26:43,957 | INFO |   GET https://www.gsmarena.com/qmobile_a1-7397.php → 200
+2026-06-01 19:26:43,982 | INFO |       📱 QMobile A1 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 19:26:43,986 | INFO |   💾 [29/125] saved
+2026-06-01 19:26:43,986 | INFO | 
+  [30/125]
+2026-06-01 19:26:43,986 | INFO |   ⏳ 25.8s (req #256)
+2026-06-01 19:27:10,890 | INFO |   GET https://www.gsmarena.com/qmobile_noir_s1-7396.php → 200
+2026-06-01 19:27:10,921 | INFO |       📱 QMobile Noir S1 | Main=5.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 19:27:10,925 | INFO |   💾 [30/125] saved
+2026-06-01 19:27:10,925 | INFO | 
+  [31/125]
+2026-06-01 19:27:10,925 | INFO |   ⏳ 47.6s (req #257)
+2026-06-01 19:28:00,100 | INFO |   GET https://www.gsmarena.com/qmobile_power3-7413.php → 200
+2026-06-01 19:28:00,125 | INFO |       📱 QMobile Power3 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=24/68 fields
+2026-06-01 19:28:00,129 | INFO |   💾 [31/125] saved
+2026-06-01 19:28:00,129 | INFO | 
+  [32/125]
+2026-06-01 19:28:00,129 | INFO |   ⏳ 33.7s (req #258)
+2026-06-01 19:28:34,868 | INFO |   GET https://www.gsmarena.com/qmobile_t50_bolt-7386.php → 200
+2026-06-01 19:28:34,891 | INFO |       📱 QMobile T50 Bolt | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=32/68 fields
+2026-06-01 19:28:34,896 | INFO |   💾 [32/125] saved
+2026-06-01 19:28:34,896 | INFO | 
+  [33/125]
+2026-06-01 19:28:34,896 | INFO |   ⏳ 38.4s (req #259)
+2026-06-01 19:29:14,286 | INFO |   GET https://www.gsmarena.com/qmobile_t200_bolt-7332.php → 200
+2026-06-01 19:29:14,307 | INFO |       📱 QMobile T200 Bolt | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=33/68 fields
+2026-06-01 19:29:14,311 | INFO |   💾 [33/125] saved
+2026-06-01 19:29:14,311 | INFO | 
+  [34/125]
+2026-06-01 19:29:14,311 | INFO |   ⏳ 40.9s (req #260)
+2026-06-01 19:29:56,283 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x950-7317.php → 200
+2026-06-01 19:29:56,307 | INFO |       📱 QMobile Noir X950 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 19:29:56,311 | INFO |   💾 [34/125] saved
+2026-06-01 19:29:56,311 | INFO | 
+  [35/125]
+2026-06-01 19:29:56,311 | INFO |   ⏳ 55.5s (req #261)
+2026-06-01 19:30:52,923 | INFO |   GET https://www.gsmarena.com/qmobile_qtab_v10-7405.php → 200
+2026-06-01 19:30:52,947 | INFO |       📱 QMobile QTab V10 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=36/68 fields
+2026-06-01 19:30:52,951 | INFO |   💾 [35/125] saved
+2026-06-01 19:30:52,952 | INFO | 
+  [36/125]
+2026-06-01 19:30:52,952 | INFO |   ⏳ 25.6s (req #262)
+2026-06-01 19:31:19,685 | INFO |   GET https://www.gsmarena.com/qmobile_explorer_3g-7380.php → 200
+2026-06-01 19:31:19,709 | INFO |       📱 QMobile Explorer 3G | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=25/68 fields
+2026-06-01 19:31:19,713 | INFO |   💾 [36/125] saved
+2026-06-01 19:31:19,713 | INFO | 
+  [37/125]
+2026-06-01 19:31:19,713 | INFO |   ⏳ 34.7s (req #263)
+2026-06-01 19:31:55,412 | INFO |   GET https://www.gsmarena.com/qmobile_noir_i8-7340.php → 200
+2026-06-01 19:31:55,447 | INFO |       📱 QMobile Noir i8 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 19:31:55,451 | INFO |   💾 [37/125] saved
+2026-06-01 19:31:55,451 | INFO | 
+  [38/125]
+2026-06-01 19:31:55,452 | INFO |   ⏳ 33.5s (req #264)
+2026-06-01 19:32:29,944 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x450-7324.php → 200
+2026-06-01 19:32:29,967 | INFO |       📱 QMobile Noir X450 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 19:32:29,971 | INFO |   💾 [38/125] saved
+2026-06-01 19:32:29,971 | INFO | 
+  [39/125]
+2026-06-01 19:32:29,972 | INFO |   ⏳ 26.3s (req #265)
+2026-06-01 19:32:57,311 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z8_plus-7314.php → 200
+2026-06-01 19:32:57,336 | INFO |       📱 QMobile Noir Z8 Plus | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 19:32:57,340 | INFO |   💾 [39/125] saved
+2026-06-01 19:32:57,340 | INFO | 
+  [40/125]
+2026-06-01 19:32:57,341 | INFO |   ⏳ 25.6s (req #266)
+2026-06-01 19:33:24,244 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x350-7326.php → 200
+2026-06-01 19:33:24,268 | INFO |       📱 QMobile Noir X350 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 19:33:24,272 | INFO |   💾 [40/125] saved
+2026-06-01 19:33:24,273 | INFO | 
+  [41/125]
+2026-06-01 19:33:24,273 | INFO |   ⏳ 48.7s (req #267)
+2026-06-01 19:34:13,939 | INFO |   GET https://www.gsmarena.com/qmobile_noir_lt600-7335.php → 200
+2026-06-01 19:34:13,963 | INFO |       📱 QMobile Noir LT600 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 19:34:13,967 | INFO |   💾 [41/125] saved
+2026-06-01 19:34:13,967 | INFO | 
+  [42/125]
+2026-06-01 19:34:13,967 | INFO |   ⏳ 26.7s (req #268)
+2026-06-01 19:34:41,793 | INFO |   GET https://www.gsmarena.com/qmobile_noir_m300-7334.php → 200
+2026-06-01 19:34:41,817 | INFO |       📱 QMobile Noir M300 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 19:34:41,821 | INFO |   💾 [42/125] saved
+2026-06-01 19:34:41,822 | INFO | 
+  [43/125]
+2026-06-01 19:34:41,822 | INFO |   ⏳ 51.6s (req #269)
+2026-06-01 19:35:34,456 | INFO |   GET https://www.gsmarena.com/qmobile_w1-7331.php → 200
+2026-06-01 19:35:34,488 | INFO |       📱 QMobile W1 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=36/68 fields
+2026-06-01 19:35:34,493 | INFO |   💾 [43/125] saved
+2026-06-01 19:35:34,493 | INFO | 
+  [44/125]
+2026-06-01 19:35:34,493 | INFO |   ☕ Long pause 121s ...
+2026-06-01 19:37:36,735 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z8-7315.php → 200
+2026-06-01 19:37:36,759 | INFO |       📱 QMobile Noir Z8 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 19:37:36,764 | INFO |   💾 [44/125] saved
+2026-06-01 19:37:36,764 | INFO | 
+  [45/125]
+2026-06-01 19:37:36,765 | INFO |   ⏳ 55.3s (req #271)
+2026-06-01 19:38:32,997 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a750-7407.php → 200
+2026-06-01 19:38:33,019 | INFO |       📱 QMobile Noir A750 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 19:38:33,023 | INFO |   💾 [45/125] saved
+2026-06-01 19:38:33,024 | INFO | 
+  [46/125]
+2026-06-01 19:38:33,024 | INFO |   ⏳ 32.5s (req #272)
+2026-06-01 19:39:06,553 | INFO |   GET https://www.gsmarena.com/qmobile_linq_x70-7403.php → 200
+2026-06-01 19:39:06,577 | INFO |       📱 QMobile Linq X70 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 19:39:06,581 | INFO |   💾 [46/125] saved
+2026-06-01 19:39:06,581 | INFO | 
+  [47/125]
+2026-06-01 19:39:06,582 | INFO |   ⏳ 42.7s (req #273)
+2026-06-01 19:39:50,298 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z7-7384.php → 200
+2026-06-01 19:39:50,321 | INFO |       📱 QMobile Noir Z7 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 19:39:50,325 | INFO |   💾 [47/125] saved
+2026-06-01 19:39:50,325 | INFO | 
+  [48/125]
+2026-06-01 19:39:50,326 | INFO |   ⏳ 53.1s (req #274)
+2026-06-01 19:40:44,542 | INFO |   GET https://www.gsmarena.com/qmobile_linq_l10-7342.php → 200
+2026-06-01 19:40:44,566 | INFO |       📱 QMobile Linq L10 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=36/68 fields
+2026-06-01 19:40:44,569 | INFO |   💾 [48/125] saved
+2026-06-01 19:40:44,570 | INFO | 
+  [49/125]
+2026-06-01 19:40:44,570 | INFO |   ⏳ 43.9s (req #275)
+2026-06-01 19:41:29,598 | INFO |   GET https://www.gsmarena.com/qmobile_noir_lt250-7336.php → 200
+2026-06-01 19:41:29,621 | INFO |       📱 QMobile Noir LT250 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 19:41:29,625 | INFO |   💾 [49/125] saved
+2026-06-01 19:41:29,626 | INFO | 
+  [50/125]
+2026-06-01 19:41:29,626 | INFO |   ⏳ 42.5s (req #276)
+2026-06-01 19:42:13,114 | INFO |   GET https://www.gsmarena.com/qmobile_noir_lt150-7337.php → 200
+2026-06-01 19:42:13,148 | INFO |       📱 QMobile Noir LT150 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=36/68 fields
+2026-06-01 19:42:13,151 | INFO |   💾 [50/125] saved
+2026-06-01 19:42:13,152 | INFO |   [51/125] SKIP huawei_nova_16_ultra_5g-14698.php
+2026-06-01 19:42:13,152 | INFO |   [52/125] SKIP huawei_nova_16_pro_5g-14699.php
+2026-06-01 19:42:13,152 | INFO |   [53/125] SKIP huawei_nova_16_5g-14700.php
+2026-06-01 19:42:13,152 | INFO |   [54/125] SKIP huawei_nova_16z_5g-14701.php
+2026-06-01 19:42:13,152 | INFO |   [55/125] SKIP honor_win_turbo_5g-14684.php
+2026-06-01 19:42:13,153 | INFO |   [56/125] SKIP vivo_s60_vitality_5g-14693.php
+2026-06-01 19:42:13,153 | INFO |   [57/125] SKIP vivo_s60_5g-14692.php
+2026-06-01 19:42:13,153 | INFO |   [58/125] SKIP vivo_t5-14697.php
+2026-06-01 19:42:13,153 | INFO |   [59/125] SKIP zte_nubia_redmagic_11s_pro_5g-14669.php
+2026-06-01 19:42:13,154 | INFO |   [60/125] SKIP xiaomi_17t_pro_5g-14651.php
+2026-06-01 19:42:13,154 | INFO |   [61/125] SKIP xiaomi_17t_5g-14652.php
+2026-06-01 19:42:13,154 | INFO |   [62/125] SKIP xiaomi_watch_s5-14696.php
+2026-06-01 19:42:13,155 | INFO |   [63/125] SKIP realme_16t_5g-14674.php
+2026-06-01 19:42:13,155 | INFO |   [64/125] SKIP honor_600_5g-14605.php
+2026-06-01 19:42:13,155 | INFO |   [65/125] SKIP sony_xperia_1_viii_5g-14660.php
+2026-06-01 19:42:13,155 | INFO |   [66/125] SKIP honor_600_pro_5g-14604.php
+2026-06-01 19:42:13,156 | INFO |   [67/125] SKIP motorola_moto_g87_5g-14644.php
+2026-06-01 19:42:13,156 | INFO |   [68/125] SKIP xiaomi_17t_pro-14651.php
+2026-06-01 19:42:13,156 | INFO |   [69/125] SKIP xiaomi_17t-14652.php
+2026-06-01 19:42:13,156 | INFO |   [70/125] SKIP samsung_galaxy_a57-14379.php
+2026-06-01 19:42:13,157 | INFO |   [71/125] SKIP samsung_galaxy_s26_ultra-14320.php
+2026-06-01 19:42:13,157 | INFO |   [72/125] SKIP samsung_galaxy_a17-14041.php
+2026-06-01 19:42:13,157 | INFO |   [73/125] SKIP apple_iphone_17_pro_max-13964.php
+2026-06-01 19:42:13,157 | INFO |   [74/125] SKIP xiaomi_17_max-14667.php
+2026-06-01 19:42:13,158 | INFO |   [75/125] SKIP xiaomi_redmi_note_15-14328.php
+2026-06-01 19:42:13,158 | INFO |   [76/125] SKIP xiaomi_poco_x8_pro-14506.php
+2026-06-01 19:42:13,158 | INFO |   [77/125] SKIP honor_600_pro-14604.php
+2026-06-01 19:42:13,158 | INFO |   [78/125] SKIP samsung_galaxy_a56-13603.php
+2026-06-01 19:42:13,159 | INFO |   [79/125] SKIP xiaomi_15_ultra-13657.php
+2026-06-01 19:42:13,159 | INFO |   [80/125] SKIP xiaomi_poco_x7_pro-13582.php
+2026-06-01 19:42:13,159 | INFO |   [81/125] SKIP xiaomi_17_pro_max-14181.php
+2026-06-01 19:42:13,159 | INFO |   [82/125] SKIP oneplus_15-14206.php
+2026-06-01 19:42:13,160 | INFO |   [83/125] SKIP samsung_galaxy_s25-13610.php
+2026-06-01 19:42:13,160 | INFO |   [84/125] SKIP xiaomi_17_ultra-14380.php
+2026-06-01 19:42:13,160 | INFO |   [85/125] SKIP oppo_find_x9_pro-14094.php
+2026-06-01 19:42:13,160 | INFO | 
+  [86/125]
+2026-06-01 19:42:13,160 | INFO |   ⏳ 29.1s (req #277)
+2026-06-01 19:42:43,334 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x600-7321.php → 200
+2026-06-01 19:42:43,357 | INFO |       📱 QMobile Noir X600 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 19:42:43,361 | INFO |   💾 [51/125] saved
+2026-06-01 19:42:43,361 | INFO | 
+  [87/125]
+2026-06-01 19:42:43,361 | INFO |   ⏳ 54.6s (req #278)
+2026-06-01 19:43:38,912 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x700-7320.php → 200
+2026-06-01 19:43:38,933 | INFO |       📱 QMobile Noir X700 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:43:38,938 | INFO |   💾 [52/125] saved
+2026-06-01 19:43:38,938 | INFO | 
+  [88/125]
+2026-06-01 19:43:38,938 | INFO |   ⏳ 49.5s (req #279)
+2026-06-01 19:44:29,450 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x900-7318.php → 200
+2026-06-01 19:44:29,474 | INFO |       📱 QMobile Noir X900 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:44:29,478 | INFO |   💾 [53/125] saved
+2026-06-01 19:44:29,478 | INFO | 
+  [89/125]
+2026-06-01 19:44:29,479 | INFO |   ⏳ 36.7s (req #280)
+2026-06-01 19:45:07,296 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x60-7329.php → 200
+2026-06-01 19:45:07,317 | INFO |       📱 QMobile Noir X60 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 19:45:07,322 | INFO |   💾 [54/125] saved
+2026-06-01 19:45:07,322 | INFO | 
+  [90/125]
+2026-06-01 19:45:07,323 | INFO |   ⏳ 45.3s (req #281)
+2026-06-01 19:45:53,669 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x80-7328.php → 200
+2026-06-01 19:45:53,691 | INFO |       📱 QMobile Noir X80 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 19:45:53,696 | INFO |   💾 [55/125] saved
+2026-06-01 19:45:53,696 | INFO | 
+  [91/125]
+2026-06-01 19:45:53,696 | INFO |   ⏳ 41.6s (req #282)
+2026-06-01 19:46:36,706 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x90-7327.php → 200
+2026-06-01 19:46:36,728 | INFO |       📱 QMobile Noir X90 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 19:46:36,732 | INFO |   💾 [56/125] saved
+2026-06-01 19:46:36,732 | INFO | 
+  [92/125]
+2026-06-01 19:46:36,732 | INFO |   ⏳ 42.0s (req #283)
+2026-06-01 19:47:19,740 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x550-7322.php → 200
+2026-06-01 19:47:19,773 | INFO |       📱 QMobile Noir X550 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:47:19,777 | INFO |   💾 [57/125] saved
+2026-06-01 19:47:19,778 | INFO | 
+  [93/125]
+2026-06-01 19:47:19,778 | INFO |   ⏳ 39.6s (req #284)
+2026-06-01 19:48:00,650 | INFO |   GET https://www.gsmarena.com/qmobile_linq_x300-7394.php → 200
+2026-06-01 19:48:00,671 | INFO |       📱 QMobile Linq X300 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:48:00,675 | INFO |   💾 [58/125] saved
+2026-06-01 19:48:00,676 | INFO | 
+  [94/125]
+2026-06-01 19:48:00,676 | INFO |   ⏳ 37.9s (req #285)
+2026-06-01 19:48:39,552 | INFO |   GET https://www.gsmarena.com/qmobile_linq_x100-7343.php → 200
+2026-06-01 19:48:39,577 | INFO |       📱 QMobile Linq X100 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 19:48:39,581 | INFO |   💾 [59/125] saved
+2026-06-01 19:48:39,581 | INFO | 
+  [95/125]
+2026-06-01 19:48:39,582 | INFO |   ⏳ 38.2s (req #286)
+2026-06-01 19:49:18,801 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x35-7330.php → 200
+2026-06-01 19:49:18,824 | INFO |       📱 QMobile Noir X35 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 19:49:18,828 | INFO |   💾 [60/125] saved
+2026-06-01 19:49:18,829 | INFO | 
+  [96/125]
+2026-06-01 19:49:18,829 | INFO |   ⏳ 59.6s (req #287)
+2026-06-01 19:50:19,513 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x400-7325.php → 200
+2026-06-01 19:50:19,536 | INFO |       📱 QMobile Noir X400 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:50:19,540 | INFO |   💾 [61/125] saved
+2026-06-01 19:50:19,541 | INFO | 
+  [97/125]
+2026-06-01 19:50:19,541 | INFO |   ⏳ 39.6s (req #288)
+2026-06-01 19:51:00,237 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x500-7323.php → 200
+2026-06-01 19:51:00,261 | INFO |       📱 QMobile Noir X500 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:51:00,265 | INFO |   💾 [62/125] saved
+2026-06-01 19:51:00,266 | INFO | 
+  [98/125]
+2026-06-01 19:51:00,266 | INFO |   ⏳ 29.2s (req #289)
+2026-06-01 19:51:30,576 | INFO |   GET https://www.gsmarena.com/qmobile_m800-7417.php → 200
+2026-06-01 19:51:30,607 | INFO |       📱 QMobile M800 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=23/68 fields
+2026-06-01 19:51:30,611 | INFO |   💾 [63/125] saved
+2026-06-01 19:51:30,612 | INFO | 
+  [99/125]
+2026-06-01 19:51:30,612 | INFO |   ⏳ 51.9s (req #290)
+2026-06-01 19:52:23,528 | INFO |   GET https://www.gsmarena.com/qmobile_noir_i7-7389.php → 200
+2026-06-01 19:52:23,549 | INFO |       📱 QMobile Noir i7 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:52:23,553 | INFO |   💾 [64/125] saved
+2026-06-01 19:52:23,553 | INFO | 
+  [100/125]
+2026-06-01 19:52:23,554 | INFO |   ⏳ 37.6s (req #291)
+2026-06-01 19:53:04,237 | INFO |   GET https://www.gsmarena.com/qmobile_noir_m90-7333.php → 200
+2026-06-01 19:53:04,261 | INFO |       📱 QMobile Noir M90 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 19:53:04,266 | INFO |   💾 [65/125] saved
+2026-06-01 19:53:04,266 | INFO | 
+  [101/125]
+2026-06-01 19:53:04,266 | INFO |   ⏳ 26.9s (req #292)
+2026-06-01 19:53:32,715 | INFO |   GET https://www.gsmarena.com/qmobile_noir_x800-7319.php → 200
+2026-06-01 19:53:32,737 | INFO |       📱 QMobile Noir X800 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:53:32,740 | INFO |   💾 [66/125] saved
+2026-06-01 19:53:32,741 | INFO | 
+  [102/125]
+2026-06-01 19:53:32,741 | INFO |   ⏳ 47.1s (req #293)
+2026-06-01 19:54:21,016 | INFO |   GET https://www.gsmarena.com/qmobile_b100tv-7416.php → 200
+2026-06-01 19:54:21,037 | INFO |       📱 QMobile B100TV | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=23/68 fields
+2026-06-01 19:54:21,041 | INFO |   💾 [67/125] saved
+2026-06-01 19:54:21,042 | INFO | 
+  [103/125]
+2026-06-01 19:54:21,042 | INFO |   ⏳ 49.2s (req #294)
+2026-06-01 19:55:11,171 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a115_atv-7393.php → 200
+2026-06-01 19:55:11,199 | INFO |       📱 QMobile Noir A115 ATV | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=33/68 fields
+2026-06-01 19:55:11,204 | INFO |   💾 [68/125] saved
+2026-06-01 19:55:11,204 | INFO | 
+  [104/125]
+2026-06-01 19:55:11,204 | INFO |   ⏳ 39.7s (req #295)
+2026-06-01 19:55:51,879 | INFO |   GET https://www.gsmarena.com/qmobile_noir_i10-7391.php → 200
+2026-06-01 19:55:51,901 | INFO |       📱 QMobile Noir i10 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 19:55:51,905 | INFO |   💾 [69/125] saved
+2026-06-01 19:55:51,905 | INFO | 
+  [105/125]
+2026-06-01 19:55:51,906 | INFO |   ⏳ 40.2s (req #296)
+2026-06-01 19:56:33,202 | INFO |   GET https://www.gsmarena.com/qmobile_b800-7415.php → 200
+2026-06-01 19:56:33,232 | INFO |       📱 QMobile B800 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=24/68 fields
+2026-06-01 19:56:33,236 | INFO |   💾 [70/125] saved
+2026-06-01 19:56:33,236 | INFO | 
+  [106/125]
+2026-06-01 19:56:33,236 | INFO |   ⏳ 26.6s (req #297)
+2026-06-01 19:57:00,802 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a8i-7392.php → 200
+2026-06-01 19:57:00,824 | INFO |       📱 QMobile Noir A8i | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 19:57:00,828 | INFO |   💾 [71/125] saved
+2026-06-01 19:57:00,829 | INFO | 
+  [107/125]
+2026-06-01 19:57:00,829 | INFO |   ⏳ 54.7s (req #298)
+2026-06-01 19:57:56,590 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z5-7383.php → 200
+2026-06-01 19:57:56,614 | INFO |       📱 QMobile Noir Z5 | Main=16.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 19:57:56,618 | INFO |   💾 [72/125] saved
+2026-06-01 19:57:56,618 | INFO | 
+  [108/125]
+2026-06-01 19:57:56,622 | INFO |   ⏳ 34.1s (req #299)
+2026-06-01 19:58:31,734 | INFO |   GET https://www.gsmarena.com/qmobile_noir_i12-7341.php → 200
+2026-06-01 19:58:31,757 | INFO |       📱 QMobile Noir i12 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 19:58:31,761 | INFO |   💾 [73/125] saved
+2026-06-01 19:58:31,762 | INFO | 
+  [109/125]
+2026-06-01 19:58:31,762 | INFO |   ☕ Long pause 212s ...
+2026-06-01 20:02:05,124 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z6-7316.php → 200
+2026-06-01 20:02:05,147 | INFO |       📱 QMobile Noir Z6 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 20:02:05,151 | INFO |   💾 [74/125] saved
+2026-06-01 20:02:05,151 | INFO | 
+  [110/125]
+2026-06-01 20:02:05,152 | INFO |   ⏳ 39.4s (req #301)
+2026-06-01 20:02:45,530 | INFO |   GET https://www.gsmarena.com/qmobile_qtab_x50-7404.php → 200
+2026-06-01 20:02:45,553 | INFO |       📱 QMobile QTab X50 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 20:02:45,556 | INFO |   💾 [75/125] saved
+2026-06-01 20:02:45,556 | INFO | 
+  [111/125]
+2026-06-01 20:02:45,557 | INFO |   ⏳ 48.1s (req #302)
+2026-06-01 20:03:34,579 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a120-7410.php → 200
+2026-06-01 20:03:34,601 | INFO |       📱 QMobile Noir A120 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 20:03:34,605 | INFO |   💾 [76/125] saved
+2026-06-01 20:03:34,606 | INFO | 
+  [112/125]
+2026-06-01 20:03:34,606 | INFO |   ⏳ 48.8s (req #303)
+2026-06-01 20:04:24,586 | INFO |   GET https://www.gsmarena.com/qmobile_e990_sirocco_edition-7414.php → 200
+2026-06-01 20:04:24,617 | INFO |       📱 QMobile E990 Sirocco Edition | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=25/68 fields
+2026-06-01 20:04:24,621 | INFO |   💾 [77/125] saved
+2026-06-01 20:04:24,621 | INFO | 
+  [113/125]
+2026-06-01 20:04:24,621 | INFO |   ⏳ 54.4s (req #304)
+2026-06-01 20:05:20,172 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a110-7411.php → 200
+2026-06-01 20:05:20,193 | INFO |       📱 QMobile Noir A110 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=32/68 fields
+2026-06-01 20:05:20,196 | INFO |   💾 [78/125] saved
+2026-06-01 20:05:20,197 | INFO | 
+  [114/125]
+2026-06-01 20:05:20,197 | INFO |   ⏳ 35.1s (req #305)
+2026-06-01 20:05:56,277 | INFO |   GET https://www.gsmarena.com/qmobile_noir_i9-7390.php → 200
+2026-06-01 20:05:56,299 | INFO |       📱 QMobile Noir i9 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 20:05:56,303 | INFO |   💾 [79/125] saved
+2026-06-01 20:05:56,304 | INFO | 
+  [115/125]
+2026-06-01 20:05:56,304 | INFO |   ⏳ 46.0s (req #306)
+2026-06-01 20:06:43,557 | INFO |   GET https://www.gsmarena.com/qmobile_noir_i6-7388.php → 200
+2026-06-01 20:06:43,581 | INFO |       📱 QMobile Noir i6 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 20:06:43,585 | INFO |   💾 [80/125] saved
+2026-06-01 20:06:43,586 | INFO | 
+  [116/125]
+2026-06-01 20:06:43,586 | INFO |   ⏳ 30.7s (req #307)
+2026-06-01 20:07:15,384 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a75-7387.php → 200
+2026-06-01 20:07:15,407 | INFO |       📱 QMobile Noir A75 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 20:07:15,411 | INFO |   💾 [81/125] saved
+2026-06-01 20:07:15,412 | INFO | 
+  [117/125]
+2026-06-01 20:07:15,412 | INFO |   ⏳ 41.8s (req #308)
+2026-06-01 20:07:58,273 | INFO |   GET https://www.gsmarena.com/qmobile_noir_i5i-7339.php → 200
+2026-06-01 20:07:58,297 | INFO |       📱 QMobile Noir i5i | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 20:07:58,300 | INFO |   💾 [82/125] saved
+2026-06-01 20:07:58,301 | INFO | 
+  [118/125]
+2026-06-01 20:07:58,301 | INFO |   ⏳ 25.3s (req #309)
+2026-06-01 20:08:24,536 | INFO |   GET https://www.gsmarena.com/qmobile_noir_i5-7338.php → 200
+2026-06-01 20:08:24,565 | INFO |       📱 QMobile Noir i5 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=36/68 fields
+2026-06-01 20:08:24,569 | INFO |   💾 [83/125] saved
+2026-06-01 20:08:24,569 | INFO | 
+  [119/125]
+2026-06-01 20:08:24,570 | INFO |   ⏳ 59.7s (req #310)
+2026-06-01 20:09:25,339 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a550-7408.php → 200
+2026-06-01 20:09:25,361 | INFO |       📱 QMobile Noir A550 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 20:09:25,365 | INFO |   💾 [84/125] saved
+2026-06-01 20:09:25,366 | INFO | 
+  [120/125]
+2026-06-01 20:09:25,366 | INFO |   ⏳ 36.2s (req #311)
+2026-06-01 20:10:02,638 | INFO |   GET https://www.gsmarena.com/qmobile_noir_v4-7385.php → 200
+2026-06-01 20:10:02,661 | INFO |       📱 QMobile Noir V4 | Main=12.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 20:10:02,665 | INFO |   💾 [85/125] saved
+2026-06-01 20:10:02,665 | INFO | 
+  [121/125]
+2026-06-01 20:10:02,666 | INFO |   ⏳ 35.6s (req #312)
+2026-06-01 20:10:39,197 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z4-7382.php → 200
+2026-06-01 20:10:39,222 | INFO |       📱 QMobile Noir Z4 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 20:10:39,226 | INFO |   💾 [86/125] saved
+2026-06-01 20:10:39,226 | INFO | 
+  [122/125]
+2026-06-01 20:10:39,226 | INFO |   ⏳ 42.4s (req #313)
+2026-06-01 20:11:22,556 | INFO |   GET https://www.gsmarena.com/qmobile_noir_z3-7381.php → 200
+2026-06-01 20:11:22,580 | INFO |       📱 QMobile Noir Z3 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 20:11:22,583 | INFO |   💾 [87/125] saved
+2026-06-01 20:11:22,584 | INFO | 
+  [123/125]
+2026-06-01 20:11:22,584 | INFO |   ⏳ 31.1s (req #314)
+2026-06-01 20:11:54,752 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a15_3d-7412.php → 200
+2026-06-01 20:11:54,775 | INFO |       📱 QMobile Noir A15 3D | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 20:11:54,779 | INFO |   💾 [88/125] saved
+2026-06-01 20:11:54,779 | INFO | 
+  [124/125]
+2026-06-01 20:11:54,779 | INFO |   ⏳ 55.4s (req #315)
+2026-06-01 20:12:51,510 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a950-7406.php → 200
+2026-06-01 20:12:51,532 | INFO |       📱 QMobile Noir A950 | Main=8.0MP | Selfie=1.0MP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 20:12:51,536 | INFO |   💾 [89/125] saved
+2026-06-01 20:12:51,537 | INFO | 
+  [125/125]
+2026-06-01 20:12:51,537 | INFO |   ⏳ 36.4s (req #316)
+2026-06-01 20:13:27,911 | ERROR |   ❌ HTTPSConnectionPool(host='www.gsmarena.com', port=443): Max retries exceeded with url: /qmobile_noir_a500-7409.php (Caused by NameResolutionError("HTTPSConnection(host='www.gsmarena.com', port=443): Failed to resolve 'www.gsmarena.com' ([Errno 11001] getaddrinfo failed)"))
+2026-06-01 20:13:47,913 | INFO |   ⏳ 29.5s (req #317)
+2026-06-01 20:14:18,395 | INFO |   GET https://www.gsmarena.com/qmobile_noir_a500-7409.php → 200
+2026-06-01 20:14:18,425 | INFO |       📱 QMobile Noir A500 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=35/68 fields
+2026-06-01 20:14:18,428 | INFO |   💾 [90/125] saved
+2026-06-01 20:14:18,429 | INFO |   ✅ Qmobile — 90 phones saved
+2026-06-01 20:14:18,429 | INFO | 
+============================================================
+2026-06-01 20:14:18,430 | INFO | [4/4] Vodafone (87 phones)
+2026-06-01 20:14:18,430 | INFO | Elapsed: 252min
+2026-06-01 20:14:18,430 | INFO | ============================================================
+2026-06-01 20:14:18,431 | INFO |   Fetching phone links for: Vodafone (~87 phones)
+2026-06-01 20:14:18,431 | INFO |   ⏳ 29.6s (req #318)
+2026-06-01 20:14:49,354 | INFO |   GET https://www.gsmarena.com/vodafone-phones-53.php → 200
+2026-06-01 20:14:49,395 | INFO |     Found 3 listing pages
+2026-06-01 20:14:49,396 | INFO |     Page 1/3: 50 links so far
+2026-06-01 20:14:49,396 | INFO |   ⏳ 39.0s (req #319)
+2026-06-01 20:15:29,670 | INFO |   GET https://www.gsmarena.com/# → 200
+2026-06-01 20:15:29,702 | INFO |     Page 2/3: 85 links so far
+2026-06-01 20:15:29,702 | INFO |   ⏳ 35.9s (req #320)
+2026-06-01 20:16:06,559 | INFO |   GET https://www.gsmarena.com/vodafone-phones-f-53-0-p2.php → 200
+2026-06-01 20:16:06,572 | INFO |     Page 3/3: 122 links so far
+2026-06-01 20:16:06,572 | INFO |   ✅ 122 valid phone spec links for Vodafone
+2026-06-01 20:16:06,574 | INFO |   💾 Link list cached → GSMArenaDataset_BATCH12\_links_vodafone.json
+2026-06-01 20:16:06,575 | INFO | 
+  [1/122]
+2026-06-01 20:16:06,575 | INFO |   ⏳ 28.0s (req #321)
+2026-06-01 20:16:35,619 | INFO |   GET https://www.gsmarena.com/vodafone_smart_v10-9726.php → 200
+2026-06-01 20:16:35,643 | INFO |       📱 Vodafone Smart V10 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 20:16:35,648 | INFO |   💾 [1/122] saved
+2026-06-01 20:16:35,648 | INFO | 
+  [2/122]
+2026-06-01 20:16:35,648 | INFO |   ⏳ 45.6s (req #322)
+2026-06-01 20:17:22,239 | INFO |   GET https://www.gsmarena.com/vodafone_smart_n10-9725.php → 200
+2026-06-01 20:17:22,263 | INFO |       📱 Vodafone Smart N10 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=43/68 fields
+2026-06-01 20:17:22,267 | INFO |   💾 [2/122] saved
+2026-06-01 20:17:22,267 | INFO | 
+  [3/122]
+2026-06-01 20:17:22,267 | INFO |   ⏳ 39.6s (req #323)
+2026-06-01 20:18:02,965 | INFO |   GET https://www.gsmarena.com/vodafone_smart_e9-9484.php → 200
+2026-06-01 20:18:02,989 | INFO |       📱 Vodafone Smart E9 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 20:18:02,993 | INFO |   💾 [3/122] saved
+2026-06-01 20:18:02,994 | INFO | 
+  [4/122]
+2026-06-01 20:18:02,994 | INFO |   ⏳ 37.9s (req #324)
+2026-06-01 20:18:41,947 | INFO |   GET https://www.gsmarena.com/vodafone_smart_x9-9483.php → 200
+2026-06-01 20:18:41,978 | INFO |       📱 Vodafone Smart X9 | Main=16.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 20:18:41,982 | INFO |   💾 [4/122] saved
+2026-06-01 20:18:41,982 | INFO | 
+  [5/122]
+2026-06-01 20:18:41,982 | INFO |   ⏳ 41.4s (req #325)
+2026-06-01 20:19:24,354 | INFO |   GET https://www.gsmarena.com/vodafone_smart_n9-9235.php → 200
+2026-06-01 20:19:24,379 | INFO |       📱 Vodafone Smart N9 | Main=13.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 20:19:24,383 | INFO |   💾 [5/122] saved
+2026-06-01 20:19:24,383 | INFO | 
+  [6/122]
+2026-06-01 20:19:24,383 | INFO |   ⏳ 33.6s (req #326)
+2026-06-01 20:19:58,905 | INFO |   GET https://www.gsmarena.com/vodafone_smart_n9_lite-9236.php → 200
+2026-06-01 20:19:58,930 | INFO |       📱 Vodafone Smart N9 lite | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 20:19:58,934 | INFO |   💾 [6/122] saved
+2026-06-01 20:19:58,934 | INFO | 
+  [7/122]
+2026-06-01 20:19:58,934 | INFO |   ⏳ 31.7s (req #327)
+2026-06-01 20:20:31,629 | INFO |   GET https://www.gsmarena.com/vodafone_smart_tab_n8-8751.php → 200
+2026-06-01 20:20:31,653 | INFO |       📱 Vodafone Smart Tab N8 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 20:20:31,657 | INFO |   💾 [7/122] saved
+2026-06-01 20:20:31,658 | INFO | 
+  [8/122]
+2026-06-01 20:20:31,658 | INFO |   ⏳ 26.3s (req #328)
+2026-06-01 20:20:58,974 | INFO |   GET https://www.gsmarena.com/vodafone_smart_e8-8750.php → 200
+2026-06-01 20:20:58,998 | INFO |       📱 Vodafone Smart E8 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 20:20:59,002 | INFO |   💾 [8/122] saved
+2026-06-01 20:20:59,003 | INFO | 
+  [9/122]
+2026-06-01 20:20:59,003 | INFO |   ⏳ 57.4s (req #329)
+2026-06-01 20:21:57,620 | INFO |   GET https://www.gsmarena.com/vodafone_smart_v8-8744.php → 200
+2026-06-01 20:21:57,645 | INFO |       📱 Vodafone Smart V8 | Main=16.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=44/68 fields
+2026-06-01 20:21:57,650 | INFO |   💾 [9/122] saved
+2026-06-01 20:21:57,650 | INFO | 
+  [10/122]
+2026-06-01 20:21:57,650 | INFO |   ☕ Long pause 165s ...
+2026-06-01 20:24:43,758 | INFO |   GET https://www.gsmarena.com/vodafone_smart_n8-8723.php → 200
+2026-06-01 20:24:43,789 | INFO |       📱 Vodafone Smart N8 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 20:24:43,794 | INFO |   💾 [10/122] saved
+2026-06-01 20:24:43,794 | INFO | 
+  [11/122]
+2026-06-01 20:24:43,794 | INFO |   ⏳ 30.0s (req #331)
+2026-06-01 20:25:14,852 | INFO |   GET https://www.gsmarena.com/vodafone_tab_prime_7-8382.php → 200
+2026-06-01 20:25:14,875 | INFO |       📱 Vodafone Tab Prime 7 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 20:25:14,879 | INFO |   💾 [11/122] saved
+2026-06-01 20:25:14,879 | INFO | 
+  [12/122]
+2026-06-01 20:25:14,880 | INFO |   ⏳ 43.3s (req #332)
+2026-06-01 20:25:59,028 | INFO |   GET https://www.gsmarena.com/vodafone_smart_turbo_7-8381.php → 200
+2026-06-01 20:25:59,042 | INFO |       📱 Vodafone Smart Turbo 7 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 20:25:59,045 | INFO |   💾 [12/122] saved
+2026-06-01 20:25:59,045 | INFO | 
+  [13/122]
+2026-06-01 20:25:59,045 | INFO |   ⏳ 39.1s (req #333)
+2026-06-01 20:26:39,112 | INFO |   GET https://www.gsmarena.com/vodafone_smart_ultra_7-8163.php → 200
+2026-06-01 20:26:39,137 | INFO |       📱 Vodafone Smart ultra 7 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 20:26:39,141 | INFO |   💾 [13/122] saved
+2026-06-01 20:26:39,141 | INFO | 
+  [14/122]
+2026-06-01 20:26:39,141 | INFO |   ⏳ 28.7s (req #334)
+2026-06-01 20:27:08,969 | INFO |   GET https://www.gsmarena.com/vodafone_smart_platinum_7-8154.php → 200
+2026-06-01 20:27:08,995 | INFO |       📱 Vodafone Smart Platinum 7 | Main=16.0MP | Selfie=8.0MP | AnTuTu=None | Price=$None | IP=None | Populated=49/68 fields
+2026-06-01 20:27:08,999 | INFO |   💾 [14/122] saved
+2026-06-01 20:27:09,000 | INFO | 
+  [15/122]
+2026-06-01 20:27:09,000 | INFO |   ⏳ 39.2s (req #335)
+2026-06-01 20:27:49,293 | INFO |   GET https://www.gsmarena.com/vodafone_smart_prime_7-8099.php → 200
+2026-06-01 20:27:49,317 | INFO |       📱 Vodafone Smart prime 7 | Main=8.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 20:27:49,321 | INFO |   💾 [15/122] saved
+2026-06-01 20:27:49,321 | INFO | 
+  [16/122]
+2026-06-01 20:27:49,322 | INFO |   ⏳ 45.6s (req #336)
+2026-06-01 20:28:35,996 | INFO |   GET https://www.gsmarena.com/vodafone_smart_first_7-8100.php → 200
+2026-06-01 20:28:36,028 | INFO |       📱 Vodafone Smart first 7 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 20:28:36,032 | INFO |   💾 [16/122] saved
+2026-06-01 20:28:36,032 | INFO | 
+  [17/122]
+2026-06-01 20:28:36,032 | INFO |   ⏳ 57.6s (req #337)
+2026-06-01 20:29:34,613 | INFO |   GET https://www.gsmarena.com/vodafone_smart_speed_6-7608.php → 200
+2026-06-01 20:29:34,637 | INFO |       📱 Vodafone Smart speed 6 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 20:29:34,641 | INFO |   💾 [17/122] saved
+2026-06-01 20:29:34,642 | INFO | 
+  [18/122]
+2026-06-01 20:29:34,642 | INFO |   ⏳ 33.9s (req #338)
+2026-06-01 20:30:09,490 | INFO |   GET https://www.gsmarena.com/vodafone_smart_ultra_6-7313.php → 200
+2026-06-01 20:30:09,515 | INFO |       📱 Vodafone Smart ultra 6 | Main=13.0MP | Selfie=5.0MP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 20:30:09,519 | INFO |   💾 [18/122] saved
+2026-06-01 20:30:09,520 | INFO | 
+  [19/122]
+2026-06-01 20:30:09,520 | INFO |   ⏳ 30.0s (req #339)
+2026-06-01 20:30:40,544 | INFO |   GET https://www.gsmarena.com/vodafone_tab_prime_6-7232.php → 200
+2026-06-01 20:30:40,568 | INFO |       📱 Vodafone Tab Prime 6 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 20:30:40,573 | INFO |   💾 [19/122] saved
+2026-06-01 20:30:40,573 | INFO | 
+  [20/122]
+2026-06-01 20:30:40,574 | INFO |   ⏳ 56.2s (req #340)
+2026-06-01 20:31:37,863 | INFO |   GET https://www.gsmarena.com/vodafone_smart_prime_6-7230.php → 200
+2026-06-01 20:31:37,888 | INFO |       📱 Vodafone Smart prime 6 | Main=8.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 20:31:37,892 | INFO |   💾 [20/122] saved
+2026-06-01 20:31:37,892 | INFO | 
+  [21/122]
+2026-06-01 20:31:37,892 | INFO |   ⏳ 48.1s (req #341)
+2026-06-01 20:32:27,125 | INFO |   GET https://www.gsmarena.com/vodafone_smart_first_6-7231.php → 200
+2026-06-01 20:32:27,152 | INFO |       📱 Vodafone Smart first 6 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=36/68 fields
+2026-06-01 20:32:27,156 | INFO |   💾 [21/122] saved
+2026-06-01 20:32:27,157 | INFO | 
+  [22/122]
+2026-06-01 20:32:27,157 | INFO |   ⏳ 30.1s (req #342)
+2026-06-01 20:32:58,212 | INFO |   GET https://www.gsmarena.com/vodafone_smart_4_max-6937.php → 200
+2026-06-01 20:32:58,235 | INFO |       📱 Vodafone Smart 4 max | Main=13.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=40/68 fields
+2026-06-01 20:32:58,240 | INFO |   💾 [22/122] saved
+2026-06-01 20:32:58,240 | INFO | 
+  [23/122]
+2026-06-01 20:32:58,241 | INFO |   ⏳ 54.2s (req #343)
+2026-06-01 20:33:53,499 | INFO |   GET https://www.gsmarena.com/vodafone_smart_tab_4g-6903.php → 200
+2026-06-01 20:33:53,533 | INFO |       📱 Vodafone Smart Tab 4G | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 20:33:53,537 | INFO |   💾 [23/122] saved
+2026-06-01 20:33:53,537 | INFO | 
+  [24/122]
+2026-06-01 20:33:53,538 | INFO |   ⏳ 57.8s (req #344)
+2026-06-01 20:34:52,359 | INFO |   GET https://www.gsmarena.com/vodafone_smart_4g-6886.php → 200
+2026-06-01 20:34:52,384 | INFO |       📱 Vodafone Smart 4G | Main=8.0MP | Selfie=1.0MP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 20:34:52,388 | INFO |   💾 [24/122] saved
+2026-06-01 20:34:52,389 | INFO | 
+  [25/122]
+2026-06-01 20:34:52,389 | INFO |   ⏳ 36.6s (req #345)
+2026-06-01 20:35:29,968 | INFO |   GET https://www.gsmarena.com/vodafone_smart_4_turbo-6507.php → 200
+2026-06-01 20:35:29,994 | INFO |       📱 Vodafone Smart 4 turbo | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=42/68 fields
+2026-06-01 20:35:29,999 | INFO |   💾 [25/122] saved
+2026-06-01 20:35:29,999 | INFO | 
+  [26/122]
+2026-06-01 20:35:30,000 | INFO |   ⏳ 51.3s (req #346)
+2026-06-01 20:36:22,302 | INFO |   GET https://www.gsmarena.com/vodafone_smart_4_power-6508.php → 200
+2026-06-01 20:36:22,325 | INFO |       📱 Vodafone Smart 4 power | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=41/68 fields
+2026-06-01 20:36:22,329 | INFO |   💾 [26/122] saved
+2026-06-01 20:36:22,330 | INFO | 
+  [27/122]
+2026-06-01 20:36:22,330 | INFO |   ⏳ 57.9s (req #347)
+2026-06-01 20:37:21,438 | INFO |   GET https://www.gsmarena.com/vodafone_smart_4-6447.php → 200
+2026-06-01 20:37:21,461 | INFO |       📱 Vodafone Smart 4 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=39/68 fields
+2026-06-01 20:37:21,466 | INFO |   💾 [27/122] saved
+2026-06-01 20:37:21,467 | INFO | 
+  [28/122]
+2026-06-01 20:37:21,467 | INFO |   ⏳ 58.8s (req #348)
+2026-06-01 20:38:21,189 | INFO |   GET https://www.gsmarena.com/vodafone_smart_4_mini-6295.php → 200
+2026-06-01 20:38:21,213 | INFO |       📱 Vodafone Smart 4 mini | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=36/68 fields
+2026-06-01 20:38:21,218 | INFO |   💾 [28/122] saved
+2026-06-01 20:38:21,218 | INFO | 
+  [29/122]
+2026-06-01 20:38:21,218 | INFO |   ⏳ 37.1s (req #349)
+2026-06-01 20:38:59,244 | INFO |   GET https://www.gsmarena.com/vodafone_smart_tab_iii_10_1-5896.php → 200
+2026-06-01 20:38:59,276 | INFO |       📱 Vodafone Smart Tab III 10.1 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 20:38:59,280 | INFO |   💾 [29/122] saved
+2026-06-01 20:38:59,281 | INFO | 
+  [30/122]
+2026-06-01 20:38:59,281 | INFO |   ⏳ 31.7s (req #350)
+2026-06-01 20:39:32,054 | INFO |   GET https://www.gsmarena.com/vodafone_smart_tab_iii_7-5895.php → 200
+2026-06-01 20:39:32,080 | INFO |       📱 Vodafone Smart Tab III 7 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 20:39:32,083 | INFO |   💾 [30/122] saved
+2026-06-01 20:39:32,083 | INFO | 
+  [31/122]
+2026-06-01 20:39:32,084 | INFO |   ⏳ 27.0s (req #351)
+2026-06-01 20:40:00,096 | INFO |   GET https://www.gsmarena.com/vodafone_chat_655-5701.php → 200
+2026-06-01 20:40:00,121 | INFO |       📱 Vodafone Chat 655 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=24/68 fields
+2026-06-01 20:40:00,125 | INFO |   💾 [31/122] saved
+2026-06-01 20:40:00,125 | INFO | 
+  [32/122]
+2026-06-01 20:40:00,126 | INFO |   ⏳ 41.8s (req #352)
+2026-06-01 20:40:42,997 | INFO |   GET https://www.gsmarena.com/vodafone_smart_mini-5549.php → 200
+2026-06-01 20:40:43,020 | INFO |       📱 Vodafone Smart Mini | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 20:40:43,025 | INFO |   💾 [32/122] saved
+2026-06-01 20:40:43,025 | INFO | 
+  [33/122]
+2026-06-01 20:40:43,025 | INFO |   ⏳ 53.2s (req #353)
+2026-06-01 20:41:37,367 | INFO |   GET https://www.gsmarena.com/vodafone_smart_iii_975-5464.php → 200
+2026-06-01 20:41:37,401 | INFO |       📱 Vodafone Smart III 975 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=38/68 fields
+2026-06-01 20:41:37,405 | INFO |   💾 [33/122] saved
+2026-06-01 20:41:37,406 | INFO | 
+  [34/122]
+2026-06-01 20:41:37,406 | INFO |   ⏳ 46.7s (req #354)
+2026-06-01 20:42:25,211 | INFO |   GET https://www.gsmarena.com/vodafone_smart_tab_ii_10-5121.php → 200
+2026-06-01 20:42:25,235 | INFO |       📱 Vodafone Smart Tab II 10 | Main=5.0MP | Selfie=1.3MP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 20:42:25,239 | INFO |   💾 [34/122] saved
+2026-06-01 20:42:25,240 | INFO | 
+  [35/122]
+2026-06-01 20:42:25,240 | INFO |   ⏳ 32.6s (req #355)
+2026-06-01 20:42:58,779 | INFO |   GET https://www.gsmarena.com/vodafone_smart_tab_ii_7-5120.php → 200
+2026-06-01 20:42:58,812 | INFO |       📱 Vodafone Smart Tab II 7 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=37/68 fields
+2026-06-01 20:42:58,815 | INFO |   💾 [35/122] saved
+2026-06-01 20:42:58,816 | INFO | 
+  [36/122]
+2026-06-01 20:42:58,816 | INFO |   ⏳ 33.2s (req #356)
+2026-06-01 20:43:33,014 | INFO |   GET https://www.gsmarena.com/vodafone_v860_smart_ii-4869.php → 200
+2026-06-01 20:43:33,038 | INFO |       📱 Vodafone V860 Smart II | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 20:43:33,041 | INFO |   💾 [36/122] saved
+2026-06-01 20:43:33,042 | INFO | 
+  [37/122]
+2026-06-01 20:43:33,042 | INFO |   ⏳ 42.8s (req #357)
+2026-06-01 20:44:16,861 | INFO |   GET https://www.gsmarena.com/vodafone_smart_tab_10-4527.php → 200
+2026-06-01 20:44:16,890 | INFO |       📱 Vodafone Smart Tab 10 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 20:44:16,894 | INFO |   💾 [37/122] saved
+2026-06-01 20:44:16,894 | INFO | 
+  [38/122]
+2026-06-01 20:44:16,895 | INFO |   ⏳ 36.1s (req #358)
+2026-06-01 20:44:53,932 | INFO |   GET https://www.gsmarena.com/vodafone_smart_tab_7-4526.php → 200
+2026-06-01 20:44:53,956 | INFO |       📱 Vodafone Smart Tab 7 | Main=5.0MP | Selfie=2.0MP | AnTuTu=None | Price=$None | IP=None | Populated=34/68 fields
+2026-06-01 20:44:53,961 | INFO |   💾 [38/122] saved
+2026-06-01 20:44:53,961 | INFO | 
+  [39/122]
+2026-06-01 20:44:53,961 | INFO |   ⏳ 57.3s (req #359)
+2026-06-01 20:45:52,247 | INFO |   GET https://www.gsmarena.com/vodafone_155-4969.php → 200
+2026-06-01 20:45:52,274 | INFO |       📱 Vodafone 155 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 20:45:52,278 | INFO |   💾 [39/122] saved
+2026-06-01 20:45:52,279 | INFO | 
+  [40/122]
+2026-06-01 20:45:52,279 | INFO |   ☕ Long pause 225s ...
+2026-06-01 20:49:38,636 | INFO |   GET https://www.gsmarena.com/vodafone_555_blue-4052.php → 200
+2026-06-01 20:49:38,664 | INFO |       📱 Vodafone 555 Blue | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=26/68 fields
+2026-06-01 20:49:38,668 | INFO |   💾 [40/122] saved
+2026-06-01 20:49:38,668 | INFO | 
+  [41/122]
+2026-06-01 20:49:38,669 | INFO |   ⏳ 44.1s (req #361)
+2026-06-01 20:50:24,001 | INFO |   GET https://www.gsmarena.com/vodafone_858_smart-3955.php → 200
+2026-06-01 20:50:24,026 | INFO |       📱 Vodafone 858 Smart | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=30/68 fields
+2026-06-01 20:50:24,031 | INFO |   💾 [41/122] saved
+2026-06-01 20:50:24,031 | INFO | 
+  [42/122]
+2026-06-01 20:50:24,031 | INFO |   ⏳ 46.3s (req #362)
+2026-06-01 20:51:12,026 | INFO |   GET https://www.gsmarena.com/vodafone_945-3533.php → 200
+2026-06-01 20:51:12,061 | INFO |       📱 Vodafone 945 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=28/68 fields
+2026-06-01 20:51:12,065 | INFO |   💾 [42/122] saved
+2026-06-01 20:51:12,065 | INFO | 
+  [43/122]
+2026-06-01 20:51:12,066 | INFO |   ⏳ 34.0s (req #363)
+2026-06-01 20:51:47,373 | INFO |   GET https://www.gsmarena.com/vodafone_553-3534.php → 200
+2026-06-01 20:51:47,401 | INFO |       📱 Vodafone 553 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=23/68 fields
+2026-06-01 20:51:47,405 | INFO |   💾 [43/122] saved
+2026-06-01 20:51:47,406 | INFO | 
+  [44/122]
+2026-06-01 20:51:47,406 | INFO |   ⏳ 46.4s (req #364)
+2026-06-01 20:52:35,063 | INFO |   GET https://www.gsmarena.com/vodafone_360_h2-3357.php → 200
+2026-06-01 20:52:35,090 | INFO |       📱 Vodafone 360 H2 | Main=8.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=32/68 fields
+2026-06-01 20:52:35,094 | INFO |   💾 [44/122] saved
+2026-06-01 20:52:35,094 | INFO | 
+  [45/122]
+2026-06-01 20:52:35,095 | INFO |   ⏳ 46.8s (req #365)
+2026-06-01 20:53:23,612 | INFO |   GET https://www.gsmarena.com/vodafone_845-3212.php → 200
+2026-06-01 20:53:23,649 | INFO |       📱 Vodafone 845 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=29/68 fields
+2026-06-01 20:53:23,652 | INFO |   💾 [45/122] saved
+2026-06-01 20:53:23,652 | INFO | 
+  [46/122]
+2026-06-01 20:53:23,653 | INFO |   ⏳ 27.8s (req #366)
+2026-06-01 20:53:52,606 | INFO |   GET https://www.gsmarena.com/vodafone_547-3297.php → 200
+2026-06-01 20:53:52,634 | INFO |       📱 Vodafone 547 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=22/68 fields
+2026-06-01 20:53:52,639 | INFO |   💾 [46/122] saved
+2026-06-01 20:53:52,639 | INFO | 
+  [47/122]
+2026-06-01 20:53:52,639 | INFO |   ⏳ 25.6s (req #367)
+2026-06-01 20:54:19,438 | INFO |   GET https://www.gsmarena.com/vodafone_546-3296.php → 200
+2026-06-01 20:54:19,466 | INFO |       📱 Vodafone 546 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 20:54:19,470 | INFO |   💾 [47/122] saved
+2026-06-01 20:54:19,470 | INFO | 
+  [48/122]
+2026-06-01 20:54:19,470 | INFO |   ⏳ 42.7s (req #368)
+2026-06-01 20:55:03,369 | INFO |   GET https://www.gsmarena.com/vodafone_543-3298.php → 200
+2026-06-01 20:55:03,404 | INFO |       📱 Vodafone 543 | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=21/68 fields
+2026-06-01 20:55:03,408 | INFO |   💾 [48/122] saved
+2026-06-01 20:55:03,408 | INFO | 
+  [49/122]
+2026-06-01 20:55:03,408 | INFO |   ⏳ 41.5s (req #369)
+2026-06-01 20:55:46,210 | INFO |   GET https://www.gsmarena.com/vodafone_350_messaging-3299.php → 200
+2026-06-01 20:55:46,235 | INFO |       📱 Vodafone 350 Messaging | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=13/68 fields
+2026-06-01 20:55:46,239 | INFO |   💾 [49/122] saved
+2026-06-01 20:55:46,239 | INFO | 
+  [50/122]
+2026-06-01 20:55:46,239 | INFO |   ⏳ 50.8s (req #370)
+2026-06-01 20:56:38,157 | INFO |   GET https://www.gsmarena.com/vodafone_345_text-3300.php → 200
+2026-06-01 20:56:38,183 | INFO |       📱 Vodafone 345 Text | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=14/68 fields
+2026-06-01 20:56:38,188 | INFO |   💾 [50/122] saved
+2026-06-01 20:56:38,189 | INFO |   [51/122] SKIP huawei_nova_16_ultra_5g-14698.php
+2026-06-01 20:56:38,189 | INFO |   [52/122] SKIP huawei_nova_16_pro_5g-14699.php
+2026-06-01 20:56:38,189 | INFO |   [53/122] SKIP huawei_nova_16_5g-14700.php
+2026-06-01 20:56:38,189 | INFO |   [54/122] SKIP huawei_nova_16z_5g-14701.php
+2026-06-01 20:56:38,190 | INFO |   [55/122] SKIP honor_win_turbo_5g-14684.php
+2026-06-01 20:56:38,190 | INFO |   [56/122] SKIP vivo_s60_vitality_5g-14693.php
+2026-06-01 20:56:38,190 | INFO |   [57/122] SKIP vivo_s60_5g-14692.php
+2026-06-01 20:56:38,190 | INFO |   [58/122] SKIP vivo_t5-14697.php
+2026-06-01 20:56:38,191 | INFO |   [59/122] SKIP zte_nubia_redmagic_11s_pro_5g-14669.php
+2026-06-01 20:56:38,191 | INFO |   [60/122] SKIP xiaomi_17t_pro_5g-14651.php
+2026-06-01 20:56:38,191 | INFO |   [61/122] SKIP xiaomi_17t_5g-14652.php
+2026-06-01 20:56:38,191 | INFO |   [62/122] SKIP xiaomi_watch_s5-14696.php
+2026-06-01 20:56:38,191 | INFO |   [63/122] SKIP realme_16t_5g-14674.php
+2026-06-01 20:56:38,192 | INFO |   [64/122] SKIP honor_600_5g-14605.php
+2026-06-01 20:56:38,192 | INFO |   [65/122] SKIP sony_xperia_1_viii_5g-14660.php
+2026-06-01 20:56:38,192 | INFO |   [66/122] SKIP honor_600_pro_5g-14604.php
+2026-06-01 20:56:38,192 | INFO |   [67/122] SKIP motorola_moto_g87_5g-14644.php
+2026-06-01 20:56:38,192 | INFO |   [68/122] SKIP xiaomi_17t_pro-14651.php
+2026-06-01 20:56:38,193 | INFO |   [69/122] SKIP xiaomi_17t-14652.php
+2026-06-01 20:56:38,193 | INFO |   [70/122] SKIP samsung_galaxy_a57-14379.php
+2026-06-01 20:56:38,193 | INFO |   [71/122] SKIP samsung_galaxy_s26_ultra-14320.php
+2026-06-01 20:56:38,194 | INFO |   [72/122] SKIP samsung_galaxy_a17-14041.php
+2026-06-01 20:56:38,194 | INFO |   [73/122] SKIP apple_iphone_17_pro_max-13964.php
+2026-06-01 20:56:38,194 | INFO |   [74/122] SKIP xiaomi_17_max-14667.php
+2026-06-01 20:56:38,194 | INFO |   [75/122] SKIP xiaomi_redmi_note_15-14328.php
+2026-06-01 20:56:38,195 | INFO |   [76/122] SKIP xiaomi_poco_x8_pro-14506.php
+2026-06-01 20:56:38,195 | INFO |   [77/122] SKIP honor_600_pro-14604.php
+2026-06-01 20:56:38,196 | INFO |   [78/122] SKIP samsung_galaxy_a56-13603.php
+2026-06-01 20:56:38,196 | INFO |   [79/122] SKIP xiaomi_15_ultra-13657.php
+2026-06-01 20:56:38,196 | INFO |   [80/122] SKIP xiaomi_poco_x7_pro-13582.php
+2026-06-01 20:56:38,196 | INFO |   [81/122] SKIP xiaomi_17_pro_max-14181.php
+2026-06-01 20:56:38,197 | INFO |   [82/122] SKIP oneplus_15-14206.php
+2026-06-01 20:56:38,197 | INFO |   [83/122] SKIP samsung_galaxy_s25-13610.php
+2026-06-01 20:56:38,197 | INFO |   [84/122] SKIP xiaomi_17_ultra-14380.php
+2026-06-01 20:56:38,197 | INFO |   [85/122] SKIP oppo_find_x9_pro-14094.php
+2026-06-01 20:56:38,198 | INFO | 
+  [86/122]
+2026-06-01 20:56:38,198 | INFO |   ⏳ 32.2s (req #371)
+2026-06-01 20:57:11,349 | INFO |   GET https://www.gsmarena.com/vodafone_248-3301.php → 200
+2026-06-01 20:57:11,377 | INFO |       📱 Vodafone 248 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=13/68 fields
+2026-06-01 20:57:11,382 | INFO |   💾 [51/122] saved
+2026-06-01 20:57:11,382 | INFO | 
+  [87/122]
+2026-06-01 20:57:11,382 | INFO |   ⏳ 41.4s (req #372)
+2026-06-01 20:57:54,382 | INFO |   GET https://www.gsmarena.com/vodafone_247_solar-3302.php → 200
+2026-06-01 20:57:54,406 | INFO |       📱 Vodafone 247 Solar | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=13/68 fields
+2026-06-01 20:57:54,411 | INFO |   💾 [52/122] saved
+2026-06-01 20:57:54,411 | INFO | 
+  [88/122]
+2026-06-01 20:57:54,411 | INFO |   ⏳ 58.4s (req #373)
+2026-06-01 20:58:54,246 | INFO |   GET https://www.gsmarena.com/vodafone_246-3303.php → 200
+2026-06-01 20:58:54,274 | INFO |       📱 Vodafone 246 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=13/68 fields
+2026-06-01 20:58:54,278 | INFO |   💾 [53/122] saved
+2026-06-01 20:58:54,278 | INFO | 
+  [89/122]
+2026-06-01 20:58:54,279 | INFO |   ⏳ 48.3s (req #374)
+2026-06-01 20:59:43,804 | INFO |   GET https://www.gsmarena.com/vodafone_250-3193.php → 200
+2026-06-01 20:59:43,830 | INFO |       📱 Vodafone 250 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=18/68 fields
+2026-06-01 20:59:43,835 | INFO |   💾 [54/122] saved
+2026-06-01 20:59:43,836 | INFO | 
+  [90/122]
+2026-06-01 20:59:43,836 | INFO |   ⏳ 43.5s (req #375)
+2026-06-01 21:00:28,845 | INFO |   GET https://www.gsmarena.com/vodafone_150-3192.php → 200
+2026-06-01 21:00:28,881 | INFO |       📱 Vodafone 150 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=16/68 fields
+2026-06-01 21:00:28,885 | INFO |   💾 [55/122] saved
+2026-06-01 21:00:28,885 | INFO | 
+  [91/122]
+2026-06-01 21:00:28,885 | INFO |   ⏳ 33.0s (req #376)
+2026-06-01 21:01:03,139 | INFO |   GET https://www.gsmarena.com/vodafone_1240-3045.php → 200
+2026-06-01 21:01:03,167 | INFO |       📱 Vodafone 1240 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=17/68 fields
+2026-06-01 21:01:03,171 | INFO |   💾 [56/122] saved
+2026-06-01 21:01:03,172 | INFO | 
+  [92/122]
+2026-06-01 21:01:03,172 | INFO |   ⏳ 27.3s (req #377)
+2026-06-01 21:01:31,822 | INFO |   GET https://www.gsmarena.com/vodafone_840-3044.php → 200
+2026-06-01 21:01:31,849 | INFO |       📱 Vodafone 840 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=21/68 fields
+2026-06-01 21:01:31,853 | INFO |   💾 [57/122] saved
+2026-06-01 21:01:31,854 | INFO | 
+  [93/122]
+2026-06-01 21:01:31,854 | INFO |   ⏳ 27.8s (req #378)
+2026-06-01 21:02:07,674 | INFO |   GET https://www.gsmarena.com/vodafone_541-3043.php → 200
+2026-06-01 21:02:07,699 | INFO |       📱 Vodafone 541 | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=24/68 fields
+2026-06-01 21:02:07,703 | INFO |   💾 [58/122] saved
+2026-06-01 21:02:07,705 | INFO | 
+  [94/122]
+2026-06-01 21:02:07,705 | INFO |   ⏳ 27.9s (req #379)
+2026-06-01 21:02:37,546 | INFO |   GET https://www.gsmarena.com/vodafone_540-3042.php → 200
+2026-06-01 21:02:37,572 | INFO |       📱 Vodafone 540 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=21/68 fields
+2026-06-01 21:02:37,577 | INFO |   💾 [59/122] saved
+2026-06-01 21:02:37,577 | INFO | 
+  [95/122]
+2026-06-01 21:02:37,577 | INFO |   ⏳ 48.8s (req #380)
+2026-06-01 21:03:27,482 | INFO |   GET https://www.gsmarena.com/vodafone_340-3046.php → 200
+2026-06-01 21:03:27,509 | INFO |       📱 Vodafone 340 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=21/68 fields
+2026-06-01 21:03:27,514 | INFO |   💾 [60/122] saved
+2026-06-01 21:03:27,514 | INFO | 
+  [96/122]
+2026-06-01 21:03:27,514 | INFO |   ⏳ 28.3s (req #381)
+2026-06-01 21:03:56,982 | INFO |   GET https://www.gsmarena.com/vodafone_360_h1-2946.php → 200
+2026-06-01 21:03:57,016 | INFO |       📱 Vodafone 360 H1 | Main=5.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 21:03:57,021 | INFO |   💾 [61/122] saved
+2026-06-01 21:03:57,022 | INFO | 
+  [97/122]
+2026-06-01 21:03:57,022 | INFO |   ⏳ 46.0s (req #382)
+2026-06-01 21:04:44,351 | INFO |   GET https://www.gsmarena.com/vodafone_360_m1-2947.php → 200
+2026-06-01 21:04:44,379 | INFO |       📱 Vodafone 360 M1 | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=31/68 fields
+2026-06-01 21:04:44,383 | INFO |   💾 [62/122] saved
+2026-06-01 21:04:44,384 | INFO | 
+  [98/122]
+2026-06-01 21:04:44,384 | INFO |   ⏳ 40.6s (req #383)
+2026-06-01 21:05:25,974 | INFO |   GET https://www.gsmarena.com/vodafone_533_crystal-2928.php → 200
+2026-06-01 21:05:26,000 | INFO |       📱 Vodafone 533 Crystal | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=23/68 fields
+2026-06-01 21:05:26,004 | INFO |   💾 [63/122] saved
+2026-06-01 21:05:26,005 | INFO | 
+  [99/122]
+2026-06-01 21:05:26,005 | INFO |   ⏳ 36.2s (req #384)
+2026-06-01 21:06:03,169 | INFO |   GET https://www.gsmarena.com/vodafone_1231-2919.php → 200
+2026-06-01 21:06:03,194 | INFO |       📱 Vodafone 1231 | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=25/68 fields
+2026-06-01 21:06:03,198 | INFO |   💾 [64/122] saved
+2026-06-01 21:06:03,199 | INFO | 
+  [100/122]
+2026-06-01 21:06:03,199 | INFO |   ⏳ 49.3s (req #385)
+2026-06-01 21:06:54,100 | INFO |   GET https://www.gsmarena.com/vodafone_v_x760-2859.php → 200
+2026-06-01 21:06:54,128 | INFO |       📱 Vodafone V-X760 | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=21/68 fields
+2026-06-01 21:06:54,132 | INFO |   💾 [65/122] saved
+2026-06-01 21:06:54,132 | INFO | 
+  [101/122]
+2026-06-01 21:06:54,133 | INFO |   ⏳ 50.6s (req #386)
+2026-06-01 21:07:46,285 | INFO |   GET https://www.gsmarena.com/vodafone_indie-2857.php → 200
+2026-06-01 21:07:46,313 | INFO |       📱 Vodafone Indie | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=21/68 fields
+2026-06-01 21:07:46,318 | INFO |   💾 [66/122] saved
+2026-06-01 21:07:46,319 | INFO | 
+  [102/122]
+2026-06-01 21:07:46,319 | INFO |   ⏳ 43.1s (req #387)
+2026-06-01 21:08:30,557 | INFO |   GET https://www.gsmarena.com/vodafone_835-2852.php → 200
+2026-06-01 21:08:30,589 | INFO |       📱 Vodafone 835 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=20/68 fields
+2026-06-01 21:08:30,593 | INFO |   💾 [67/122] saved
+2026-06-01 21:08:30,594 | INFO | 
+  [103/122]
+2026-06-01 21:08:30,594 | INFO |   ⏳ 35.9s (req #388)
+2026-06-01 21:09:07,601 | INFO |   GET https://www.gsmarena.com/vodafone_736-2851.php → 200
+2026-06-01 21:09:07,664 | INFO |       📱 Vodafone 736 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 21:09:07,667 | INFO |   💾 [68/122] saved
+2026-06-01 21:09:07,667 | INFO | 
+  [104/122]
+2026-06-01 21:09:07,668 | INFO |   ⏳ 51.8s (req #389)
+2026-06-01 21:10:00,470 | INFO |   GET https://www.gsmarena.com/vodafone_735-2850.php → 200
+2026-06-01 21:10:00,506 | INFO |       📱 Vodafone 735 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 21:10:00,520 | INFO |   💾 [69/122] saved
+2026-06-01 21:10:00,525 | INFO | 
+  [105/122]
+2026-06-01 21:10:00,528 | INFO |   ☕ Long pause 274s ...
+2026-06-01 21:14:36,140 | INFO |   GET https://www.gsmarena.com/vodafone_235-2849.php → 200
+2026-06-01 21:14:36,163 | INFO |       📱 Vodafone 235 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=18/68 fields
+2026-06-01 21:14:36,168 | INFO |   💾 [70/122] saved
+2026-06-01 21:14:36,168 | INFO | 
+  [106/122]
+2026-06-01 21:14:36,168 | INFO |   ⏳ 37.6s (req #391)
+2026-06-01 21:15:15,027 | INFO |   GET https://www.gsmarena.com/vodafone_v720-2741.php → 200
+2026-06-01 21:15:15,052 | INFO |       📱 Vodafone V720 | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 21:15:15,058 | INFO |   💾 [71/122] saved
+2026-06-01 21:15:15,058 | INFO | 
+  [107/122]
+2026-06-01 21:15:15,058 | INFO |   ⏳ 27.9s (req #392)
+2026-06-01 21:15:44,531 | INFO |   GET https://www.gsmarena.com/vodafone_533-2651.php → 200
+2026-06-01 21:15:44,556 | INFO |       📱 Vodafone 533 | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=22/68 fields
+2026-06-01 21:15:44,561 | INFO |   💾 [72/122] saved
+2026-06-01 21:15:44,561 | INFO | 
+  [108/122]
+2026-06-01 21:15:44,562 | INFO |   ⏳ 52.8s (req #393)
+2026-06-01 21:16:38,965 | INFO |   GET https://www.gsmarena.com/vodafone_830i-2650.php → 200
+2026-06-01 21:16:38,989 | INFO |       📱 Vodafone 830i | Main=3.15MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 21:16:38,994 | INFO |   💾 [73/122] saved
+2026-06-01 21:16:38,994 | INFO | 
+  [109/122]
+2026-06-01 21:16:38,995 | INFO |   ⏳ 48.9s (req #394)
+2026-06-01 21:17:29,178 | INFO |   GET https://www.gsmarena.com/vodafone_526-2590.php → 200
+2026-06-01 21:17:29,216 | INFO |       📱 Vodafone 526 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 21:17:29,221 | INFO |   💾 [74/122] saved
+2026-06-01 21:17:29,221 | INFO | 
+  [110/122]
+2026-06-01 21:17:29,222 | INFO |   ⏳ 44.8s (req #395)
+2026-06-01 21:18:15,699 | INFO |   GET https://www.gsmarena.com/vodafone_332-2643.php → 200
+2026-06-01 21:18:15,725 | INFO |       📱 Vodafone 332 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=20/68 fields
+2026-06-01 21:18:15,731 | INFO |   💾 [75/122] saved
+2026-06-01 21:18:15,731 | INFO | 
+  [111/122]
+2026-06-01 21:18:15,731 | INFO |   ⏳ 39.3s (req #396)
+2026-06-01 21:18:57,287 | INFO |   GET https://www.gsmarena.com/vodafone_231-2589.php → 200
+2026-06-01 21:18:57,312 | INFO |       📱 Vodafone 231 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=17/68 fields
+2026-06-01 21:18:57,317 | INFO |   💾 [76/122] saved
+2026-06-01 21:18:57,317 | INFO | 
+  [112/122]
+2026-06-01 21:18:57,317 | INFO |   ⏳ 37.7s (req #397)
+2026-06-01 21:19:36,221 | INFO |   GET https://www.gsmarena.com/vodafone_1210-2458.php → 200
+2026-06-01 21:19:36,247 | INFO |       📱 Vodafone 1210 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=20/68 fields
+2026-06-01 21:19:36,251 | INFO |   💾 [77/122] saved
+2026-06-01 21:19:36,252 | INFO | 
+  [113/122]
+2026-06-01 21:19:36,252 | INFO |   ⏳ 29.0s (req #398)
+2026-06-01 21:20:06,618 | INFO |   GET https://www.gsmarena.com/vodafone_725-2457.php → 200
+2026-06-01 21:20:06,642 | INFO |       📱 Vodafone 725 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=21/68 fields
+2026-06-01 21:20:06,647 | INFO |   💾 [78/122] saved
+2026-06-01 21:20:06,647 | INFO | 
+  [114/122]
+2026-06-01 21:20:06,647 | INFO |   ⏳ 31.5s (req #399)
+2026-06-01 21:20:39,582 | INFO |   GET https://www.gsmarena.com/vodafone_810-2456.php → 200
+2026-06-01 21:20:39,605 | INFO |       📱 Vodafone 810 | Main=2.0MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=21/68 fields
+2026-06-01 21:20:39,610 | INFO |   💾 [79/122] saved
+2026-06-01 21:20:39,610 | INFO | 
+  [115/122]
+2026-06-01 21:20:39,610 | INFO |   ⏳ 32.0s (req #400)
+2026-06-01 21:21:12,987 | INFO |   GET https://www.gsmarena.com/vodafone_716-2461.php → 200
+2026-06-01 21:21:13,013 | INFO |       📱 Vodafone 716 | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 21:21:13,018 | INFO |   💾 [80/122] saved
+2026-06-01 21:21:13,018 | INFO | 
+  [116/122]
+2026-06-01 21:21:13,018 | INFO |   ⏳ 54.4s (req #401)
+2026-06-01 21:22:08,774 | INFO |   GET https://www.gsmarena.com/vodafone_527-2455.php → 200
+2026-06-01 21:22:08,816 | INFO |       📱 Vodafone 527 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 21:22:08,821 | INFO |   💾 [81/122] saved
+2026-06-01 21:22:08,822 | INFO | 
+  [117/122]
+2026-06-01 21:22:08,822 | INFO |   ⏳ 37.0s (req #402)
+2026-06-01 21:22:47,860 | INFO |   GET https://www.gsmarena.com/vodafone_511-2462.php → 200
+2026-06-01 21:22:47,888 | INFO |       📱 Vodafone 511 | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=19/68 fields
+2026-06-01 21:22:47,893 | INFO |   💾 [82/122] saved
+2026-06-01 21:22:47,893 | INFO | 
+  [118/122]
+2026-06-01 21:22:47,894 | INFO |   ⏳ 45.5s (req #403)
+2026-06-01 21:23:34,741 | INFO |   GET https://www.gsmarena.com/vodafone_228-2454.php → 200
+2026-06-01 21:23:34,770 | INFO |       📱 Vodafone 228 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=15/68 fields
+2026-06-01 21:23:34,775 | INFO |   💾 [83/122] saved
+2026-06-01 21:23:34,776 | INFO | 
+  [119/122]
+2026-06-01 21:23:34,776 | INFO |   ⏳ 37.9s (req #404)
+2026-06-01 21:24:14,640 | INFO |   GET https://www.gsmarena.com/vodafone_710-2459.php → 200
+2026-06-01 21:24:14,670 | INFO |       📱 Vodafone 710 | Main=1.3MP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=21/68 fields
+2026-06-01 21:24:14,676 | INFO |   💾 [84/122] saved
+2026-06-01 21:24:14,676 | INFO | 
+  [120/122]
+2026-06-01 21:24:14,676 | INFO |   ⏳ 44.0s (req #405)
+2026-06-01 21:25:00,158 | INFO |   GET https://www.gsmarena.com/vodafone_227-2452.php → 200
+2026-06-01 21:25:00,181 | INFO |       📱 Vodafone 227 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=15/68 fields
+2026-06-01 21:25:00,186 | INFO |   💾 [85/122] saved
+2026-06-01 21:25:00,187 | INFO | 
+  [121/122]
+2026-06-01 21:25:00,187 | INFO |   ⏳ 53.3s (req #406)
+2026-06-01 21:25:54,992 | INFO |   GET https://www.gsmarena.com/vodafone_226-2451.php → 200
+2026-06-01 21:25:55,013 | INFO |       📱 Vodafone 226 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=14/68 fields
+2026-06-01 21:25:55,020 | INFO |   💾 [86/122] saved
+2026-06-01 21:25:55,020 | INFO | 
+  [122/122]
+2026-06-01 21:25:55,020 | INFO |   ⏳ 34.1s (req #407)
+2026-06-01 21:26:30,403 | INFO |   GET https://www.gsmarena.com/vodafone_225-2453.php → 200
+2026-06-01 21:26:30,436 | INFO |       📱 Vodafone 225 | Main=NoneMP | Selfie=NoneMP | AnTuTu=None | Price=$None | IP=None | Populated=15/68 fields
+2026-06-01 21:26:30,442 | INFO |   💾 [87/122] saved
+2026-06-01 21:26:30,444 | INFO |   ✅ Vodafone — 87 phones saved
+2026-06-01 21:26:30,444 | INFO | 
+🎉 DONE — 392 phones in 324 min
+2026-06-01 21:26:30,444 | INFO | 📄 GSMArenaDataset_BATCH12/GSMArena_BATCH12.csv

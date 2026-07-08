@@ -1,0 +1,9 @@
+xgboost==3.3.0
+scikit-learn==1.9.0
+pandas==3.0.3
+numpy
+shap==0.52.0
+fastapi>=0.115
+uvicorn>=0.32
+pydantic>=2.7
+joblib>=1.5
