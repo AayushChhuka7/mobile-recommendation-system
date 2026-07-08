@@ -7,12 +7,56 @@ datasource db {
   provider = "postgresql"
 }
 
+// ============================================================
+// Enums — existing
+// ============================================================
 enum OtpPurpose {
   Registration
   PasswordReset
   EmailChange
 }
 
+// ============================================================
+// Enums — smartphone recommendation system
+// ============================================================
+enum CameraPreference {
+  Sensible
+  Photophile
+  SelfieAddict @map("Selfie-Addict")
+}
+
+enum UsageType {
+  Student
+  Gamer
+  Business
+  Casual
+  Creator
+}
+
+enum BudgetSegment {
+  BudgetExplorer  @map("Budget Explorer")
+  AffordableBuyer @map("Affordable Buyer")
+  MidRangeBuyer   @map("Mid Range Buyer")
+  PremiumBuyer    @map("Premium Buyer")
+  LuxuryBuyer     @map("Luxury Buyer")
+}
+
+enum TechTier {
+  Budget
+  Reasonable
+  FlagshipKiller @map("Flagship Killer")
+  TechSavvy      @map("Tech Savvy")
+  Luxurious
+}
+
+enum SegmentConfidence {
+  provisional
+  confirmed
+}
+
+// ============================================================
+// Existing — Auth / RBAC / Sessions
+// ============================================================
 model Roles {
   roleId   String  @id @default(uuid()) @map("role_id") @db.Uuid
   roleName String  @unique @map("role_name") @db.VarChar(50)
@@ -36,6 +80,14 @@ model Users {
   role   Roles?  @relation(fields: [roleId], references: [roleId], onDelete: SetNull)
 
   otps Otp[]
+
+  // --- smartphone recommendation system relations ---
+  profile               UserProfile?
+  preference            UserPreference?
+  customerProfile       CustomerProfile?
+  recommendationHistory RecommendationHistory[]
+  wishlist              Wishlist[]
+  comparisonHistory     ComparisonHistory[]
 
   @@index([roleId])
   @@map("users")
@@ -68,3 +120,253 @@ model Session {
   @@index([expire], map: "IDX_session_expire")
   @@map("session")
 }
+
+// ============================================================
+// Smartphone Recommendation System
+// ============================================================
+
+// Demographics (split out from Users; not auth-relevant)
+model UserProfile {
+  profileId String   @id @default(uuid()) @map("profile_id") @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  age       Int?     @db.SmallInt
+  gender    String?  @db.VarChar(20)
+  country   String?  @db.VarChar(80)
+  state     String?  @db.VarChar(80)
+  city      String?  @db.VarChar(80)
+  createdAt DateTime @default(now()) @map("created_date")
+  updatedAt DateTime @updatedAt @map("updated_date")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+// Cold-start preference questionnaire (4 questions)
+// updatedAt lets the rec engine detect "user re-took the questionnaire
+// and their answers changed" and decide whether to recompute persona.
+model UserPreference {
+  preferenceId String @id @default(uuid()) @map("preference_id") @db.Uuid
+  userId       String @unique @map("user_id") @db.Uuid
+
+  maxBudget        Decimal          @map("max_budget") @db.Decimal(10, 2)
+  cameraPreference CameraPreference @map("camera_preference")
+  usageType        UsageType        @map("usage_type")
+  preferredBrand   String           @map("preferred_brand") @db.VarChar(60)
+
+  createdAt DateTime @default(now()) @map("created_date")
+  updatedAt DateTime @updatedAt @map("updated_date")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_preferences")
+}
+
+// Phones — reference dataset (scraped GSMArena data + manual entries).
+// `isActive` is the soft-delete flag: hiding a phone from filters and
+// rec results without breaking historical FKs in RecommendationHistory /
+// Wishlist / ComparisonHistory.
+model Phones {
+  phoneId          String   @id @default(uuid()) @map("phone_id") @db.Uuid
+  brand            String   @db.VarChar(60)
+  modelName        String   @map("model_name") @db.VarChar(120)
+  price            Decimal? @db.Decimal(10, 2)
+  antutuScore      Int?     @map("antutu_score")
+  ramGb            Int?     @map("ram_gb")
+  storageGb        Int?     @map("storage_gb")
+  batteryMah       Int?     @map("battery_mah")
+  chargingWatts    Int?     @map("charging_watts")
+  displayType      String?  @map("display_type") @db.VarChar(40)
+  displayPpi       Int?     @map("display_ppi")
+  cameraScore      Decimal? @map("camera_score") @db.Decimal(5, 2)
+  frontCameraScore Decimal? @map("front_camera_score") @db.Decimal(5, 2)
+  osName           String?  @map("os_name") @db.VarChar(40)
+  supports5g       Boolean  @default(false) @map("supports_5g")
+  supportsNfc      Boolean  @default(false) @map("supports_nfc")
+  dualSim          Boolean  @default(false) @map("dual_sim")
+
+  // Data provenance. P1: lets the admin see which rows came from the
+  // scraper vs. which a Salesman typed in by hand.
+  source    String? @db.VarChar(40)
+  sourceUrl String? @map("source_url") @db.VarChar(500)
+
+  // Public image URL the FE renders directly. For scraped rows this is
+  // the GSMArena CDN URL. For admin-uploaded rows (Phase 2) the upload
+  // handler copies the file to storage and stores the resulting public
+  // URL here. Nullable so admin can create a phone row first and add
+  // the image in a follow-up PATCH.
+  imageUrl  String? @map("image_url") @db.VarChar(500)
+  imagePath String? @map("image_path") @db.VarChar(500)
+
+  // Soft-delete + admin lifecycle. `isActive=false` hides the phone
+  // from filters and rec results. `discontinuedAt` is informational
+  // only — does not affect visibility on its own.
+  isActive       Boolean   @default(true) @map("is_active")
+  discontinuedAt DateTime? @map("discontinued_at")
+  createdAt      DateTime  @default(now()) @map("created_date")
+  updatedAt      DateTime  @updatedAt @map("updated_date")
+
+  recommendationHistory RecommendationHistory[]
+  wishlist              Wishlist[]
+  comparedAsA           ComparisonHistory[]     @relation("ComparisonPhoneA")
+  comparedAsB           ComparisonHistory[]     @relation("ComparisonPhoneB")
+
+  @@unique([brand, modelName])
+  // Filter / sort indexes — without these every "filter by brand" /
+  // "sort by price" / "sort by performance" query seq-scans the table.
+  @@index([brand], map: "idx_phones_brand")
+  @@index([price], map: "idx_phones_price")
+  @@index([antutuScore], map: "idx_phones_antutu")
+  @@index([cameraScore], map: "idx_phones_camera")
+  @@index([isActive], map: "idx_phones_is_active")
+  @@map("phones")
+}
+
+// One row per (search event, phone shown). Source of truth for the
+// recency-weighted profile update job.
+//
+// `queryId` groups the rows produced by a single search call, so the
+// profile-update job can reproduce "what filters produced these match
+// scores" later. `filtersJson` is a denormalized snapshot of the
+// filters the user submitted (budget cap, brand, usage, etc.) so
+// individual rows stay self-describing even after the live search
+// is gone.
+model RecommendationHistory {
+  historyId  String   @id @default(uuid()) @map("history_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  phoneId    String   @map("phone_id") @db.Uuid
+  searchDate DateTime @default(now()) @map("search_date")
+
+  queryId     String? @map("query_id") @db.Uuid
+  filtersJson Json?   @map("filters_json")
+
+  performanceMatch     Decimal? @map("performance_match") @db.Decimal(5, 2)
+  cameraMatch          Decimal? @map("camera_match") @db.Decimal(5, 2)
+  batteryMatch         Decimal? @map("battery_match") @db.Decimal(5, 2)
+  displayMatch         Decimal? @map("display_match") @db.Decimal(5, 2)
+  budgetMatch          Decimal? @map("budget_match") @db.Decimal(5, 2)
+  brandMatch           Decimal? @map("brand_match") @db.Decimal(5, 2)
+  overallCompatibility Decimal? @map("overall_compatibility") @db.Decimal(5, 2)
+
+  personaSnapshot String? @map("persona_snapshot") @db.VarChar(60)
+
+  clicked   Boolean @default(false)
+  compared  Boolean @default(false)
+  saved     Boolean @default(false)
+  purchased Boolean @default(false)
+
+  user  Users  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  phone Phones @relation(fields: [phoneId], references: [phoneId])
+
+  @@index([userId, searchDate(sort: Desc)], map: "idx_rec_history_user_date")
+  @@index([phoneId], map: "idx_rec_history_phone")
+  @@index([queryId], map: "idx_rec_history_query")
+  @@map("recommendation_history")
+}
+
+// Static identity + dynamic, recency-weighted segment state (admin-only view)
+model CustomerProfile {
+  profileId String @id @default(uuid()) @map("profile_id") @db.Uuid
+  userId    String @unique @map("user_id") @db.Uuid
+
+  budgetSegment    BudgetSegment?    @map("budget_segment")
+  techTier         TechTier?         @map("tech_tier")
+  cameraPreference CameraPreference? @map("camera_preference")
+  softwareSegment  String?           @map("software_segment") @db.VarChar(40)
+
+  favoriteBrand      String? @map("favorite_brand") @db.VarChar(60)
+  preferredRamGb     Int?    @map("preferred_ram_gb")
+  preferredStorageGb Int?    @map("preferred_storage_gb")
+
+  recommendationPersona String? @map("recommendation_persona") @db.VarChar(60)
+
+  // internal running state (recency-weighted averages that drive the
+  // labels above — not shown directly to the user)
+  avgPerformanceMatch Decimal? @map("avg_performance_match") @db.Decimal(5, 2)
+  avgCameraMatch      Decimal? @map("avg_camera_match") @db.Decimal(5, 2)
+  avgFrontCameraMatch Decimal? @map("avg_front_camera_match") @db.Decimal(5, 2)
+  avgBudget           Decimal? @map("avg_budget") @db.Decimal(10, 2)
+  avgBatteryMatch     Decimal? @map("avg_battery_match") @db.Decimal(5, 2)
+  avgDisplayMatch     Decimal? @map("avg_display_match") @db.Decimal(5, 2)
+
+  segmentConfidence SegmentConfidence @default(provisional) @map("segment_confidence")
+  searchCount       Int               @default(0) @map("search_count")
+
+  totalRecommendations Int @default(0) @map("total_recommendations")
+  totalComparisons     Int @default(0) @map("total_comparisons")
+  totalWishlist        Int @default(0) @map("total_wishlist")
+
+  lastUpdated DateTime @updatedAt @map("last_updated")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@map("customer_profile")
+}
+
+// Wishlist / Favorites
+model Wishlist {
+  wishlistId String   @id @default(uuid()) @map("wishlist_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  phoneId    String   @map("phone_id") @db.Uuid
+  addedDate  DateTime @default(now()) @map("added_date")
+
+  user  Users  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  phone Phones @relation(fields: [phoneId], references: [phoneId])
+
+  @@unique([userId, phoneId])
+  @@map("wishlist")
+}
+
+// Comparison History ("Recently Compared" + "Most Compared Phones")
+model ComparisonHistory {
+  comparisonId String   @id @default(uuid()) @map("comparison_id") @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  phoneIdA     String   @map("phone_id_a") @db.Uuid
+  phoneIdB     String   @map("phone_id_b") @db.Uuid
+  comparedDate DateTime @default(now()) @map("compared_date")
+
+  user   Users  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  phoneA Phones @relation("ComparisonPhoneA", fields: [phoneIdA], references: [phoneId])
+  phoneB Phones @relation("ComparisonPhoneB", fields: [phoneIdB], references: [phoneId])
+
+  @@index([userId, comparedDate(sort: Desc)], map: "idx_comparison_user")
+  @@map("comparison_history")
+}
+
+// Admin Dashboard cache (optional; views can also serve this live)
+model AdminStatsCache {
+  statId               String   @id @default(uuid()) @map("stat_id") @db.Uuid
+  computedDate         DateTime @default(now()) @map("computed_date")
+  mostRecommendedBrand String?  @map("most_recommended_brand") @db.VarChar(60)
+  mostRecommendedPhone String?  @map("most_recommended_phone") @db.VarChar(120)
+  avgUserBudget        Decimal? @map("avg_user_budget") @db.Decimal(10, 2)
+  mostPopularPersona   String?  @map("most_popular_persona") @db.VarChar(60)
+  avgCompatibility     Decimal? @map("avg_compatibility") @db.Decimal(5, 2)
+  mostComparedPhone    String?  @map("most_compared_phone") @db.VarChar(120)
+  mostViewedPhone      String?  @map("most_viewed_phone") @db.VarChar(120)
+
+  @@map("admin_stats_cache")
+}
+
+// ============================================================
+// NOTE — Reporting views (user_analytics, admin_live_stats) are
+// intentionally NOT modeled here. They're added as hand-written
+// raw SQL inside a Prisma migration file (not schema.prisma),
+// since Prisma can't express SQL views as models. See the
+// migration.sql generated via:
+//   npx prisma migrate dev --create-only --name add_reporting_views
+// Query them from application code with prisma.$queryRaw.
+//
+// The recommendation / filter / source columns added in this
+// revision (2026-07-07) are listed below for grep:
+//
+//   Phones.source / sourceUrl        — data provenance
+//   Phones.isActive / discontinuedAt — soft-delete / admin lifecycle
+//   Phones indexes                    — brand, price, antutu, camera, isActive
+//   UserProfile.updatedAt            — audit trail on demographic edits
+//   UserPreference.updatedAt         — detect "user re-took the questionnaire"
+//   RecommendationHistory.queryId    — groups rows from one search call
+//   RecommendationHistory.filtersJson — snapshot of submitted filters
+//   RecommendationHistory @@index([queryId])
+// ============================================================

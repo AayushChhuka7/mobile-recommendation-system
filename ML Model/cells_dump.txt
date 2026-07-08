@@ -1,0 +1,482 @@
+================================================================================
+CELL 48 (code)
+================================================================================
+import numpy as np
+import re
+
+def engineer_storage_type(df):
+    df = df.copy()
+
+    df["Storage_Type"] = (df["Storage_Type"].fillna("Unknown").astype(str).str.strip())
+
+    def storage_family(text):
+        t = text.lower()
+        if "nvme" in t:
+            return "NVMe"
+        elif re.search(r'ufs\s*4', t):
+            return "UFS4"
+        elif re.search(r'ufs\s*3', t):
+            return "UFS3"
+        elif re.search(r'ufs\s*2', t):
+            return "UFS2"
+        elif "umcp" in t or "emcp" in t:
+            return "uMCP"
+        elif re.search(r'emmc\s*5|emmc5|еmmc', t):  
+            return "eMMC5"
+        elif re.search(r'emmc\s*4', t):
+            return "eMMC4"
+        elif "ufs" in t:
+            return "UFS"
+        elif "emmc" in t:
+            return "eMMC"
+        else:
+            return "Other"
+
+    df["Storage_Family"] = df["Storage_Type"].apply(storage_family)
+
+
+    premium = ["UFS3", "UFS4", "NVMe"]
+    df["Premium_Storage"] = df["Storage_Family"].isin(premium).astype(int)
+
+
+    df["Mixed_Storage"] = (
+        df["Storage_Type"]
+        .str.count(r'UFS|eMMC|NVMe|uMCP|eMCP', flags=re.IGNORECASE)
+        .gt(1)
+        .astype(int)
+    )
+
+    score = {
+        "eMMC4": 0,
+        "eMMC5": 1,
+        "uMCP": 2,
+        "UFS2": 3,
+        "UFS3": 4,
+        "UFS": 3,
+        "eMMC": 1,
+        "UFS4": 5,
+        "NVMe": 5,      
+        "Other": np.nan
+    }
+    df["Storage_Performance_Score"] = df["Storage_Family"].map(score)
+
+
+    tier = {
+        "eMMC4": "Entry",
+        "eMMC5": "Budget",
+        "uMCP": "Budget",
+        "UFS2": "Mid",
+        "UFS3": "Premium",
+        "UFS": "Mid",
+        "eMMC": "Budget",
+        "UFS4": "Flagship",
+        "NVMe": "Flagship",
+        "Other": "Unknown"
+    }
+    df["Storage_Tier"] = df["Storage_Family"].map(tier)
+
+
+    df.drop(columns=["Storage_Type"], inplace=True)
+
+    return df
+
+df = engineer_storage_type(df)
+
+
+print(df[['Storage_Family','Premium_Storage','Mixed_Storage',
+              'Storage_Performance_Score','Storage_Tier']].isnull().mean())
+================================================================================
+CELL 55 (code)
+================================================================================
+print(df.columns.tolist())
+================================================================================
+CELL 65 (markdown)
+================================================================================
+### Sensors Columns
+================================================================================
+CELL 70 (code)
+================================================================================
+def engineer_fm_radio(df):
+    df['FM_Radio'] = df['FM_Radio'].fillna('Unknown').astype(str)
+
+    df['Has_FM_Radio'] = df['FM_Radio'].str.contains(r'\bfm radio\b|\byes\b', case=False, regex=True).astype(int)
+    df['FM_Has_RDS'] = df['FM_Radio'].str.contains(r'\brds\b', case=False, regex=True).astype(int)
+    df['FM_Can_Record'] = df['FM_Radio'].str.contains('record', case=False).astype(int)
+
+    print(df[['Has_FM_Radio','FM_Has_RDS','FM_Can_Record']].isna().sum())
+
+    df.drop(columns='FM_Radio', inplace=True)
+
+    return df
+
+df = engineer_fm_radio(df)
+================================================================================
+CELL 75 (code)
+================================================================================
+cols_to_drop = ['Network_Technology','Status','Dimensions','SIM_Type','Display_Type','Chipset','GPU','Camera_Video','WiFi','OS','CPU' , "Announced"]
+
+df.drop(columns=cols_to_drop, inplace=True)
+print(df.shape)
+================================================================================
+CELL 80 (raw)
+================================================================================
+Conclusion : This is a massive red flag. One feature capturing 80% of all importance almost always means data leakage — GeekBench_Score is likely so tightly correlated with your target (AnTuTu_Score) that XGBoost just learned "predict AnTuTu from GeekBench" and ignored everything else
+================================================================================
+CELL 96 (code)
+================================================================================
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('After_EDA_and_Feature_ENginering.csv')
+
+
+def yn(col):
+    return df[col].map({'Yes': 1, 'No': 0}).fillna(0)
+
+def clip_norm(col, lo_q=0.01, hi_q=0.99):
+    """Clip extreme outliers at 1st/99th percentile, then min-max to 0-1."""
+    s = df[col].astype(float)
+    lo, hi = s.quantile(lo_q), s.quantile(hi_q)
+    return (s.clip(lo, hi) - lo) / (hi - lo + 1e-9)
+
+def log_norm(col, lo_q=0.01, hi_q=0.99):
+    """Same as clip_norm but log-scales first -- for right-skewed columns like AnTuTu."""
+    s = np.log1p(df[col].astype(float))
+    lo, hi = s.quantile(lo_q), s.quantile(hi_q)
+    return (s.clip(lo, hi) - lo) / (hi - lo + 1e-9)
+
+tier_map_5 = {'Unknown': 0.3, 'Low': 0.2, 'Medium': 0.5, 'High': 0.75, 'Ultra': 1.0}
+storage_tier_map = {'Unknown': 0.2, 'Entry': 0.2, 'Budget': 0.4, 'Mid': 0.6, 'Premium': 0.8, 'Flagship': 1.0}
+
+df['Refresh_Rate_Hz_clean'] = df['Refresh_Rate_Hz'].clip(upper=165)
+
+
+df['Gaming_Score'] = (
+    log_norm('AnTuTu_Score') * 0.35 +
+    log_norm('GeekBench_Score') * 0.15 +
+    clip_norm('RAM_GB') * 0.15 +
+    df['GPU_Is_Flagship'] * 0.15 +
+    df['Chipset_Is_Flagship'] * 0.10 +
+    ((df['Refresh_Rate_Hz_clean'].clip(60,165) - 60) / (165 - 60)) * 0.10
+) * 100
+
+
+df['Camera_Score'] = (
+    clip_norm('Main_Camera_MP') * 0.30 +
+    ((df['Lens_Count'].clip(1,5) - 1) / 4) * 0.15 +
+    (1 - clip_norm('Main_Aperture')) * 0.20 + 
+    yn('OIS') * 0.15 +
+    yn('Camera_4K_Video') * 0.10 +
+    clip_norm('Selfie_Camera_MP') * 0.10
+) * 100
+
+df['Battery_Score'] = (
+    clip_norm('Battery_mAh') * 0.55 +
+    clip_norm('Wired_Charging_W') * 0.35 +
+    yn('Reverse_Wireless_Charging') * 0.10
+) * 100
+
+
+df['Display_Brightness_Norm'] = df['Display_Brightness_Tier'].map(tier_map_5).fillna(0.3)
+df['Display_Score'] = (
+    clip_norm('PPI_Density') * 0.30 +
+    ((df['Refresh_Rate_Hz_clean'].clip(60,165) - 60) / (165 - 60)) * 0.25 +
+    df['Display_Brightness_Norm'] * 0.20 +
+    df['Display_Has_HDR'] * 0.15 +
+    df['Display_Is_LTPO'] * 0.10
+) * 100
+
+
+df['Software_Score'] = (
+    clip_norm('Software_Support_Score') * 0.55 +
+    clip_norm('Android_Major_Version') * 0.25 +
+    df['Long_Term_Support'] * 0.20
+) * 100
+
+
+df['Security_Score'] = (
+    df['Has_Fingerprint'] * 0.45 +
+    df['Has_Face_Unlock'] * 0.25 +
+    df['Fingerprint_Position'].astype(str).str.contains('display', case=False, na=False).astype(int) * 0.30
+) * 100
+
+df['Connectivity_Score'] = (
+    (df['Max_Network_Gen'].clip(0,5) / 5) * 0.35 +
+    (df['WiFi_Generation'].clip(0,6) / 6) * 0.25 +
+    df['Has_Multi_GNSS'] * 0.15 +
+    df['NFC'].map({'Yes':1,'No':0}).fillna(0) * 0.15 +
+    clip_norm('Bluetooth_Version') * 0.10
+) * 100
+
+
+df['Portability_Score'] = (
+    (1 - clip_norm('Weight_g')) * 0.5 +
+    (1 - clip_norm('Thickness_mm')) * 0.5
+) * 100
+
+
+df['Storage_Score'] = (
+    clip_norm('Storage_GB') * 0.5 +
+    df['Storage_Tier'].map(storage_tier_map).fillna(0.2) * 0.5
+) * 100
+
+
+df['Overall_Score'] = (
+    df['Gaming_Score']       * 0.22 +
+    df['Camera_Score']       * 0.18 +
+    df['Battery_Score']      * 0.16 +
+    df['Display_Score']      * 0.14 +
+    df['Software_Score']     * 0.12 +
+    df['Storage_Score']      * 0.08 +
+    df['Connectivity_Score'] * 0.05 +
+    df['Security_Score']     * 0.03 +
+    df['Portability_Score']  * 0.02
+)
+
+df['Value_Ratio'] = df['Overall_Score'] / np.log1p(df['Price_EUR'])
+df['Value_Score'] = df['Value_Ratio'].rank(pct=True) * 100
+================================================================================
+CELL 98 (code)
+================================================================================
+from dataclasses import dataclass, field
+from typing import Optional, Literal
+from enum import Enum
+
+
+# ---------------------------------------------------------------
+# 1. PERSONA PRESETS -- pre-built weight profiles (option #4)
+#    Each phone-scoring dimension gets a default importance (0-1)
+# ---------------------------------------------------------------
+PERSONA_PRESETS = {
+    "Gamer": {
+        "Gaming": 1.0, "Camera": 0.3, "Battery": 0.7,
+        "Display": 0.8, "Software": 0.3, "Storage": 0.5,
+        "Connectivity": 0.4, "Security": 0.2, "Portability": 0.2,
+    },
+    "Camera_Lover": {
+        "Gaming": 0.3, "Camera": 1.0, "Battery": 0.5,
+        "Display": 0.6, "Software": 0.4, "Storage": 0.6,
+        "Connectivity": 0.3, "Security": 0.2, "Portability": 0.4,
+    },
+    "Battery_Focused": {
+        "Gaming": 0.4, "Camera": 0.4, "Battery": 1.0,
+        "Display": 0.4, "Software": 0.3, "Storage": 0.3,
+        "Connectivity": 0.3, "Security": 0.2, "Portability": 0.5,
+    },
+    "All_Rounder": {
+        "Gaming": 0.6, "Camera": 0.6, "Battery": 0.6,
+        "Display": 0.6, "Software": 0.5, "Storage": 0.5,
+        "Connectivity": 0.5, "Security": 0.4, "Portability": 0.4,
+    },
+    "Business_User": {
+        "Gaming": 0.2, "Camera": 0.4, "Battery": 0.8,
+        "Display": 0.5, "Software": 0.9, "Storage": 0.5,
+        "Connectivity": 0.7, "Security": 0.9, "Portability": 0.6,
+    },
+}
+
+SCORE_DIMENSIONS = [
+    "Gaming", "Camera", "Battery", "Display", "Software",
+    "Storage", "Connectivity", "Security", "Portability",
+]
+
+
+class PersonaType(str, Enum):
+    GAMER = "Gamer"
+    CAMERA_LOVER = "Camera_Lover"
+    BATTERY_FOCUSED = "Battery_Focused"
+    ALL_ROUNDER = "All_Rounder"
+    BUSINESS_USER = "Business_User"
+    CUSTOM = "Custom"
+
+
+# ---------------------------------------------------------------
+# 2. THE USER INPUT SCHEMA ITSELF
+#    This is what your UI form / API endpoint collects and sends
+# ---------------------------------------------------------------
+@dataclass
+class UserPreferenceInput:
+    # --- Required, hard filters (applied BEFORE any scoring) ---
+    budget_max_eur: float
+    budget_min_eur: float = 0.0
+
+    # --- Persona quick-pick (drives default weights) ---
+    persona: PersonaType = PersonaType.ALL_ROUNDER
+
+    # --- Optional hard filters ---
+    preferred_brands: Optional[list] = None        # e.g. ["Samsung", "OnePlus"]
+    exclude_brands: Optional[list] = None
+    min_ram_gb: Optional[float] = None
+    require_5g: bool = False
+    require_purchasable: bool = True                # almost always True
+
+    # --- Advanced/custom weights (option #1, star-rating override) ---
+    # 1-5 stars per dimension; None = use persona default instead
+    custom_weights_stars: dict = field(default_factory=dict)
+    # e.g. {"Gaming": 5, "Camera": 2}  -> overrides persona default for those keys only
+
+    # --- Metadata ---
+    top_n_results: int = 5
+
+    def __post_init__(self):
+        # ---- validation, the way a real API layer would enforce it ----
+        if self.budget_max_eur <= 0:
+            raise ValueError("budget_max_eur must be positive")
+        if self.budget_min_eur > self.budget_max_eur:
+            raise ValueError("budget_min_eur cannot exceed budget_max_eur")
+        for dim, stars in self.custom_weights_stars.items():
+            if dim not in SCORE_DIMENSIONS:
+                raise ValueError(f"Unknown scoring dimension: {dim}")
+            if not (1 <= stars <= 5):
+                raise ValueError(f"{dim} star rating must be 1-5, got {stars}")
+
+    def resolve_weights(self) -> dict:
+        """
+        Merge persona defaults with any custom star-rating overrides.
+        Stars (1-5) convert to weights (0.2-1.0) on the same scale as personas.
+        """
+        weights = dict(PERSONA_PRESETS[self.persona.value]) if self.persona != PersonaType.CUSTOM \
+                  else {d: 0.5 for d in SCORE_DIMENSIONS}
+
+        for dim, stars in self.custom_weights_stars.items():
+            weights[dim] = stars / 5.0   # 5 stars -> 1.0, 1 star -> 0.2
+
+        return weights
+================================================================================
+CELL 102 (code)
+================================================================================
+score_cols_map = {
+    "Gaming": "Gaming_Score", "Camera": "Camera_Score", "Battery": "Battery_Score",
+    "Display": "Display_Score", "Software": "Software_Score", "Storage": "Storage_Score",
+    "Connectivity": "Connectivity_Score", "Security": "Security_Score", "Portability": "Portability_Score",
+}
+================================================================================
+CELL 104 (code)
+================================================================================
+def recommend(df, request, score_cols_map , exclude_imputed_price=True):
+    weights = request.resolve_weights()
+
+    candidates = df.copy()
+    if exclude_imputed_price:
+        candidates = candidates[candidates['Price_EUR_is_imputed'] == False]
+
+    if request.require_purchasable:
+        candidates = candidates[candidates['Is_Purchasable'] == 1]
+    candidates = candidates[
+        (candidates['Price_EUR'] >= request.budget_min_eur) &
+        (candidates['Price_EUR'] <= request.budget_max_eur)
+    ]
+    if request.preferred_brands:
+        candidates = candidates[candidates['Brand'].isin(request.preferred_brands)]
+    if request.exclude_brands:
+        candidates = candidates[~candidates['Brand'].isin(request.exclude_brands)]
+    if request.min_ram_gb:
+        candidates = candidates[candidates['RAM_GB'] >= request.min_ram_gb]
+    if request.require_5g:
+        candidates = candidates[candidates['Has_5G'] == 1]
+
+    # de-duplicate storage/color variants of the same phone before ranking
+    candidates = candidates.sort_values('Price_EUR').drop_duplicates(subset=['Brand','Model_Name'], keep='first')
+
+    if candidates.empty:
+        return None, "No phones match these filters -- try relaxing budget or brand."
+
+    weight_sum = sum(weights.values())
+    match_score = pd.Series(0.0, index=candidates.index)
+    for dim, w in weights.items():
+        match_score += candidates[score_cols_map[dim]] * w
+    match_score = match_score / weight_sum
+
+    candidates = candidates.assign(Match_Score=match_score.round(1))
+    top = candidates.sort_values('Match_Score', ascending=False).head(request.top_n_results)
+
+    avg_scores = {dim: candidates[score_cols_map[dim]].mean() for dim in weights}
+
+    results = []
+    for _, phone in top.iterrows():
+        reasons = []
+        for dim, w in sorted(weights.items(), key=lambda x: -x[1]):
+            gap = phone[score_cols_map[dim]] - avg_scores[dim]
+            if gap > 5:
+                reasons.append(f"{dim} strong (+{gap:.0f} vs avg)")
+        results.append({
+            "Brand": phone["Brand"], "Model": phone["Model_Name"],
+            "Price_EUR": round(phone["Price_EUR"], 2),
+            "Match_Score": phone["Match_Score"],
+            "Why": reasons[:4],
+        })
+    return results, None
+================================================================================
+CELL 107 (code)
+================================================================================
+import shap
+import numpy as np
+import pandas as pd
+from xgboost import XGBRegressor
+from sklearn.model_selection import train_test_split
+
+df1 = pd.read_csv('After_EDA_and_Feature_ENginering.csv')
+df_model = df1[df1['AnTuTu_Score_is_imputed'] == False].copy()
+
+drop_cols = ['AnTuTu_Score', 'AnTuTu_Score_is_imputed', 'Model_Name', 'Model_URL',
+             'Model_Image', 'AnTuTu_Score_Source']
+X = df_model.drop(columns=[c for c in drop_cols if c in df_model.columns])
+y = np.log1p(df_model['AnTuTu_Score'])
+
+for c in X.select_dtypes(include=['object', 'string']).columns:
+    X[c] = X[c].astype('category')
+
+provenance_cols = [c for c in X.columns if c.endswith('_Source') or c.endswith('_is_imputed')]
+X = X.drop(columns=provenance_cols)
+print("Dropped:", provenance_cols)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = XGBRegressor(enable_categorical=True, tree_method='hist', max_depth=6,
+                      n_estimators=300, learning_rate=0.05, subsample=0.8,
+                      colsample_bytree=0.8, reg_lambda=2.0, random_state=42)
+model.fit(X_train, y_train)
+
+## test 
+from sklearn.model_selection import KFold, cross_val_score
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+cv_scores = cross_val_score(model, X, y, cv=kf, scoring='r2')
+
+print("R² per fold:", np.round(cv_scores, 4))
+print("Mean R²:", cv_scores.mean().round(4))
+print("Std  R²:", cv_scores.std().round(4))
+
+explainer = shap.TreeExplainer(model)
+
+
+def explain_phone(row_index, top_n=5):
+    shap_row = explainer(X.iloc[[row_index]])[0]
+    pairs = sorted(zip(X.columns, shap_row.values), key=lambda p: -abs(p[1]))
+    return pairs[:top_n]
+
+
+def format_explanation(row_index):
+    pairs = explain_phone(row_index)
+    lines = []
+    for feat, val in pairs:
+        sign = "+" if val > 0 else ""
+        lines.append(f"{feat}: {sign}{val:.3f} to performance score")
+    return lines
+
+
+for line in format_explanation(0):
+    print(line)
+
+print(y.describe())
+================================================================================
+CELL 108 (code)
+================================================================================
+def recommend_with_shap(df, request, score_cols_map, X_shap_ref, explainer_fn):
+    results, err = recommend(df, request, score_cols_map)
+    if err:
+        return None, err
+    top_model_name = results[0]["Model"]
+    row_idx = X_shap_ref.index.get_loc(df[df["Model_Name"] == top_model_name].index[0])
+    results[0]["SHAP_Why"] = [f"{f}: {'+' if v>0 else ''}{v:.3f}" for f, v in explainer_fn(row_idx)]
+    return results, None
