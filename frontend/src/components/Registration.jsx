@@ -16,13 +16,13 @@ import {
   PASSWORD_RULES,
   PASSWORD_HINT,
   SELF_ASSIGNABLE_ROLES,
-  NEPAL_CITIES,
-  USAGE_OPTIONS,
   OTP_LENGTH,
   RESEND_COOLDOWN_SECONDS,
   EMPTY_OTP,
   TOAST_DURATION_MS,
 } from "./AuthShared";
+
+const REGISTER_ROLE_OPTIONS = [...SELF_ASSIGNABLE_ROLES, "Admin"];
 
 function Registration({ onLogin }) {
   const navigate = useNavigate();
@@ -37,11 +37,6 @@ function Registration({ onLogin }) {
     phone: "",
   });
   const [registerRole, setRegisterRole] = useState("Customer");
-  const [questionnaire, setQuestionnaire] = useState({
-    location: "",
-    budget: "",
-    usage: [],
-  });
   const [registerErrors, setRegisterErrors] = useState({});
   const [registerLoading, setRegisterLoading] = useState(false);
 
@@ -101,7 +96,6 @@ function Registration({ onLogin }) {
           confirmPassword: registerData.confirmPassword,
           phoneNo: registerData.phone,
           roleName: registerRole,
-          ...(registerRole === "Customer" ? { questionnaire } : {}),
         });
 
         setResendCooldown(RESEND_COOLDOWN_SECONDS);
@@ -118,7 +112,7 @@ function Registration({ onLogin }) {
         setRegisterLoading(false);
       }
     },
-    [registerData, registerRole, questionnaire, validateRegister, navigate],
+    [registerData, registerRole, validateRegister, navigate],
   );
 
   const handleOtpChange = useCallback((index, value) => {
@@ -236,22 +230,6 @@ function Registration({ onLogin }) {
     setRegisterData((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  const updateQuestionnaire = useCallback((key, value) => {
-    setQuestionnaire((prev) => ({ ...prev, [key]: value }));
-  }, []);
-
-  const toggleUsage = useCallback((value) => {
-    setQuestionnaire((prev) => {
-      const has = prev.usage.includes(value);
-      return {
-        ...prev,
-        usage: has
-          ? prev.usage.filter((v) => v !== value)
-          : [...prev.usage, value],
-      };
-    });
-  }, []);
-
   return (
     <div className="auth-page">
       <Toast
@@ -340,85 +318,13 @@ function Registration({ onLogin }) {
                 value={registerRole}
                 onChange={(e) => setRegisterRole(e.target.value)}
               >
-                {SELF_ASSIGNABLE_ROLES.map((role) => (
+                {REGISTER_ROLE_OPTIONS.map((role) => (
                   <option key={role} value={role}>
                     {role}
                   </option>
                 ))}
               </select>
             </div>
-
-            {registerRole === "Customer" && (
-              <div className="questionnaire-section">
-                <div className="questionnaire-title">
-                  Tell us a bit about yourself
-                </div>
-                <div className="questionnaire-hint">
-                  This helps us recommend the right phone for you.
-                </div>
-
-                <div className="input-group">
-                  <label className="input-label">Where are you from?</label>
-                  <select
-                    className="input-field"
-                    value={questionnaire.location}
-                    onChange={(e) =>
-                      updateQuestionnaire("location", e.target.value)
-                    }
-                  >
-                    <option value="">Select a city</option>
-                    {NEPAL_CITIES.map((city) => (
-                      <option key={city} value={city}>
-                        {city}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="input-group">
-                  <label className="input-label">
-                    What's your budget range?
-                  </label>
-                  <select
-                    className="input-field"
-                    value={questionnaire.budget}
-                    onChange={(e) =>
-                      updateQuestionnaire("budget", e.target.value)
-                    }
-                  >
-                    <option value="">Select a range</option>
-                    <option value="under-200">Under €200</option>
-                    <option value="200-500">€200 - €500</option>
-                    <option value="500-1000">€500 - €1000</option>
-                    <option value="above-1000">Above €1000</option>
-                  </select>
-                </div>
-
-                <div className="input-group">
-                  <label className="input-label">
-                    What will you mainly use it for?
-                  </label>
-                  <div className="usage-options">
-                    {USAGE_OPTIONS.map((option) => {
-                      const selected = questionnaire.usage.includes(
-                        option.value,
-                      );
-                      return (
-                        <button
-                          key={option.value}
-                          type="button"
-                          className={`usage-chip ${selected ? "selected" : ""}`}
-                          onClick={() => toggleUsage(option.value)}
-                          aria-pressed={selected}
-                        >
-                          {option.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
 
             <button
               type="submit"
