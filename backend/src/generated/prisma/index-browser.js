@@ -152,6 +152,95 @@ exports.Prisma.SessionScalarFieldEnum = {
   expire: 'expire'
 };
 
+exports.Prisma.BrandsScalarFieldEnum = {
+  brandId: 'brandId',
+  name: 'name',
+  logoUrl: 'logoUrl',
+  website: 'website',
+  country: 'country',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PhonesScalarFieldEnum = {
+  phoneId: 'phoneId',
+  brandId: 'brandId',
+  modelName: 'modelName',
+  imageUrl: 'imageUrl',
+  imagePath: 'imagePath',
+  antutuScore: 'antutuScore',
+  batteryMah: 'batteryMah',
+  source: 'source',
+  sourceUrl: 'sourceUrl',
+  isActive: 'isActive',
+  discontinuedAt: 'discontinuedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PhoneVariantsScalarFieldEnum = {
+  variantId: 'variantId',
+  phoneId: 'phoneId',
+  ramGb: 'ramGb',
+  storageGb: 'storageGb',
+  price: 'price',
+  storageType: 'storageType',
+  colors: 'colors',
+  isAvailable: 'isAvailable',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PhoneSpecsScalarFieldEnum = {
+  specId: 'specId',
+  phoneId: 'phoneId',
+  networkTech: 'networkTech',
+  supports5g: 'supports5g',
+  supportsNfc: 'supportsNfc',
+  dualSim: 'dualSim',
+  simType: 'simType',
+  wifi: 'wifi',
+  bluetooth: 'bluetooth',
+  usbType: 'usbType',
+  headphoneJack: 'headphoneJack',
+  gps: 'gps',
+  sensors: 'sensors',
+  displayType: 'displayType',
+  refreshRate: 'refreshRate',
+  displaySize: 'displaySize',
+  resolution: 'resolution',
+  ppiDensity: 'ppiDensity',
+  screenToBody: 'screenToBody',
+  displayProtection: 'displayProtection',
+  os: 'os',
+  osVersion: 'osVersion',
+  chipset: 'chipset',
+  processNode: 'processNode',
+  cpu: 'cpu',
+  gpu: 'gpu',
+  mainCamera: 'mainCamera',
+  lensCount: 'lensCount',
+  mainAperture: 'mainAperture',
+  ois: 'ois',
+  sensorSize: 'sensorSize',
+  camera4K: 'camera4K',
+  cameraVideo: 'cameraVideo',
+  selfieCamera: 'selfieCamera',
+  selfie4K: 'selfie4K',
+  dimensions: 'dimensions',
+  weight: 'weight',
+  buildMaterial: 'buildMaterial',
+  ipRating: 'ipRating',
+  batteryMah: 'batteryMah',
+  wiredCharging: 'wiredCharging',
+  wirelessCharging: 'wirelessCharging',
+  reverseWireless: 'reverseWireless',
+  announced: 'announced',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserProfileScalarFieldEnum = {
   profileId: 'profileId',
   userId: 'userId',
@@ -170,35 +259,7 @@ exports.Prisma.UserPreferenceScalarFieldEnum = {
   maxBudget: 'maxBudget',
   cameraPreference: 'cameraPreference',
   usageType: 'usageType',
-  preferredBrand: 'preferredBrand',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PhonesScalarFieldEnum = {
-  phoneId: 'phoneId',
-  brand: 'brand',
-  modelName: 'modelName',
-  price: 'price',
-  antutuScore: 'antutuScore',
-  ramGb: 'ramGb',
-  storageGb: 'storageGb',
-  batteryMah: 'batteryMah',
-  chargingWatts: 'chargingWatts',
-  displayType: 'displayType',
-  displayPpi: 'displayPpi',
-  cameraScore: 'cameraScore',
-  frontCameraScore: 'frontCameraScore',
-  osName: 'osName',
-  supports5g: 'supports5g',
-  supportsNfc: 'supportsNfc',
-  dualSim: 'dualSim',
-  source: 'source',
-  sourceUrl: 'sourceUrl',
-  imageUrl: 'imageUrl',
-  imagePath: 'imagePath',
-  isActive: 'isActive',
-  discontinuedAt: 'discontinuedAt',
+  preferredBrandId: 'preferredBrandId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -268,12 +329,12 @@ exports.Prisma.AdminStatsCacheScalarFieldEnum = {
   statId: 'statId',
   computedDate: 'computedDate',
   mostRecommendedBrand: 'mostRecommendedBrand',
-  mostRecommendedPhone: 'mostRecommendedPhone',
+  mostRecommendedPhoneId: 'mostRecommendedPhoneId',
+  mostComparedPhoneId: 'mostComparedPhoneId',
+  mostViewedPhoneId: 'mostViewedPhoneId',
   avgUserBudget: 'avgUserBudget',
   mostPopularPersona: 'mostPopularPersona',
-  avgCompatibility: 'avgCompatibility',
-  mostComparedPhone: 'mostComparedPhone',
-  mostViewedPhone: 'mostViewedPhone'
+  avgCompatibility: 'avgCompatibility'
 };
 
 exports.Prisma.SortOrder = {
@@ -351,9 +412,12 @@ exports.Prisma.ModelName = {
   Users: 'Users',
   Otp: 'Otp',
   Session: 'Session',
+  Brands: 'Brands',
+  Phones: 'Phones',
+  PhoneVariants: 'PhoneVariants',
+  PhoneSpecs: 'PhoneSpecs',
   UserProfile: 'UserProfile',
   UserPreference: 'UserPreference',
-  Phones: 'Phones',
   RecommendationHistory: 'RecommendationHistory',
   CustomerProfile: 'CustomerProfile',
   Wishlist: 'Wishlist',
