@@ -120,21 +120,6 @@ function Login({ onLogin }) {
                 error={loginErrors.password}
               />
 
-              <div className="input-group">
-                <label className="input-label">Login As</label>
-                <select
-                  className="input-field"
-                  value={roleName}
-                  onChange={(e) => setRoleName(e.target.value)}
-                >
-                  {SELF_ASSIGNABLE_ROLES.map((role) => (
-                    <option key={role} value={role}>
-                      {role}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
               <div className="login-options">
                 <label className="remember-me">
                   <input
