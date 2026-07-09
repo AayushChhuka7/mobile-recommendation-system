@@ -143,12 +143,14 @@ function Registration({ onLogin }) {
   }, []);
 
   const completeRegistration = useCallback(() => {
+    // Pass the full user data with an id-like field so App.jsx can validate
     onLogin({
+      id: registerData.email, // Use email as fallback identifier
       name: registerData.username,
       email: registerData.email,
       roleName: registerRole,
     });
-  }, [registerData, registerRole, onLogin]);
+}, [registerData, registerRole, onLogin]);
 
   const handleOtpVerify = useCallback(
     async (e) => {
