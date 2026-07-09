@@ -1,6 +1,8 @@
+import { unauthorized } from '../utils/ApiError.mjs';
+
 export const isAuthenticate = (req, res, next) => {
   if (!req.isAuthenticated()) {
-    return res.status(401).json({ message: "please login" });
+    throw unauthorized('Please login to access this resource');
   }
   next();
 };
