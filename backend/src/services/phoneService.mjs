@@ -166,3 +166,306 @@ export const getPhoneById = async (phoneId) => {
 
   return phone;
 };
+
+// Add these functions after getAllPhones
+
+// GET /api/phones/search?q=iPhone
+export const searchPhones = async (queryParams) => {
+  const searchTerm = queryParams.q || queryParams.search;
+
+  if (!searchTerm) {
+    return {
+      phones: [],
+      pagination: {
+        page: 1,
+        limit: 20,
+        total: 0,
+        totalPages: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+      },
+    };
+  }
+
+  const page = parseInt(queryParams.page) || 1;
+  const limit = Math.min(parseInt(queryParams.limit) || 20, 100);
+  const skip = (page - 1) * limit;
+
+  const where = {
+    isActive: true,
+    modelName: { contains: searchTerm, mode: "insensitive" },
+  };
+
+  const [phones, total] = await Promise.all([
+    prisma.phones.findMany({
+      where,
+      include: {
+        brand: {
+          select: { brandId: true, name: true, logoUrl: true },
+        },
+        specs: {
+          select: {
+            os: true,
+            chipset: true,
+            displaySize: true,
+            displayType: true,
+            refreshRate: true,
+            mainCamera: true,
+            batteryMah: true,
+            supports5g: true,
+            supportsNfc: true,
+          },
+        },
+        variants: {
+          where: { isAvailable: true },
+          orderBy: { price: "asc" },
+          select: {
+            variantId: true,
+            ramGb: true,
+            storageGb: true,
+            price: true,
+            storageType: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.phones.count({ where }),
+  ]);
+
+  const pagination = buildPaginationMeta({ page, limit, total });
+
+  return { phones, pagination };
+};
+
+// GET /api/phones/brand/:brandName
+export const getPhonesByBrand = async (brandName, queryParams) => {
+  const page = parseInt(queryParams.page) || 1;
+  const limit = Math.min(parseInt(queryParams.limit) || 20, 100);
+  const skip = (page - 1) * limit;
+
+  // First find the brand
+  const brand = await prisma.brands.findFirst({
+    where: { name: { equals: brandName, mode: "insensitive" } },
+  });
+
+  if (!brand) {
+    throw notFound(`Brand '${brandName}' not found`);
+  }
+
+  const where = {
+    isActive: true,
+    brandId: brand.brandId,
+  };
+
+  const [phones, total] = await Promise.all([
+    prisma.phones.findMany({
+      where,
+      include: {
+        brand: {
+          select: { brandId: true, name: true, logoUrl: true },
+        },
+        specs: {
+          select: {
+            os: true,
+            chipset: true,
+            displaySize: true,
+            displayType: true,
+            refreshRate: true,
+            mainCamera: true,
+            batteryMah: true,
+            supports5g: true,
+            supportsNfc: true,
+          },
+        },
+        variants: {
+          where: { isAvailable: true },
+          orderBy: { price: "asc" },
+          select: {
+            variantId: true,
+            ramGb: true,
+            storageGb: true,
+            price: true,
+            storageType: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.phones.count({ where }),
+  ]);
+
+  const pagination = buildPaginationMeta({ page, limit, total });
+
+  return { brand, phones, pagination };
+};
+
+// GET /api/phones/filters
+export const getFilterOptions = async () => {
+  const [brands, osList, displayTypes, years, priceRange] = await Promise.all([
+    // All brands with phone counts
+    prisma.brands.findMany({
+      select: {
+        brandId: true,
+        name: true,
+        logoUrl: true,
+        _count: { select: { phones: true } },
+      },
+      orderBy: { name: "asc" },
+    }),
+
+    // Distinct OS versions
+    prisma.phoneSpecs.findMany({
+      select: { os: true },
+      distinct: ["os"],
+      where: { os: { not: null } },
+      orderBy: { os: "asc" },
+    }),
+
+    // Distinct display types
+    prisma.phoneSpecs.findMany({
+      select: { displayType: true },
+      distinct: ["displayType"],
+      where: { displayType: { not: null } },
+      orderBy: { displayType: "asc" },
+    }),
+
+    // Available years
+    prisma.$queryRaw`
+      SELECT DISTINCT EXTRACT(YEAR FROM announced)::int as year
+      FROM phone_specs
+      WHERE announced IS NOT NULL
+      ORDER BY year DESC
+    `,
+
+    // Price range
+    prisma.phoneVariants.aggregate({
+      _min: { price: true },
+      _max: { price: true },
+    }),
+  ]);
+
+  return {
+    brands: brands.map((b) => ({
+      id: b.brandId,
+      name: b.name,
+      logoUrl: b.logoUrl,
+      phoneCount: b._count.phones,
+    })),
+    os: osList.map((o) => o.os).filter(Boolean),
+    displayTypes: displayTypes.map((d) => d.displayType).filter(Boolean),
+    years: years.map((y) => y.year),
+    priceRange: {
+      min: priceRange._min.price ? parseFloat(priceRange._min.price) : 0,
+      max: priceRange._max.price ? parseFloat(priceRange._max.price) : 0,
+      currency: "EUR",
+    },
+    ramOptions: [2, 4, 6, 8, 12, 16],
+    storageOptions: [32, 64, 128, 256, 512, 1024],
+    features: [
+      { key: "has5G", label: "5G Support" },
+      { key: "hasNfc", label: "NFC" },
+      { key: "hasOis", label: "OIS Camera" },
+      { key: "hasHeadphoneJack", label: "Headphone Jack" },
+    ],
+    sortOptions: [
+      { key: "newest", label: "Newest First" },
+      { key: "oldest", label: "Oldest First" },
+      { key: "name_asc", label: "Name A-Z" },
+      { key: "name_desc", label: "Name Z-A" },
+      { key: "price_asc", label: "Price Low to High" },
+      { key: "price_desc", label: "Price High to Low" },
+      { key: "antutu", label: "Performance Score" },
+    ],
+  };
+};
+
+// GET /api/phones/stats
+export const getPhoneStats = async () => {
+  const [
+    totalPhones,
+    totalBrands,
+    totalVariants,
+    priceStats,
+    specsStats,
+    topBrands,
+  ] = await Promise.all([
+    prisma.phones.count({ where: { isActive: true } }),
+    prisma.brands.count(),
+    prisma.phoneVariants.count({ where: { isAvailable: true } }),
+
+    prisma.phoneVariants.aggregate({
+      _min: { price: true },
+      _max: { price: true },
+      _avg: { price: true },
+    }),
+
+    // Specs aggregates
+    Promise.all([
+      prisma.phoneSpecs.count({ where: { supports5g: true } }),
+      prisma.phoneSpecs.count({ where: { supportsNfc: true } }),
+      prisma.phoneSpecs.count({ where: { ois: true } }),
+      prisma.phoneSpecs.aggregate({
+        _avg: { batteryMah: true, displaySize: true, lensCount: true },
+      }),
+    ]),
+
+    // Top 5 brands
+    prisma.brands.findMany({
+      select: {
+        name: true,
+        logoUrl: true,
+        _count: { select: { phones: true } },
+      },
+      orderBy: { phones: { _count: "desc" } },
+      take: 5,
+    }),
+  ]);
+
+  const [fiveGCount, nfcCount, oisCount, avgSpecs] = specsStats;
+
+  return {
+    totalPhones,
+    totalBrands,
+    totalVariants,
+    pricing: {
+      min: priceStats._min.price ? parseFloat(priceStats._min.price) : 0,
+      max: priceStats._max.price ? parseFloat(priceStats._max.price) : 0,
+      avg: priceStats._avg.price
+        ? Math.round(parseFloat(priceStats._avg.price) * 100) / 100
+        : 0,
+      currency: "EUR",
+    },
+    features: {
+      fiveG: fiveGCount,
+      nfc: nfcCount,
+      ois: oisCount,
+      fiveGPercent:
+        totalPhones > 0 ? Math.round((fiveGCount / totalPhones) * 100) : 0,
+      nfcPercent:
+        totalPhones > 0 ? Math.round((nfcCount / totalPhones) * 100) : 0,
+      oisPercent:
+        totalPhones > 0 ? Math.round((oisCount / totalPhones) * 100) : 0,
+    },
+    averages: {
+      batteryMah: avgSpecs._avg.batteryMah
+        ? Math.round(avgSpecs._avg.batteryMah)
+        : 0,
+      displaySize: avgSpecs._avg.displaySize
+        ? Math.round(parseFloat(avgSpecs._avg.displaySize) * 100) / 100
+        : 0,
+      lensCount: avgSpecs._avg.lensCount
+        ? Math.round(parseFloat(avgSpecs._avg.lensCount) * 10) / 10
+        : 0,
+    },
+    topBrands: topBrands.map((b) => ({
+      name: b.name,
+      logoUrl: b.logoUrl,
+      phoneCount: b._count.phones,
+    })),
+  };
+};
