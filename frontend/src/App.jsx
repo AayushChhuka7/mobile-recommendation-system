@@ -3,6 +3,7 @@ import "./App.css";
 import Login from "./components/Login";
 import Registration from "./components/Registration";
 import ForgotPassword from "./components/ForgotPassword";
+import Dashboard from "./components/Dashboard";
 import { useAuth } from "./hooks/useAuth.jsx";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           element={<Registration onLogin={handleLogin} />}
         />
         <Route path="/forgot-password/*" element={<ForgotPassword />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </div>
