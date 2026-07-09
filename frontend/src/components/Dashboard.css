@@ -371,3 +371,12 @@
     width: 240px;
   }
 }
+.dash-status {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 8px 0 24px;
+}
+
+.dash-status-error {
+  color: var(--danger);
+}
