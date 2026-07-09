@@ -469,3 +469,179 @@ export const getPhoneStats = async () => {
     })),
   };
 };
+// POST /api/phones/compare
+// Body: { phoneIds: ["uuid1", "uuid2", "uuid3"] }
+export const comparePhones = async (phoneIds) => {
+  // Maximum 5 phones for comparison
+  if (phoneIds.length > 5) {
+    throw badRequest("Maximum 5 phones can be compared at once");
+  }
+
+  if (phoneIds.length < 2) {
+    throw badRequest("At least 2 phones are required for comparison");
+  }
+
+  const phones = await prisma.phones.findMany({
+    where: {
+      phoneId: { in: phoneIds },
+      isActive: true,
+    },
+    include: {
+      brand: true,
+      specs: true,
+      variants: {
+        where: { isAvailable: true },
+        orderBy: { price: "asc" },
+      },
+    },
+  });
+
+  // Check if all phones were found
+  if (phones.length !== phoneIds.length) {
+    throw notFound("One or more phones not found");
+  }
+
+  // Return phones in the same order as requested IDs
+  return phoneIds.map((id) => phones.find((p) => p.phoneId === id));
+};
+
+// GET /api/phones/featured — Popular/featured phones
+export const getFeaturedPhones = async () => {
+  const phones = await prisma.phones.findMany({
+    where: {
+      isActive: true,
+      specs: {
+        supports5g: true,
+      },
+    },
+    include: {
+      brand: {
+        select: { brandId: true, name: true, logoUrl: true },
+      },
+      specs: {
+        select: {
+          os: true,
+          chipset: true,
+          displaySize: true,
+          displayType: true,
+          refreshRate: true,
+          mainCamera: true,
+          batteryMah: true,
+          supports5g: true,
+          supportsNfc: true,
+        },
+      },
+      variants: {
+        where: { isAvailable: true },
+        orderBy: { price: "asc" },
+        select: {
+          variantId: true,
+          ramGb: true,
+          storageGb: true,
+          price: true,
+          storageType: true,
+        },
+      },
+    },
+    orderBy: { antutuScore: "desc" },
+    take: 10,
+  });
+
+  return phones;
+};
+
+// GET /api/phones/latest — Latest releases
+export const getLatestPhones = async () => {
+  const phones = await prisma.phones.findMany({
+    where: {
+      isActive: true,
+      specs: {
+        announced: { not: null },
+      },
+    },
+    include: {
+      brand: {
+        select: { brandId: true, name: true, logoUrl: true },
+      },
+      specs: {
+        select: {
+          os: true,
+          chipset: true,
+          displaySize: true,
+          displayType: true,
+          refreshRate: true,
+          mainCamera: true,
+          batteryMah: true,
+          supports5g: true,
+          supportsNfc: true,
+          announced: true,
+        },
+      },
+      variants: {
+        where: { isAvailable: true },
+        orderBy: { price: "asc" },
+        select: {
+          variantId: true,
+          ramGb: true,
+          storageGb: true,
+          price: true,
+          storageType: true,
+        },
+      },
+    },
+    orderBy: {
+      specs: { announced: "desc" },
+    },
+    take: 10,
+  });
+
+  return phones;
+};
+
+// GET /api/phones/best-value — Phones under €300 with 6GB+ RAM
+export const getBestValuePhones = async () => {
+  const phones = await prisma.phones.findMany({
+    where: {
+      isActive: true,
+      variants: {
+        some: {
+          price: { lte: 300 },
+          ramGb: { gte: 6 },
+        },
+      },
+    },
+    include: {
+      brand: {
+        select: { brandId: true, name: true, logoUrl: true },
+      },
+      specs: {
+        select: {
+          os: true,
+          chipset: true,
+          displaySize: true,
+          displayType: true,
+          refreshRate: true,
+          mainCamera: true,
+          batteryMah: true,
+          supports5g: true,
+          supportsNfc: true,
+        },
+      },
+      variants: {
+        where: { isAvailable: true, price: { lte: 300 }, ramGb: { gte: 6 } },
+        orderBy: { price: "asc" },
+        select: {
+          variantId: true,
+          ramGb: true,
+          storageGb: true,
+          price: true,
+          storageType: true,
+        },
+      },
+    },
+    orderBy: { antutuScore: "desc" },
+    take: 10,
+  });
+
+  return phones;
+};
