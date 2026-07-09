@@ -1,12 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
 import { UserIcon } from "./AuthShared";
-
-const API_BASE_URL = "http://localhost:8000/api";
 
 function SearchIcon() {
   return (
@@ -175,9 +173,6 @@ const CATEGORY_OPTIONS = [
   { key: "allrounder", label: "All-rounder", icon: "✨" },
 ];
 
-// Maps the category chips to real query params your getAllPhones controller accepts.
-// (There's no weighted-scoring endpoint on the backend yet, so the sliders below
-// are still UI-only — flagging that rather than pretending they do something.)
 const CATEGORY_FILTERS = {
   gamer: { sort: "antutu" },
   camera: { hasOis: "true", sort: "newest" },
@@ -187,11 +182,24 @@ const CATEGORY_FILTERS = {
 
 const DEFAULT_WEIGHTS = { gaming: 3, camera: 3, battery: 3, display: 3 };
 
-// sendPaginated's exact envelope isn't visible to me (no ApiResponse.mjs),
-// so this checks the two most likely shapes. If phones don't show up,
-// console.log(res.data) once and tell me the shape.
 function unwrapPhones(res) {
-  return res?.data?.data ?? res?.data?.phones ?? [];
+  const apiResponse = res?.data;
+
+  if (!apiResponse) {
+    console.warn("No data in response");
+    return [];
+  }
+
+  if (apiResponse.data && Array.isArray(apiResponse.data)) {
+    return apiResponse.data;
+  }
+
+  if (apiResponse.phones && Array.isArray(apiResponse.phones)) {
+    return apiResponse.phones;
+  }
+
+  console.warn("Unexpected API response shape:", apiResponse);
+  return [];
 }
 
 function Dashboard() {
@@ -220,7 +228,6 @@ function Dashboard() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Initial load — GET /api/phones
   useEffect(() => {
     let ignore = false;
 
@@ -228,12 +235,29 @@ function Dashboard() {
       setIsLoading(true);
       setError(null);
       try {
-        const res = await axios.get(`${API_BASE_URL}/phones`, {
+        const res = await api.get("/phones", {
           params: { limit: 6, sort: "newest" },
         });
-        if (!ignore) setPhones(unwrapPhones(res));
+
+        if (!ignore) {
+          const phoneList = unwrapPhones(res);
+          setPhones(phoneList);
+        }
       } catch (err) {
-        if (!ignore) setError("Couldn't load phones. Please try again.");
+        if (!ignore) {
+          if (err.response?.status === 401) {
+            setError("Session expired. Please login again.");
+            setTimeout(() => {
+              logout();
+              navigate("/login", { replace: true });
+            }, 2000);
+          } else {
+            setError(
+              err.response?.data?.message ||
+                "Couldn't load phones. Please try again.",
+            );
+          }
+        }
       } finally {
         if (!ignore) setIsLoading(false);
       }
@@ -243,15 +267,15 @@ function Dashboard() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [navigate, logout]);
 
-  const handleSignOut = useCallback(() => {
-    if (typeof logout === "function") {
-      logout();
-    } else {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+  const handleSignOut = useCallback(async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (err) {
+      console.error("Logout error:", err);
     }
+    logout();
     navigate("/login", { replace: true });
   }, [logout, navigate]);
 
@@ -259,19 +283,23 @@ function Dashboard() {
     setWeights((prev) => ({ ...prev, [key]: Number(value) }));
   }, []);
 
-  // GET /api/phones with category-mapped filters
   const handleFindPhone = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const filters = CATEGORY_FILTERS[selectedCategory] || {};
-      const res = await axios.get(`${API_BASE_URL}/phones`, {
+      const res = await api.get("/phones", {
         params: { ...filters, limit: 6 },
       });
-      setPhones(unwrapPhones(res));
+
+      const phoneList = unwrapPhones(res);
+      setPhones(phoneList);
       setSearchOpen(false);
     } catch (err) {
-      setError("Couldn't fetch recommendations. Please try again.");
+      setError(
+        err.response?.data?.message ||
+          "Couldn't fetch recommendations. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -349,7 +377,21 @@ function Dashboard() {
         </div>
 
         {isLoading && <p className="dash-status">Loading phones…</p>}
-        {error && <p className="dash-status dash-status-error">{error}</p>}
+
+        {error && (
+          <div className="dash-status dash-status-error">
+            <p>{error}</p>
+            <button
+              type="button"
+              className="btn btn-small"
+              onClick={() => window.location.reload()}
+              style={{ marginTop: 8 }}
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         {!isLoading && !error && phones.length === 0 && (
           <p className="dash-status">
             No phones found. Try adjusting your search.
@@ -366,7 +408,20 @@ function Dashboard() {
                 onMouseLeave={() => setHoveredCard(null)}
               >
                 <div className="phone-card-top">
-                  <div className="phone-card-icon">📱</div>
+                  <div className="phone-card-image">
+                    {p.imageUrl ? (
+                      <img
+                        src={p.imageUrl}
+                        alt={p.modelName}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          e.target.parentElement.classList.add("no-image");
+                        }}
+                      />
+                    ) : (
+                      <span className="phone-card-emoji">📱</span>
+                    )}
+                  </div>
                   <div className="phone-card-name">{p.modelName}</div>
                   <div className="phone-card-tagline">
                     {p.brand?.name || "Unknown brand"}

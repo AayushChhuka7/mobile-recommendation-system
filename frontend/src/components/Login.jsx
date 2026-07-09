@@ -10,7 +10,6 @@ import {
   EMAIL_REGEX,
   PASSWORD_MIN_LENGTH,
   PASSWORD_RULES,
-  SELF_ASSIGNABLE_ROLES,
 } from "./AuthShared";
 
 function Login({ onLogin }) {
@@ -21,6 +20,7 @@ function Login({ onLogin }) {
   const [loginErrors, setLoginErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [serverError, setServerError] = useState("");
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
@@ -46,6 +46,8 @@ function Login({ onLogin }) {
   const handleLoginSubmit = useCallback(
     async (e) => {
       e?.preventDefault();
+      setServerError("");
+
       const validationErrors = validateLogin();
       setLoginErrors(validationErrors);
       if (Object.keys(validationErrors).length) return;
@@ -63,10 +65,22 @@ function Login({ onLogin }) {
           password,
           roleName,
         });
-        onLogin(response.data);
+
+        // Let App.jsx handle navigation via onLogin
+        if (onLogin) {
+          onLogin(response.data);
+        }
       } catch (error) {
-        console.error(error);
-        alert(error.response?.data?.message || "Login failed");
+        console.error("Login error:", error);
+
+        if (error.response) {
+          const msg = error.response.data?.message || "Login failed";
+          setServerError(msg);
+        } else if (error.request) {
+          setServerError("Cannot connect to server. Please try again.");
+        } else {
+          setServerError("Something went wrong. Please try again.");
+        }
       } finally {
         setLoading(false);
       }
@@ -98,6 +112,22 @@ function Login({ onLogin }) {
                 Welcome back. Enter your credentials to continue.
               </div>
 
+              {serverError && (
+                <div
+                  className="server-error"
+                  style={{
+                    background: "#fef2f2",
+                    color: "#dc2626",
+                    padding: "12px",
+                    borderRadius: "8px",
+                    marginBottom: "16px",
+                    fontSize: "14px",
+                  }}
+                >
+                  {serverError}
+                </div>
+              )}
+
               <TextField
                 label="Email address"
                 icon={<MailIcon />}
@@ -119,6 +149,33 @@ function Login({ onLogin }) {
                 onChange={(e) => setPassword(e.target.value)}
                 error={loginErrors.password}
               />
+
+              <div className="form-group" style={{ marginTop: 16 }}>
+                <label
+                  style={{
+                    display: "block",
+                    marginBottom: 8,
+                    fontWeight: 500,
+                  }}
+                >
+                  Login as
+                </label>
+                <select
+                  value={roleName}
+                  onChange={(e) => setRoleName(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
+                    border: "1px solid #d1d5db",
+                    fontSize: "14px",
+                  }}
+                >
+                  <option value="Customer">Customer</option>
+                  <option value="Salesman">Salesman</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </div>
 
               <div className="login-options">
                 <label className="remember-me">
