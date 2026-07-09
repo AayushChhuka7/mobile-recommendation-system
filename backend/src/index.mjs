@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
 import { errorHandler } from "./middleware/errorHandler.mjs";
+import { notFound } from "./utils/ApiError.mjs";
 import connectPgSimple from "connect-pg-simple";
 
 import cors from "cors";
@@ -51,13 +52,17 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/", (req, res) => {
+app.get("/", (req, res, next) => {
+  // Home endpoint intentionally returns plain text — it's the human
+  // liveness ping, not part of the JSON API contract.
   return res.send("Home");
 });
 app.use("/api", router);
 
-app.use((req, res) => {
-  return res.send("No PAGE");
+app.use((req, res, next) => {
+  // Any URL that didn't match a route. Forward to the global error
+  // handler so 404s get the standardized envelope.
+  return next(notFound(`No route matches ${req.method} ${req.originalUrl}`));
 });
 
 app.use(errorHandler);

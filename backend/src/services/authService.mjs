@@ -3,18 +3,41 @@ import { generateOtp, hashPassword, verifyPassword } from "../utils/crypto.mjs";
 import { sendEmail } from "../utils/email.mjs";
 import { findRoleByName } from "./rbacService.mjs";
 
+import {
+  notFound,
+  badRequest,
+  unauthorized,
+  internal,
+} from "../utils/ApiError.mjs";
+
 const OTP_TTL_MS = 5 * 60 * 1000;
 
 const newOtpExpiry = () => new Date(Date.now() + OTP_TTL_MS);
+
+// authService — registration, OTP, login/logout, password/email change.
+//
+// Error policy (Phase 2): explicit "this should not exist" /
+// "precondition failed" cases throw a typed factory from
+// `utils/ApiError.mjs`. Raw Prisma errors (P2002, P2025, P2003)
+// bubble up unhandled and are mapped centrally in the errorHandler.
+//
+// Status choices that differ from the pre-Phase-2 code:
+//   - "Current password is incorrect"  403 → 401 AUTH_INVALID_CREDENTIALS
+//     (403 means authenticated-but-forbidden; a failed credential check
+//      on an authenticated user is a credential failure, not a permission
+//      failure — the message is unchanged so FE toast text doesn't move.)
+//
+// Codes that share a category use `details.reason` to disambiguate
+// per the locked-in Phase 1 design.
 
 export const registerUserService = async (userData) => {
   const { confirmPassword, roleName, ...data } = userData;
 
   const role = await findRoleByName(roleName);
   if (!role) {
-    const error = new Error("Service not initialized. Contact support.");
-    error.status = 500;
-    throw error;
+    // Environment misconfiguration: the requested role isn't in the
+    // seed data. This is a server-side problem, not a client one.
+    throw internal("Service not initialized. Contact support.");
   }
 
   const code = generateOtp();
@@ -78,14 +101,15 @@ export const verifyEmailService = async (req) => {
 export const resendOtpService = async (email) => {
   const user = await prisma.users.findUnique({ where: { email } });
   if (!user) {
-    const error = new Error("User not found");
-    error.status = 404;
-    throw error;
+    throw notFound("User not found");
   }
   if (user.isVerified === true) {
-    const error = new Error("User is already verified, please log in");
-    error.status = 400;
-    throw error;
+    // State precondition: client asked to verify an already-verified
+    // account. Same category as "no pending email change" below;
+    // discriminated by `details.reason` for the FE.
+    throw badRequest("User is already verified, please log in", {
+      reason: "already_verified",
+    });
   }
 
   const code = generateOtp();
@@ -108,8 +132,12 @@ export const resendOtpService = async (email) => {
 };
 
 export const userLoginService = (req) => {
+  if (!req.user) {
+    throw unauthorized("Authentication required");
+  }
+
   return {
-    id: req.user.id,
+    id: req.user.userId,
     email: req.user.email,
   };
 };
@@ -120,9 +148,10 @@ export const userLogoutService = (req) => {
       if (err) return reject(err);
       req.session.destroy((sessionErr) => {
         if (sessionErr) {
-          const error = new Error("Could not log out completely");
-          error.status = 500;
-          return reject(error);
+          // Session-store failure on logout is a server problem.
+          // `throw` inside a non-async callback wouldn't reject the
+          // promise, so we propagate via reject().
+          return reject(internal("Could not log out completely"));
         }
         resolve();
       });
@@ -133,9 +162,7 @@ export const userLogoutService = (req) => {
 export const forgetPasswordService = async (email) => {
   const user = await prisma.users.findUnique({ where: { email } });
   if (!user) {
-    const error = new Error("User not found. Please Register");
-    error.status = 404;
-    throw error;
+    throw notFound("User not found. Please Register");
   }
 
   const code = generateOtp();
@@ -188,16 +215,14 @@ export const changePasswordWhileLoggedInService = async (
 ) => {
   const user = await prisma.users.findUnique({ where: { userId } });
   if (!user) {
-    const error = new Error("User Not Found");
-    error.status = 404;
-    throw error;
+    throw notFound("User not found");
   }
 
   const valid = await verifyPassword(currentPasswordRaw, user.password);
   if (!valid) {
-    const error = new Error("Current password is incorrect");
-    error.status = 403;
-    throw error;
+    // 403 → 401: a wrong password is a credential failure, not a
+    // permission failure. Message unchanged so FE toast text is stable.
+    throw unauthorized("Current password is incorrect");
   }
 
   await prisma.users.update({
@@ -213,22 +238,18 @@ export const requestEmailChangeService = async (
 ) => {
   const user = await prisma.users.findUnique({ where: { userId } });
   if (!user) {
-    const error = new Error("User Not Found");
-    error.status = 404;
-    throw error;
+    throw notFound("User not found");
   }
 
   const valid = await verifyPassword(currentPasswordRaw, user.password);
   if (!valid) {
-    const error = new Error("Current password is incorrect");
-    error.status = 403;
-    throw error;
+    throw unauthorized("Current password is incorrect");
   }
 
   if (user.email === newEmail) {
-    const error = new Error("New email must be different from current email");
-    error.status = 400;
-    throw error;
+    throw badRequest("New email must be different from current email", {
+      reason: "same_email",
+    });
   }
 
   const code = generateOtp();
@@ -256,9 +277,9 @@ export const verifyEmailChangeService = async (req) => {
   const newEmail = req.session.pendingEmail;
 
   if (!newEmail) {
-    const error = new Error("No pending email change request");
-    error.status = 400;
-    throw error;
+    throw badRequest("No pending email change request", {
+      reason: "no_pending_email_change",
+    });
   }
 
   await prisma.$transaction([
