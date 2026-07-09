@@ -1,9 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
 import { UserIcon } from "./AuthShared";
+
+const API_BASE_URL = "http://localhost:8000/api";
 
 function SearchIcon() {
   return (
@@ -172,37 +175,24 @@ const CATEGORY_OPTIONS = [
   { key: "allrounder", label: "All-rounder", icon: "✨" },
 ];
 
+// Maps the category chips to real query params your getAllPhones controller accepts.
+// (There's no weighted-scoring endpoint on the backend yet, so the sliders below
+// are still UI-only — flagging that rather than pretending they do something.)
+const CATEGORY_FILTERS = {
+  gamer: { sort: "antutu" },
+  camera: { hasOis: "true", sort: "newest" },
+  battery: { minBattery: 5000, sort: "newest" },
+  allrounder: { sort: "newest" },
+};
+
 const DEFAULT_WEIGHTS = { gaming: 3, camera: 3, battery: 3, display: 3 };
 
-const DEMO_PHONES = [
-  {
-    id: 1,
-    name: "Nova X200",
-    tagline: "Flagship performance",
-    camera: "108MP Triple Camera",
-    battery: "5000mAh · 65W Fast Charge",
-    processor: "Snapdragon 8 Gen 3",
-    price: "$799",
-  },
-  {
-    id: 2,
-    name: "Pixelia S9",
-    tagline: "Photography first",
-    camera: "200MP Quad Camera + OIS",
-    battery: "4700mAh · 45W Fast Charge",
-    processor: "Dimensity 9300",
-    price: "$699",
-  },
-  {
-    id: 3,
-    name: "Aero Lite 5G",
-    tagline: "All-day endurance",
-    camera: "64MP Dual Camera",
-    battery: "6000mAh · 33W Fast Charge",
-    processor: "Snapdragon 7s Gen 2",
-    price: "$449",
-  },
-];
+// sendPaginated's exact envelope isn't visible to me (no ApiResponse.mjs),
+// so this checks the two most likely shapes. If phones don't show up,
+// console.log(res.data) once and tell me the shape.
+function unwrapPhones(res) {
+  return res?.data?.data ?? res?.data?.phones ?? [];
+}
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -214,6 +204,10 @@ function Dashboard() {
   const [weights, setWeights] = useState(DEFAULT_WEIGHTS);
   const [hoveredCard, setHoveredCard] = useState(null);
 
+  const [phones, setPhones] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const profileRef = useRef(null);
 
   useEffect(() => {
@@ -224,6 +218,31 @@ function Dashboard() {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Initial load — GET /api/phones
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadInitial() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const res = await axios.get(`${API_BASE_URL}/phones`, {
+          params: { limit: 6, sort: "newest" },
+        });
+        if (!ignore) setPhones(unwrapPhones(res));
+      } catch (err) {
+        if (!ignore) setError("Couldn't load phones. Please try again.");
+      } finally {
+        if (!ignore) setIsLoading(false);
+      }
+    }
+
+    loadInitial();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const handleSignOut = useCallback(() => {
@@ -239,6 +258,24 @@ function Dashboard() {
   const handleWeightChange = useCallback((key, value) => {
     setWeights((prev) => ({ ...prev, [key]: Number(value) }));
   }, []);
+
+  // GET /api/phones with category-mapped filters
+  const handleFindPhone = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const filters = CATEGORY_FILTERS[selectedCategory] || {};
+      const res = await axios.get(`${API_BASE_URL}/phones`, {
+        params: { ...filters, limit: 6 },
+      });
+      setPhones(unwrapPhones(res));
+      setSearchOpen(false);
+    } catch (err) {
+      setError("Couldn't fetch recommendations. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedCategory]);
 
   const displayName = user?.name || user?.username || "there";
   const email = user?.email || "";
@@ -311,41 +348,66 @@ function Dashboard() {
           <p>Phones recommended to you</p>
         </div>
 
-        <div className="phone-grid">
-          {DEMO_PHONES.map((phone) => (
-            <div
-              key={phone.id}
-              className={`phone-card ${hoveredCard === phone.id ? "expanded" : ""}`}
-              onMouseEnter={() => setHoveredCard(phone.id)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
-              <div className="phone-card-top">
-                <div className="phone-card-icon">📱</div>
-                <div className="phone-card-name">{phone.name}</div>
-                <div className="phone-card-tagline">{phone.tagline}</div>
-              </div>
+        {isLoading && <p className="dash-status">Loading phones…</p>}
+        {error && <p className="dash-status dash-status-error">{error}</p>}
+        {!isLoading && !error && phones.length === 0 && (
+          <p className="dash-status">
+            No phones found. Try adjusting your search.
+          </p>
+        )}
 
-              <div className="phone-card-details">
-                <div className="phone-spec">
-                  <CameraIcon />
-                  <span>{phone.camera}</span>
+        {!isLoading && !error && phones.length > 0 && (
+          <div className="phone-grid">
+            {phones.map((p) => (
+              <div
+                key={p.id}
+                className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
+                onMouseEnter={() => setHoveredCard(p.id)}
+                onMouseLeave={() => setHoveredCard(null)}
+              >
+                <div className="phone-card-top">
+                  <div className="phone-card-icon">📱</div>
+                  <div className="phone-card-name">{p.modelName}</div>
+                  <div className="phone-card-tagline">
+                    {p.brand?.name || "Unknown brand"}
+                  </div>
                 </div>
-                <div className="phone-spec">
-                  <BatteryIcon />
-                  <span>{phone.battery}</span>
-                </div>
-                <div className="phone-spec">
-                  <CpuIcon />
-                  <span>{phone.processor}</span>
-                </div>
-                <div className="phone-spec phone-price">
-                  <TagIcon />
-                  <span>{phone.price}</span>
+
+                <div className="phone-card-details">
+                  {p.keySpecs?.os && (
+                    <div className="phone-spec">
+                      <CpuIcon />
+                      <span>{p.keySpecs.os}</span>
+                    </div>
+                  )}
+                  {p.keySpecs?.camera && (
+                    <div className="phone-spec">
+                      <CameraIcon />
+                      <span>{p.keySpecs.camera}</span>
+                    </div>
+                  )}
+                  {p.keySpecs?.battery && (
+                    <div className="phone-spec">
+                      <BatteryIcon />
+                      <span>{p.keySpecs.battery} mAh</span>
+                    </div>
+                  )}
+                  {p.cheapestVariant?.price && (
+                    <div className="phone-spec phone-price">
+                      <TagIcon />
+                      <span>
+                        €{p.cheapestVariant.price}
+                        {p.cheapestVariant.ram && p.cheapestVariant.storage
+                          ? ` · ${p.cheapestVariant.ram}GB/${p.cheapestVariant.storage}GB`
+                          : ""}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </main>
 
       {isSearchOpen && (
@@ -414,7 +476,7 @@ function Dashboard() {
             <button
               type="button"
               className="btn btn-primary w-full"
-              onClick={() => setSearchOpen(false)}
+              onClick={handleFindPhone}
             >
               Find my phone →
             </button>
