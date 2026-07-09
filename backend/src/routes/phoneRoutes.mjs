@@ -6,6 +6,10 @@ import {
   getPhonesByBrand,
   getFilterOptions,
   getPhoneStats,
+  comparePhones,
+  getFeaturedPhones,
+  getLatestPhones,
+  getBestValuePhones,
 } from "../controller/phoneController.mjs";
 import { isAuthenticate } from "../middleware/auth.mjs";
 
@@ -15,13 +19,19 @@ export const phoneRoutes = Router();
 
 // IMPORTANT: Static routes BEFORE dynamic routes
 
-phoneRoutes.get("/filters", getFilterOptions); // ← Add
+phoneRoutes.get("/filters", getFilterOptions);
 phoneRoutes.get("/stats", getPhoneStats);
 // GET /api/phones/search?q=iPhone
 phoneRoutes.get("/search", searchPhones);
+phoneRoutes.get("/featured", getFeaturedPhones);
+phoneRoutes.get("/latest", getLatestPhones);
+phoneRoutes.get("/best-value", getBestValuePhones);
 
 // GET /api/phones/brand/:brandName
 phoneRoutes.get("/brand/:brandName", getPhonesByBrand);
+
+// POST routes
+phoneRoutes.post("/compare", comparePhones);
 
 // GET /api/phones — List all
 phoneRoutes.get("/", getAllPhones);

@@ -73,3 +73,36 @@ export const getPhoneStats = catchAsync(async (req, res) => {
   const stats = await phoneService.getPhoneStats();
   return sendSuccess(res, stats);
 });
+
+// POST /api/phones/compare
+export const comparePhones = catchAsync(async (req, res) => {
+  const { phoneIds } = req.body;
+
+  if (!phoneIds || !Array.isArray(phoneIds)) {
+    throw badRequest("phoneIds must be an array of phone IDs");
+  }
+
+  const phones = await phoneService.comparePhones(phoneIds);
+
+  return sendSuccess(res, phones.map(formatPhoneDetail), {
+    message: "Phones compared successfully",
+  });
+});
+
+// GET /api/phones/featured
+export const getFeaturedPhones = catchAsync(async (req, res) => {
+  const phones = await phoneService.getFeaturedPhones();
+  return sendSuccess(res, phones.map(formatPhoneListItem));
+});
+
+// GET /api/phones/latest
+export const getLatestPhones = catchAsync(async (req, res) => {
+  const phones = await phoneService.getLatestPhones();
+  return sendSuccess(res, phones.map(formatPhoneListItem));
+});
+
+// GET /api/phones/best-value
+export const getBestValuePhones = catchAsync(async (req, res) => {
+  const phones = await phoneService.getBestValuePhones();
+  return sendSuccess(res, phones.map(formatPhoneListItem));
+});
