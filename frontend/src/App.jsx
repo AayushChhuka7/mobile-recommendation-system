@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Registration from "./components/Registration";
 import ForgotPassword from "./components/ForgotPassword";
 import Dashboard from "./components/Dashboard";
+import PhoneListing from "./components/PhoneListing";
 import { useAuth } from "./hooks/useAuth.jsx";
 
 function App() {
@@ -13,13 +14,16 @@ function App() {
   const handleLogin = (userData) => {
     if (!userData) return;
 
+    // Extract user data — handle both shapes
     const unwrapped = userData.user
       ? { ...userData.user, ...(userData.role ? { role: userData.role } : {}) }
       : userData;
-    if (unwrapped.id || unwrapped.userId || unwrapped.email) {
-      login(unwrapped);
-      navigate("/dashboard", { replace: true });
-    }
+
+    // Store in auth context
+    login(unwrapped);
+
+    // Navigate to dashboard (single source of navigation)
+    navigate("/dashboard", { replace: true });
   };
 
   return (
@@ -32,7 +36,10 @@ function App() {
         />
         <Route path="/forgot-password/*" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/phones" element={<PhoneListing />} /> {/* ← ADD THIS */}
+        {/* <Route path="/phones/:id" element={<PhoneDetail />} /> */}
         <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* <Route path="/phones" element={<PhoneListing />} /> */}
       </Routes>
     </div>
   );
