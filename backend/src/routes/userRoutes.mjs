@@ -13,6 +13,7 @@ import { loadUserContext } from "../middleware/loadUserContext.mjs";
 import { requireRole } from "../middleware/requireRole.mjs";
 import { loadUserById } from "../middleware/userLoader.mjs";
 import { validationWith } from "../middleware/validator.mjs";
+import { badRequest } from "../utils/ApiError.mjs";
 import {
   assignRoleValidation,
   userCreationValidation,
@@ -61,7 +62,7 @@ userRoutes.delete(
   loadUserById,
   (req, res, next) => {
     if (!ROLE_NAME_PATTERN.test(req.params.roleName)) {
-      return res.status(400).json({ message: "Invalid roleName in URL" });
+      return next(badRequest("Invalid roleName in URL", { field: "roleName" }));
     }
     next();
   },

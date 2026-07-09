@@ -3,13 +3,12 @@ import { Strategy } from "passport-local";
 import { prisma } from "../config/prisma.mjs";
 import { findUserByEmail } from "../services/userService.mjs";
 import { verifyPassword } from "../utils/crypto.mjs";
+import { invalidCredentials, unauthorized } from "../utils/ApiError.mjs";
 
 passport.serializeUser((user, done) => {
   done(null, user.userId);
 });
 
-// Story 1.10: only the safe fields enter the session. Anything attached
-// to `req.user` is a subset of the user row — never the password.
 passport.deserializeUser(async (id, done) => {
   try {
     const findUser = await prisma.users.findUnique({
@@ -24,7 +23,11 @@ passport.deserializeUser(async (id, done) => {
         roleId: true,
       },
     });
-    if (!findUser) throw new Error("notfound");
+    
+    if (!findUser) {
+      throw unauthorized('User not found');
+    }
+    
     done(null, findUser);
   } catch (error) {
     done(error, null);
@@ -34,22 +37,22 @@ passport.deserializeUser(async (id, done) => {
 export default passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
     try {
-      // Auth verification still needs the password hash, so the local
-      // strategy uses the full row internally. We only attach the safe
-      // subset to the session via deserializeUser above.
       const findUser = await findUserByEmail(email);
+      
       if (!findUser) {
-        throw new Error("User not found");
+        throw invalidCredentials('Invalid email or password');
       }
+      
       const valid = await verifyPassword(password, findUser.password);
-      const verified = findUser.isVerified;
-
+      
       if (!valid) {
-        throw new Error("Invalid Credential");
+        throw invalidCredentials('Invalid email or password');
       }
-      if (!verified) {
-        throw new Error("please verified your account");
+      
+      if (!findUser.isVerified) {
+        throw unauthorized('Please verify your account first');
       }
+      
       done(null, findUser);
     } catch (error) {
       done(error, null);

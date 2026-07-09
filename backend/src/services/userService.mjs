@@ -1,8 +1,22 @@
 import { prisma } from "../config/prisma.mjs";
+import { notFound, accountDeactivated } from "../utils/ApiError.mjs";
 
 // userService — non-RBAC user-row CRUD.
 //
 // Role / permission helpers live in `rbacService.mjs`.
+//
+// Error policy (Phase 2): every explicit "this should not exist" case
+// throws a typed factory from `utils/ApiError.mjs` so the global
+// errorHandler can attach the right HTTP status + code. Raw Prisma
+// errors (P2002, P2025, P2003) bubble up unhandled and are mapped
+// centrally in the errorHandler — see `prismaErrorMap`.
+//
+// Functions that intentionally let Prisma errors bubble:
+//   - createUser        → P2002 (DUPLICATE_ENTRY) handled by mapper
+//   - updateUser        → P2025 (RECORD_NOT_FOUND) handled by mapper
+//   - deleteUser        → P2025 (RECORD_NOT_FOUND) handled by mapper
+//   - deactivateOwnAccount → P2025 handled by mapper
+//   - findUserByEmail   → returns null on miss (Passport expects this)
 
 export const findAllUsers = async () => {
   return prisma.users.findMany();
@@ -13,9 +27,7 @@ export const findUserById = async (id) => {
     where: { userId: id },
   });
   if (!user) {
-    const error = new Error("User Not Found");
-    error.status = 400;
-    throw error;
+    throw notFound("User not found");
   }
   return user;
 };
@@ -49,14 +61,10 @@ export const deactivateOwnAccount = async (userId) => {
 export const findActiveUserById = async (id) => {
   const user = await prisma.users.findUnique({ where: { userId: id } });
   if (!user) {
-    const error = new Error("User Not Found");
-    error.status = 404;
-    throw error;
+    throw notFound("User not found");
   }
   if (!user.isActive) {
-    const error = new Error("Account is deactivated");
-    error.status = 403;
-    throw error;
+    throw accountDeactivated("Account is deactivated");
   }
   return user;
 };
