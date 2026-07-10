@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import "./Login.css";
 import holdingPhone from "../assets/holdingphone2.jpg";
+import redmi14 from "../assets/redmi14c.jpg";
 import {
   MailIcon,
   TextField,
@@ -16,7 +17,9 @@ function Login({ onLogin }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [roleName, setRoleName] = useState("Customer");
+  // Role is chosen at registration, not on the login page. Kept here so the
+  // /auth/login request body still matches the backend contract.
+  const roleName = "Customer";
   const [loginErrors, setLoginErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -85,7 +88,7 @@ function Login({ onLogin }) {
         setLoading(false);
       }
     },
-    [email, password, roleName, rememberMe, validateLogin, onLogin],
+    [email, password, rememberMe, validateLogin, onLogin],
   );
 
   return (
@@ -149,33 +152,6 @@ function Login({ onLogin }) {
                 onChange={(e) => setPassword(e.target.value)}
                 error={loginErrors.password}
               />
-
-              <div className="form-group" style={{ marginTop: 16 }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: 8,
-                    fontWeight: 500,
-                  }}
-                >
-                  Login as
-                </label>
-                <select
-                  value={roleName}
-                  onChange={(e) => setRoleName(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "10px 12px",
-                    borderRadius: "8px",
-                    border: "1px solid #d1d5db",
-                    fontSize: "14px",
-                  }}
-                >
-                  <option value="Customer">Customer</option>
-                  <option value="Salesman">Salesman</option>
-                  <option value="Admin">Admin</option>
-                </select>
-              </div>
 
               <div className="login-options">
                 <label className="remember-me">

@@ -30,7 +30,12 @@ function ForgotPassword() {
   const location = useLocation();
   const forgotStep = stepFromPath(location.pathname);
 
-  const [forgotEmail, setForgotEmail] = useState("");
+  // Pre-seed the email from location.state when the user lands directly on a
+  // later step (e.g. Change Password from the profile menu, or a deep link).
+  // This avoids a useEffect that would have to setState synchronously.
+  const [forgotEmail, setForgotEmail] = useState(
+    () => location.state?.email || "",
+  );
   const [forgotEmailError, setForgotEmailError] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotOtp, setForgotOtp] = useState(EMPTY_OTP);

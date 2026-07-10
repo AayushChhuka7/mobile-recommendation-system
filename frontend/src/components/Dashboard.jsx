@@ -4,7 +4,7 @@ import api from "../services/api";
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
-import { UserIcon } from "./AuthShared";
+import { UserIcon, LockIcon, PhoneIcon, MailIcon } from "./AuthShared";
 
 function SearchIcon() {
   return (
@@ -184,6 +184,27 @@ function SparklesIcon() {
   );
 }
 
+function GamerIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="6" y1="11" x2="10" y2="11" />
+      <line x1="8" y1="9" x2="8" y2="13" />
+      <line x1="15" y1="12" x2="15.01" y2="12" />
+      <line x1="18" y1="10" x2="18.01" y2="10" />
+      <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z" />
+    </svg>
+  );
+}
+
 function ChevronIcon({ open }) {
   return (
     <svg
@@ -206,10 +227,10 @@ function ChevronIcon({ open }) {
 }
 
 const CATEGORY_OPTIONS = [
-  { key: "gamer", label: "Gamer", icon: "🎮" },
-  { key: "camera", label: "Camera lover", icon: "📷" },
-  { key: "battery", label: "Battery focused", icon: "🔋" },
-  { key: "allrounder", label: "All-rounder", icon: "✨" },
+  { key: "gamer", label: "Gamer", Icon: GamerIcon },
+  { key: "camera", label: "Camera lover", Icon: CameraIcon },
+  { key: "battery", label: "Battery focused", Icon: BatteryIcon },
+  { key: "allrounder", label: "All-rounder", Icon: SparklesIcon },
 ];
 
 // Backend supports `hasOis` and `minBattery` as query params, mapped to specs filters.
@@ -305,6 +326,8 @@ function Dashboard() {
   const { user, logout } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
+  const [changePasswordError, setChangePasswordError] = useState("");
+  const [isChangePasswordLoading, setIsChangePasswordLoading] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
   // Tracks the recommendation panel's animation phase.
   //   "closed"  — not rendered
@@ -474,44 +497,62 @@ function Dashboard() {
     navigate("/login", { replace: true });
   }, [logout, navigate]);
 
+  // Reuses the exact same OTP request as ForgotPassword.jsx (POST /auth/forget)
+  // and hands the email to the existing /forgot-password/otp route via state so
+  // the user doesn't have to type it again.
+  const handleChangePassword = useCallback(async () => {
+    if (!user?.email) return;
+    setChangePasswordError("");
+    setIsChangePasswordLoading(true);
+    try {
+      const email = user.email;
+      await api.post("/auth/forget", { email });
+      setProfileOpen(false);
+      navigate("/forgot-password/otp", { state: { email } });
+    } catch (err) {
+      setChangePasswordError(
+        err.response?.data?.message || "Couldn't send the code",
+      );
+    } finally {
+      setIsChangePasswordLoading(false);
+    }
+  }, [user, navigate]);
+
   const handleWeightChange = useCallback((key, value) => {
     setWeights((prev) => ({ ...prev, [key]: Number(value) }));
   }, []);
 
-  // "Find my phone" from the questionnaire modal — preserves the original
-  // recommendation behaviour by mapping a category to a filter set.
-  const handleFindPhone = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      // The category drives a fresh query, clearing the explicit search/filters
-      // so we don't double-apply them.
-      const categoryQuery = CATEGORY_FILTERS[selectedCategory] || {};
-      const params = { limit: 6, page: 1, ...categoryQuery };
+  // "Find my phone" from the questionnaire modal — maps the selected category
+  // to a (sort + filter) set, then writes those values into the dashboard's
+  // shared filter/sort/search state. The existing useEffect that watches
+  // [searchTerm, filters, sort, page] is the single source of truth for the
+  // GET /phones request, so updating state here guarantees the request we
+  // dispatch matches what the user sees (and doesn't get overwritten by a
+  // race between this handler and the effect).
+  const handleFindPhone = useCallback(() => {
+    const categoryQuery = CATEGORY_FILTERS[selectedCategory] || {};
 
-      const res = await api.get("/phones", { params });
+    // Start from the category defaults and overlay the category's mapped
+    // filter/sort values. This is the same shape the existing useEffect
+    // consumes via buildPhonesQuery, so no fetch logic is duplicated.
+    const nextFilters = { ...EMPTY_FILTERS };
+    if (categoryQuery.brand) nextFilters.brand = categoryQuery.brand;
+    if (categoryQuery.minPrice) nextFilters.minPrice = categoryQuery.minPrice;
+    if (categoryQuery.maxPrice) nextFilters.maxPrice = categoryQuery.maxPrice;
+    if (categoryQuery.minRam) nextFilters.minRam = categoryQuery.minRam;
+    if (categoryQuery.minBattery) nextFilters.minBattery = String(categoryQuery.minBattery);
+    if (categoryQuery.os) nextFilters.os = categoryQuery.os;
+    if (categoryQuery.has5G) nextFilters.has5G = true;
+    if (categoryQuery.hasNfc) nextFilters.hasNfc = true;
+    if (categoryQuery.hasOis) nextFilters.hasOis = true;
 
-      const phoneList = unwrapPhones(res);
-      setPhones(phoneList);
-
-      const meta = res?.data?.meta;
-      if (meta) {
-        setTotalPages(meta.totalPages || 1);
-        setTotal(meta.total || phoneList.length);
-      } else {
-        setTotalPages(1);
-        setTotal(phoneList.length);
-      }
-      setPage(1);
-      closeRecommend();
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Couldn't fetch recommendations. Please try again.",
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    setSearchTerm("");
+    setSearchInput("");
+    setFilters(nextFilters);
+    setPendingFilters(nextFilters);
+    setSort(categoryQuery.sort || "newest");
+    setPage(1);
+    closeRecommend();
   }, [selectedCategory, closeRecommend]);
 
   // ---- Search bar handlers ----
@@ -597,7 +638,6 @@ function Dashboard() {
             aria-expanded={isSearchOpen}
             title="Get personalized phone recommendations"
           >
-            <SparklesIcon />
             <span>Recommend Me a Phone</span>
           </button>
 
@@ -616,7 +656,10 @@ function Dashboard() {
               type="button"
               className={`icon-btn profile-trigger ${isProfileOpen ? "active" : ""}`}
               aria-label="Account menu"
-              onClick={() => setProfileOpen((o) => !o)}
+              onClick={() => {
+                setProfileOpen((o) => !o);
+                setChangePasswordError("");
+              }}
             >
               <UserIcon />
             </button>
@@ -628,20 +671,59 @@ function Dashboard() {
                     {displayName.charAt(0).toUpperCase()}
                   </div>
                   <div className="profile-details">
-                    <div className="profile-name">{displayName}</div>
-                    {email && <div className="profile-email">{email}</div>}
-                    {phone && <div className="profile-phone">{phone}</div>}
+                    <div className="profile-name">{displayName || "—"}</div>
                   </div>
                 </div>
+                <ul className="profile-fields" aria-label="Account details">
+                  <li className="profile-field">
+                    <span className="profile-field-icon" aria-hidden="true">
+                      <UserIcon />
+                    </span>
+                    <span className="profile-field-label">Username</span>
+                    <span className="profile-field-value">
+                      {displayName || "—"}
+                    </span>
+                  </li>
+                  <li className="profile-field">
+                    <span className="profile-field-icon" aria-hidden="true">
+                      <MailIcon />
+                    </span>
+                    <span className="profile-field-label">Email</span>
+                    <span className="profile-field-value">{email || "—"}</span>
+                  </li>
+                  <li className="profile-field">
+                    <span className="profile-field-icon" aria-hidden="true">
+                      <PhoneIcon />
+                    </span>
+                    <span className="profile-field-label">Phone</span>
+                    <span className="profile-field-value">{phone || "—"}</span>
+                  </li>
+                </ul>
                 <div className="profile-divider" />
-                <button
-                  type="button"
-                  className="signout-btn"
-                  onClick={handleSignOut}
-                >
-                  <LogoutIcon />
-                  Sign out
-                </button>
+                {changePasswordError && (
+                  <div className="form-submit-error" role="alert">
+                    {changePasswordError}
+                  </div>
+                )}
+                <div className="profile-actions">
+                  <button
+                    type="button"
+                    className="change-password-btn"
+                    onClick={handleChangePassword}
+                    disabled={isChangePasswordLoading || !user?.email}
+                  >
+                    <LockIcon />
+                    {isChangePasswordLoading ? "Sending..." : "Change password"}
+                  </button>
+                  <button
+                    type="button"
+                    className="signout-btn"
+                    onClick={handleSignOut}
+                  >
+                    <LogoutIcon />
+                    Sign out
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -1076,17 +1158,20 @@ function Dashboard() {
             </div>
 
             <div className="usage-options" style={{ marginTop: 20 }}>
-              {CATEGORY_OPTIONS.map((opt) => (
-                <button
-                  type="button"
-                  key={opt.key}
-                  className={`usage-chip ${selectedCategory === opt.key ? "selected" : ""}`}
-                  onClick={() => setSelectedCategory(opt.key)}
-                >
-                  <span style={{ marginRight: 6 }}>{opt.icon}</span>
-                  {opt.label}
-                </button>
-              ))}
+              {CATEGORY_OPTIONS.map((opt) => {
+                const Icon = opt.Icon;
+                return (
+                  <button
+                    type="button"
+                    key={opt.key}
+                    className={`usage-chip ${selectedCategory === opt.key ? "selected" : ""}`}
+                    onClick={() => setSelectedCategory(opt.key)}
+                  >
+                    <Icon />
+                    {opt.label}
+                  </button>
+                );
+              })}
             </div>
 
             <div className="questionnaire-section" style={{ marginTop: 20 }}>
