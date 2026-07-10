@@ -1,6 +1,7 @@
 import { checkSchema } from "express-validator";
 import { mockUsers } from "../mockData/userData.mjs";
-import { prisma } from "../config/index.mjs";
+import { prisma } from "../config/prisma.mjs";
+import { isAssignableRole } from "../services/rbacService.mjs";
 
 const checkEmail = {
   in: ["body"],
@@ -41,7 +42,6 @@ const checkPhoneNo = {
   trim: true,
 
   optional: {
-    //empty lai ni ignore hanxha
     options: { checkFalsy: true },
   },
   matches: {
@@ -91,6 +91,24 @@ export const userCreationValidation = checkSchema({
     },
   },
   phoneNo: checkPhoneNo,
+  // Self-service role pick at registration. Whitelist comes from
+  // `rbacService.getAssignableRoles()` — currently ["Customer",
+  // "Salesman"]. `Admin` is admin-only and cannot be self-assigned.
+  roleName: {
+    in: ["body"],
+    trim: true,
+    notEmpty: { errorMessage: "roleName is required" },
+    custom: {
+      options: (value) => {
+        if (!isAssignableRole(value)) {
+          throw new Error(
+            "roleName must be one of: Customer, Salesman",
+          );
+        }
+        return true;
+      },
+    },
+  },
 });
 
 export const userUpdateValidation = checkSchema({
@@ -107,4 +125,64 @@ export const userUpdateValidation = checkSchema({
     optional: true,
   },
   phoneNo: { ...checkPhoneNo, optional: true },
+});
+
+// ---- New schemas for self-service profile / auth management ----
+
+export const updateOwnProfileValidation = checkSchema({
+  name: {
+    ...checkUserName,
+    optional: { options: { checkFalsy: true } },
+  },
+  phoneNo: {
+    ...checkPhoneNo,
+    optional: { options: { checkFalsy: true } },
+  },
+});
+
+export const changePasswordWhileLoggedInValidation = checkSchema({
+  currentPassword: {
+    ...checkPassword,
+  },
+  password: checkPassword,
+  confirmPassword: {
+    ...checkPassword,
+    custom: {
+      options: (value, { req }) => {
+        return value === req.body.password;
+      },
+      errorMessage: "password did not matched",
+    },
+  },
+});
+
+export const requestEmailChangeValidation = checkSchema({
+  currentPassword: {
+    ...checkPassword,
+  },
+  newEmail: {
+    ...checkEmail,
+  },
+});
+
+// ---- RBAC Phase 1 — admin role assignment ----
+
+const ALLOWED_ROLE_NAMES = ["Customer", "Salesman", "Admin"];
+
+export const assignRoleValidation = checkSchema({
+  roleName: {
+    in: ["body"],
+    trim: true,
+    notEmpty: { errorMessage: "roleName is required" },
+    isIn: {
+      options: [ALLOWED_ROLE_NAMES],
+      errorMessage: `roleName must be one of: ${ALLOWED_ROLE_NAMES.join(", ")}`,
+    },
+  },
+});
+
+export const revokeRoleValidation = checkSchema({
+  // role name comes from the URL path; we still need an express-validator
+  // schema entry so we can re-use `validationWith` for the URL whitelist.
+  // No body fields.
 });

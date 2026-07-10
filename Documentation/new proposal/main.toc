@@ -1,0 +1,59 @@
+\contentsline {chapter}{Acknowledgements}{i}{chapter*.2}%
+\contentsline {chapter}{List of Figures}{iv}{chapter*.2}%
+\contentsline {chapter}{List of Tables}{v}{chapter*.2}%
+\contentsline {chapter}{List of Abbreviations}{vi}{chapter*.3}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.4}%
+\contentsline {section}{\numberline {1.1}Background}{1}{section.5}%
+\contentsline {section}{\numberline {1.2}Problem Statement}{1}{section.6}%
+\contentsline {section}{\numberline {1.3}Objectives}{2}{section.7}%
+\contentsline {subsection}{\numberline {1.3.1}General Objective}{2}{subsection.8}%
+\contentsline {subsection}{\numberline {1.3.2}Specific Objectives}{2}{subsection.9}%
+\contentsline {section}{\numberline {1.4}Scope and Limitations}{2}{section.16}%
+\contentsline {subsection}{\numberline {1.4.1}Scope}{2}{subsection.17}%
+\contentsline {subsection}{\numberline {1.4.2}Limitations}{3}{subsection.22}%
+\contentsline {chapter}{\numberline {2}Literature Review}{4}{chapter.27}%
+\contentsline {section}{\numberline {2.1}Related Work}{4}{section.28}%
+\contentsline {section}{\numberline {2.2}Related Theory}{4}{section.29}%
+\contentsline {subsection}{\numberline {2.2.1}Gradient Boosting Machines}{4}{subsection.30}%
+\contentsline {subsection}{\numberline {2.2.2}XGBoost Overview}{5}{subsection.31}%
+\contentsline {subsection}{\numberline {2.2.3}Mathematical Foundation}{5}{subsection.32}%
+\contentsline {subsection}{\numberline {2.2.4}Key Technical Features}{6}{subsection.35}%
+\contentsline {subsection}{\numberline {2.2.5}Why XGBoost for This Project?}{7}{subsection.36}%
+\contentsline {section}{\numberline {2.3}Website Development for End Users}{7}{section.37}%
+\contentsline {subsection}{\numberline {2.3.1}User Interface Design}{7}{subsection.38}%
+\contentsline {subsection}{\numberline {2.3.2}Customer Functionality}{7}{subsection.39}%
+\contentsline {subsection}{\numberline {2.3.3}Salesman Functionality}{8}{subsection.40}%
+\contentsline {subsection}{\numberline {2.3.4}Admin Functionality}{8}{subsection.41}%
+\contentsline {chapter}{\numberline {3}Proposed Methodology}{9}{chapter.42}%
+\contentsline {section}{\numberline {3.1}Software Development Model}{9}{section.43}%
+\contentsline {section}{\numberline {3.2}Feasibility Study}{10}{section.49}%
+\contentsline {subsection}{\numberline {3.2.1}Technical Feasibility}{10}{subsection.50}%
+\contentsline {subsection}{\numberline {3.2.2}Economic Feasibility}{11}{subsection.51}%
+\contentsline {subsection}{\numberline {3.2.3}Operational Feasibility}{11}{subsection.53}%
+\contentsline {subsection}{\numberline {3.2.4}Legal and Ethical Feasibility}{12}{subsection.54}%
+\contentsline {section}{\numberline {3.3}Requirement Analysis}{12}{section.60}%
+\contentsline {subsection}{\numberline {3.3.1}Functional Requirements}{12}{subsection.61}%
+\contentsline {subsection}{\numberline {3.3.2}Non Functional Requirements}{14}{subsection.62}%
+\contentsline {section}{\numberline {3.4}Proposed System Design}{15}{section.63}%
+\contentsline {subsection}{\numberline {3.4.1}System Architecture}{15}{subsection.64}%
+\contentsline {subsection}{\numberline {3.4.2}Use Case Diagram}{16}{subsection.66}%
+\contentsline {subsection}{\numberline {3.4.3}Data Flow Diagram}{17}{subsection.68}%
+\contentsline {subsection}{\numberline {3.4.4}System Flowchart}{19}{subsection.71}%
+\contentsline {subsection}{\numberline {3.4.5}Data Preparation and Machine Learning Workflow}{20}{subsection.73}%
+\contentsline {section}{\numberline {3.5}Implementation Details}{22}{section.76}%
+\contentsline {subsection}{\numberline {3.5.1}Frontend Development}{22}{subsection.77}%
+\contentsline {subsection}{\numberline {3.5.2}Backend Development}{22}{subsection.78}%
+\contentsline {subsection}{\numberline {3.5.3}Machine Learning Model Integration}{23}{subsection.79}%
+\contentsline {subsection}{\numberline {3.5.4}Database Schema}{23}{subsection.80}%
+\contentsline {subsection}{\numberline {3.5.5}Testing Strategy}{23}{subsection.81}%
+\contentsline {chapter}{\numberline {4}Time Schedule}{25}{chapter.82}%
+\contentsline {chapter}{\numberline {5}Expected Output}{26}{chapter.84}%
+\contentsline {section}{\numberline {5.1}Work Completed}{26}{section.85}%
+\contentsline {subsection}{\numberline {5.1.1}Frontend}{26}{subsection.86}%
+\contentsline {subsection}{\numberline {5.1.2}Backend}{26}{subsection.87}%
+\contentsline {subsection}{\numberline {5.1.3}Machine Learning}{26}{subsection.88}%
+\contentsline {section}{\numberline {5.2}Work in Progress}{27}{section.89}%
+\contentsline {subsection}{\numberline {5.2.1}Frontend}{27}{subsection.90}%
+\contentsline {subsection}{\numberline {5.2.2}Backend}{27}{subsection.91}%
+\contentsline {subsection}{\numberline {5.2.3}Machine Learning}{27}{subsection.92}%
+\contentsline {chapter}{References}{28}{chapter*.93}%

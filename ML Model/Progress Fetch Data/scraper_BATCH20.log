@@ -1,0 +1,644 @@
+2026-06-04 06:21:44,744 | INFO | Started: 2026-06-04 06:21:44
+2026-06-04 06:21:44,745 | INFO | Brands: ['Niu', 'Posh', 'Telit', 'Unnecto']
+2026-06-04 06:21:44,745 | INFO | Warm-up wait 60s ...
+2026-06-04 06:22:46,148 | INFO | Connected
+2026-06-04 06:22:46,836 | INFO |   GET https://www.gsmarena.com/makers.php3 -> 200
+2026-06-04 06:22:46,897 | INFO | Found 126 brands
+2026-06-04 06:22:46,898 | INFO | Matched: ['Niu', 'Posh', 'Telit', 'Unnecto']
+2026-06-04 06:22:46,898 | INFO | [1/4] Niu (30 phones)
+2026-06-04 06:22:46,899 | INFO |   Waiting 30.1s (req #2)
+2026-06-04 06:23:17,659 | INFO |   GET https://www.gsmarena.com/niu-phones-79.php -> 200
+2026-06-04 06:23:17,691 | INFO |   Found 30 phone links for Niu
+2026-06-04 06:23:17,694 | INFO |   [1/30]
+2026-06-04 06:23:17,694 | INFO |   Waiting 56.7s (req #3)
+2026-06-04 06:24:15,003 | INFO |   GET https://www.gsmarena.com/niu_andy_c5_5e2i-7917.php -> 200
+2026-06-04 06:24:15,028 | INFO |   NIU Andy C5.5E2I | RAM=0.5GB | Storage=4.0GB | Main=8.0MP
+2026-06-04 06:24:15,054 | INFO |   Saved [1/30]
+2026-06-04 06:24:15,054 | INFO |   [2/30]
+2026-06-04 06:24:15,056 | INFO |   Waiting 29.2s (req #4)
+2026-06-04 06:24:44,895 | INFO |   GET https://www.gsmarena.com/niu_andy_3_5e2i-7346.php -> 200
+2026-06-04 06:24:44,914 | INFO |   NIU Andy 3.5E2I | RAM=0.5GB | Storage=4.0GB | Main=5.0MP
+2026-06-04 06:24:44,918 | INFO |   Saved [2/30]
+2026-06-04 06:24:44,918 | INFO |   [3/30]
+2026-06-04 06:24:44,918 | INFO |   Waiting 26.4s (req #5)
+2026-06-04 06:25:12,037 | INFO |   GET https://www.gsmarena.com/niu_andy_4e2i-7347.php -> 200
+2026-06-04 06:25:12,056 | INFO |   NIU Andy 4E2I | RAM=0.5GB | Storage=4.0GB | Main=5.0MP
+2026-06-04 06:25:12,058 | INFO |   Saved [3/30]
+2026-06-04 06:25:12,059 | INFO |   [4/30]
+2026-06-04 06:25:12,059 | INFO |   Waiting 32.7s (req #6)
+2026-06-04 06:25:45,419 | INFO |   GET https://www.gsmarena.com/niu_andy_5ei-7348.php -> 200
+2026-06-04 06:25:45,436 | INFO |   NIU Andy 5EI | RAM=0.5GB | Storage=4.0GB | Main=5.0MP
+2026-06-04 06:25:45,439 | INFO |   Saved [4/30]
+2026-06-04 06:25:45,440 | INFO |   [5/30]
+2026-06-04 06:25:45,440 | INFO |   Waiting 35.9s (req #7)
+2026-06-04 06:26:21,986 | INFO |   GET https://www.gsmarena.com/niu_andy_5t-7349.php -> 200
+2026-06-04 06:26:22,007 | INFO |   NIU Andy 5T | RAM=1.0GB | Storage=4.0GB | Main=13.0MP
+2026-06-04 06:26:22,011 | INFO |   Saved [5/30]
+2026-06-04 06:26:22,012 | INFO |   [6/30]
+2026-06-04 06:26:22,013 | INFO |   Waiting 36.5s (req #8)
+2026-06-04 06:26:59,145 | INFO |   GET https://www.gsmarena.com/niu_c21a-7350.php -> 200
+2026-06-04 06:26:59,163 | INFO |   NIU C21A | RAM=0.031GB | Storage=0.031GB | Main=NoneMP
+2026-06-04 06:26:59,167 | INFO |   Saved [6/30]
+2026-06-04 06:26:59,167 | INFO |   [7/30]
+2026-06-04 06:26:59,168 | INFO |   Waiting 29.3s (req #9)
+2026-06-04 06:27:29,251 | INFO |   GET https://www.gsmarena.com/niu_f10-7351.php -> 200
+2026-06-04 06:27:29,269 | INFO |   NIU F10 | RAM=0.031GB | Storage=0.062GB | Main=1.3MP
+2026-06-04 06:27:29,273 | INFO |   Saved [7/30]
+2026-06-04 06:27:29,274 | INFO |   [8/30]
+2026-06-04 06:27:29,274 | INFO |   Waiting 50.8s (req #10)
+2026-06-04 06:28:20,707 | INFO |   GET https://www.gsmarena.com/niu_z10-7352.php -> 200
+2026-06-04 06:28:20,727 | INFO |   NIU Z10 | RAM=0.031GB | Storage=0.031GB | Main=NoneMP
+2026-06-04 06:28:20,731 | INFO |   Saved [8/30]
+2026-06-04 06:28:20,731 | INFO |   [9/30]
+2026-06-04 06:28:20,731 | INFO |   Waiting 55.5s (req #11)
+2026-06-04 06:29:17,389 | INFO |   GET https://www.gsmarena.com/niu_tek_5d-7118.php -> 200
+2026-06-04 06:29:17,413 | INFO |   NIU Tek 5D | RAM=0.5GB | Storage=4.0GB | Main=5.0MP
+2026-06-04 06:29:17,417 | INFO |   Saved [9/30]
+2026-06-04 06:29:17,417 | INFO |   [10/30]
+2026-06-04 06:29:17,417 | INFO |   Waiting 40.8s (req #12)
+2026-06-04 06:29:58,968 | INFO |   GET https://www.gsmarena.com/niu_tek_4d2-6827.php -> 200
+2026-06-04 06:29:59,004 | INFO |   NIU Tek 4D2 | RAM=0.5GB | Storage=4.0GB | Main=3.15MP
+2026-06-04 06:29:59,007 | INFO |   Saved [10/30]
+2026-06-04 06:29:59,007 | INFO |   [11/30]
+2026-06-04 06:29:59,008 | INFO |   Waiting 53.2s (req #13)
+2026-06-04 06:30:52,720 | INFO |   GET https://www.gsmarena.com/niu_niutek_3_5d2-6733.php -> 200
+2026-06-04 06:30:52,737 | INFO |   NIU Niutek 3.5D2 | RAM=0.25GB | Storage=2.0GB | Main=2.0MP
+2026-06-04 06:30:52,741 | INFO |   Saved [11/30]
+2026-06-04 06:30:52,741 | INFO |   [12/30]
+2026-06-04 06:30:52,741 | INFO |   Waiting 44.0s (req #14)
+2026-06-04 06:31:37,463 | INFO |   GET https://www.gsmarena.com/niu_go_21-6484.php -> 200
+2026-06-04 06:31:37,481 | INFO |   NIU GO 21 | RAM=0.031GB | Storage=0.031GB | Main=NoneMP
+2026-06-04 06:31:37,485 | INFO |   Saved [12/30]
+2026-06-04 06:31:37,485 | INFO |   [13/30]
+2026-06-04 06:31:37,485 | INFO |   Waiting 56.4s (req #15)
+2026-06-04 06:32:34,602 | INFO |   GET https://www.gsmarena.com/niu_niutek_4_5d-5992.php -> 200
+2026-06-04 06:32:34,619 | INFO |   NIU Niutek 4.5D | RAM=0.25GB | Storage=0.5GB | Main=5.0MP
+2026-06-04 06:32:34,623 | INFO |   Saved [13/30]
+2026-06-04 06:32:34,623 | INFO |   [14/30]
+2026-06-04 06:32:34,623 | INFO |   Waiting 55.4s (req #16)
+2026-06-04 06:33:30,541 | INFO |   GET https://www.gsmarena.com/niu_niutek_4_0d-5991.php -> 200
+2026-06-04 06:33:30,579 | INFO |   NIU Niutek 4.0D | RAM=0.25GB | Storage=0.5GB | Main=3.15MP
+2026-06-04 06:33:30,585 | INFO |   Saved [14/30]
+2026-06-04 06:33:30,585 | INFO |   [15/30]
+2026-06-04 06:33:30,585 | INFO |   Waiting 48.8s (req #17)
+2026-06-04 06:34:20,038 | INFO |   GET https://www.gsmarena.com/niu_niutek_3_5d-5990.php -> 200
+2026-06-04 06:34:20,067 | INFO |   NIU Niutek 3.5D | RAM=0.25GB | Storage=0.5GB | Main=2.0MP
+2026-06-04 06:34:20,071 | INFO |   Saved [15/30]
+2026-06-04 06:34:20,072 | INFO |   [16/30]
+2026-06-04 06:34:20,072 | INFO |   Waiting 44.9s (req #18)
+2026-06-04 06:35:05,536 | INFO |   GET https://www.gsmarena.com/niu_go_20-5989.php -> 200
+2026-06-04 06:35:05,555 | INFO |   NIU GO 20 | RAM=0.031GB | Storage=0.031GB | Main=NoneMP
+2026-06-04 06:35:05,559 | INFO |   Saved [16/30]
+2026-06-04 06:35:05,559 | INFO |   [17/30]
+2026-06-04 06:35:05,559 | INFO |   Waiting 36.7s (req #19)
+2026-06-04 06:35:43,117 | INFO |   GET https://www.gsmarena.com/niu_niutek_3_5b-5514.php -> 200
+2026-06-04 06:35:43,144 | INFO |   NIU Niutek 3.5B | RAM=0.25GB | Storage=0.5GB | Main=3.15MP
+2026-06-04 06:35:43,151 | INFO |   Saved [17/30]
+2026-06-04 06:35:43,153 | INFO |   [18/30]
+2026-06-04 06:35:43,154 | INFO |   Waiting 59.2s (req #20)
+2026-06-04 06:36:43,121 | INFO |   GET https://www.gsmarena.com/niu_liv_10-5513.php -> 200
+2026-06-04 06:36:43,151 | INFO |   NIU LIV 10 | RAM=0.016GB | Storage=0.031GB | Main=NoneMP
+2026-06-04 06:36:43,156 | INFO |   Saved [18/30]
+2026-06-04 06:36:43,157 | INFO |   [19/30]
+2026-06-04 06:36:43,157 | INFO |   Waiting 49.8s (req #21)
+2026-06-04 06:37:33,603 | INFO |   GET https://www.gsmarena.com/niu_go_50-5512.php -> 200
+2026-06-04 06:37:33,625 | INFO |   NIU GO 50 | RAM=0.031GB | Storage=0.031GB | Main=NoneMP
+2026-06-04 06:37:33,630 | INFO |   Saved [19/30]
+2026-06-04 06:37:33,632 | INFO |   [20/30]
+2026-06-04 06:37:33,633 | INFO |   Waiting 44.4s (req #22)
+2026-06-04 06:38:21,811 | INFO |   GET https://www.gsmarena.com/niu_niutek_3g_3_5_n209-5085.php -> 200
+2026-06-04 06:38:21,834 | INFO |   NIU Niutek 3G 3.5 N209 | RAM=0.5GB | Storage=0.25GB | Main=3.2MP
+2026-06-04 06:38:21,838 | INFO |   Saved [20/30]
+2026-06-04 06:38:21,840 | INFO |   [21/30]
+2026-06-04 06:38:21,840 | INFO |   Waiting 27.3s (req #23)
+2026-06-04 06:38:49,890 | INFO |   GET https://www.gsmarena.com/niu_niutek_3g_4_0_n309-4927.php -> 200
+2026-06-04 06:38:49,909 | INFO |   NIU Niutek 3G 4.0 N309 | RAM=0.5GB | Storage=0.5GB | Main=5.0MP
+2026-06-04 06:38:49,914 | INFO |   Saved [21/30]
+2026-06-04 06:38:49,914 | INFO |   [22/30]
+2026-06-04 06:38:49,915 | INFO |   Waiting 43.4s (req #24)
+2026-06-04 06:39:33,862 | INFO |   GET https://www.gsmarena.com/niu_pana_3g_tv_n206-4926.php -> 200
+2026-06-04 06:39:33,885 | INFO |   NIU Pana 3G TV N206 | RAM=NoneGB | Storage=NoneGB | Main=2.0MP
+2026-06-04 06:39:33,889 | INFO |   Saved [22/30]
+2026-06-04 06:39:33,889 | INFO |   [23/30]
+2026-06-04 06:39:33,889 | INFO |   Waiting 27.9s (req #25)
+2026-06-04 06:40:02,492 | INFO |   GET https://www.gsmarena.com/niu_go_80-4819.php -> 200
+2026-06-04 06:40:02,513 | INFO |   NIU GO 80 | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 06:40:02,516 | INFO |   Saved [23/30]
+2026-06-04 06:40:02,516 | INFO |   [24/30]
+2026-06-04 06:40:02,516 | INFO |   Waiting 40.4s (req #26)
+2026-06-04 06:40:43,558 | INFO |   GET https://www.gsmarena.com/niu_domo_n102-4672.php -> 200
+2026-06-04 06:40:43,582 | INFO |   NIU Domo N102 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 06:40:43,585 | INFO |   Saved [24/30]
+2026-06-04 06:40:43,585 | INFO |   [25/30]
+2026-06-04 06:40:43,585 | INFO |   Waiting 52.2s (req #27)
+2026-06-04 06:41:36,404 | INFO |   GET https://www.gsmarena.com/niu_bingo_n103-4673.php -> 200
+2026-06-04 06:41:36,424 | INFO |   NIU Bingo N103 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 06:41:36,427 | INFO |   Saved [25/30]
+2026-06-04 06:41:36,427 | INFO |   [26/30]
+2026-06-04 06:41:36,427 | INFO |   Waiting 45.5s (req #28)
+2026-06-04 06:42:22,853 | INFO |   GET https://www.gsmarena.com/niu_lotto_n104-4674.php -> 200
+2026-06-04 06:42:22,875 | INFO |   NIU Lotto N104 | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 06:42:22,879 | INFO |   Saved [26/30]
+2026-06-04 06:42:22,879 | INFO |   [27/30]
+2026-06-04 06:42:22,879 | INFO |   Waiting 27.5s (req #29)
+2026-06-04 06:42:51,051 | INFO |   GET https://www.gsmarena.com/niu_pana_n105-4675.php -> 200
+2026-06-04 06:42:51,069 | INFO |   NIU Pana N105 | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 06:42:51,073 | INFO |   Saved [27/30]
+2026-06-04 06:42:51,073 | INFO |   [28/30]
+2026-06-04 06:42:51,073 | INFO |   Long pause 233s ...
+2026-06-04 06:46:44,607 | INFO |   GET https://www.gsmarena.com/niu_pana_tv_n106-4676.php -> 200
+2026-06-04 06:46:44,636 | INFO |   NIU Pana TV N106 | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 06:46:44,640 | INFO |   Saved [28/30]
+2026-06-04 06:46:44,640 | INFO |   [29/30]
+2026-06-04 06:46:44,640 | INFO |   Waiting 27.3s (req #31)
+2026-06-04 06:47:12,604 | INFO |   GET https://www.gsmarena.com/niu_niutekq_n108-4677.php -> 200
+2026-06-04 06:47:12,629 | INFO |   NIU NiutekQ N108 | RAM=0.125GB | Storage=0.25GB | Main=2.0MP
+2026-06-04 06:47:12,633 | INFO |   Saved [29/30]
+2026-06-04 06:47:12,634 | INFO |   [30/30]
+2026-06-04 06:47:12,634 | INFO |   Waiting 43.9s (req #32)
+2026-06-04 06:47:57,104 | INFO |   GET https://www.gsmarena.com/niu_niutek_n109-4678.php -> 200
+2026-06-04 06:47:57,123 | INFO |   NIU Niutek N109 | RAM=0.125GB | Storage=0.25GB | Main=2.0MP
+2026-06-04 06:47:57,127 | INFO |   Saved [30/30]
+2026-06-04 06:47:57,128 | INFO | Done: Niu - 30 phones
+2026-06-04 06:47:57,128 | INFO | [2/4] Posh (30 phones)
+2026-06-04 06:47:57,128 | INFO |   Waiting 39.8s (req #33)
+2026-06-04 06:48:37,868 | INFO |   GET https://www.gsmarena.com/posh-phones-101.php -> 200
+2026-06-04 06:48:37,882 | INFO |   Found 30 phone links for Posh
+2026-06-04 06:48:37,885 | INFO |   [1/30]
+2026-06-04 06:48:37,885 | INFO |   Waiting 38.8s (req #34)
+2026-06-04 06:49:17,388 | INFO |   GET https://www.gsmarena.com/posh_memo_pro_lte_l600-8537.php -> 200
+2026-06-04 06:49:17,410 | INFO |   Posh Memo Pro LTE L600 | RAM=1.0GB | Storage=16.0GB | Main=8.0MP
+2026-06-04 06:49:17,414 | INFO |   Saved [1/30]
+2026-06-04 06:49:17,414 | INFO |   [2/30]
+2026-06-04 06:49:17,414 | INFO |   Waiting 41.2s (req #35)
+2026-06-04 06:49:59,470 | INFO |   GET https://www.gsmarena.com/posh_equal_plus_x700-8536.php -> 200
+2026-06-04 06:49:59,489 | INFO |   Posh Equal Plus X700 | RAM=1.0GB | Storage=16.0GB | Main=5.0MP
+2026-06-04 06:49:59,493 | INFO |   Saved [2/30]
+2026-06-04 06:49:59,495 | INFO |   [3/30]
+2026-06-04 06:49:59,495 | INFO |   Waiting 35.5s (req #36)
+2026-06-04 06:50:35,591 | INFO |   GET https://www.gsmarena.com/posh_ultra_max_lte_l550-8535.php -> 200
+2026-06-04 06:50:35,609 | INFO |   Posh Ultra Max LTE L550 | RAM=1.0GB | Storage=16.0GB | Main=8.0MP
+2026-06-04 06:50:35,613 | INFO |   Saved [3/30]
+2026-06-04 06:50:35,613 | INFO |   [4/30]
+2026-06-04 06:50:35,613 | INFO |   Waiting 48.1s (req #37)
+2026-06-04 06:51:24,243 | INFO |   GET https://www.gsmarena.com/posh_kick_pro_lte_l520-8179.php -> 200
+2026-06-04 06:51:24,273 | INFO |   Posh Kick Pro LTE L520 | RAM=1.0GB | Storage=8.0GB | Main=8.0MP
+2026-06-04 06:51:24,277 | INFO |   Saved [4/30]
+2026-06-04 06:51:24,278 | INFO |   [5/30]
+2026-06-04 06:51:24,278 | INFO |   Waiting 57.8s (req #38)
+2026-06-04 06:52:22,741 | INFO |   GET https://www.gsmarena.com/posh_optima_lte_l530-8178.php -> 200
+2026-06-04 06:52:22,784 | INFO |   Posh Optima LTE L530 | RAM=2.0GB | Storage=16.0GB | Main=13.0MP
+2026-06-04 06:52:22,788 | INFO |   Saved [5/30]
+2026-06-04 06:52:22,788 | INFO |   [6/30]
+2026-06-04 06:52:22,789 | INFO |   Waiting 48.2s (req #39)
+2026-06-04 06:53:11,645 | INFO |   GET https://www.gsmarena.com/posh_icon_hd_x551-8177.php -> 200
+2026-06-04 06:53:11,664 | INFO |   Posh Icon HD X551 | RAM=1.0GB | Storage=16.0GB | Main=8.0MP
+2026-06-04 06:53:11,667 | INFO |   Saved [6/30]
+2026-06-04 06:53:11,667 | INFO |   [7/30]
+2026-06-04 06:53:11,667 | INFO |   Waiting 53.9s (req #40)
+2026-06-04 06:54:06,147 | INFO |   GET https://www.gsmarena.com/posh_volt_lte_l540-8176.php -> 200
+2026-06-04 06:54:06,168 | INFO |   Posh Volt LTE L540 | RAM=3.0GB | Storage=16.0GB | Main=8.0MP
+2026-06-04 06:54:06,171 | INFO |   Saved [7/30]
+2026-06-04 06:54:06,172 | INFO |   [8/30]
+2026-06-04 06:54:06,172 | INFO |   Waiting 59.3s (req #41)
+2026-06-04 06:55:06,440 | INFO |   GET https://www.gsmarena.com/posh_volt_max_lte_l640-8175.php -> 200
+2026-06-04 06:55:06,460 | INFO |   Posh Volt Max LTE L640 | RAM=3.0GB | Storage=32.0GB | Main=13.0MP
+2026-06-04 06:55:06,464 | INFO |   Saved [8/30]
+2026-06-04 06:55:06,464 | INFO |   [9/30]
+2026-06-04 06:55:06,464 | INFO |   Waiting 34.7s (req #42)
+2026-06-04 06:55:41,991 | INFO |   GET https://www.gsmarena.com/posh_equal_pro_lte_l700-8174.php -> 200
+2026-06-04 06:55:42,010 | INFO |   Posh Equal Pro LTE L700 | RAM=1.0GB | Storage=16.0GB | Main=5.0MP
+2026-06-04 06:55:42,013 | INFO |   Saved [9/30]
+2026-06-04 06:55:42,014 | INFO |   [10/30]
+2026-06-04 06:55:42,014 | INFO |   Waiting 57.7s (req #43)
+2026-06-04 06:56:40,209 | INFO |   GET https://www.gsmarena.com/posh_primo_plus_c353-7622.php -> 200
+2026-06-04 06:56:40,228 | INFO |   Posh Primo Plus C353 | RAM=0.25GB | Storage=0.5GB | Main=NoneMP
+2026-06-04 06:56:40,232 | INFO |   Saved [10/30]
+2026-06-04 06:56:40,232 | INFO |   [11/30]
+2026-06-04 06:56:40,232 | INFO |   Waiting 49.8s (req #44)
+2026-06-04 06:57:30,845 | INFO |   GET https://www.gsmarena.com/posh_kick_x511-7621.php -> 200
+2026-06-04 06:57:30,864 | INFO |   Posh Kick X511 | RAM=1.0GB | Storage=8.0GB | Main=5.0MP
+2026-06-04 06:57:30,867 | INFO |   Saved [11/30]
+2026-06-04 06:57:30,867 | INFO |   [12/30]
+2026-06-04 06:57:30,868 | INFO |   Waiting 48.2s (req #45)
+2026-06-04 06:58:19,684 | INFO |   GET https://www.gsmarena.com/posh_kick_lite_s410-7620.php -> 200
+2026-06-04 06:58:19,703 | INFO |   Posh Kick Lite S410 | RAM=0.5GB | Storage=4.0GB | Main=2.0MP
+2026-06-04 06:58:19,707 | INFO |   Saved [12/30]
+2026-06-04 06:58:19,707 | INFO |   [13/30]
+2026-06-04 06:58:19,707 | INFO |   Waiting 54.9s (req #46)
+2026-06-04 06:59:15,344 | INFO |   GET https://www.gsmarena.com/posh_icon_s510-7619.php -> 200
+2026-06-04 06:59:15,364 | INFO |   Posh Icon S510 | RAM=0.5GB | Storage=4.0GB | Main=5.0MP
+2026-06-04 06:59:15,367 | INFO |   Saved [13/30]
+2026-06-04 06:59:15,367 | INFO |   [14/30]
+2026-06-04 06:59:15,368 | INFO |   Waiting 47.9s (req #47)
+2026-06-04 07:00:03,932 | INFO |   GET https://www.gsmarena.com/posh_titan_max_hd_e550-7495.php -> 200
+2026-06-04 07:00:03,956 | INFO |   Posh Titan Max HD E550 | RAM=1.0GB | Storage=8.0GB | Main=13.0MP
+2026-06-04 07:00:03,960 | INFO |   Saved [14/30]
+2026-06-04 07:00:03,960 | INFO |   [15/30]
+2026-06-04 07:00:03,960 | INFO |   Waiting 49.5s (req #48)
+2026-06-04 07:00:54,011 | INFO |   GET https://www.gsmarena.com/posh_ultra_5_0_lte_l500-7494.php -> 200
+2026-06-04 07:00:54,028 | INFO |   Posh Ultra 5.0 LTE L500 | RAM=1.0GB | Storage=8.0GB | Main=8.0MP
+2026-06-04 07:00:54,031 | INFO |   Saved [15/30]
+2026-06-04 07:00:54,031 | INFO |   [16/30]
+2026-06-04 07:00:54,032 | INFO |   Waiting 31.9s (req #49)
+2026-06-04 07:01:26,953 | INFO |   GET https://www.gsmarena.com/posh_micro_x_s240-7493.php -> 200
+2026-06-04 07:01:26,975 | INFO |   Posh Micro X S240 | RAM=0.5GB | Storage=4.0GB | Main=2.0MP
+2026-06-04 07:01:26,979 | INFO |   Saved [16/30]
+2026-06-04 07:01:26,979 | INFO |   [17/30]
+2026-06-04 07:01:26,979 | INFO |   Waiting 27.9s (req #50)
+2026-06-04 07:01:55,541 | INFO |   GET https://www.gsmarena.com/posh_titan_max_hd_e600-7169.php -> 200
+2026-06-04 07:01:55,572 | INFO |   Posh Titan Max HD E600 | RAM=1.0GB | Storage=8.0GB | Main=13.0MP
+2026-06-04 07:01:55,576 | INFO |   Saved [17/30]
+2026-06-04 07:01:55,576 | INFO |   [18/30]
+2026-06-04 07:01:55,577 | INFO |   Waiting 27.4s (req #51)
+2026-06-04 07:02:23,699 | INFO |   GET https://www.gsmarena.com/posh_titan_hd_e500-7170.php -> 200
+2026-06-04 07:02:23,719 | INFO |   Posh Titan HD E500 | RAM=1.0GB | Storage=8.0GB | Main=13.0MP
+2026-06-04 07:02:23,723 | INFO |   Saved [18/30]
+2026-06-04 07:02:23,723 | INFO |   [19/30]
+2026-06-04 07:02:23,723 | INFO |   Waiting 30.8s (req #52)
+2026-06-04 07:02:55,253 | INFO |   GET https://www.gsmarena.com/posh_equal_s700-7171.php -> 200
+2026-06-04 07:02:55,272 | INFO |   Posh Equal S700 | RAM=0.5GB | Storage=4.0GB | Main=5.0MP
+2026-06-04 07:02:55,275 | INFO |   Saved [19/30]
+2026-06-04 07:02:55,275 | INFO |   [20/30]
+2026-06-04 07:02:55,276 | INFO |   Waiting 59.6s (req #53)
+2026-06-04 07:03:55,555 | INFO |   GET https://www.gsmarena.com/posh_equal_lite_w700-7172.php -> 200
+2026-06-04 07:03:55,578 | INFO |   Posh Equal Lite W700 | RAM=0.5GB | Storage=8.0GB | Main=5.0MP
+2026-06-04 07:03:55,583 | INFO |   Saved [20/30]
+2026-06-04 07:03:55,583 | INFO |   [21/30]
+2026-06-04 07:03:55,583 | INFO |   Waiting 28.2s (req #54)
+2026-06-04 07:04:24,401 | INFO |   GET https://www.gsmarena.com/posh_memo_s580-7173.php -> 200
+2026-06-04 07:04:24,418 | INFO |   Posh Memo S580 | RAM=0.5GB | Storage=4.0GB | Main=8.0MP
+2026-06-04 07:04:24,422 | INFO |   Saved [21/30]
+2026-06-04 07:04:24,422 | INFO |   [22/30]
+2026-06-04 07:04:24,422 | INFO |   Waiting 58.6s (req #55)
+2026-06-04 07:05:23,892 | INFO |   GET https://www.gsmarena.com/posh_orion_max_x550-7174.php -> 200
+2026-06-04 07:05:23,910 | INFO |   Posh Orion Max X550 | RAM=1.0GB | Storage=4.0GB | Main=8.0MP
+2026-06-04 07:05:23,913 | INFO |   Saved [22/30]
+2026-06-04 07:05:23,913 | INFO |   [23/30]
+2026-06-04 07:05:23,913 | INFO |   Waiting 32.8s (req #56)
+2026-06-04 07:05:57,404 | INFO |   GET https://www.gsmarena.com/posh_orion_pro_x500-7175.php -> 200
+2026-06-04 07:05:57,431 | INFO |   Posh Orion Pro X500 | RAM=1.0GB | Storage=4.0GB | Main=8.0MP
+2026-06-04 07:05:57,435 | INFO |   Saved [23/30]
+2026-06-04 07:05:57,435 | INFO |   [24/30]
+2026-06-04 07:05:57,435 | INFO |   Waiting 47.6s (req #57)
+2026-06-04 07:06:45,742 | INFO |   GET https://www.gsmarena.com/posh_revel_pro_x510-7176.php -> 200
+2026-06-04 07:06:45,801 | INFO |   Posh Revel Pro X510 | RAM=0.5GB | Storage=4.0GB | Main=8.0MP
+2026-06-04 07:06:45,805 | INFO |   Saved [24/30]
+2026-06-04 07:06:45,805 | INFO |   [25/30]
+2026-06-04 07:06:45,806 | INFO |   Waiting 34.8s (req #58)
+2026-06-04 07:07:21,481 | INFO |   GET https://www.gsmarena.com/posh_revel_s500-7177.php -> 200
+2026-06-04 07:07:21,499 | INFO |   Posh Revel S500 | RAM=0.5GB | Storage=4.0GB | Main=8.0MP
+2026-06-04 07:07:21,503 | INFO |   Saved [25/30]
+2026-06-04 07:07:21,504 | INFO |   [26/30]
+2026-06-04 07:07:21,506 | INFO |   Waiting 47.5s (req #59)
+2026-06-04 07:08:10,115 | INFO |   GET https://www.gsmarena.com/posh_orion_s450-7178.php -> 200
+2026-06-04 07:08:10,133 | INFO |   Posh Orion S450 | RAM=0.5GB | Storage=4.0GB | Main=5.0MP
+2026-06-04 07:08:10,136 | INFO |   Saved [26/30]
+2026-06-04 07:08:10,136 | INFO |   [27/30]
+2026-06-04 07:08:10,137 | INFO |   Long pause 263s ...
+2026-06-04 07:12:34,195 | INFO |   GET https://www.gsmarena.com/posh_pegasus_4g_s400-7179.php -> 200
+2026-06-04 07:12:34,218 | INFO |   Posh Pegasus 4G S400 | RAM=0.5GB | Storage=4.0GB | Main=5.0MP
+2026-06-04 07:12:34,222 | INFO |   Saved [27/30]
+2026-06-04 07:12:34,223 | INFO |   [28/30]
+2026-06-04 07:12:34,225 | INFO |   Waiting 54.9s (req #61)
+2026-06-04 07:13:29,809 | INFO |   GET https://www.gsmarena.com/posh_orion_mini_s350-7180.php -> 200
+2026-06-04 07:13:29,826 | INFO |   Posh Orion Mini S350 | RAM=0.25GB | Storage=0.5GB | Main=5.0MP
+2026-06-04 07:13:29,831 | INFO |   Saved [28/30]
+2026-06-04 07:13:29,831 | INFO |   [29/30]
+2026-06-04 07:13:29,832 | INFO |   Waiting 36.6s (req #62)
+2026-06-04 07:14:07,083 | INFO |   GET https://www.gsmarena.com/posh_pegasus_plus_c351-7181.php -> 200
+2026-06-04 07:14:07,106 | INFO |   Posh Pegasus Plus C351 | RAM=0.25GB | Storage=0.5GB | Main=1.3MP
+2026-06-04 07:14:07,110 | INFO |   Saved [29/30]
+2026-06-04 07:14:07,110 | INFO |   [30/30]
+2026-06-04 07:14:07,110 | INFO |   Waiting 57.9s (req #63)
+2026-06-04 07:15:05,729 | INFO |   GET https://www.gsmarena.com/posh_lynx_a100-7182.php -> 200
+2026-06-04 07:15:05,757 | INFO |   Posh Lynx A100 | RAM=0.031GB | Storage=0.031GB | Main=NoneMP
+2026-06-04 07:15:05,761 | INFO |   Saved [30/30]
+2026-06-04 07:15:05,764 | INFO | Done: Posh - 30 phones
+2026-06-04 07:15:05,764 | INFO | [3/4] Telit (30 phones)
+2026-06-04 07:15:05,765 | INFO |   Waiting 36.8s (req #64)
+2026-06-04 07:15:43,324 | INFO |   GET https://www.gsmarena.com/telit-phones-16.php -> 200
+2026-06-04 07:15:43,336 | INFO |   Found 30 phone links for Telit
+2026-06-04 07:15:43,338 | INFO |   [1/30]
+2026-06-04 07:15:43,338 | INFO |   Waiting 35.6s (req #65)
+2026-06-04 07:16:19,498 | INFO |   GET https://www.gsmarena.com/telit_t800-1549.php -> 200
+2026-06-04 07:16:19,515 | INFO |   Telit t800 | RAM=NoneGB | Storage=NoneGB | Main=2.0MP
+2026-06-04 07:16:19,519 | INFO |   Saved [1/30]
+2026-06-04 07:16:19,520 | INFO |   [2/30]
+2026-06-04 07:16:19,520 | INFO |   Waiting 39.6s (req #66)
+2026-06-04 07:16:59,861 | INFO |   GET https://www.gsmarena.com/telit_t250-1548.php -> 200
+2026-06-04 07:16:59,879 | INFO |   Telit t250 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:16:59,883 | INFO |   Saved [2/30]
+2026-06-04 07:16:59,883 | INFO |   [3/30]
+2026-06-04 07:16:59,883 | INFO |   Waiting 33.6s (req #67)
+2026-06-04 07:17:34,435 | INFO |   GET https://www.gsmarena.com/telit_t650-1547.php -> 200
+2026-06-04 07:17:34,460 | INFO |   Telit t650 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:17:34,463 | INFO |   Saved [3/30]
+2026-06-04 07:17:34,464 | INFO |   [4/30]
+2026-06-04 07:17:34,464 | INFO |   Waiting 51.2s (req #68)
+2026-06-04 07:18:26,169 | INFO |   GET https://www.gsmarena.com/telit_t200-1546.php -> 200
+2026-06-04 07:18:26,186 | INFO |   Telit t200 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:18:26,190 | INFO |   Saved [4/30]
+2026-06-04 07:18:26,190 | INFO |   [5/30]
+2026-06-04 07:18:26,190 | INFO |   Waiting 38.9s (req #69)
+2026-06-04 07:19:05,765 | INFO |   GET https://www.gsmarena.com/telit_gu1100-1540.php -> 200
+2026-06-04 07:19:05,790 | INFO |   Telit GU1100 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:19:05,794 | INFO |   Saved [5/30]
+2026-06-04 07:19:05,795 | INFO |   [6/30]
+2026-06-04 07:19:05,796 | INFO |   Waiting 56.1s (req #70)
+2026-06-04 07:20:02,497 | INFO |   GET https://www.gsmarena.com/telit_sp600-1539.php -> 200
+2026-06-04 07:20:02,526 | INFO |   Telit SP600 | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 07:20:02,532 | INFO |   Saved [6/30]
+2026-06-04 07:20:02,533 | INFO |   [7/30]
+2026-06-04 07:20:02,533 | INFO |   Waiting 57.6s (req #71)
+2026-06-04 07:21:00,860 | INFO |   GET https://www.gsmarena.com/telit_t550-1538.php -> 200
+2026-06-04 07:21:00,881 | INFO |   Telit t550 | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 07:21:00,885 | INFO |   Saved [7/30]
+2026-06-04 07:21:00,886 | INFO |   [8/30]
+2026-06-04 07:21:00,887 | INFO |   Waiting 45.7s (req #72)
+2026-06-04 07:21:47,349 | INFO |   GET https://www.gsmarena.com/telit_t420-1537.php -> 200
+2026-06-04 07:21:47,370 | INFO |   Telit t420 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:21:47,374 | INFO |   Saved [8/30]
+2026-06-04 07:21:47,375 | INFO |   [9/30]
+2026-06-04 07:21:47,375 | INFO |   Waiting 46.7s (req #73)
+2026-06-04 07:22:34,786 | INFO |   GET https://www.gsmarena.com/telit_t180-1661.php -> 200
+2026-06-04 07:22:34,807 | INFO |   Telit t180 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:22:34,812 | INFO |   Saved [9/30]
+2026-06-04 07:22:34,812 | INFO |   [10/30]
+2026-06-04 07:22:34,812 | INFO |   Waiting 53.3s (req #74)
+2026-06-04 07:23:28,811 | INFO |   GET https://www.gsmarena.com/telit_t410-1536.php -> 200
+2026-06-04 07:23:28,829 | INFO |   Telit t410 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:23:28,832 | INFO |   Saved [10/30]
+2026-06-04 07:23:28,833 | INFO |   [11/30]
+2026-06-04 07:23:28,833 | INFO |   Waiting 31.8s (req #75)
+2026-06-04 07:24:01,286 | INFO |   GET https://www.gsmarena.com/telit_t130-1581.php -> 200
+2026-06-04 07:24:01,303 | INFO |   Telit t130 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:24:01,308 | INFO |   Saved [11/30]
+2026-06-04 07:24:01,308 | INFO |   [12/30]
+2026-06-04 07:24:01,308 | INFO |   Waiting 42.9s (req #76)
+2026-06-04 07:24:45,318 | INFO |   GET https://www.gsmarena.com/telit_t110-1535.php -> 200
+2026-06-04 07:24:45,337 | INFO |   Telit t110 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:24:45,341 | INFO |   Saved [12/30]
+2026-06-04 07:24:45,341 | INFO |   [13/30]
+2026-06-04 07:24:45,341 | INFO |   Waiting 56.3s (req #77)
+2026-06-04 07:25:42,558 | INFO |   GET https://www.gsmarena.com/telit_t210-1534.php -> 200
+2026-06-04 07:25:42,591 | INFO |   Telit t210 | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 07:25:42,594 | INFO |   Saved [13/30]
+2026-06-04 07:25:42,595 | INFO |   [14/30]
+2026-06-04 07:25:42,595 | INFO |   Waiting 46.2s (req #78)
+2026-06-04 07:26:29,455 | INFO |   GET https://www.gsmarena.com/telit_t510-1244.php -> 200
+2026-06-04 07:26:29,474 | INFO |   Telit T510 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:26:29,478 | INFO |   Saved [14/30]
+2026-06-04 07:26:29,481 | INFO |   [15/30]
+2026-06-04 07:26:29,482 | INFO |   Waiting 51.3s (req #79)
+2026-06-04 07:27:21,484 | INFO |   GET https://www.gsmarena.com/telit_c1000-1243.php -> 200
+2026-06-04 07:27:21,503 | INFO |   Telit C1000 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:27:21,508 | INFO |   Saved [15/30]
+2026-06-04 07:27:21,508 | INFO |   [16/30]
+2026-06-04 07:27:21,509 | INFO |   Waiting 53.3s (req #80)
+2026-06-04 07:28:15,437 | INFO |   GET https://www.gsmarena.com/telit_t91-863.php -> 200
+2026-06-04 07:28:15,455 | INFO |   Telit T91 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 07:28:15,458 | INFO |   Saved [16/30]
+2026-06-04 07:28:15,459 | INFO |   [17/30]
+2026-06-04 07:28:15,459 | INFO |   Waiting 59.0s (req #81)
+2026-06-04 15:05:08,240 | INFO | Started: 2026-06-04 15:05:08
+2026-06-04 15:05:08,241 | INFO | Brands: ['Niu', 'Posh', 'Telit', 'Unnecto']
+2026-06-04 15:05:08,241 | INFO | Warm-up wait 60s ...
+2026-06-04 15:05:12,986 | INFO | Started: 2026-06-04 15:05:12
+2026-06-04 15:05:12,986 | INFO | Brands: ['Niu', 'Posh', 'Telit', 'Unnecto']
+2026-06-04 15:05:12,986 | INFO | Warm-up wait 60s ...
+2026-06-04 15:06:14,342 | INFO | Connected
+2026-06-04 15:06:15,672 | INFO |   GET https://www.gsmarena.com/makers.php3 -> 200
+2026-06-04 15:06:15,690 | INFO | Found 126 brands
+2026-06-04 15:06:15,691 | INFO | Matched: ['Niu', 'Posh', 'Telit', 'Unnecto']
+2026-06-04 15:06:15,691 | INFO | [1/4] SKIP Niu
+2026-06-04 15:06:15,691 | INFO | [2/4] SKIP Posh
+2026-06-04 15:06:15,691 | INFO | [3/4] Telit (30 phones)
+2026-06-04 15:06:15,744 | INFO |   Loaded 30 links from cache
+2026-06-04 15:06:15,744 | INFO |   [17/30]
+2026-06-04 15:06:15,745 | INFO |   Waiting 59.8s (req #2)
+2026-06-04 15:07:16,601 | INFO |   GET https://www.gsmarena.com/telit_t90-862.php -> 200
+2026-06-04 15:07:16,620 | INFO |   Telit T90 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:07:16,646 | INFO |   Saved [1/30]
+2026-06-04 15:07:16,646 | INFO |   [18/30]
+2026-06-04 15:07:16,647 | INFO |   Waiting 43.2s (req #3)
+2026-06-04 15:08:00,953 | INFO |   GET https://www.gsmarena.com/telit_neo-793.php -> 200
+2026-06-04 15:08:00,973 | INFO |   Telit NEO | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:08:00,976 | INFO |   Saved [2/30]
+2026-06-04 15:08:00,977 | INFO |   [19/30]
+2026-06-04 15:08:00,977 | INFO |   Waiting 59.2s (req #4)
+2026-06-04 15:09:01,159 | INFO |   GET https://www.gsmarena.com/telit_x60i-792.php -> 200
+2026-06-04 15:09:01,178 | INFO |   Telit X60i | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:09:01,181 | INFO |   Saved [3/30]
+2026-06-04 15:09:01,181 | INFO |   [20/30]
+2026-06-04 15:09:01,182 | INFO |   Waiting 25.2s (req #5)
+2026-06-04 15:09:27,260 | INFO |   GET https://www.gsmarena.com/telit_g90-578.php -> 200
+2026-06-04 15:09:27,280 | INFO |   Telit G90 | RAM=0.016GB | Storage=0.031GB | Main=NoneMP
+2026-06-04 15:09:27,283 | INFO |   Saved [4/30]
+2026-06-04 15:09:27,283 | INFO |   [21/30]
+2026-06-04 15:09:27,283 | INFO |   Waiting 35.0s (req #6)
+2026-06-04 15:10:03,414 | INFO |   GET https://www.gsmarena.com/telit_g83-577.php -> 200
+2026-06-04 15:10:03,440 | INFO |   Telit G83 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:10:03,443 | INFO |   Saved [5/30]
+2026-06-04 15:10:03,444 | INFO |   [22/30]
+2026-06-04 15:10:03,444 | INFO |   Waiting 53.4s (req #7)
+2026-06-04 15:10:57,790 | INFO |   GET https://www.gsmarena.com/telit_g80-362.php -> 200
+2026-06-04 15:10:57,810 | INFO |   Telit G80 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:10:57,814 | INFO |   Saved [6/30]
+2026-06-04 15:10:57,815 | INFO |   [23/30]
+2026-06-04 15:10:57,815 | INFO |   Waiting 50.4s (req #8)
+2026-06-04 15:11:49,182 | INFO |   GET https://www.gsmarena.com/telit_g82-361.php -> 200
+2026-06-04 15:11:49,200 | INFO |   Telit G82 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:11:49,204 | INFO |   Saved [7/30]
+2026-06-04 15:11:49,206 | INFO |   [24/30]
+2026-06-04 15:11:49,206 | INFO |   Waiting 52.6s (req #9)
+2026-06-04 15:12:43,248 | INFO |   GET https://www.gsmarena.com/telit_g40-442.php -> 200
+2026-06-04 15:12:43,268 | INFO |   Telit G40 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:12:43,272 | INFO |   Saved [8/30]
+2026-06-04 15:12:43,272 | INFO |   [25/30]
+2026-06-04 15:12:43,272 | INFO |   Waiting 39.7s (req #10)
+2026-06-04 15:13:24,106 | INFO |   GET https://www.gsmarena.com/telit_gm_882-360.php -> 200
+2026-06-04 15:13:24,133 | INFO |   Telit GM 882 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:13:24,136 | INFO |   Saved [9/30]
+2026-06-04 15:13:24,136 | INFO |   [26/30]
+2026-06-04 15:13:24,137 | INFO |   Waiting 34.2s (req #11)
+2026-06-04 15:13:59,534 | INFO |   GET https://www.gsmarena.com/telit_gm_830-189.php -> 200
+2026-06-04 15:13:59,555 | INFO |   Telit GM 830 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:13:59,559 | INFO |   Saved [10/30]
+2026-06-04 15:13:59,559 | INFO |   [27/30]
+2026-06-04 15:13:59,560 | INFO |   Waiting 48.8s (req #12)
+2026-06-04 15:14:49,202 | INFO |   GET https://www.gsmarena.com/telit_gm_810-188.php -> 200
+2026-06-04 15:14:49,221 | INFO |   Telit GM 810 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:14:49,225 | INFO |   Saved [11/30]
+2026-06-04 15:14:49,225 | INFO |   [28/30]
+2026-06-04 15:14:49,225 | INFO |   Waiting 50.0s (req #13)
+2026-06-04 15:15:40,225 | INFO |   GET https://www.gsmarena.com/telit_estremo-187.php -> 200
+2026-06-04 15:15:40,248 | INFO |   Telit Estremo | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:15:40,252 | INFO |   Saved [12/30]
+2026-06-04 15:15:40,253 | INFO |   [29/30]
+2026-06-04 15:15:40,253 | INFO |   Waiting 33.4s (req #14)
+2026-06-04 15:16:14,699 | INFO |   GET https://www.gsmarena.com/telit_gm_710-186.php -> 200
+2026-06-04 15:16:14,739 | INFO |   Telit GM 710 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:16:14,744 | INFO |   Saved [13/30]
+2026-06-04 15:16:14,744 | INFO |   [30/30]
+2026-06-04 15:16:14,744 | INFO |   Waiting 31.4s (req #15)
+2026-06-04 15:16:47,364 | INFO |   GET https://www.gsmarena.com/telit_gm_410-185.php -> 200
+2026-06-04 15:16:47,382 | INFO |   Telit GM 410 | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:16:47,385 | INFO |   Saved [14/30]
+2026-06-04 15:16:47,386 | INFO | Done: Telit - 14 phones
+2026-06-04 15:16:47,386 | INFO | [4/4] Unnecto (30 phones)
+2026-06-04 15:16:47,386 | INFO |   Waiting 44.6s (req #16)
+2026-06-04 15:17:33,137 | INFO |   GET https://www.gsmarena.com/unnecto-phones-91.php -> 200
+2026-06-04 15:17:33,154 | INFO |   Found 30 phone links for Unnecto
+2026-06-04 15:17:33,156 | INFO |   [1/30]
+2026-06-04 15:17:33,156 | INFO |   Waiting 52.1s (req #17)
+2026-06-04 15:18:26,485 | INFO |   GET https://www.gsmarena.com/unnecto_bolt-8283.php -> 200
+2026-06-04 15:18:26,502 | INFO |   Unnecto Bolt | RAM=1.0GB | Storage=8.0GB | Main=8.0MP
+2026-06-04 15:18:26,513 | INFO |   Saved [1/30]
+2026-06-04 15:18:26,513 | INFO |   [2/30]
+2026-06-04 15:18:26,514 | INFO |   Waiting 46.5s (req #18)
+2026-06-04 15:19:14,203 | INFO |   GET https://www.gsmarena.com/unnecto_neo_v-8282.php -> 200
+2026-06-04 15:19:14,226 | INFO |   Unnecto Neo V | RAM=1.0GB | Storage=8.0GB | Main=8.0MP
+2026-06-04 15:19:14,232 | INFO |   Saved [2/30]
+2026-06-04 15:19:14,233 | INFO |   [3/30]
+2026-06-04 15:19:14,233 | INFO |   Waiting 48.2s (req #19)
+2026-06-04 15:20:03,580 | INFO |   GET https://www.gsmarena.com/unnecto_quattro_s-8281.php -> 200
+2026-06-04 15:20:03,610 | INFO |   Unnecto Quattro S | RAM=1.0GB | Storage=8.0GB | Main=5.0MP
+2026-06-04 15:20:03,615 | INFO |   Saved [3/30]
+2026-06-04 15:20:03,616 | INFO |   [4/30]
+2026-06-04 15:20:03,617 | INFO |   Waiting 56.8s (req #20)
+2026-06-04 15:21:01,451 | INFO |   GET https://www.gsmarena.com/unnecto_quattro_v-8280.php -> 200
+2026-06-04 15:21:01,484 | INFO |   Unnecto Quattro V | RAM=1.0GB | Storage=8.0GB | Main=5.0MP
+2026-06-04 15:21:01,490 | INFO |   Saved [4/30]
+2026-06-04 15:21:01,491 | INFO |   [5/30]
+2026-06-04 15:21:01,491 | INFO |   Waiting 45.7s (req #21)
+2026-06-04 15:21:48,314 | INFO |   GET https://www.gsmarena.com/unnecto_drone_xs-8279.php -> 200
+2026-06-04 15:21:48,339 | INFO |   Unnecto Drone XS | RAM=0.5GB | Storage=4.0GB | Main=3.0MP
+2026-06-04 15:21:48,344 | INFO |   Saved [5/30]
+2026-06-04 15:21:48,344 | INFO |   [6/30]
+2026-06-04 15:21:48,345 | INFO |   Waiting 59.9s (req #22)
+2026-06-04 15:22:49,473 | INFO |   GET https://www.gsmarena.com/unnecto_primo_2g-8278.php -> 200
+2026-06-04 15:22:49,498 | INFO |   Unnecto Primo 2G | RAM=0.031GB | Storage=0.031GB | Main=1.0MP
+2026-06-04 15:22:49,526 | INFO |   Saved [6/30]
+2026-06-04 15:22:49,526 | INFO |   [7/30]
+2026-06-04 15:22:49,526 | INFO |   Waiting 37.9s (req #23)
+2026-06-04 15:23:28,510 | INFO |   GET https://www.gsmarena.com/unnecto_omnia-7888.php -> 200
+2026-06-04 15:23:28,542 | INFO |   Unnecto Omnia | RAM=1.0GB | Storage=8.0GB | Main=8.0MP
+2026-06-04 15:23:28,546 | INFO |   Saved [7/30]
+2026-06-04 15:23:28,546 | INFO |   [8/30]
+2026-06-04 15:23:28,547 | INFO |   Waiting 34.7s (req #24)
+2026-06-04 15:24:04,416 | INFO |   GET https://www.gsmarena.com/unnecto_swift-7887.php -> 200
+2026-06-04 15:24:04,442 | INFO |   Unnecto Swift | RAM=1.0GB | Storage=8.0GB | Main=5.0MP
+2026-06-04 15:24:04,448 | INFO |   Saved [8/30]
+2026-06-04 15:24:04,448 | INFO |   [9/30]
+2026-06-04 15:24:04,448 | INFO |   Waiting 30.9s (req #25)
+2026-06-04 15:24:36,479 | INFO |   GET https://www.gsmarena.com/unnecto_quattro_x-7021.php -> 200
+2026-06-04 15:24:36,501 | INFO |   Unnecto Quattro X | RAM=0.5GB | Storage=4.0GB | Main=5.0MP
+2026-06-04 15:24:36,504 | INFO |   Saved [9/30]
+2026-06-04 15:24:36,504 | INFO |   [10/30]
+2026-06-04 15:24:36,504 | INFO |   Waiting 42.1s (req #26)
+2026-06-04 15:25:19,764 | INFO |   GET https://www.gsmarena.com/unnecto_drone_xl-7020.php -> 200
+2026-06-04 15:25:19,781 | INFO |   Unnecto Drone XL | RAM=0.25GB | Storage=0.5GB | Main=3.15MP
+2026-06-04 15:25:19,786 | INFO |   Saved [10/30]
+2026-06-04 15:25:19,786 | INFO |   [11/30]
+2026-06-04 15:25:19,787 | INFO |   Waiting 25.4s (req #27)
+2026-06-04 15:25:46,184 | INFO |   GET https://www.gsmarena.com/unnecto_drone_x-7019.php -> 200
+2026-06-04 15:25:46,206 | INFO |   Unnecto Drone X | RAM=0.25GB | Storage=0.5GB | Main=3.15MP
+2026-06-04 15:25:46,211 | INFO |   Saved [11/30]
+2026-06-04 15:25:46,211 | INFO |   [12/30]
+2026-06-04 15:25:46,212 | INFO |   Waiting 50.1s (req #28)
+2026-06-04 15:26:37,399 | INFO |   GET https://www.gsmarena.com/unnecto_air_5_5-7018.php -> 200
+2026-06-04 15:26:37,419 | INFO |   Unnecto Air 5.5 | RAM=1.0GB | Storage=8.0GB | Main=13.0MP
+2026-06-04 15:26:37,423 | INFO |   Saved [12/30]
+2026-06-04 15:26:37,423 | INFO |   [13/30]
+2026-06-04 15:26:37,423 | INFO |   Waiting 26.1s (req #29)
+2026-06-04 15:27:04,516 | INFO |   GET https://www.gsmarena.com/unnecto_air_5_0-7017.php -> 200
+2026-06-04 15:27:04,540 | INFO |   Unnecto Air 5.0 | RAM=1.0GB | Storage=8.0GB | Main=12.0MP
+2026-06-04 15:27:04,546 | INFO |   Saved [13/30]
+2026-06-04 15:27:04,547 | INFO |   [14/30]
+2026-06-04 15:27:04,547 | INFO |   Long pause 208s ...
+2026-06-04 15:30:33,511 | INFO |   GET https://www.gsmarena.com/unnecto_air_4_5-7016.php -> 200
+2026-06-04 15:30:33,545 | INFO |   Unnecto Air 4.5 | RAM=1.0GB | Storage=8.0GB | Main=8.0MP
+2026-06-04 15:30:33,550 | INFO |   Saved [14/30]
+2026-06-04 15:30:33,550 | INFO |   [15/30]
+2026-06-04 15:30:33,550 | INFO |   Waiting 53.5s (req #31)
+2026-06-04 15:31:28,100 | INFO |   GET https://www.gsmarena.com/unnecto_rush-6710.php -> 200
+2026-06-04 15:31:28,127 | INFO |   Unnecto Rush | RAM=0.5GB | Storage=4.0GB | Main=8.0MP
+2026-06-04 15:31:28,131 | INFO |   Saved [15/30]
+2026-06-04 15:31:28,132 | INFO |   [16/30]
+2026-06-04 15:31:28,132 | INFO |   Waiting 55.4s (req #32)
+2026-06-04 15:32:25,022 | INFO |   GET https://www.gsmarena.com/unnecto_quattro_z-6455.php -> 200
+2026-06-04 15:32:25,044 | INFO |   Unnecto Quattro Z | RAM=0.5GB | Storage=4.0GB | Main=8.0MP
+2026-06-04 15:32:25,048 | INFO |   Saved [16/30]
+2026-06-04 15:32:25,048 | INFO |   [17/30]
+2026-06-04 15:32:25,049 | INFO |   Waiting 44.1s (req #33)
+2026-06-04 15:33:10,486 | INFO |   GET https://www.gsmarena.com/unnecto_drone_z-6454.php -> 200
+2026-06-04 15:33:10,512 | INFO |   Unnecto Drone Z | RAM=0.25GB | Storage=0.5GB | Main=3.15MP
+2026-06-04 15:33:10,515 | INFO |   Saved [17/30]
+2026-06-04 15:33:10,515 | INFO |   [18/30]
+2026-06-04 15:33:10,516 | INFO |   Waiting 55.1s (req #34)
+2026-06-04 15:34:06,805 | INFO |   GET https://www.gsmarena.com/unnecto_quattro-6014.php -> 200
+2026-06-04 15:34:06,834 | INFO |   Unnecto Quattro | RAM=0.5GB | Storage=NoneGB | Main=3.15MP
+2026-06-04 15:34:06,838 | INFO |   Saved [18/30]
+2026-06-04 15:34:06,838 | INFO |   [19/30]
+2026-06-04 15:34:06,839 | INFO |   Waiting 26.9s (req #35)
+2026-06-04 15:34:34,761 | INFO |   GET https://www.gsmarena.com/unnecto_blaze-6013.php -> 200
+2026-06-04 15:34:34,795 | INFO |   Unnecto Blaze | RAM=0.5GB | Storage=1.0GB | Main=2.0MP
+2026-06-04 15:34:34,800 | INFO |   Saved [19/30]
+2026-06-04 15:34:34,800 | INFO |   [20/30]
+2026-06-04 15:34:34,800 | INFO |   Waiting 55.4s (req #36)
+2026-06-04 15:35:31,283 | INFO |   GET https://www.gsmarena.com/unnecto_drone-6012.php -> 200
+2026-06-04 15:35:31,315 | INFO |   Unnecto Drone | RAM=2.0GB | Storage=4.0GB | Main=2.0MP
+2026-06-04 15:35:31,319 | INFO |   Saved [20/30]
+2026-06-04 15:35:31,320 | INFO |   [21/30]
+2026-06-04 15:35:31,321 | INFO |   Waiting 42.6s (req #37)
+2026-06-04 15:36:15,007 | INFO |   GET https://www.gsmarena.com/unnecto_tap-6011.php -> 200
+2026-06-04 15:36:15,038 | INFO |   Unnecto Tap | RAM=0.062GB | Storage=0.25GB | Main=1.3MP
+2026-06-04 15:36:15,041 | INFO |   Saved [21/30]
+2026-06-04 15:36:15,041 | INFO |   [22/30]
+2026-06-04 15:36:15,041 | INFO |   Waiting 25.9s (req #38)
+2026-06-04 15:36:42,046 | INFO |   GET https://www.gsmarena.com/unnecto_pro_z-6010.php -> 200
+2026-06-04 15:36:42,074 | INFO |   Unnecto Pro Z | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 15:36:42,077 | INFO |   Saved [22/30]
+2026-06-04 15:36:42,077 | INFO |   [23/30]
+2026-06-04 15:36:42,077 | INFO |   Waiting 59.5s (req #39)
+2026-06-04 15:37:42,660 | INFO |   GET https://www.gsmarena.com/unnecto_pro-6008.php -> 200
+2026-06-04 15:37:42,684 | INFO |   Unnecto Pro | RAM=0.25GB | Storage=0.5GB | Main=1.3MP
+2026-06-04 15:37:42,686 | INFO |   Saved [23/30]
+2026-06-04 15:37:42,687 | INFO |   [24/30]
+2026-06-04 15:37:42,687 | INFO |   Waiting 59.0s (req #40)
+2026-06-04 15:38:42,661 | INFO |   GET https://www.gsmarena.com/unnecto_edge-6007.php -> 200
+2026-06-04 15:38:42,684 | INFO |   Unnecto Edge | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 15:38:42,687 | INFO |   Saved [24/30]
+2026-06-04 15:38:42,687 | INFO |   [25/30]
+2026-06-04 15:38:42,687 | INFO |   Waiting 44.5s (req #41)
+2026-06-04 15:39:28,334 | INFO |   GET https://www.gsmarena.com/unnecto_shell-6006.php -> 200
+2026-06-04 15:39:28,353 | INFO |   Unnecto Shell | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 15:39:28,356 | INFO |   Saved [25/30]
+2026-06-04 15:39:28,357 | INFO |   [26/30]
+2026-06-04 15:39:28,357 | INFO |   Waiting 40.2s (req #42)
+2026-06-04 15:40:09,602 | INFO |   GET https://www.gsmarena.com/unnecto_pebble-6004.php -> 200
+2026-06-04 15:40:09,625 | INFO |   Unnecto Pebble | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 15:40:09,628 | INFO |   Saved [26/30]
+2026-06-04 15:40:09,629 | INFO |   [27/30]
+2026-06-04 15:40:09,629 | INFO |   Waiting 44.8s (req #43)
+2026-06-04 15:40:55,372 | INFO |   GET https://www.gsmarena.com/unnecto_drift-6005.php -> 200
+2026-06-04 15:40:55,399 | INFO |   Unnecto Drift | RAM=NoneGB | Storage=NoneGB | Main=1.3MP
+2026-06-04 15:40:55,402 | INFO |   Saved [27/30]
+2026-06-04 15:40:55,402 | INFO |   [28/30]
+2026-06-04 15:40:55,402 | INFO |   Waiting 50.8s (req #44)
+2026-06-04 15:41:47,163 | INFO |   GET https://www.gsmarena.com/unnecto_eco-6003.php -> 200
+2026-06-04 15:41:47,184 | INFO |   Unnecto Eco | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:41:47,188 | INFO |   Saved [28/30]
+2026-06-04 15:41:47,189 | INFO |   [29/30]
+2026-06-04 15:41:47,189 | INFO |   Waiting 43.4s (req #45)
+2026-06-04 15:42:31,543 | INFO |   GET https://www.gsmarena.com/unnecto_primo_3g-6002.php -> 200
+2026-06-04 15:42:31,573 | INFO |   Unnecto Primo 3G | RAM=0.25GB | Storage=1.0GB | Main=0.8MP
+2026-06-04 15:42:31,576 | INFO |   Saved [29/30]
+2026-06-04 15:42:31,577 | INFO |   [30/30]
+2026-06-04 15:42:31,577 | INFO |   Waiting 54.0s (req #46)
+2026-06-04 15:43:26,630 | INFO |   GET https://www.gsmarena.com/unnecto_primo-6001.php -> 200
+2026-06-04 15:43:26,658 | INFO |   Unnecto Primo | RAM=NoneGB | Storage=NoneGB | Main=NoneMP
+2026-06-04 15:43:26,662 | INFO |   Saved [30/30]
+2026-06-04 15:43:26,663 | INFO | Done: Unnecto - 30 phones
+2026-06-04 15:43:26,663 | INFO | Finished - 44 phones in 37 min
