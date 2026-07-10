@@ -47,3 +47,5 @@ uploads/
 tmp/
 *.local
 prompt.txt
+
+ML Model/.venv
