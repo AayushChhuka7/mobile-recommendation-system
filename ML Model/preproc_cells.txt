@@ -1,0 +1,687 @@
+================================================================================
+CELL 113 (code)
+================================================================================
+import re
+
+CORE_WORDS = {
+    "single": 1, "dual": 2, "triple": 3, "quad": 4, "penta": 5,
+    "hexa": 6, "hepta": 7, "octa": 8, "nona": 9, "deca": 10,
+}
+
+def extract_core_count(s):
+    """'Octa-core (...)' -> 8, '8-core (1+3+4) @ ...' -> 8,
+    '1.0 GHz Cortex-A9' (no 'core' word at all) -> 1 (single core)."""
+    if pd.isna(s):
+        return None
+    s_low = str(s).lower()
+    for word, n in CORE_WORDS.items():
+        if re.match(rf"^{word}-core", s_low):
+            return n
+    m = re.match(r"^(\d+)-core", s_low)
+    if m:
+        return int(m.group(1))
+    if re.match(r"^[\d.]+\s*(ghz|mhz)", s_low):
+        return 1
+    return None
+
+def extract_max_clock_ghz(s):
+    """Pull every GHz/MHz value mentioned and return the highest one --
+    that's the peak-performance core's speed, the most useful single number
+    for comparing chips. Handles mixed-unit strings like '8-core ... @ 2300 MHz'."""
+    if pd.isna(s):
+        return None
+    s = str(s)
+    ghz_vals = [float(x) for x in re.findall(r"([\d.]+)\s*GHz", s, re.IGNORECASE)]
+    mhz_vals = [float(x) / 1000 for x in re.findall(r"([\d.]+)\s*MHz", s, re.IGNORECASE)]
+    all_vals = ghz_vals + mhz_vals
+    return round(max(all_vals), 2) if all_vals else None
+
+def extract_architecture(s):
+    """Pull out the named core architecture, in priority order (most
+    specific/modern first). When a string lists multiple core names (a
+    big.LITTLE design naming both the performance and efficiency core),
+    this keeps the FIRST/highest-priority one found, which is normally
+    the performance core -- the one that matters most for benchmarks."""
+    if pd.isna(s):
+        return None
+    s = str(s)
+    patterns = [
+        r"(Oryon(?:\s*V\d)?)",
+        r"(Cortex-X\d+)",
+        r"(Cortex-A\d+)",
+        r"(Cortex-\d{3})",
+        r"(C1-(?:Ultra|Premium|Pro|Nano))",
+        r"(Kryo(?:\s*\d+)?)",
+        r"(Krait(?:\s*\d+)?)",
+        r"(Scorpion)",
+        r"(ARM\s*11)",
+        r"(Twister|Zephyr|Hurricane|Monsoon|Mistral|Typhoon|Avalanche|Blizzard)",
+    ]
+    for pat in patterns:
+        m = re.findall(pat, s, re.IGNORECASE)
+        if m:
+            return m[0]
+    return None
+
+new_df["CPU_core_count"]    = new_df["CPU"].apply(extract_core_count)
+new_df["CPU_max_clock_ghz"] = new_df["CPU"].apply(extract_max_clock_ghz)
+new_df["CPU_architecture"]  = new_df["CPU"].apply(extract_architecture)
+
+n_total = new_df["CPU"].notna().sum()
+print(f"Coverage out of {n_total} rows with a CPU value:")
+print(f"  core_count:    {new_df['CPU_core_count'].notna().sum()} ({new_df['CPU_core_count'].notna().mean()*100:.1f}%)")
+print(f"  max_clock_ghz: {new_df['CPU_max_clock_ghz'].notna().sum()} ({new_df['CPU_max_clock_ghz'].notna().mean()*100:.1f}%)")
+print(f"  architecture:  {new_df['CPU_architecture'].notna().sum()} ({new_df['CPU_architecture'].notna().mean()*100:.1f}%)")
+================================================================================
+CELL 114 (markdown)
+================================================================================
+### CHipset Filling And Feature ENgineering
+================================================================================
+CELL 115 (code)
+================================================================================
+print("null" , new_df["Chipset"].isna().sum())
+
+new_df['Chipset'] = (new_df.groupby('CPU' ,dropna=False)['Chipset'].transform(lambda x: x.fillna(x.mode().iloc[0]) if not x.mode().empty else x))
+print("nll" , new_df["Chipset"].isna().sum())  
+
+new_df['Chipset'] = (new_df.groupby(['Brand', 'Announced_Year'] ,dropna=False)['Chipset'].transform(lambda x: x.fillna(x.mode().iloc[0]) if not x.mode().empty else x))
+print("nll" , new_df["Chipset"].isna().sum()) 
+
+new_df['Chipset'] = new_df['Chipset'].fillna(new_df['Chipset'].mode()[0])
+print("nll" , new_df["Chipset"].isna().sum())
+================================================================================
+CELL 116 (code)
+================================================================================
+import re
+import pandas as pd
+import numpy as np
+
+def clean_and_engineer_chipset(df):
+    # Ensure raw column is treated as string and lowercase for uniform matching
+    df['Chipset'] = df['Chipset'].fillna('Unknown').astype(str)
+    
+    # -------------------------------------------------------------
+    # 1. Process Node (Chipset_nm) -> Numeric
+    # -------------------------------------------------------------
+    df['Chipset_nm'] = df['Chipset'].str.extract(r'\((\d+)\s*nm\)').astype(float)
+    
+    # -------------------------------------------------------------
+    # 2. Chipset_Brand & Chipset_Family
+    # -------------------------------------------------------------
+    def get_brand_and_family(text):
+        text_lower = text.lower()
+        if 'qualcomm' in text_lower or 'snapdragon' in text_lower:
+            return 'Qualcomm', 'Snapdragon'
+        elif 'mediatek' in text_lower or 'helio' in text_lower or 'dimensity' in text_lower:
+            brand = 'Mediatek'
+            family = 'Dimensity' if 'dimensity' in text_lower else 'Helio'
+            return brand, family
+        elif 'apple' in text_lower:
+            return 'Apple', 'A-Series' if ' bionic' in text_lower or ' a1' in text_lower else 'M-Series'
+        elif 'exynos' in text_lower:
+            return 'Samsung', 'Exynos'
+        elif 'google' in text_lower or 'tensor' in text_lower:
+            return 'Google', 'Tensor'
+        elif 'kirin' in text_lower:
+            return 'Huawei', 'Kirin'
+        elif 'unisoc' in text_lower:
+            return 'Unisoc', 'T-Series'
+
+        elif 'spreadtrum' in text_lower:
+            return 'Spreadtrum', 'SC-Series'
+
+        elif 'intel atom' in text_lower or 'intel' in text_lower:
+            return 'Intel', 'Atom'
+        
+        elif 'tegra' in text_lower or 'nvidia' in text_lower:
+            return 'Nvidia', 'Tegra'
+        
+        elif 'omap' in text_lower or 'ti omap' in text_lower:
+            return 'Texas_Instruments', 'OMAP'
+        
+        elif 'rockchip' in text_lower:
+            return 'Rockchip', 'RK-Series'
+        
+        elif 'k3v' in text_lower:
+            return 'Huawei', 'K3V'
+            
+        elif 'marvell' in text_lower:
+            return 'Marvell', 'PXA'
+
+        elif 'broadcom' in text_lower:
+            return 'Broadcom', 'BCM'
+        
+        elif 'novathor' in text_lower:
+            return 'ST-Ericsson', 'NovaThor'
+        else:
+            return 'Unknown', 'Unknown'
+            
+    brands_families = df['Chipset'].apply(get_brand_and_family)
+    df['Chipset_Brand'] = [b[0] for b in brands_families]
+    df['Chipset_Family'] = [b[1] for b in brands_families]
+
+    # -------------------------------------------------------------
+    # 3. Chipset_Generation
+    # -------------------------------------------------------------
+    def extract_generation(text):
+
+        text = text.lower()
+ 
+        if 'elite' in text:
+            return 'SD_Elite'
+
+        m = re.search(r'gen\s*(\d+)', text)
+        if m:
+            return f"SD_Gen{m.group(1)}"
+
+        m = re.search(r'snapdragon\s*s(\d)', text)
+        if m:
+            return f"SD_S{m.group(1)}"
+    
+        # Helio G
+        m = re.search(r'helio\s*g(\d+)', text)
+        if m:
+            return f"Helio_G{m.group(1)}"
+
+        m = re.search(r'helio\s*p(\d+)', text)
+        if m:
+            return f"Helio_P{m.group(1)}"
+
+        m = re.search(r'helio\s*a(\d+)', text)
+        if m:
+            return f"Helio_A{m.group(1)}"
+
+        m = re.search(r'dimensity\s*(\d+)', text)
+        if m:
+            return f"Dimensity_{m.group(1)}"
+
+        m = re.search(r'kirin\s*(\d+)', text)
+        if m:
+            return f"Kirin_{m.group(1)}"
+
+        m = re.search(r'tensor\s*g(\d+)', text)
+        if m:
+            return f"Tensor_G{m.group(1)}"
+    
+        m = re.search(r'apple\s*a(\d+)', text)
+        if m:
+            return f"A{m.group(1)}"
+
+        m = re.search(r'\bm(\d+)\b', text)
+        if m and 'apple' in text:
+            return f"M{m.group(1)}"
+    
+        m = re.search(r'exynos\s*(\d+)', text)
+        if m:
+            return f"Exynos_{m.group(1)}"
+    
+        m = re.search(r'(?:tiger\s*)?t(\d+)', text)
+        if m:
+            return f"T{m.group(1)}"
+
+        m = re.search(r'snapdragon\s*(\d{3})', text)
+        if m:
+            return f"Snapdragon_{m.group(1)}"
+        
+        m = re.search(r'snapdragon\s*(\d{2})', text)
+        if m:
+            return f"Snapdragon_{m.group(1)}"
+    
+        return 'Legacy'
+
+    df['Chipset_Generation'] = df['Chipset'].apply(extract_generation)
+
+
+    flagship_series = ['elite', 'ultra', 'pro', 'extreme', 'ultimate', '9400', '9500', '9300', 'm4']
+    df['Chipset_Is_Flagship'] = df.apply(
+        lambda row: 1 if any(word in row['Chipset'].lower() for word in flagship_series) 
+                         or row['Chipset_nm'] <= 3.0 
+                         or 'snapdragon 8' in row['Chipset'].lower() else 0, axis=1
+    )
+
+
+    df['Chipset_Has_5G_Tag'] = df['Chipset'].apply(lambda x: 1 if '5g' in x.lower() else 0)
+    df['Has_Pro']            = df['Chipset'].apply(lambda x: 1 if 'pro' in x.lower() else 0)
+    df['Has_Ultra']          = df['Chipset'].apply(lambda x: 1 if 'ultra' in x.lower() else 0)
+    df['Has_Plus']           = df['Chipset'].apply(lambda x: 1 if '+' in x or 'plus' in x.lower() else 0)
+    df['Has_Elite']          = df['Chipset'].apply(lambda x: 1 if 'elite' in x.lower() else 0)
+
+    return df
+
+new_df = clean_and_engineer_chipset(new_df)
+================================================================================
+CELL 117 (code)
+================================================================================
+print(new_df["Chipset_Brand"].value_counts() , "\n" ,"-"*50 , "\n", new_df["Chipset_Family"].value_counts())
+================================================================================
+CELL 118 (code)
+================================================================================
+print(new_df["Chipset_Generation"].value_counts().head())
+================================================================================
+CELL 119 (code)
+================================================================================
+legacy = new_df.loc[
+    new_df['Chipset_Generation'] == 'Legacy',
+    'Chipset'
+].value_counts()
+
+print(legacy.head(2))
+================================================================================
+CELL 120 (markdown)
+================================================================================
+### Fill NFC Columns
+================================================================================
+CELL 130 (code)
+================================================================================
+print("Initial:", new_df['Camera_Features'].isna().sum())  
+new_df['Camera_Features'] = new_df['Camera_Features'].fillna('Unknown')
+print("After Step :", new_df['Camera_Features'].isna().sum())
+================================================================================
+CELL 131 (code)
+================================================================================
+import pandas as pd
+import numpy as np
+import re
+
+def engineer_camera_features(df):
+    df['Camera_Features'] = df['Camera_Features'].fillna('Unknown').astype(str)
+
+    df['Has_HDR'] = df['Camera_Features'].str.contains(
+        r'\bHDR\b|Ultra HDR|Auto-HDR|auto HDR',
+        case=False,
+        regex=True
+    ).astype(int)
+
+    df['Has_Panorama'] = df['Camera_Features'].str.contains('panorama', case=False).astype(int)
+    df['Has_Color_Spectrum'] = df['Camera_Features'].str.contains('color spectrum', case=False).astype(int)
+    df['Has_Pixel_Shift'] = df['Camera_Features'].str.contains('pixel shift', case=False).astype(int)
+    df['Has_Best_Face'] = df['Camera_Features'].str.contains('best face', case=False).astype(int)
+    df['Has_Ultra_HDR'] = df['Camera_Features'].str.contains('ultra hdr', case=False).astype(int)
+
+    def flash_type(text):
+        text = text.lower()
+        if 'xenon' in text: return 'Xenon'
+        elif 'hexa-led' in text: return 'Hexa_LED'
+        elif 'penta-led' in text: return 'Penta_LED'
+        elif 'quad-led' in text: return 'Quad_LED'
+        elif 'triple-led' in text: return 'Triple_LED'
+        elif 'dual-led' in text or 'dual led' in text: return 'Dual_LED'
+        elif 'ring-led' in text or 'ring led' in text: return 'Ring_LED'
+        elif 'led flash' in text: return 'LED'
+        else: return 'None'
+
+    df['Flash_Type'] = df['Camera_Features'].apply(flash_type)
+
+    def lens_brand(text):
+        text = text.lower()
+        if 'leica' in text: return 'Leica'
+        elif 'zeiss' in text: return 'Zeiss'
+        elif 'hasselblad' in text: return 'Hasselblad'
+        elif 'ricoh' in text: return 'Ricoh'
+        elif 'schneider' in text: return 'Schneider'
+        else: return 'None'
+
+    df['Lens_Brand'] = df['Camera_Features'].apply(lens_brand)
+
+    def af_type(text):
+        text = text.lower()
+        if 'multi-zone laser af' in text: return 'Multi_Zone'
+        elif 'single-zone laser af' in text: return 'Single_Zone'
+        elif 'lidar af' in text: return 'LiDAR'
+        elif 'laser af' in text or 'laser focus' in text: return 'Laser_AF'
+        else: return 'None'
+
+    df['AF_Type'] = df['Camera_Features'].apply(af_type)
+
+    return df 
+
+new_df = engineer_camera_features(new_df) 
+new_df.drop(columns=['Camera_Features'], inplace=True)
+================================================================================
+CELL 132 (code)
+================================================================================
+new_df = new_df.drop(columns=[
+    'Lens_Brand',
+    'AF_Type',
+    'Has_Best_Face',
+    'Has_Pixel_Shift',
+    'Has_Ultra_HDR'
+])
+================================================================================
+CELL 133 (markdown)
+================================================================================
+### CHipset Clean
+================================================================================
+CELL 134 (code)
+================================================================================
+# def clean_chipset(s):
+#     if pd.isna(s):
+#         return s
+#     s = str(s)
+#     s = re.sub(r'\s*\([^)]*\)', '', s)
+
+#     lookahead_brands = (
+#         r'Qualcomm|Mediatek|MediaTek|Apple|Exynos|Google|Unisoc|Spreadtrum|'
+#         r'HiSilicon|Intel|Helio|Dimensity|Kirin|Tensor|Snapdragon|Tiger'
+#     )
+#     s = re.split(rf'\s-\s|\sor\s|\s/\s|,\s*(?=(?:{lookahead_brands}))', s, flags=re.IGNORECASE)[0]
+
+#     s = re.sub(r'\b(SM|SDM|MSM|APQ|QSD|MDM)[A-Z0-9\-]+\s+', '', s, flags=re.IGNORECASE)
+#     s = re.sub(r'\bMediaTek\b', 'Mediatek', s, flags=re.IGNORECASE)
+#     s = re.sub(r'\bQualcomm\s+Snapdragon\b', 'Snapdragon', s, flags=re.IGNORECASE)
+#     s = s.strip().rstrip(',;-/')
+#     s = re.sub(r'\s+', ' ', s)
+
+#     if s.startswith(('Helio', 'Dimensity')):
+#         s = 'Mediatek ' + s
+#     elif s.startswith('Kirin'):
+#         s = 'HiSilicon ' + s
+#     return s
+
+# new_df['Chipset'] = new_df['Chipset'].apply(clean_chipset)
+# print('Unique Chipset after: ', new_df['Chipset'].nunique())
+================================================================================
+CELL 135 (markdown)
+================================================================================
+### GPU Featre Engineering and Fillna
+================================================================================
+CELL 136 (code)
+================================================================================
+print(new_df['GPU'].isna().sum())
+# 1
+new_df['GPU'] = (new_df.groupby('Chipset' ,dropna=False)['GPU'].transform(lambda x: x.fillna(x.mode().iloc[0]) if not x.mode().empty else x))
+print(new_df['GPU'].isna().sum())
+
+new_df['GPU'] = (new_df.groupby('CPU' ,dropna=False)['GPU'].transform(lambda x: x.fillna(x.mode().iloc[0]) if not x.mode().empty else x))
+print(new_df['GPU'].isna().sum()) 
+
+new_df['GPU'] = (new_df.groupby(['Chipset_Brand', 'Chipset_Family'] ,dropna=False)['GPU'].transform(lambda x: x.fillna(x.mode().iloc[0]) if not x.mode().empty else x))
+print(new_df['GPU'].isna().sum()) 
+
+new_df['GPU'] = (new_df.groupby(['Brand', 'Announced_Year'], dropna=False)['GPU'].transform(lambda x: x.fillna(x.mode().iloc[0]) if not x.mode().empty else x))
+print(new_df['GPU'].isna().sum()) 
+
+new_df['GPU'] = new_df['GPU'].fillna('Unknown')
+print(new_df['GPU'].isna().sum())
+================================================================================
+CELL 137 (code)
+================================================================================
+import pandas as pd
+import re
+
+def engineer_gpu_features(df):
+    df['GPU'] = df['GPU'].fillna('Unknown').astype(str)
+
+    # -------------------------------------------------
+    # 1. GPU Brand
+    # -------------------------------------------------
+    def gpu_brand(text):
+        text = text.lower()
+
+        if 'adreno' in text:
+            return 'Adreno'
+        elif 'immortalis' in text:
+            return 'Immortalis'
+        elif 'mali' in text:
+            return 'Mali'
+        elif 'apple gpu' in text:
+            return 'Apple'
+        elif 'powervr' in text:
+            return 'PowerVR'
+        elif 'img' in text:
+            return 'IMG'
+        elif 'maleoon' in text:
+            return 'Maleoon'
+        elif 'xclipse' in text:
+            return 'Xclipse'
+        elif 'vivante' in text:
+            return 'Vivante'
+        elif 'intel' in text:
+            return 'Intel'
+        elif 'geforce' in text:
+            return 'GeForce'
+        else:
+            return 'Other'
+
+    df['GPU_Brand'] = df['GPU'].apply(gpu_brand)
+
+    # -------------------------------------------------
+    # 2. GPU Family
+    # -------------------------------------------------
+    def gpu_family(text):
+        text = text.lower()
+
+        if 'adreno' in text:
+            return 'Adreno'
+
+        elif 'immortalis' in text:
+            return 'Immortalis'
+
+        elif 'mali-g' in text:
+            return 'Mali_G'
+
+        elif 'mali-t' in text:
+            return 'Mali_T'
+
+        elif 'mali-400' in text or 'mali-450' in text:
+            return 'Mali_400'
+
+        elif 'powervr ge' in text:
+            return 'PowerVR_GE'
+
+        elif 'powervr sgx' in text:
+            return 'PowerVR_SGX'
+
+        elif 'powervr gx' in text:
+            return 'PowerVR_GX'
+
+        elif 'apple gpu' in text:
+            return 'Apple_GPU'
+
+        elif 'xclipse' in text:
+            return 'Xclipse'
+
+        elif 'maleoon' in text:
+            return 'Maleoon'
+
+        elif 'img' in text:
+            return 'IMG'
+
+        elif 'vivante' in text:
+            return 'Vivante'
+
+        elif 'geforce' in text:
+            return 'GeForce'
+
+        else:
+            return 'Other'
+
+    df['GPU_Family'] = df['GPU'].apply(gpu_family)
+
+    # -------------------------------------------------
+    # 3. Flagship GPU
+    # -------------------------------------------------
+    flagship_keywords = [
+        'adreno 830','adreno 840','adreno 825',
+        'adreno 740','adreno 750','adreno 730',
+        'immortalis',
+        'g720','g710','g715','g925',
+        'apple gpu',
+        'xclipse 940','xclipse 960'
+    ]
+
+    df['GPU_Is_Flagship'] = (
+        df['GPU']
+        .str.lower()
+        .apply(lambda x: int(any(k in x for k in flagship_keywords)))
+    )
+
+    # -------------------------------------------------
+    # 4. Multi Variant
+    # -------------------------------------------------
+    keywords = [
+        '/',
+        ' or ',
+        'usa',
+        'china',
+        'global',
+        'international',
+        'wifi',
+        'lte',
+        'version',
+        'model'
+    ]
+
+    df['GPU_Is_MultiVariant'] = (
+        df['GPU']
+        .str.lower()
+        .apply(lambda x: int(any(k in x for k in keywords)))
+    )
+
+    return df
+
+new_df = engineer_gpu_features(new_df)
+new_df.drop(columns=['GPU_Is_MultiVariant'], inplace=True)
+================================================================================
+CELL 138 (markdown)
+================================================================================
+### Fill Weight_g
+================================================================================
+CELL 139 (code)
+================================================================================
+new_df["Weight_g"].value_counts().head(2)
+================================================================================
+CELL 140 (code)
+================================================================================
+print("Before:", new_df['Weight_g'].isna().sum())
+new_df['Weight_g'] = new_df.groupby(['Brand','Announced_Year'], dropna=False)['Weight_g'].transform(lambda x: x.fillna(x.median()))
+new_df['Weight_g'] = new_df.groupby('Brand')['Weight_g'].transform(lambda x: x.fillna(x.median()))
+new_df['Weight_g'] = new_df['Weight_g'].fillna(new_df['Weight_g'].median())
+print("After:", new_df['Weight_g'].isna().sum())
+================================================================================
+CELL 141 (markdown)
+================================================================================
+### FIlled RAM_GB and Max_RAM_GB
+================================================================================
+CELL 142 (code)
+================================================================================
+print("Before:", new_df['RAM_GB'].isna().sum())
+new_df['RAM_GB'] = new_df.groupby(['Brand','Chipset'], dropna=False)['RAM_GB'].transform(lambda x: x.fillna(x.median()))
+new_df['RAM_GB'] = new_df.groupby(['Brand','Announced_Year'], dropna=False)['RAM_GB'].transform(lambda x: x.fillna(x.median()))
+new_df['RAM_GB'] = new_df.groupby('Brand')['RAM_GB'].transform(lambda x: x.fillna(x.median()))
+new_df['RAM_GB'] = new_df['RAM_GB'].fillna(new_df['RAM_GB'].median())
+print("After:", new_df['RAM_GB'].isna().sum())
+================================================================================
+CELL 143 (code)
+================================================================================
+new_df['RAM_Max_GB'] = new_df['RAM_Max_GB'].fillna(new_df['RAM_GB'])
+================================================================================
+CELL 144 (markdown)
+================================================================================
+### GreekBenchMark Score
+================================================================================
+CELL 145 (code)
+================================================================================
+new_df['GeekBench_Score_is_imputed'] = new_df['GeekBench_Score'].isna()
+new_df['GeekBench_Score'] = new_df.groupby('Chipset', dropna=False)['GeekBench_Score'].transform(lambda x: x.fillna(x.median()))
+new_df['GeekBench_Score'] = new_df.groupby(['Brand','Announced_Year'], dropna=False)['GeekBench_Score'].transform(lambda x: x.fillna(x.median()))
+new_df['GeekBench_Score'] = new_df['GeekBench_Score'].fillna(new_df['GeekBench_Score'].median())
+new_df['GeekBench_Score'].isna().sum()
+================================================================================
+CELL 146 (markdown)
+================================================================================
+### Fill Chipset_nm and Process_Node_nm 
+================================================================================
+CELL 147 (code)
+================================================================================
+new_df['Process_Node_nm'].isna().sum()
+new_df['Process_Node_nm'] = new_df['Process_Node_nm'].fillna(new_df['Chipset_nm'])
+new_df['Chipset_nm'] = new_df['Chipset_nm'].fillna(new_df['Process_Node_nm'])
+new_df['Process_Node_nm'].isna().sum()
+
+for col in ['Process_Node_nm', 'Chipset_nm']:
+    new_df[col] = new_df.groupby('Chipset_Generation', dropna=False)[col].transform(lambda x: x.fillna(x.median()))
+    new_df[col] = new_df.groupby('Chipset_Family', dropna=False)[col].transform(lambda x: x.fillna(x.median()))
+    new_df[col] = new_df[col].fillna(new_df[col].median())
+new_df['Process_Node_nm'].isna().sum()
+================================================================================
+CELL 148 (markdown)
+================================================================================
+### CPU_max_clock_ghz fill
+================================================================================
+CELL 149 (code)
+================================================================================
+new_df['CPU_max_clock_ghz'] = new_df.groupby('Chipset', dropna=False)['CPU_max_clock_ghz'].transform(lambda x: x.fillna(x.median()))
+new_df['CPU_max_clock_ghz'] = new_df.groupby(['Brand','Announced_Year'], dropna=False)['CPU_max_clock_ghz'].transform(lambda x: x.fillna(x.median()))
+new_df['CPU_max_clock_ghz'] = new_df['CPU_max_clock_ghz'].fillna(new_df['CPU_max_clock_ghz'].median())
+new_df["CPU_max_clock_ghz"].isnull().sum()
+================================================================================
+CELL 150 (markdown)
+================================================================================
+### Fill Main_Aperture
+================================================================================
+CELL 151 (code)
+================================================================================
+new_df['Main_Aperture'] = new_df.groupby(['Brand','Announced_Year'], dropna=False)['Main_Aperture'].transform(lambda x: x.fillna(x.median()))
+new_df['Main_Aperture'] = new_df.groupby('Announced_Year', dropna=False)['Main_Aperture'].transform(lambda x: x.fillna(x.median()))
+new_df['Main_Aperture'] = new_df['Main_Aperture'].fillna(new_df['Main_Aperture'].median())
+new_df["Main_Aperture"].isnull().sum()
+================================================================================
+CELL 152 (markdown)
+================================================================================
+### Fill Wired_Charging_W_is_imputed
+================================================================================
+CELL 153 (code)
+================================================================================
+new_df['Wired_Charging_W_is_imputed'] = new_df['Wired_Charging_W'].isna()
+new_df.loc[new_df['Announced_Year'] < 2016, 'Wired_Charging_W'] = new_df.loc[new_df['Announced_Year'] < 2016, 'Wired_Charging_W'].fillna(5.0)  # standard USB-era default
+new_df['Wired_Charging_W'] = new_df.groupby(['Brand','Announced_Year'], dropna=False)['Wired_Charging_W'].transform(lambda x: x.fillna(x.median()))
+new_df['Wired_Charging_W'] = new_df.groupby('Brand')['Wired_Charging_W'].transform(lambda x: x.fillna(x.median()))
+new_df['Wired_Charging_W'] = new_df['Wired_Charging_W'].fillna(new_df['Wired_Charging_W'].median())
+================================================================================
+CELL 154 (markdown)
+================================================================================
+### Fill CPU_architecture
+================================================================================
+CELL 155 (code)
+================================================================================
+new_df['CPU_architecture_is_imputed'] = (
+    new_df['CPU_architecture'].isna().astype(int)
+)
+print(new_df["CPU_architecture"].isnull().sum())
+new_df['CPU_architecture'] = (
+    new_df.groupby('Chipset' ,dropna=False)['CPU_architecture']
+    .transform(lambda x: x.fillna(x.mode().iloc[0]) if not x.mode().empty else x)
+)
+print(new_df["CPU_architecture"].isnull().sum())
+new_df['CPU_architecture'] = (
+    new_df.groupby(['Chipset_Brand', 'Chipset_Family'] , dropna=False)['CPU_architecture']
+    .transform(lambda x: x.fillna(x.mode().iloc[0]) if not x.mode().empty else x)
+)
+print(new_df["CPU_architecture"].isnull().sum())
+new_df['CPU_architecture'] = (
+    new_df.groupby(['Brand', 'Announced_Year'] ,dropna=False)['CPU_architecture']
+    .transform(lambda x: x.fillna(x.mode().iloc[0]) if not x.mode().empty else x)
+)
+print(new_df["CPU_architecture"].isnull().sum())
+new_df['CPU_architecture'] = new_df['CPU_architecture'].fillna('Unknown')
+================================================================================
+CELL 156 (markdown)
+================================================================================
+### FIll Display_Protection
+================================================================================
+CELL 157 (code)
+================================================================================
+new_df['Display_Protection'] = new_df['Display_Protection'].fillna('Unknown/Not Specified')
+================================================================================
+CELL 158 (code)
+================================================================================
+new_df.isnull().mean().sort_values(ascending=False).head(10)
+================================================================================
+CELL 159 (code)
+================================================================================
+new_df.to_csv("GSMArena_Cleaned_Dataset.csv" , index=False)
+================================================================================
+CELL 160 (code)
+================================================================================
+new_df["AnTuTu_Score"].value_counts()

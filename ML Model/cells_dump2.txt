@@ -1,0 +1,17 @@
+================================================================================
+CELL 113 (code)
+================================================================================
+result = compare_phones(df, "Honor Win", "Samsung Galaxy S25 Ultra", score_cols_map, X, explain_phone)
+for dim, v in result["Dimension_Comparison"].items():
+    print(dim, v)
+print("Overall winner:", result["Overall_Winner"])
+================================================================================
+CELL 115 (code)
+================================================================================
+df_check = pd.read_csv('After_EDA_and_Feature_ENginering.csv')
+df_model_check = df_check[df_check['AnTuTu_Score_is_imputed'] == False].copy()
+print(len(df_model_check), "real rows out of", len(df_check))
+================================================================================
+CELL 116 (code)
+================================================================================
+df.head(5)

@@ -1,0 +1,48 @@
+
+## every session
+
+Read these files first:
+
+1. CLAUDE.md
+2. docs/architecture.md
+3. docs/updates.md
+4. docs/plan.md
+
+Understand:
+
+* architecture
+* coding conventions
+* business logic
+* folder structure
+
+Do not write code until you understand the project.
+
+
+## after each changed
+git diff
+Analyze this git diff.
+
+Tasks:
+
+1. Understand changed files
+2. Detect architecture changes
+3. Detect business logic changes
+4. Update your project knowledge
+
+Summarize:
+
+* what changed
+* impact
+* possible issues
+
+
+
+Step 7: After major feature completion
+Based on the latest code changes, update:
+
+* CLAUDE.md
+* docs/architecture.md
+* docs/updates.md
+
+Keep them accurate and concise.
+

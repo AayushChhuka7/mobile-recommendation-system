@@ -1,76 +1,125 @@
-import { prisma } from "../config/index.mjs";
+import {
+  createUser,
+  deactivateOwnAccount as deactivateOwnAccountService,
+  deleteUser as deleteUserService,
+  findAllUsers,
+  updateUser,
+} from "../services/userService.mjs";
+import { assignRole, revokeRole } from "../services/rbacService.mjs";
+import { changePasswordWhileLoggedInService } from "../services/authService.mjs";
 import { asyncHandler } from "../middleware/errorHandler.mjs";
-import { mockUsers } from "../mockData/userData.mjs";
-
-// export const getAllUser = async (req, res, next) => {
-//   const {
-//     query: { filter, value },
-//   } = req;
-
-//   if (filter && value) {
-//     const users = mockUsers.filter((user) => {
-//       if (user[filter] === undefined || user[filter] === null) {
-//         const error = new Error("Send valid filter value");
-//         error.status = 400;
-//         next(error);
-//       }
-
-//       return user[filter].includes(value);
-//     });
-//     if (users.length === 0)
-//       return res.status(404).json({ message: "No such user" });
-//     return res.status(200).json(users);
-//   }
-//   const users = mockUsers;
-//   if (!users) return res.status(404).json({ error: "User NOT FOUND" });
-//   return res.status(200).json(users);
-// };
+import { sendSuccess } from "../utils/ApiResponse.mjs";
+import { notFound } from "../utils/ApiError.mjs";
 
 export const getAllUser = asyncHandler(async (req, res) => {
-  const users = await prisma.users.findMany();
-
+  const users = await findAllUsers();
   if (users.length === 0) {
-    throw new Error("No users found");
+    // Empty list → empty data array, not a 404. The locked-in Phase 1
+    // design: out-of-range page = empty data, not a not-found error.
+    throw notFound("No users found");
   }
-  return res.status(200).json(users);
+  return sendSuccess(res, users);
 });
 
-export const getUserById = (req, res, next) => {
-  const user = req.checkUser;
-  return res.status(200).json(user);
-};
-
-export const postUser = asyncHandler(async (req, res, next) => {
-  const { data } = req;
-  const newUser = await prisma.users.create({
-    data: data,
-  });
-  res.status(201).json(newUser);
+export const getUserById = asyncHandler(async (req, res) => {
+  return sendSuccess(res, req.checkUser);
 });
 
-export const patchUser = asyncHandler(async (req, res, next) => {
-  const id = req.checkUser.id;
-  const data = req.data;
-
-  // const userIndex = mockUsers.findIndex((u) => u.id === id);
-
-  // mockUsers[userIndex] = {
-  //   ...mockUsers[userIndex],
-  //   ...data,
-  // };
-  const updatedUser = await prisma.users.update({
-    where: { userId: id },
-    data: data,
+export const postUser = asyncHandler(async (req, res) => {
+  const newUser = await createUser(req.data);
+  return sendSuccess(res, newUser, {
+    status: 201,
+    message: "User created successfully",
   });
+});
 
-  res.status(200).json({
+export const patchUser = asyncHandler(async (req, res) => {
+  const updatedUser = await updateUser(req.checkUser.userId, req.data);
+  return sendSuccess(res, { user: updatedUser }, {
     message: "User updated successfully",
-    user: updatedUser,
   });
 });
 
 export const deleteUser = asyncHandler(async (req, res) => {
-  const id = req.checkUser.id;
-  const deletedUser = await prisma.users.delete({ where: { userId: id } });
-  return res.status(200).json({ message: "Deletion Complete" });
+  await deleteUserService(req.checkUser.userId);
+  return sendSuccess(res, null, { message: "Deletion Complete" });
+});
+
+// ---- Self-service profile endpoints ----
+
+export const getOwnProfile = (req, res) => {
+  const { userId, name, email, phoneNo, isActive, isVerified } = req.user;
+  return sendSuccess(res, { userId, name, email, phoneNo, isActive, isVerified });
+};
+
+export const updateOwnProfile = asyncHandler(async (req, res) => {
+  const updatedUser = await updateUser(req.user.userId, req.data);
+  const { userId, name, email, phoneNo, isActive, isVerified } = updatedUser;
+  return sendSuccess(
+    res,
+    { userId, name, email, phoneNo, isActive, isVerified },
+    { message: "Profile updated successfully" },
+  );
+});
+
+export const changeOwnPassword = asyncHandler(async (req, res) => {
+  await changePasswordWhileLoggedInService(
+    req.user.userId,
+    req.body.currentPassword,
+    req.data.password,
+  );
+  return sendSuccess(res, null, { message: "Password changed successfully" });
+});
+
+export const deactivateOwnAccount = asyncHandler(async (req, res) => {
+  await deactivateOwnAccountService(req.user.userId);
+  await new Promise((resolve, reject) => {
+    req.logout((err) => {
+      if (err) return reject(err);
+      req.session.destroy((sessionErr) => {
+        if (sessionErr) return reject(sessionErr);
+        resolve();
+      });
+    });
+  });
+  res.clearCookie("connect.sid");
+  return sendSuccess(res, null, { message: "Account deactivated successfully" });
+});
+
+// ---- RBAC Phase 1 — admin-only role assignment ----
+
+export const assignUserRole = asyncHandler(async (req, res) => {
+  const updated = await assignRole(req.checkUser.userId, req.data.roleName);
+  // Beginner-friendly if/else instead of `??` (nullish coalescing).
+  let roleLabel = null;
+  if (updated.role && updated.role.roleName) {
+    roleLabel = updated.role.roleName;
+  }
+  return sendSuccess(
+    res,
+    {
+      userId: updated.userId,
+      email: updated.email,
+      role: roleLabel,
+    },
+    { message: `Role "${req.data.roleName}" assigned to user ${updated.userId}` },
+  );
+});
+
+export const revokeUserRole = asyncHandler(async (req, res) => {
+  const updated = await revokeRole(req.checkUser.userId);
+  // Beginner-friendly if/else instead of `??` (nullish coalescing).
+  let roleLabel = null;
+  if (updated.role && updated.role.roleName) {
+    roleLabel = updated.role.roleName;
+  }
+  return sendSuccess(
+    res,
+    {
+      userId: updated.userId,
+      email: updated.email,
+      role: roleLabel,
+    },
+    { message: `Role revoked for user ${updated.userId}` },
+  );
 });

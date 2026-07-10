@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./src/index.mjs"
+    "dev": "nodemon ./src/index.mjs",
+    "seed:rbac": "node ./seed.mjs",
+    "seed:phones": "node ./prisma/import-gsmarena-csv.mjs"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,8 @@
     "bcrypt": "^6.0.0",
     "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "csv-parse": "^7.0.1",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
