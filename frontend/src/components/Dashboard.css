@@ -430,6 +430,35 @@
   animation: dash-recommend-pop-out 0.18s ease-in forwards;
 }
 
+/* Change-password modal — reuses the Recommend panel's open/close
+   keyframes so both modals feel uniform. The overrides below only
+   tweak the form's internal layout and modal width. */
+
+.dash-change-pw-overlay {
+  animation: dash-recommend-fade-in 0.18s ease-out forwards;
+}
+
+.dash-change-pw-overlay.closing {
+  animation: dash-recommend-fade-out 0.18s ease-in forwards;
+  pointer-events: none;
+}
+
+.dash-change-pw-modal {
+  max-width: 440px;
+  animation: dash-recommend-pop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: center;
+}
+
+.dash-change-pw-modal.closing {
+  animation: dash-recommend-pop-out 0.18s ease-in forwards;
+}
+
+.dash-change-pw-body {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
 @keyframes dash-recommend-fade-in {
   from {
     opacity: 0;
@@ -512,6 +541,8 @@
 @media (prefers-reduced-motion: reduce) {
   .dash-recommend-overlay,
   .dash-recommend-modal,
+  .dash-change-pw-overlay,
+  .dash-change-pw-modal,
   .dash-weights-body {
     animation: none;
     transition: none;
@@ -995,3 +1026,259 @@
     max-width: 100%;
   }
 }
+
+/* ------------------------------------------------------------------
+   Dark-mode toggle row (in the profile dropdown).
+   The row itself is a real <button> for accessibility; the visual
+   switch inside is a separate focus-stripped span so the parent
+   button receives a single tab stop.
+   ------------------------------------------------------------------ */
+
+.theme-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--slate-dark);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.theme-toggle-row:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.theme-toggle-row-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  text-align: left;
+}
+
+.theme-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--border-dark);
+  transition: background var(--transition);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.theme-switch.on {
+  background: var(--primary);
+}
+
+.theme-switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform var(--transition);
+}
+
+.theme-switch.on .theme-switch-knob {
+  transform: translateX(16px);
+}
+
+/* ------------------------------------------------------------------
+   Dashboard Dark Mode
+   Scope: only descendants of .dashboard-page.dash-dark. The login
+   page is a sibling route (not a child of .dashboard-page), so it
+   never inherits these variable overrides.
+
+   Most dashboard rules reference var(--bg), var(--white), var(--text),
+   var(--border), var(--primary), etc. Re-binding those names here
+   recolors ~80% of the page automatically. The targeted overrides
+   below cover the few hardcoded colors and any class that needs an
+   explicit dark variant.
+   ------------------------------------------------------------------ */
+
+.dashboard-page.dash-dark {
+  /* Surfaces */
+  --bg: #0f172a; /* page background */
+  --white: #1e293b; /* cards, modals, header, inputs, dropdowns */
+  --border: #334155; /* default borders, dividers */
+  --border-dark: #475569;
+
+  /* Text */
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --slate: #cbd5e1;
+  --slate-dark: #e2e8f0;
+  --slate-light: #64748b;
+
+  /* Brand — brighter blue for AA contrast on dark surfaces */
+  --primary: #60a5fa;
+  --primary-dark: #3b82f6;
+  --primary-light: rgba(96, 165, 250, 0.16);
+
+  /* Status */
+  --success: #34d399;
+  --success-light: #064e3b;
+  --danger: #f87171;
+  --danger-light: rgba(248, 113, 113, 0.18);
+
+  /* Shadows — softer in dark mode */
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* Hardcoded-color overrides and explicit recolors */
+
+.dashboard-page.dash-dark .phone-card-image {
+  background: #0b1220;
+}
+
+.dashboard-page.dash-dark .weight-slider {
+  background: #475569;
+}
+
+.dashboard-page.dash-dark .weight-slider::-webkit-slider-thumb {
+  background: var(--primary);
+  border-color: var(--white);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.dashboard-page.dash-dark .weight-slider::-moz-range-thumb {
+  background: var(--primary);
+  border-color: var(--white);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.dashboard-page.dash-dark .search-overlay {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.dashboard-page.dash-dark .input-field::placeholder,
+.dashboard-page.dash-dark .filter-input::placeholder,
+.dashboard-page.dash-dark .dash-search-input::placeholder {
+  color: var(--slate-light);
+}
+
+.dashboard-page.dash-dark .input-icon,
+.dashboard-page.dash-dark .password-toggle,
+.dashboard-page.dash-dark .dash-search-input-icon,
+.dashboard-page.dash-dark .profile-field-icon {
+  color: var(--slate);
+}
+
+.dashboard-page.dash-dark .questionnaire-section {
+  background: rgba(96, 165, 250, 0.1);
+  border-color: var(--border);
+}
+
+.dashboard-page.dash-dark .questionnaire-hint {
+  color: var(--text-muted);
+}
+
+.dashboard-page.dash-dark .usage-chip {
+  background: var(--white);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.dashboard-page.dash-dark .usage-chip.selected {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.dashboard-page.dash-dark .usage-chip:hover {
+  border-color: var(--primary);
+}
+
+.dashboard-page.dash-dark .form-submit-error,
+.dashboard-page.dash-dark .input-error,
+.dashboard-page.dash-dark .dash-status-error {
+  color: var(--danger);
+}
+
+.dashboard-page.dash-dark .icon-btn {
+  background: var(--white);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.dashboard-page.dash-dark .icon-btn:hover,
+.dashboard-page.dash-dark .icon-btn.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.dashboard-page.dash-dark .change-password-btn,
+.dashboard-page.dash-dark .signout-btn,
+.dashboard-page.dash-dark .theme-toggle-row {
+  background: var(--white);
+  border-color: var(--border);
+  color: var(--slate-dark);
+}
+
+.dashboard-page.dash-dark .signout-btn {
+  color: var(--danger);
+}
+
+.dashboard-page.dash-dark .signout-btn:hover {
+  background: var(--danger-light);
+  border-color: var(--danger);
+}
+
+.dashboard-page.dash-dark .btn-outline {
+  background: var(--white);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.dashboard-page.dash-dark .btn-outline:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.dashboard-page.dash-dark .dash-search-clear {
+  background: #0b1220;
+  color: var(--slate);
+}
+
+.dashboard-page.dash-dark .dash-search-clear:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.dashboard-page.dash-dark .phone-card-details,
+.dashboard-page.dash-dark .phone-card.expanded .phone-card-details {
+  border-top-color: var(--border);
+}
+
+.dashboard-page.dash-dark .phone-spec {
+  color: var(--text);
+}
+
+.dashboard-page.dash-dark .dash-filter-popover-header {
+  background: var(--white);
+  border-bottom-color: var(--border);
+}
+
+.dashboard-page.dash-dark .dash-filter-popover-footer {
+  border-top-color: var(--border);
+}
+
