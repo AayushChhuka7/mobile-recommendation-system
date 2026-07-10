@@ -359,7 +359,7 @@ function Dashboard() {
   const [isChangePwSubmitting, setIsChangePwSubmitting] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("gamer");
   const [weights, setWeights] = useState(DEFAULT_WEIGHTS);
-  const [weightsOpen, setWeightsOpen] = useState(false);
+  const [weightsOpen, setWeightsOpen] = useState(true);
   const [hoveredCard, setHoveredCard] = useState(null);
 
   // ---- Search + Filter state ----
