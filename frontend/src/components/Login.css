@@ -22,7 +22,7 @@
 
 .login-left {
   flex: 1.2;
-  background-size: contain;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   position: relative;
@@ -444,6 +444,9 @@ select.input-field {
 }
 
 .usage-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 7px 14px;
   border: 1px solid var(--border-dark);
   border-radius: 999px;
