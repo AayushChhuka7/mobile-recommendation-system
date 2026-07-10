@@ -17,9 +17,8 @@ function Login({ onLogin }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // Role is chosen at registration, not on the login page. Kept here so the
-  // /auth/login request body still matches the backend contract.
-  const roleName = "Customer";
+  // Role is now selectable on the login page via dropdown, defaulting to Customer.
+  const [roleName, setRoleName] = useState("Customer");
   const [loginErrors, setLoginErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -88,7 +87,7 @@ function Login({ onLogin }) {
         setLoading(false);
       }
     },
-    [email, password, rememberMe, validateLogin, onLogin],
+    [email, password, rememberMe, roleName, validateLogin, onLogin],
   );
 
   return (
@@ -152,6 +151,21 @@ function Login({ onLogin }) {
                 onChange={(e) => setPassword(e.target.value)}
                 error={loginErrors.password}
               />
+
+              <div className="form-group role-select-group">
+                <label htmlFor="roleName">Login as</label>
+                <select
+                  id="roleName"
+                  name="roleName"
+                  value={roleName}
+                  onChange={(e) => setRoleName(e.target.value)}
+                  className="role-select"
+                >
+                  <option value="Customer">Customer</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Salesman">Salesman</option>
+                </select>
+              </div>
 
               <div className="login-options">
                 <label className="remember-me">
