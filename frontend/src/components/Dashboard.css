@@ -430,6 +430,35 @@
   animation: dash-recommend-pop-out 0.18s ease-in forwards;
 }
 
+/* Change-password modal — reuses the Recommend panel's open/close
+   keyframes so both modals feel uniform. The overrides below only
+   tweak the form's internal layout and modal width. */
+
+.dash-change-pw-overlay {
+  animation: dash-recommend-fade-in 0.18s ease-out forwards;
+}
+
+.dash-change-pw-overlay.closing {
+  animation: dash-recommend-fade-out 0.18s ease-in forwards;
+  pointer-events: none;
+}
+
+.dash-change-pw-modal {
+  max-width: 440px;
+  animation: dash-recommend-pop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: center;
+}
+
+.dash-change-pw-modal.closing {
+  animation: dash-recommend-pop-out 0.18s ease-in forwards;
+}
+
+.dash-change-pw-body {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
 @keyframes dash-recommend-fade-in {
   from {
     opacity: 0;
@@ -512,6 +541,8 @@
 @media (prefers-reduced-motion: reduce) {
   .dash-recommend-overlay,
   .dash-recommend-modal,
+  .dash-change-pw-overlay,
+  .dash-change-pw-modal,
   .dash-weights-body {
     animation: none;
     transition: none;
