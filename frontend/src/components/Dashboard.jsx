@@ -235,6 +235,23 @@ function ChevronIcon({ open }) {
   );
 }
 
+function ThemeIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
+
 const CATEGORY_OPTIONS = [
   { key: "gamer", label: "Gamer", Icon: GamerIcon },
   { key: "camera", label: "Camera lover", Icon: CameraIcon },
@@ -357,6 +374,22 @@ function Dashboard() {
   const [changePwErrors, setChangePwErrors] = useState({});
   const [changePwSubmitError, setChangePwSubmitError] = useState("");
   const [isChangePwSubmitting, setIsChangePwSubmitting] = useState(false);
+
+  // ---- Dark mode (dashboard-only) ----
+  // Lazy initializer so the very first render picks up the saved preference
+  // and avoids a light-mode flash when dark was previously enabled.
+  const DARK_MODE_KEY = "dashboardDarkMode";
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => localStorage.getItem(DARK_MODE_KEY) === "true",
+  );
+
+  useEffect(() => {
+    localStorage.setItem(DARK_MODE_KEY, String(isDarkMode));
+  }, [isDarkMode]);
+
+  const toggleDarkMode = useCallback(() => {
+    setIsDarkMode((d) => !d);
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState("gamer");
   const [weights, setWeights] = useState(DEFAULT_WEIGHTS);
   const [weightsOpen, setWeightsOpen] = useState(true);
@@ -695,7 +728,7 @@ function Dashboard() {
   );
 
   return (
-    <div className="dashboard-page">
+    <div className={`dashboard-page ${isDarkMode ? "dash-dark" : ""}`}>
       <header className="dash-header">
         <div className="login-brand">
           <div className="brand-icon" style={{ color: "#fff" }}>
@@ -778,6 +811,33 @@ function Dashboard() {
                 </ul>
                 <div className="profile-divider" />
                 <div className="profile-actions">
+                  <button
+                    type="button"
+                    className="theme-toggle-row"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleDarkMode();
+                    }}
+                    aria-label="Toggle dark mode"
+                  >
+                    <span className="theme-toggle-row-label">
+                      <ThemeIcon />
+                      Dark mode
+                    </span>
+                    <span
+                      className={`theme-switch ${isDarkMode ? "on" : ""}`}
+                      role="switch"
+                      aria-checked={isDarkMode}
+                      aria-label="Dark mode"
+                      tabIndex={-1}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDarkMode();
+                      }}
+                    >
+                      <span className="theme-switch-knob" />
+                    </span>
+                  </button>
                   <button
                     type="button"
                     className="change-password-btn"
