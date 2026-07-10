@@ -4,7 +4,16 @@ import api from "../services/api";
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
-import { UserIcon, LockIcon, PhoneIcon, MailIcon } from "./AuthShared";
+import {
+  UserIcon,
+  LockIcon,
+  PhoneIcon,
+  MailIcon,
+  PasswordField,
+  PASSWORD_HINT,
+  PASSWORD_RULES,
+  PASSWORD_MIN_LENGTH,
+} from "./AuthShared";
 
 function SearchIcon() {
   return (
@@ -226,6 +235,23 @@ function ChevronIcon({ open }) {
   );
 }
 
+function ThemeIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
+
 const CATEGORY_OPTIONS = [
   { key: "gamer", label: "Gamer", Icon: GamerIcon },
   { key: "camera", label: "Camera lover", Icon: CameraIcon },
@@ -326,8 +352,6 @@ function Dashboard() {
   const { user, logout } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
-  const [changePasswordError, setChangePasswordError] = useState("");
-  const [isChangePasswordLoading, setIsChangePasswordLoading] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
   // Tracks the recommendation panel's animation phase.
   //   "closed"  — not rendered
@@ -338,9 +362,37 @@ function Dashboard() {
 
   // Keep a ref to the close-timer so a quick reopen can cancel the pending unmount.
   const closeTimerRef = useRef(null);
+
+  // ---- Change-password modal state ----
+  // Mirrors the Recommend panel's phase machine so the close animation can
+  // finish before unmount, and so a quick reopen cancels the pending unmount.
+  const [changePwPhase, setChangePwPhase] = useState("closed");
+  const changePwCloseTimerRef = useRef(null);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changePwErrors, setChangePwErrors] = useState({});
+  const [changePwSubmitError, setChangePwSubmitError] = useState("");
+  const [isChangePwSubmitting, setIsChangePwSubmitting] = useState(false);
+
+  // ---- Dark mode (dashboard-only) ----
+  // Lazy initializer so the very first render picks up the saved preference
+  // and avoids a light-mode flash when dark was previously enabled.
+  const DARK_MODE_KEY = "dashboardDarkMode";
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => localStorage.getItem(DARK_MODE_KEY) === "true",
+  );
+
+  useEffect(() => {
+    localStorage.setItem(DARK_MODE_KEY, String(isDarkMode));
+  }, [isDarkMode]);
+
+  const toggleDarkMode = useCallback(() => {
+    setIsDarkMode((d) => !d);
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState("gamer");
   const [weights, setWeights] = useState(DEFAULT_WEIGHTS);
-  const [weightsOpen, setWeightsOpen] = useState(false);
+  const [weightsOpen, setWeightsOpen] = useState(true);
   const [hoveredCard, setHoveredCard] = useState(null);
 
   // ---- Search + Filter state ----
@@ -425,10 +477,12 @@ function Dashboard() {
     }, closeAnimMs);
   }, []);
 
-  // Clean up the close timer on unmount.
+  // Clean up the close timers on unmount.
   useEffect(() => {
     return () => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+      if (changePwCloseTimerRef.current)
+        clearTimeout(changePwCloseTimerRef.current);
     };
   }, []);
 
@@ -497,26 +551,83 @@ function Dashboard() {
     navigate("/login", { replace: true });
   }, [logout, navigate]);
 
-  // Reuses the exact same OTP request as ForgotPassword.jsx (POST /auth/forget)
-  // and hands the email to the existing /forgot-password/otp route via state so
-  // the user doesn't have to type it again.
-  const handleChangePassword = useCallback(async () => {
-    if (!user?.email) return;
-    setChangePasswordError("");
-    setIsChangePasswordLoading(true);
-    try {
-      const email = user.email;
-      await api.post("/auth/forget", { email });
-      setProfileOpen(false);
-      navigate("/forgot-password/otp", { state: { email } });
-    } catch (err) {
-      setChangePasswordError(
-        err.response?.data?.message || "Couldn't send the code",
-      );
-    } finally {
-      setIsChangePasswordLoading(false);
+  // ---- Change-password modal handlers ----
+  // Open the modal; close the profile dropdown so the menu doesn't sit
+  // behind the overlay, and clear any stale errors from a previous attempt.
+  const openChangePassword = useCallback(() => {
+    if (changePwCloseTimerRef.current) {
+      clearTimeout(changePwCloseTimerRef.current);
+      changePwCloseTimerRef.current = null;
     }
-  }, [user, navigate]);
+    setChangePwErrors({});
+    setChangePwSubmitError("");
+    setChangePwPhase("open");
+    setProfileOpen(false);
+  }, []);
+
+  // Helper: reset the change-pw form back to its initial state. Pulled out
+  // so both the close handler and the unmount cleanup can call it.
+  const resetChangePwForm = useCallback(() => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setChangePwErrors({});
+    setChangePwSubmitError("");
+    setIsChangePwSubmitting(false);
+  }, []);
+
+  const closeChangePassword = useCallback(() => {
+    setChangePwPhase("closing");
+    if (changePwCloseTimerRef.current)
+      clearTimeout(changePwCloseTimerRef.current);
+    changePwCloseTimerRef.current = setTimeout(() => {
+      setChangePwPhase("closed");
+      changePwCloseTimerRef.current = null;
+      resetChangePwForm();
+    }, closeAnimMs);
+  }, [resetChangePwForm]);
+
+  // Mirrors the validation in ForgotPassword.jsx so the error copy is
+  // consistent across the app.
+  const validateChangePw = useCallback(() => {
+    const errs = {};
+    if (!currentPassword) errs.currentPassword = "Current password is required";
+    if (!newPassword) errs.newPassword = "Password is required";
+    else if (newPassword.length < PASSWORD_MIN_LENGTH)
+      errs.newPassword = `Minimum ${PASSWORD_MIN_LENGTH} characters`;
+    else if (!PASSWORD_RULES.test(newPassword))
+      errs.newPassword =
+        "Must include uppercase, lowercase, number, and special character";
+    if (confirmPassword !== newPassword)
+      errs.confirmPassword = "Passwords do not match";
+    return errs;
+  }, [currentPassword, newPassword, confirmPassword]);
+
+  const handleChangePwSubmit = useCallback(
+    (e) => {
+      e?.preventDefault();
+      const errs = validateChangePw();
+      setChangePwErrors(errs);
+      if (Object.keys(errs).length) {
+        setChangePwSubmitError("");
+        return;
+      }
+
+      // Frontend-only for now: per the spec we build the UI and connect the
+      // button, but the actual password update is out of scope. When the
+      // backend endpoint is ready, replace the body of this branch with a
+      // call (e.g. api.post("/auth/change-password", { ... })) and handle
+      // success / error transitions here.
+      setIsChangePwSubmitting(true);
+      console.log(
+        "[Change Password] submit (UI only — backend wiring pending):",
+        { currentPassword, newPassword, confirmPassword },
+      );
+      setIsChangePwSubmitting(false);
+      closeChangePassword();
+    },
+    [validateChangePw, currentPassword, newPassword, confirmPassword, closeChangePassword],
+  );
 
   const handleWeightChange = useCallback((key, value) => {
     setWeights((prev) => ({ ...prev, [key]: Number(value) }));
@@ -617,7 +728,7 @@ function Dashboard() {
   );
 
   return (
-    <div className="dashboard-page">
+    <div className={`dashboard-page ${isDarkMode ? "dash-dark" : ""}`}>
       <header className="dash-header">
         <div className="login-brand">
           <div className="brand-icon" style={{ color: "#fff" }}>
@@ -658,7 +769,6 @@ function Dashboard() {
               aria-label="Account menu"
               onClick={() => {
                 setProfileOpen((o) => !o);
-                setChangePasswordError("");
               }}
             >
               <UserIcon />
@@ -700,20 +810,41 @@ function Dashboard() {
                   </li>
                 </ul>
                 <div className="profile-divider" />
-                {changePasswordError && (
-                  <div className="form-submit-error" role="alert">
-                    {changePasswordError}
-                  </div>
-                )}
                 <div className="profile-actions">
                   <button
                     type="button"
+                    className="theme-toggle-row"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleDarkMode();
+                    }}
+                    aria-label="Toggle dark mode"
+                  >
+                    <span className="theme-toggle-row-label">
+                      <ThemeIcon />
+                      Dark mode
+                    </span>
+                    <span
+                      className={`theme-switch ${isDarkMode ? "on" : ""}`}
+                      role="switch"
+                      aria-checked={isDarkMode}
+                      aria-label="Dark mode"
+                      tabIndex={-1}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDarkMode();
+                      }}
+                    >
+                      <span className="theme-switch-knob" />
+                    </span>
+                  </button>
+                  <button
+                    type="button"
                     className="change-password-btn"
-                    onClick={handleChangePassword}
-                    disabled={isChangePasswordLoading || !user?.email}
+                    onClick={openChangePassword}
                   >
                     <LockIcon />
-                    {isChangePasswordLoading ? "Sending..." : "Change password"}
+                    Change password
                   </button>
                   <button
                     type="button"
@@ -1222,6 +1353,105 @@ function Dashboard() {
             >
               Find my phone →
             </button>
+          </div>
+        </div>
+      )}
+
+      {changePwPhase !== "closed" && (
+        <div
+          className={`search-overlay dash-change-pw-overlay ${changePwPhase === "closing" ? "closing" : ""}`}
+          onClick={closeChangePassword}
+        >
+          <div
+            className={`search-modal dash-change-pw-modal ${changePwPhase === "closing" ? "closing" : ""}`}
+            role="dialog"
+            aria-label="Change password"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="search-modal-header">
+              <div>
+                <div className="auth-title" style={{ marginBottom: 4 }}>
+                  Change password
+                </div>
+                <div className="auth-subtitle" style={{ marginBottom: 0 }}>
+                  Enter your current password and choose a new one.
+                </div>
+              </div>
+              <button
+                type="button"
+                className="icon-btn"
+                aria-label="Close change password"
+                onClick={closeChangePassword}
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <form
+              className="dash-change-pw-body"
+              onSubmit={handleChangePwSubmit}
+              noValidate
+            >
+              <PasswordField
+                label="Current password"
+                name="current-password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                value={currentPassword}
+                onChange={(e) => {
+                  setCurrentPassword(e.target.value);
+                  if (changePwErrors.currentPassword)
+                    setChangePwErrors((prev) => ({ ...prev, currentPassword: "" }));
+                }}
+                error={changePwErrors.currentPassword}
+              />
+
+              <PasswordField
+                label="New password"
+                name="new-password"
+                autoComplete="new-password"
+                placeholder="••••••••"
+                value={newPassword}
+                onChange={(e) => {
+                  setNewPassword(e.target.value);
+                  if (changePwErrors.newPassword)
+                    setChangePwErrors((prev) => ({ ...prev, newPassword: "" }));
+                }}
+                error={changePwErrors.newPassword}
+                hint={PASSWORD_HINT}
+              />
+
+              <PasswordField
+                label="Re-enter new password"
+                name="confirm-new-password"
+                autoComplete="new-password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  if (changePwErrors.confirmPassword)
+                    setChangePwErrors((prev) => ({
+                      ...prev,
+                      confirmPassword: "",
+                    }));
+                }}
+                error={changePwErrors.confirmPassword}
+              />
+
+              {changePwSubmitError && (
+                <div className="form-submit-error" role="alert">
+                  {changePwSubmitError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="btn btn-primary w-full"
+                disabled={isChangePwSubmitting}
+              >
+                {isChangePwSubmitting ? "Saving..." : "Submit"}
+              </button>
+            </form>
           </div>
         </div>
       )}
