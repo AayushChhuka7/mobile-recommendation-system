@@ -7,7 +7,6 @@ import "./Dashboard.css";
 import "./PhoneListing.css";
 import { UserIcon } from "./AuthShared";
 
-// ---- Icons ----
 function SearchIcon() {
   return (
     <svg
@@ -154,7 +153,6 @@ function CameraIcon() {
   );
 }
 
-// ---- Sort Options ----
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest First" },
   { value: "oldest", label: "Oldest First" },
@@ -164,8 +162,6 @@ const SORT_OPTIONS = [
   { value: "price_desc", label: "Price: High to Low" },
   { value: "antutu", label: "Performance" },
 ];
-
-// ---- Unwrap API response ----
 function unwrapPhones(res) {
   const apiResponse = res?.data;
   if (!apiResponse) return [];
@@ -180,22 +176,17 @@ function PhoneListing() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
-  // Phone data
   const [phones, setPhones] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Search mode (when true, we hit /phones/search; when false, /phones with filters)
   const [searchMode, setSearchMode] = useState(false);
-  const [searchInput, setSearchInput] = useState(""); // text in the input
-  const [searchTerm, setSearchTerm] = useState(""); // committed term used in the API call
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Pagination
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
 
-  // Filters (only used in non-search mode)
   const [sort, setSort] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState("");
@@ -206,13 +197,10 @@ function PhoneListing() {
   const [hasNfc, setHasNfc] = useState(false);
   const [minBattery, setMinBattery] = useState("");
 
-  // Filter options from API
   const [brands, setBrands] = useState([]);
 
-  // Profile dropdown
   const [isProfileOpen, setProfileOpen] = useState(false);
 
-  // Load filter options once
   useEffect(() => {
     async function loadFilters() {
       try {
@@ -226,8 +214,6 @@ function PhoneListing() {
     }
     loadFilters();
   }, []);
-
-  // List mode — GET /phones with filters/sort/pagination
   const loadPhones = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -276,8 +262,6 @@ function PhoneListing() {
     navigate,
     logout,
   ]);
-
-  // Search mode — GET /phones/search?q=term with pagination
   const loadSearchResults = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -307,7 +291,6 @@ function PhoneListing() {
     }
   }, [searchTerm, page, navigate, logout]);
 
-  // Drive the right loader whenever inputs change
   useEffect(() => {
     if (searchMode) {
       loadSearchResults();
@@ -316,14 +299,10 @@ function PhoneListing() {
     }
   }, [searchMode, loadPhones, loadSearchResults]);
 
-  // ---- Handlers ----
-
-  // Submit the search form
   const handleSearch = (e) => {
     e.preventDefault();
     const term = searchInput.trim();
     if (!term) {
-      // Empty submit => clear search and show all phones
       handleClearSearch();
       return;
     }
@@ -368,12 +347,8 @@ function PhoneListing() {
 
   const displayName = user?.name || user?.username || "there";
   const email = user?.email || "";
-
-  // Page-number window (up to 5, centered on current page)
   const start =
-    totalPages <= 5
-      ? 1
-      : Math.max(1, Math.min(totalPages - 4, page - 2));
+    totalPages <= 5 ? 1 : Math.max(1, Math.min(totalPages - 4, page - 2));
   const pageNumbers = Array.from(
     { length: Math.min(5, totalPages) },
     (_, i) => start + i,
