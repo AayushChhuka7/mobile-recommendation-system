@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getRecommendations } from "../services/recommend";
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
@@ -259,15 +260,24 @@ const CATEGORY_OPTIONS = [
   { key: "allrounder", label: "All-rounder", Icon: SparklesIcon },
 ];
 
-// Backend supports `hasOis` and `minBattery` as query params, mapped to specs filters.
-const CATEGORY_FILTERS = {
-  gamer: { sort: "antutu" },
-  camera: { hasOis: "true", sort: "newest" },
-  battery: { minBattery: 5000, sort: "newest" },
-  allrounder: { sort: "newest" },
-};
-
+// Default slider position when the user hasn't picked a category yet — all
+// neutral. Kept distinct from the per-persona presets below so the UI can
+// tell "user hasn't chosen" apart from "user picked All-rounder".
 const DEFAULT_WEIGHTS = { gaming: 3, camera: 3, battery: 3, display: 3 };
+
+// Per-persona slider presets (1..5 stars).
+// Mirrors the ML service's PERSONA_PRESETS one-to-one: when the user picks
+// a category, the sliders snap to these values so the user can see what
+// each persona prioritizes, and so the FE sends meaningful weights to the
+// backend. The server's `Custom` persona accepts these same 4 keys
+// (gaming/camera/battery/display) as `preferences`, so a tweaked slider
+// is a real input — not cosmetic.
+const PERSONA_WEIGHT_PRESETS = {
+  gamer: { gaming: 5, camera: 2, battery: 4, display: 4 },
+  camera: { gaming: 2, camera: 5, battery: 3, display: 3 },
+  battery: { gaming: 2, camera: 2, battery: 5, display: 2 },
+  allrounder: { gaming: 3, camera: 3, battery: 3, display: 3 },
+};
 
 // Filter options for the dashboard filter panel — only fields the backend
 // already accepts in /api/phones (see buildPhoneWhereClause in phoneService.mjs).
@@ -391,9 +401,45 @@ function Dashboard() {
     setIsDarkMode((d) => !d);
   }, []);
   const [selectedCategory, setSelectedCategory] = useState("gamer");
-  const [weights, setWeights] = useState(DEFAULT_WEIGHTS);
+  // Seed the sliders with the gamer preset on mount so the UI shows what
+  // "Gamer" actually means, instead of a flat 3/3/3/3 that the user can't
+  // tell apart from "I haven't picked anything yet".
+  const [weights, setWeights] = useState(() => ({
+    ...PERSONA_WEIGHT_PRESETS.gamer,
+  }));
+  // True once the user drags a slider. Resets when they pick a category
+  // (a category click is treated as "I'm using the preset for this persona",
+  // not a customization). Used to decide whether to send `persona: "Custom"`
+  // + the slider values, or just the persona key, to the server.
+  const [weightsTouched, setWeightsTouched] = useState(false);
   const [weightsOpen, setWeightsOpen] = useState(true);
   const [hoveredCard, setHoveredCard] = useState(null);
+
+  // Category chip click — updates the selected persona AND snaps the
+  // sliders to that persona's preset so the user can see the priorities
+  // change. We also reset `weightsTouched` because the slider move is
+  // a programmatic side-effect of the click, not a user customization.
+  const handleCategorySelect = useCallback((key) => {
+    setSelectedCategory(key);
+    const preset = PERSONA_WEIGHT_PRESETS[key] || DEFAULT_WEIGHTS;
+    setWeights({ ...preset });
+    setWeightsTouched(false);
+  }, []);
+
+  // ---- Budget for the ML recommender (€/EUR) ----
+  // The backend requires `budget.max`; `min` is optional and defaults to 0.
+  const [budgetMin, setBudgetMin] = useState("");
+  const [budgetMax, setBudgetMax] = useState("");
+
+  // ---- ML recommendation results ----
+  // `recs` holds the latest response from POST /api/recommend/recommend.
+  // `recsPersona` records which persona produced them so the UI can label
+  // the section ("Recommended for: Gamer") and so a stale "loading" label
+  // never bleeds across requests.
+  const [recs, setRecs] = useState(null);
+  const [recsLoading, setRecsLoading] = useState(false);
+  const [recsError, setRecsError] = useState("");
+  const [recsPersona, setRecsPersona] = useState(null);
 
   // ---- Search + Filter state ----
   // `searchInput` is what's in the input; `searchTerm` is the committed term
@@ -631,40 +677,73 @@ function Dashboard() {
 
   const handleWeightChange = useCallback((key, value) => {
     setWeights((prev) => ({ ...prev, [key]: Number(value) }));
+    // Flag the sliders as user-customized so handleFindPhone knows to
+    // forward the values as `preferences` and switch to `persona: "Custom"`
+    // (the only persona for which the ML service actually reads them).
+    setWeightsTouched(true);
   }, []);
 
-  // "Find my phone" from the questionnaire modal — maps the selected category
-  // to a (sort + filter) set, then writes those values into the dashboard's
-  // shared filter/sort/search state. The existing useEffect that watches
-  // [searchTerm, filters, sort, page] is the single source of truth for the
-  // GET /phones request, so updating state here guarantees the request we
-  // dispatch matches what the user sees (and doesn't get overwritten by a
-  // race between this handler and the effect).
-  const handleFindPhone = useCallback(() => {
-    const categoryQuery = CATEGORY_FILTERS[selectedCategory] || {};
+  // "Find my phone" from the questionnaire modal — calls the backend ML
+  // recommender (POST /api/recommend/recommend) with the selected persona,
+  // budget, and weight preferences, then renders the results in a dedicated
+  // section above the standard phone grid.
+  const handleFindPhone = useCallback(async () => {
+    // The backend requires `budget.max`; reject empty max inline so we don't
+    // burn a request on something we know will 400.
+    const max = Number(budgetMax);
+    if (!Number.isFinite(max) || max <= 0) {
+      setRecsError("Please enter a maximum budget before finding your phone.");
+      return;
+    }
+    const min = Number(budgetMin);
+    const budget = {
+      max,
+      ...(Number.isFinite(min) && min >= 0 ? { min } : {}),
+    };
 
-    // Start from the category defaults and overlay the category's mapped
-    // filter/sort values. This is the same shape the existing useEffect
-    // consumes via buildPhonesQuery, so no fetch logic is duplicated.
-    const nextFilters = { ...EMPTY_FILTERS };
-    if (categoryQuery.brand) nextFilters.brand = categoryQuery.brand;
-    if (categoryQuery.minPrice) nextFilters.minPrice = categoryQuery.minPrice;
-    if (categoryQuery.maxPrice) nextFilters.maxPrice = categoryQuery.maxPrice;
-    if (categoryQuery.minRam) nextFilters.minRam = categoryQuery.minRam;
-    if (categoryQuery.minBattery) nextFilters.minBattery = String(categoryQuery.minBattery);
-    if (categoryQuery.os) nextFilters.os = categoryQuery.os;
-    if (categoryQuery.has5G) nextFilters.has5G = true;
-    if (categoryQuery.hasNfc) nextFilters.hasNfc = true;
-    if (categoryQuery.hasOis) nextFilters.hasOis = true;
-
-    setSearchTerm("");
-    setSearchInput("");
-    setFilters(nextFilters);
-    setPendingFilters(nextFilters);
-    setSort(categoryQuery.sort || "newest");
-    setPage(1);
+    setRecsLoading(true);
+    setRecsError("");
+    setRecs(null);
+    setRecsPersona(selectedCategory);
     closeRecommend();
-  }, [selectedCategory, closeRecommend]);
+
+    // The ML service (pipeline/recommend.py → resolve_weights) only
+    // honours `custom_weights_stars` when persona=CUSTOM. For the four
+    // persona presets it uses hard-coded weights and ignores the sliders.
+    // So if the user dragged a slider we send `persona: "Custom"` plus
+    // the slider values; otherwise we send the persona key (and skip
+    // preferences to keep the payload minimal).
+    const persona = weightsTouched ? "Custom" : selectedCategory;
+    const preferences = weightsTouched ? { ...weights } : undefined;
+
+    try {
+      const results = await getRecommendations({
+        persona,
+        budget,
+        preferences,
+        topN: 6,
+      });
+      setRecs(results);
+    } catch (err) {
+      // Leave `recs` as null so the standard listing still shows below the
+      // error banner — the user always has a fallback.
+      setRecsError(
+        err.response?.data?.message ||
+          "Couldn't get recommendations right now. Please try again.",
+      );
+    } finally {
+      setRecsLoading(false);
+    }
+  }, [budgetMin, budgetMax, selectedCategory, weights, weightsTouched, closeRecommend]);
+
+  // Clear the recommendation panel and go back to the standard listing
+  // (search/filter/sort state is untouched, so the next /phones load just
+  // re-runs the existing effect with whatever filters are active).
+  const handleClearRecommendations = useCallback(() => {
+    setRecs(null);
+    setRecsError("");
+    setRecsPersona(null);
+  }, []);
 
   // ---- Search bar handlers ----
   const handleSearch = (e) => {
@@ -1109,11 +1188,13 @@ function Dashboard() {
         <div className="dash-welcome">
           <h1>Welcome back, {firstName}</h1>
           <p>
-            {searchTerm
-              ? `Results for "${searchTerm}"`
-              : activeFilterCount > 0
-                ? "Phones matching your filters"
-                : "Phones recommended to you"}
+            {recs
+              ? `Personalized picks for the ${recsPersona} persona`
+              : searchTerm
+                ? `Results for "${searchTerm}"`
+                : activeFilterCount > 0
+                  ? "Phones matching your filters"
+                  : "Phones recommended to you"}
           </p>
         </div>
 
@@ -1131,6 +1212,139 @@ function Dashboard() {
               Retry
             </button>
           </div>
+        )}
+
+        {/* ---- ML recommendations (from POST /api/recommend/recommend) ----
+            Sits above the standard /phones grid. The standard grid still
+            renders below, so the user always has a fallback view. */}
+        {recsLoading && (
+          <p className="dash-status">Finding phones for you…</p>
+        )}
+
+        {recsError && (
+          <div className="dash-status dash-status-error">
+            <p>{recsError}</p>
+            <button
+              type="button"
+              className="btn btn-small"
+              onClick={handleClearRecommendations}
+              style={{ marginTop: 8 }}
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        {recs && !recsLoading && (
+          <section
+            className="dash-recs-section"
+            aria-label="Recommended for you"
+          >
+            <div className="dash-recs-header">
+              <h2>
+                {recsPersona
+                  ? `Recommended for you · ${recsPersona}`
+                  : "Recommended for you"}
+              </h2>
+              <button
+                type="button"
+                className="btn btn-outline btn-small"
+                onClick={handleClearRecommendations}
+              >
+                Clear recommendations
+              </button>
+            </div>
+            {recs.length === 0 ? (
+              <p className="dash-status">
+                No matches for the chosen persona and budget. Try widening
+                your budget or picking a different category.
+              </p>
+            ) : (
+              <div className="phone-grid">
+                {recs.map((r) => (
+                  <div
+                    key={r.id || `${r.brand?.name}-${r.modelName}`}
+                    className="phone-card rec-card"
+                    onMouseEnter={() => r.id && setHoveredCard(r.id)}
+                    onMouseLeave={() => setHoveredCard(null)}
+                  >
+                    <div className="phone-card-top">
+                      <div className="phone-card-image">
+                        {r.imageUrl ? (
+                          <img
+                            src={r.imageUrl}
+                            alt={r.modelName}
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.parentElement.classList.add("no-image");
+                            }}
+                          />
+                        ) : (
+                          <span className="phone-card-emoji">📱</span>
+                        )}
+                        {typeof r.matchScore === "number" && (
+                          <span
+                            className="rec-match-badge"
+                            title="Match score from the recommender"
+                          >
+                            {Math.round(r.matchScore * 100)}% match
+                          </span>
+                        )}
+                      </div>
+                      <div className="phone-card-name">{r.modelName}</div>
+                      <div className="phone-card-tagline">
+                        {r.brand?.name || "Unknown brand"}
+                      </div>
+                    </div>
+
+                    <div className="phone-card-details">
+                      {r.keySpecs?.os && (
+                        <div className="phone-spec">
+                          <CpuIcon />
+                          <span>{r.keySpecs.os}</span>
+                        </div>
+                      )}
+                      {r.keySpecs?.camera && (
+                        <div className="phone-spec">
+                          <CameraIcon />
+                          <span>{r.keySpecs.camera}</span>
+                        </div>
+                      )}
+                      {r.keySpecs?.battery && (
+                        <div className="phone-spec">
+                          <BatteryIcon />
+                          <span>{r.keySpecs.battery} mAh</span>
+                        </div>
+                      )}
+                      {r.cheapestVariant?.price && (
+                        <div className="phone-spec phone-price">
+                          <TagIcon />
+                          <span>
+                            €{r.cheapestVariant.price}
+                            {r.cheapestVariant.ram && r.cheapestVariant.storage
+                              ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
+                              : ""}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {Array.isArray(r.why) && r.why.length > 0 && (
+                      <ul className="rec-why-list" aria-label="Why this match">
+                        {r.why.slice(0, 3).map((reason, idx) => (
+                          <li key={idx}>{reason}</li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {r.inDatabase === false && (
+                      <div className="rec-not-in-db">Not in our catalog</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
         )}
 
         {!isLoading && !error && phones.length === 0 && (
@@ -1296,7 +1510,7 @@ function Dashboard() {
                     type="button"
                     key={opt.key}
                     className={`usage-chip ${selectedCategory === opt.key ? "selected" : ""}`}
-                    onClick={() => setSelectedCategory(opt.key)}
+                    onClick={() => handleCategorySelect(opt.key)}
                   >
                     <Icon />
                     {opt.label}
@@ -1320,7 +1534,9 @@ function Dashboard() {
                 <ChevronIcon open={weightsOpen} />
               </button>
               <div className="questionnaire-hint">
-                Fine-tune how much each factor matters to you
+                {weightsTouched
+                  ? "Custom weights active — these will be sent to the recommender."
+                  : "Fine-tune how much each factor matters to you"}
               </div>
 
               <div
@@ -1343,6 +1559,45 @@ function Dashboard() {
                     />
                   </div>
                 ))}
+                {weightsTouched && (
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-small weight-reset-btn"
+                    onClick={() => handleCategorySelect(selectedCategory)}
+                  >
+                    Reset to {CATEGORY_OPTIONS.find(
+                      (o) => o.key === selectedCategory,
+                    )?.label || "persona"}{" "}
+                    defaults
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="questionnaire-section" style={{ marginTop: 16 }}>
+              <div className="questionnaire-hint" style={{ marginBottom: 8 }}>
+                Budget (EUR) — required
+              </div>
+              <div className="filter-range">
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="Min"
+                  className="filter-input"
+                  value={budgetMin}
+                  onChange={(e) => setBudgetMin(e.target.value)}
+                  aria-label="Minimum budget"
+                />
+                <span className="filter-range-sep">–</span>
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="Max"
+                  className="filter-input"
+                  value={budgetMax}
+                  onChange={(e) => setBudgetMax(e.target.value)}
+                  aria-label="Maximum budget"
+                />
               </div>
             </div>
 
@@ -1350,8 +1605,9 @@ function Dashboard() {
               type="button"
               className="btn btn-primary w-full"
               onClick={handleFindPhone}
+              disabled={recsLoading}
             >
-              Find my phone →
+              {recsLoading ? "Finding…" : "Find my phone →"}
             </button>
           </div>
         </div>
