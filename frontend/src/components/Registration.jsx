@@ -52,14 +52,10 @@ function Registration({ onLogin }) {
     const timer = setTimeout(() => setResendCooldown((c) => c - 1), 1000);
     return () => clearTimeout(timer);
   }, [resendCooldown]);
-
-  // Landed on /register/otp directly (refresh, bookmark, back button after
-  // state was lost) without having gone through step 1 in this session.
   useEffect(() => {
     if (step === 2 && !registerData.email) {
       navigate("/register", { replace: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
   const validateRegister = useCallback(() => {
@@ -143,14 +139,13 @@ function Registration({ onLogin }) {
   }, []);
 
   const completeRegistration = useCallback(() => {
-    // Pass the full user data with an id-like field so App.jsx can validate
     onLogin({
-      id: registerData.email, // Use email as fallback identifier
+      id: registerData.email,
       name: registerData.username,
       email: registerData.email,
       roleName: registerRole,
     });
-}, [registerData, registerRole, onLogin]);
+  }, [registerData, registerRole, onLogin]);
 
   const handleOtpVerify = useCallback(
     async (e) => {
@@ -273,7 +268,7 @@ function Registration({ onLogin }) {
               type="email"
               name="email"
               autoComplete="email"
-              placeholder="you@example.com"
+              placeholder="Enter your email"
               value={registerData.email}
               onChange={(e) => updateRegister("email", e.target.value)}
               error={registerErrors.email}

@@ -29,10 +29,6 @@ function ForgotPassword() {
   const navigate = useNavigate();
   const location = useLocation();
   const forgotStep = stepFromPath(location.pathname);
-
-  // Pre-seed the email from location.state when the user lands directly on a
-  // later step (e.g. Change Password from the profile menu, or a deep link).
-  // This avoids a useEffect that would have to setState synchronously.
   const [forgotEmail, setForgotEmail] = useState(
     () => location.state?.email || "",
   );
@@ -54,14 +50,10 @@ function ForgotPassword() {
     const timer = setTimeout(() => setForgotResendCooldown((c) => c - 1), 1000);
     return () => clearTimeout(timer);
   }, [forgotResendCooldown]);
-
-  // Landed on step 2/3 directly (refresh, bookmark) without the email from
-  // step 1 in this session — send back to the start of the flow.
   useEffect(() => {
     if (forgotStep > 1 && !forgotEmail) {
       navigate("/forgot-password", { replace: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forgotStep]);
 
   const handleForgotEmailSubmit = useCallback(

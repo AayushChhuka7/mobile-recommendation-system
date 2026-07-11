@@ -358,8 +358,6 @@
   color: var(--success);
 }
 
-/* Search modal */
-
 .search-overlay {
   position: fixed;
   inset: 0;
@@ -395,7 +393,6 @@
   gap: 8px;
 }
 
-/* Recommend Me a Phone — header button */
 .dash-recommend-btn {
   display: inline-flex;
   align-items: center;
@@ -411,7 +408,6 @@
   flex-shrink: 0;
 }
 
-/* Recommendation panel: smooth appear / disappear */
 .dash-recommend-overlay {
   animation: dash-recommend-fade-in 0.18s ease-out forwards;
 }
@@ -429,10 +425,6 @@
 .dash-recommend-modal.closing {
   animation: dash-recommend-pop-out 0.18s ease-in forwards;
 }
-
-/* Change-password modal — reuses the Recommend panel's open/close
-   keyframes so both modals feel uniform. The overrides below only
-   tweak the form's internal layout and modal width. */
 
 .dash-change-pw-overlay {
   animation: dash-recommend-fade-in 0.18s ease-out forwards;
@@ -499,7 +491,6 @@
   }
 }
 
-/* Collapsible Customize Weights section */
 .dash-weights-toggle {
   display: flex;
   align-items: center;
@@ -603,10 +594,6 @@
   box-shadow: 0 0 0 1px var(--primary);
   cursor: pointer;
 }
-
-/* ------------------------------------------------------------------
-   Search bar + Filter button (Dashboard)
-   ------------------------------------------------------------------ */
 
 .dash-search-section {
   margin-bottom: 28px;
@@ -797,9 +784,6 @@
   border-top: 1px solid var(--border);
 }
 
-/* Filter group / shared form controls (mirrored from PhoneListing.css
-   so the dashboard popover looks consistent with the rest of the app). */
-
 .filter-group {
   display: flex;
   flex-direction: column;
@@ -894,8 +878,6 @@
   color: var(--danger);
 }
 
-/* Pagination — same look as PhoneListing.jsx for consistency across the app */
-
 .pagination {
   display: flex;
   flex-wrap: wrap;
@@ -917,8 +899,6 @@
   color: var(--text-muted);
   margin-left: 4px;
 }
-
-/* Buttons used by the search/filter UI (overrides + additions) */
 
 .btn {
   display: inline-flex;
@@ -1027,13 +1007,6 @@
   }
 }
 
-/* ------------------------------------------------------------------
-   Dark-mode toggle row (in the profile dropdown).
-   The row itself is a real <button> for accessibility; the visual
-   switch inside is a separate focus-stripped span so the parent
-   button receives a single tab stop.
-   ------------------------------------------------------------------ */
-
 .theme-toggle-row {
   display: flex;
   align-items: center;
@@ -1098,24 +1071,10 @@
   transform: translateX(16px);
 }
 
-/* ------------------------------------------------------------------
-   Dashboard Dark Mode
-   Scope: only descendants of .dashboard-page.dash-dark. The login
-   page is a sibling route (not a child of .dashboard-page), so it
-   never inherits these variable overrides.
-
-   Most dashboard rules reference var(--bg), var(--white), var(--text),
-   var(--border), var(--primary), etc. Re-binding those names here
-   recolors ~80% of the page automatically. The targeted overrides
-   below cover the few hardcoded colors and any class that needs an
-   explicit dark variant.
-   ------------------------------------------------------------------ */
-
 .dashboard-page.dash-dark {
-  /* Surfaces */
-  --bg: #0f172a; /* page background */
-  --white: #1e293b; /* cards, modals, header, inputs, dropdowns */
-  --border: #334155; /* default borders, dividers */
+  --bg: #0f172a;
+  --white: #1e293b;
+  --border: #334155;
   --border-dark: #475569;
 
   /* Text */
@@ -1125,24 +1084,19 @@
   --slate-dark: #e2e8f0;
   --slate-light: #64748b;
 
-  /* Brand — brighter blue for AA contrast on dark surfaces */
   --primary: #60a5fa;
   --primary-dark: #3b82f6;
   --primary-light: rgba(96, 165, 250, 0.16);
 
-  /* Status */
   --success: #34d399;
   --success-light: #064e3b;
   --danger: #f87171;
   --danger-light: rgba(248, 113, 113, 0.18);
 
-  /* Shadows — softer in dark mode */
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
   --shadow-md:
     0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
 }
-
-/* Hardcoded-color overrides and explicit recolors */
 
 .dashboard-page.dash-dark .phone-card-image {
   background: #0b1220;
@@ -1282,10 +1236,6 @@
   border-top-color: var(--border);
 }
 
-
-/* ============================================================
-   Recommendation results (POST /api/recommend/recommend)
-   ============================================================ */
 .dash-recs-section {
   margin-bottom: 24px;
 }
@@ -1360,7 +1310,6 @@
   text-align: center;
 }
 
-/* Dark-mode counterparts for the recommendation-only elements. */
 .dashboard-page.dash-dark .rec-why-list {
   color: var(--text);
 }
@@ -1369,7 +1318,6 @@
   color: var(--text);
 }
 
-/* Reset-to-persona-defaults button shown only after a slider drag. */
 .weight-reset-btn {
   margin-top: 4px;
   width: 100%;
