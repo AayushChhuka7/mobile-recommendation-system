@@ -294,7 +294,7 @@
 }
 
 .phone-card-image.no-image::after {
-  content: "📱";
+  content: url("../assets/backup.png");
   font-size: 48px;
 }
 
