@@ -1,0 +1,115 @@
+
+
+# ----------------------------------------------------------------------------
+# Mobile Recommendation System — local dev stack
+#
+# Boot order:
+#   postgres (healthy) -> db-init (one-shot: schema push, RBAC seed, bulk CSV)
+#                     -> ml-service (healthy) + backend (waits on db-init)
+#                     -> frontend
+# ----------------------------------------------------------------------------
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: mobile-recommender-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: mobile_recommender
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mobile_recommender"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # One-shot DB initializer:
+  #   1. prisma db push                       -> apply schema
+  #   2. npm run seed:rbac                    -> system roles + customer backfill
+  #   3. node prisma/import-gsmarena-bulk.mjs -> seed phones/brands/variants/specs
+  # Exits 0; the backend waits for this with service_completed_successfully.
+  db-init:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mobile-recommender-db-init
+    # Override CMD. We pass the CSV path explicitly so the script doesn't need
+    # to know where the file lives relative to itself.
+    command: >
+      sh -c "npx prisma db push --skip-generate &&
+             npm run seed:rbac &&
+             node ./prisma/import-gsmarena-bulk.mjs /seed/GSMArena_Cleaned_Dataset.csv"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/mobile_recommender
+      NODE_ENV: development
+    volumes:
+      # Bind-mount the CSV into the container. The host path is relative
+      # to the compose file, i.e. <repo-root>/dataset/GSMArena_Cleaned_Dataset.csv
+      - ./dataset/GSMArena_Cleaned_Dataset.csv:/seed/GSMArena_Cleaned_Dataset.csv:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Don't restart a one-shot job — if it fails, you want to see it.
+    restart: "no"
+
+  # ML FastAPI Service
+  ml-service:
+    build:
+      context: ./ML Model
+      dockerfile: Dockerfile
+    container_name: mobile-recommender-ml
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8002/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # Node.js Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mobile-recommender-backend
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/mobile_recommender
+      COOKIE_SECRET: super-secret-cookie-key-change-in-production
+      ML_BASE_URL: http://ml-service:8002
+      NODE_ENV: development
+      PORT: 8001
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+      ml-service:
+        condition: service_healthy
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mobile-recommender-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:8001/api
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
