@@ -66,6 +66,15 @@ createRoot(document.getElementById("root")).render(
             }
           />
 
+          <Route
+            path="/compare/*" // ← Add /*
+            element={
+              <ProtectedRoute>
+                <App />
+              </ProtectedRoute>
+            }
+          />
+
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

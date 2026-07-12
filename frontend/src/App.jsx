@@ -6,6 +6,7 @@ import ForgotPassword from "./components/ForgotPassword";
 import Dashboard from "./components/Dashboard";
 import PhoneListing from "./components/PhoneListing";
 import { useAuth } from "./hooks/useAuth.jsx";
+import Compare from "./components/Compare.jsx";
 
 function App() {
   const { login } = useAuth();
@@ -29,6 +30,7 @@ function App() {
   if (path.startsWith("/forgot-password")) return <ForgotPassword />;
   if (path.startsWith("/dashboard")) return <Dashboard />;
   if (path.startsWith("/phones")) return <PhoneListing />;
+  if (path.startsWith("/compare")) return <Compare />;
 
   return <Login onLogin={handleLogin} />;
 }
