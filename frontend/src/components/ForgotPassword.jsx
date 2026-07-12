@@ -147,7 +147,9 @@ function ForgotPassword() {
       setForgotOtpError("");
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || "Couldn't resend the code");
+      setForgotOtpError(
+        error.response?.data?.message || "Couldn't resend the code",
+      );
     } finally {
       setForgotResendLoading(false);
     }
@@ -192,10 +194,16 @@ function ForgotPassword() {
       setResetLoading(true);
 
       try {
+        // Backend's `changePasswordValidation` schema (and its route's
+        // field whitelist) only accepts `password` and `confirmPassword`.
+        // Sending `email`/`newPassword`/`confirmNewPassword` is rejected
+        // with "Validation failed" / "Unknown fields: …", so we map our
+        // local state to the schema's names here. The email is already
+        // tied to the session via the OTP-verify step, so we don't
+        // need to resend it.
         await api.post("/auth/forget/changePassword", {
-          email: forgotEmail,
-          newPassword,
-          confirmNewPassword,
+          password: newPassword,
+          confirmPassword: confirmNewPassword,
         });
         setResetResult({
           status: "success",
@@ -216,7 +224,6 @@ function ForgotPassword() {
     },
     [
       validateNewPassword,
-      forgotEmail,
       newPassword,
       confirmNewPassword,
       goToLoginAfterReset,
