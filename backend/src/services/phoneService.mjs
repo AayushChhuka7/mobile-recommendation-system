@@ -167,15 +167,32 @@ const phoneDetailInclude = {
 };
 
 // Sort phones by cheapest variant price
+// const sortByPrice = (phones, direction) => {
+//   const isAsc = direction === "asc";
+//   return [...phones].sort((a, b) => {
+//     const priceA = a.variants[0]?.price
+//       ? parseFloat(a.variants[0].price)
+//       : isAsc
+//         ? Infinity
+//         : -Infinity;
+//     const priceB = b.variants[0]?.price
+//       ? parseFloat(b.variants[0].price)
+//       : isAsc
+//         ? Infinity
+//         : -Infinity;
+//     return isAsc ? priceA - priceB : priceB - priceA;
+//   });
+// };
+
 const sortByPrice = (phones, direction) => {
   const isAsc = direction === "asc";
   return [...phones].sort((a, b) => {
-    const priceA = a.variants[0]?.price
+    const priceA = a.variants?.[0]?.price
       ? parseFloat(a.variants[0].price)
       : isAsc
         ? Infinity
         : -Infinity;
-    const priceB = b.variants[0]?.price
+    const priceB = b.variants?.[0]?.price
       ? parseFloat(b.variants[0].price)
       : isAsc
         ? Infinity
@@ -196,6 +213,34 @@ const getPaginationParams = (queryParams) => {
 // Public Service Functions
 // ---------------------------------------------------------------------------
 
+// export const getAllPhones = async (queryParams) => {
+//   const { page, limit, skip } = getPaginationParams(queryParams);
+//   const sortParam = queryParams.sort || "newest";
+
+//   const where = buildPhoneWhereClause(queryParams);
+//   const total = await prisma.phones.count({ where });
+
+//   const phones = await prisma.phones.findMany({
+//     where,
+//     include: phoneListInclude,
+//     // Only use Prisma orderBy for non-price sorts
+//     ...(!isPriceSort(sortParam) && { orderBy: buildSortOrder(sortParam) }),
+//     skip,
+//     take: limit,
+//   });
+
+//   // Post-process: sort by cheapest variant price
+//   if (isPriceSort(sortParam)) {
+//     const direction = sortParam === "price_asc" ? "asc" : "desc";
+//     const sorted = sortByPrice(phones, direction);
+//     const pagination = buildPaginationMeta({ page, limit, total });
+//     return { phones: sorted, pagination };
+//   }
+
+//   const pagination = buildPaginationMeta({ page, limit, total });
+//   return { phones, pagination };
+// };
+
 export const getAllPhones = async (queryParams) => {
   const { page, limit, skip } = getPaginationParams(queryParams);
   const sortParam = queryParams.sort || "newest";
@@ -203,22 +248,31 @@ export const getAllPhones = async (queryParams) => {
   const where = buildPhoneWhereClause(queryParams);
   const total = await prisma.phones.count({ where });
 
+  // For price sorting: fetch ALL matching phones, sort, then paginate
+  if (isPriceSort(sortParam)) {
+    const allPhones = await prisma.phones.findMany({
+      where,
+      include: phoneListInclude,
+    });
+
+    const direction = sortParam === "price_asc" ? "asc" : "desc";
+    const sorted = sortByPrice(allPhones, direction);
+    
+    // Apply pagination AFTER sorting all phones
+    const paginated = sorted.slice(skip, skip + limit);
+    const pagination = buildPaginationMeta({ page, limit, total });
+    
+    return { phones: paginated, pagination };
+  }
+
+  // Non-price sorts: use Prisma orderBy (direct fields only)
   const phones = await prisma.phones.findMany({
     where,
     include: phoneListInclude,
-    // Only use Prisma orderBy for non-price sorts
-    ...(!isPriceSort(sortParam) && { orderBy: buildSortOrder(sortParam) }),
+    orderBy: buildSortOrder(sortParam),
     skip,
     take: limit,
   });
-
-  // Post-process: sort by cheapest variant price
-  if (isPriceSort(sortParam)) {
-    const direction = sortParam === "price_asc" ? "asc" : "desc";
-    const sorted = sortByPrice(phones, direction);
-    const pagination = buildPaginationMeta({ page, limit, total });
-    return { phones: sorted, pagination };
-  }
 
   const pagination = buildPaginationMeta({ page, limit, total });
   return { phones, pagination };
