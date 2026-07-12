@@ -28,6 +28,99 @@
   position: relative;
   min-height: 400px;
 }
+.login-left-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.login-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+}
+
+.login-carousel:active {
+  cursor: grabbing;
+}
+
+.login-carousel-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease;
+}
+
+.login-carousel-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.login-carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+.login-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-carousel-arrow:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.login-carousel-arrow-prev {
+  left: 12px;
+}
+
+.login-carousel-arrow-next {
+  right: 12px;
+}
+
+.login-carousel-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.login-carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-carousel-dot.active {
+  background: #fff;
+}
 
 .login-overlay {
   position: absolute;
@@ -305,6 +398,44 @@ select.input-field {
   -moz-appearance: none;
 }
 
+.role-select-group {
+  margin-bottom: 16px;
+}
+
+.role-select-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--slate-dark);
+  margin-bottom: 6px;
+}
+
+.role-select {
+  width: 100%;
+  padding: 10px 36px 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  color: var(--text);
+  background-color: var(--white);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1.5L6 6.5L11 1.5' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.role-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
 .remember-me {
   display: flex;
   align-items: center;
@@ -444,6 +575,9 @@ select.input-field {
 }
 
 .usage-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 7px 14px;
   border: 1px solid var(--border-dark);
   border-radius: 999px;

@@ -1,8 +1,10 @@
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./App.css";
 import Login from "./components/Login";
 import Registration from "./components/Registration";
 import ForgotPassword from "./components/ForgotPassword";
+import Dashboard from "./components/Dashboard";
+import PhoneListing from "./components/PhoneListing";
 import { useAuth } from "./hooks/useAuth.jsx";
 
 function App() {
@@ -11,29 +13,24 @@ function App() {
 
   const handleLogin = (userData) => {
     if (!userData) return;
-
     const unwrapped = userData.user
       ? { ...userData.user, ...(userData.role ? { role: userData.role } : {}) }
       : userData;
-    if (unwrapped.id || unwrapped.userId || unwrapped.email) {
-      login(unwrapped);
-      navigate("/dashboard", { replace: true });
-    }
+    login(unwrapped);
+    navigate("/dashboard", { replace: true });
   };
 
-  return (
-    <div className="app">
-      <Routes>
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route
-          path="/register/*"
-          element={<Registration onLogin={handleLogin} />}
-        />
-        <Route path="/forgot-password/*" element={<ForgotPassword />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </div>
-  );
+  // Return based on current path
+  const path = window.location.pathname;
+
+  if (path.startsWith("/login")) return <Login onLogin={handleLogin} />;
+  if (path.startsWith("/register"))
+    return <Registration onLogin={handleLogin} />;
+  if (path.startsWith("/forgot-password")) return <ForgotPassword />;
+  if (path.startsWith("/dashboard")) return <Dashboard />;
+  if (path.startsWith("/phones")) return <PhoneListing />;
+
+  return <Login onLogin={handleLogin} />;
 }
 
 export default App;

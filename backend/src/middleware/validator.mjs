@@ -1,15 +1,6 @@
 import { validationResult, matchedData } from "express-validator";
 import { hashPassword } from "../utils/crypto.mjs";
-
-// validationWith(schemas, allowedFields?)
-//
-// Runs express-validator chains, hashes `data.password`, attaches cleaned
-// data to `req.data`. If `allowedFields` is given, any extra body keys
-// cause 400.
-//
-// usage:
-//   validationWith(mySchema)                          // accept anything matchedData passes through
-//   validationWith(mySchema, ["name", "phoneNo"])     // strict whitelist
+import { badRequest } from "../utils/ApiError.mjs";
 
 export const validationWith = (schemas, allowedFields) => {
   const chain = Array.isArray(schemas) ? schemas : [schemas];
@@ -19,7 +10,7 @@ export const validationWith = (schemas, allowedFields) => {
     async (req, res, next) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json({ error: errors.array() });
+        throw badRequest('Validation failed', errors.array());
       }
 
       if (allowedFields && req.body && typeof req.body === "object") {
@@ -27,10 +18,9 @@ export const validationWith = (schemas, allowedFields) => {
           (f) => !allowedFields.includes(f),
         );
         if (unknown.length > 0) {
-          return res.status(400).json({
-            error: "Bad Request",
-            message: `Unknown fields: ${unknown.join(", ")}`,
-          });
+          throw badRequest(
+            `Unknown fields: ${unknown.join(', ')}`
+          );
         }
       }
 
