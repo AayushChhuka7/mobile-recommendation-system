@@ -344,7 +344,7 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, setUser } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -444,6 +444,41 @@ function Dashboard() {
     return () => {
       ignore = true;
     };
+  }, []);
+
+  // Hydrate the stored user with full profile fields. Login only returns
+  // { id, email }, but the dashboard needs name/phoneNo. Pull them from
+  // the existing GET /users/me endpoint and merge into the auth context
+  // (which persists to localStorage, so the values survive reloads).
+  useEffect(() => {
+    let ignore = false;
+    async function loadProfile() {
+      try {
+        const res = await api.get("/users/me");
+        const profile = res?.data?.data;
+        if (ignore || !profile) return;
+        setUser({
+          id: profile.userId ?? user?.id,
+          name: profile.name ?? user?.name,
+          email: profile.email ?? user?.email,
+          phoneNo: profile.phoneNo ?? user?.phoneNo,
+        });
+      } catch (err) {
+        // 401 is handled by the phones loader below; we don't want to
+        // double-handle it here. Just log and continue.
+        if (err.response?.status !== 401) {
+          console.error("Failed to load user profile:", err);
+        }
+      }
+    }
+    loadProfile();
+    return () => {
+      ignore = true;
+    };
+    // We intentionally only run this on mount. The `user` reads inside
+    // are just fallbacks for the merge; we don't want to refetch on
+    // every context update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const openRecommend = useCallback(() => {
     if (closeTimerRef.current) {
