@@ -1,0 +1,12 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces System Workflow Flowchart}}{9}{figure.caption.22}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Block diagram of the System}}{10}{figure.caption.24}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Data Collection and Integration Process}}{11}{figure.caption.26}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Data Processing Flow}}{13}{figure.caption.31}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces XGBoost Ensemble of Decision Trees \cite {xgboostimg}}}{17}{figure.caption.41}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces K-Means Clustering of Customers \cite {kmeansimg}}}{18}{figure.caption.44}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Visualizations of XGBoost Regressor Performance on the Test Set}}{26}{figure.caption.68}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Frontend User Interface of the Mobile Recommendation System}}{27}{figure.caption.71}%
