@@ -80,12 +80,29 @@ function PhoneAutocomplete({ label, selectedPhone, onSelect, placeholder }) {
     <div className="cmp-input-group">
       <label className="cmp-input-label">{label}</label>
       <div className="cmp-autocomplete-wrapper" ref={wrapperRef}>
-        <span className="cmp-input-icon" aria-hidden="true">
-          <SearchIcon />
-        </span>
+        {selectedPhone ? (
+          <div className="cmp-selected-thumb" aria-hidden="true">
+            {selectedPhone.imageUrl ? (
+              <img
+                src={selectedPhone.imageUrl}
+                alt=""
+                onError={(e) => {
+                  e.target.style.display = "none";
+                  e.target.parentElement.classList.add("no-image");
+                }}
+              />
+            ) : (
+              <span className="cmp-suggestion-emoji">📱</span>
+            )}
+          </div>
+        ) : (
+          <span className="cmp-input-icon" aria-hidden="true">
+            <SearchIcon />
+          </span>
+        )}
         <input
           type="text"
-          className="cmp-autocomplete-input"
+          className={`cmp-autocomplete-input ${selectedPhone ? "has-thumb" : ""}`}
           placeholder={placeholder || "Search phone..."}
           value={selectedPhone ? selectedPhone.modelName : query}
           onChange={handleInputChange}
@@ -113,6 +130,20 @@ function PhoneAutocomplete({ label, selectedPhone, onSelect, placeholder }) {
                 aria-selected="false"
                 onMouseDown={() => handleSelect(p)}
               >
+                <div className="cmp-suggestion-thumb" aria-hidden="true">
+                  {p.imageUrl ? (
+                    <img
+                      src={p.imageUrl}
+                      alt=""
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                        e.target.parentElement.classList.add("no-image");
+                      }}
+                    />
+                  ) : (
+                    <span className="cmp-suggestion-emoji">📱</span>
+                  )}
+                </div>
                 <div className="cmp-suggestion-info">
                   <span className="cmp-suggestion-name">{p.modelName}</span>
                   <span className="cmp-suggestion-brand">
