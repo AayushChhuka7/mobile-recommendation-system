@@ -260,18 +260,8 @@ const CATEGORY_OPTIONS = [
   { key: "allrounder", label: "All-rounder", Icon: SparklesIcon },
 ];
 
-// Default slider position when the user hasn't picked a category yet — all
-// neutral. Kept distinct from the per-persona presets below so the UI can
-// tell "user hasn't chosen" apart from "user picked All-rounder".
 const DEFAULT_WEIGHTS = { gaming: 3, camera: 3, battery: 3, display: 3 };
 
-// Per-persona slider presets (1..5 stars).
-// Mirrors the ML service's PERSONA_PRESETS one-to-one: when the user picks
-// a category, the sliders snap to these values so the user can see what
-// each persona prioritizes, and so the FE sends meaningful weights to the
-// backend. The server's `Custom` persona accepts these same 4 keys
-// (gaming/camera/battery/display) as `preferences`, so a tweaked slider
-// is a real input — not cosmetic.
 const PERSONA_WEIGHT_PRESETS = {
   gamer: { gaming: 5, camera: 2, battery: 4, display: 4 },
   camera: { gaming: 2, camera: 5, battery: 3, display: 3 },
@@ -279,8 +269,6 @@ const PERSONA_WEIGHT_PRESETS = {
   allrounder: { gaming: 3, camera: 3, battery: 3, display: 3 },
 };
 
-// Filter options for the dashboard filter panel — only fields the backend
-// already accepts in /api/phones (see buildPhoneWhereClause in phoneService.mjs).
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest First" },
   { value: "oldest", label: "Oldest First" },
@@ -308,8 +296,6 @@ const BATTERY_OPTIONS = [
   { value: "5000", label: "5000+ mAh" },
   { value: "6000", label: "6000+ mAh" },
 ];
-
-// Initial empty filter state.
 const EMPTY_FILTERS = {
   brand: "",
   minPrice: "",
@@ -322,7 +308,6 @@ const EMPTY_FILTERS = {
   hasOis: false,
 };
 
-// Build the query params for /phones from the active filters, sort, and page.
 function buildPhonesQuery(filters, sort, extra = {}) {
   const params = { limit: 6, sort, ...extra };
   if (filters.brand) params.brand = filters.brand;
@@ -363,19 +348,12 @@ function Dashboard() {
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
-  // Tracks the recommendation panel's animation phase.
-  //   "closed"  — not rendered
-  //   "open"    — fully visible
-  //   "closing" — playing the close animation, will unmount after a short delay
+
   const [panelPhase, setPanelPhase] = useState("closed");
   const closeAnimMs = 180;
 
-  // Keep a ref to the close-timer so a quick reopen can cancel the pending unmount.
   const closeTimerRef = useRef(null);
 
-  // ---- Change-password modal state ----
-  // Mirrors the Recommend panel's phase machine so the close animation can
-  // finish before unmount, and so a quick reopen cancels the pending unmount.
   const [changePwPhase, setChangePwPhase] = useState("closed");
   const changePwCloseTimerRef = useRef(null);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -385,9 +363,6 @@ function Dashboard() {
   const [changePwSubmitError, setChangePwSubmitError] = useState("");
   const [isChangePwSubmitting, setIsChangePwSubmitting] = useState(false);
 
-  // ---- Dark mode (dashboard-only) ----
-  // Lazy initializer so the very first render picks up the saved preference
-  // and avoids a light-mode flash when dark was previously enabled.
   const DARK_MODE_KEY = "dashboardDarkMode";
   const [isDarkMode, setIsDarkMode] = useState(
     () => localStorage.getItem(DARK_MODE_KEY) === "true",
@@ -401,24 +376,13 @@ function Dashboard() {
     setIsDarkMode((d) => !d);
   }, []);
   const [selectedCategory, setSelectedCategory] = useState("gamer");
-  // Seed the sliders with the gamer preset on mount so the UI shows what
-  // "Gamer" actually means, instead of a flat 3/3/3/3 that the user can't
-  // tell apart from "I haven't picked anything yet".
   const [weights, setWeights] = useState(() => ({
     ...PERSONA_WEIGHT_PRESETS.gamer,
   }));
-  // True once the user drags a slider. Resets when they pick a category
-  // (a category click is treated as "I'm using the preset for this persona",
-  // not a customization). Used to decide whether to send `persona: "Custom"`
-  // + the slider values, or just the persona key, to the server.
+
   const [weightsTouched, setWeightsTouched] = useState(false);
   const [weightsOpen, setWeightsOpen] = useState(true);
   const [hoveredCard, setHoveredCard] = useState(null);
-
-  // Category chip click — updates the selected persona AND snaps the
-  // sliders to that persona's preset so the user can see the priorities
-  // change. We also reset `weightsTouched` because the slider move is
-  // a programmatic side-effect of the click, not a user customization.
   const handleCategorySelect = useCallback((key) => {
     setSelectedCategory(key);
     const preset = PERSONA_WEIGHT_PRESETS[key] || DEFAULT_WEIGHTS;
@@ -426,37 +390,22 @@ function Dashboard() {
     setWeightsTouched(false);
   }, []);
 
-  // ---- Budget for the ML recommender (€/EUR) ----
-  // The backend requires `budget.max`; `min` is optional and defaults to 0.
   const [budgetMin, setBudgetMin] = useState("");
   const [budgetMax, setBudgetMax] = useState("");
 
-  // ---- ML recommendation results ----
-  // `recs` holds the latest response from POST /api/recommend/recommend.
-  // `recsPersona` records which persona produced them so the UI can label
-  // the section ("Recommended for: Gamer") and so a stale "loading" label
-  // never bleeds across requests.
   const [recs, setRecs] = useState(null);
   const [recsLoading, setRecsLoading] = useState(false);
   const [recsError, setRecsError] = useState("");
   const [recsPersona, setRecsPersona] = useState(null);
-
-  // ---- Search + Filter state ----
-  // `searchInput` is what's in the input; `searchTerm` is the committed term
-  // used in the API call (mirrors the pattern in PhoneListing.jsx).
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [pendingFilters, setPendingFilters] = useState(EMPTY_FILTERS);
   const [sort, setSort] = useState("newest");
-
-  // Pagination state (mirrors the pattern in PhoneListing.jsx)
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-
-  // Filter options fetched from the backend (brands, OS list)
   const [brands, setBrands] = useState([]);
   const [osOptions, setOsOptions] = useState([]);
 
@@ -466,8 +415,6 @@ function Dashboard() {
 
   const profileRef = useRef(null);
   const filterRef = useRef(null);
-
-  // ---- Close profile/filter popovers on outside click ----
   useEffect(() => {
     function handleClickOutside(e) {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
@@ -480,8 +427,6 @@ function Dashboard() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // ---- Load filter options (brands + OS) once on mount ----
   useEffect(() => {
     let ignore = false;
     async function loadFilterOptions() {
@@ -492,7 +437,6 @@ function Dashboard() {
         if (Array.isArray(data.brands)) setBrands(data.brands);
         if (Array.isArray(data.os)) setOsOptions(data.os);
       } catch (err) {
-        // Non-fatal: filter dropdowns just stay empty.
         console.error("Failed to load filter options:", err);
       }
     }
@@ -501,9 +445,6 @@ function Dashboard() {
       ignore = true;
     };
   }, []);
-
-  // ---- Keep the recommendation modal mounted for the close animation ----
-  // Driven from event handlers (not effects) so we don't cascade-render.
   const openRecommend = useCallback(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -523,7 +464,6 @@ function Dashboard() {
     }, closeAnimMs);
   }, []);
 
-  // Clean up the close timers on unmount.
   useEffect(() => {
     return () => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
@@ -531,8 +471,6 @@ function Dashboard() {
         clearTimeout(changePwCloseTimerRef.current);
     };
   }, []);
-
-  // ---- Initial phone load: respect search + filters if any are set ----
   useEffect(() => {
     let ignore = false;
 
@@ -541,8 +479,6 @@ function Dashboard() {
       setError(null);
       try {
         const extra = { page };
-        // `search` is supported by buildPhoneWhereClause on /phones, so we
-        // can combine text + filter params in a single request.
         if (searchTerm) extra.search = searchTerm;
 
         const params = buildPhonesQuery(filters, sort, extra);
@@ -597,9 +533,6 @@ function Dashboard() {
     navigate("/login", { replace: true });
   }, [logout, navigate]);
 
-  // ---- Change-password modal handlers ----
-  // Open the modal; close the profile dropdown so the menu doesn't sit
-  // behind the overlay, and clear any stale errors from a previous attempt.
   const openChangePassword = useCallback(() => {
     if (changePwCloseTimerRef.current) {
       clearTimeout(changePwCloseTimerRef.current);
@@ -611,8 +544,6 @@ function Dashboard() {
     setProfileOpen(false);
   }, []);
 
-  // Helper: reset the change-pw form back to its initial state. Pulled out
-  // so both the close handler and the unmount cleanup can call it.
   const resetChangePwForm = useCallback(() => {
     setCurrentPassword("");
     setNewPassword("");
@@ -632,9 +563,6 @@ function Dashboard() {
       resetChangePwForm();
     }, closeAnimMs);
   }, [resetChangePwForm]);
-
-  // Mirrors the validation in ForgotPassword.jsx so the error copy is
-  // consistent across the app.
   const validateChangePw = useCallback(() => {
     const errs = {};
     if (!currentPassword) errs.currentPassword = "Current password is required";
@@ -659,11 +587,6 @@ function Dashboard() {
         return;
       }
 
-      // Frontend-only for now: per the spec we build the UI and connect the
-      // button, but the actual password update is out of scope. When the
-      // backend endpoint is ready, replace the body of this branch with a
-      // call (e.g. api.post("/auth/change-password", { ... })) and handle
-      // success / error transitions here.
       setIsChangePwSubmitting(true);
       console.log(
         "[Change Password] submit (UI only — backend wiring pending):",
@@ -672,24 +595,20 @@ function Dashboard() {
       setIsChangePwSubmitting(false);
       closeChangePassword();
     },
-    [validateChangePw, currentPassword, newPassword, confirmPassword, closeChangePassword],
+    [
+      validateChangePw,
+      currentPassword,
+      newPassword,
+      confirmPassword,
+      closeChangePassword,
+    ],
   );
 
   const handleWeightChange = useCallback((key, value) => {
     setWeights((prev) => ({ ...prev, [key]: Number(value) }));
-    // Flag the sliders as user-customized so handleFindPhone knows to
-    // forward the values as `preferences` and switch to `persona: "Custom"`
-    // (the only persona for which the ML service actually reads them).
     setWeightsTouched(true);
   }, []);
-
-  // "Find my phone" from the questionnaire modal — calls the backend ML
-  // recommender (POST /api/recommend/recommend) with the selected persona,
-  // budget, and weight preferences, then renders the results in a dedicated
-  // section above the standard phone grid.
   const handleFindPhone = useCallback(async () => {
-    // The backend requires `budget.max`; reject empty max inline so we don't
-    // burn a request on something we know will 400.
     const max = Number(budgetMax);
     if (!Number.isFinite(max) || max <= 0) {
       setRecsError("Please enter a maximum budget before finding your phone.");
@@ -706,13 +625,6 @@ function Dashboard() {
     setRecs(null);
     setRecsPersona(selectedCategory);
     closeRecommend();
-
-    // The ML service (pipeline/recommend.py → resolve_weights) only
-    // honours `custom_weights_stars` when persona=CUSTOM. For the four
-    // persona presets it uses hard-coded weights and ignores the sliders.
-    // So if the user dragged a slider we send `persona: "Custom"` plus
-    // the slider values; otherwise we send the persona key (and skip
-    // preferences to keep the payload minimal).
     const persona = weightsTouched ? "Custom" : selectedCategory;
     const preferences = weightsTouched ? { ...weights } : undefined;
 
@@ -725,8 +637,6 @@ function Dashboard() {
       });
       setRecs(results);
     } catch (err) {
-      // Leave `recs` as null so the standard listing still shows below the
-      // error banner — the user always has a fallback.
       setRecsError(
         err.response?.data?.message ||
           "Couldn't get recommendations right now. Please try again.",
@@ -734,24 +644,25 @@ function Dashboard() {
     } finally {
       setRecsLoading(false);
     }
-  }, [budgetMin, budgetMax, selectedCategory, weights, weightsTouched, closeRecommend]);
-
-  // Clear the recommendation panel and go back to the standard listing
-  // (search/filter/sort state is untouched, so the next /phones load just
-  // re-runs the existing effect with whatever filters are active).
+  }, [
+    budgetMin,
+    budgetMax,
+    selectedCategory,
+    weights,
+    weightsTouched,
+    closeRecommend,
+  ]);
   const handleClearRecommendations = useCallback(() => {
     setRecs(null);
     setRecsError("");
     setRecsPersona(null);
   }, []);
-
-  // ---- Search bar handlers ----
   const handleSearch = (e) => {
     e.preventDefault();
     const term = searchInput.trim();
-    setSearchTerm(term); // empty string clears the term on the next load
+    setSearchTerm(term);
     setShowFilters(false);
-    setPage(1); // new search → restart at page 1
+    setPage(1);
   };
 
   const handleClearSearch = () => {
@@ -759,8 +670,6 @@ function Dashboard() {
     setSearchTerm("");
     setPage(1);
   };
-
-  // ---- Filter popover handlers ----
   const openFilters = () => {
     setPendingFilters(filters);
     setShowFilters((s) => !s);
@@ -781,8 +690,6 @@ function Dashboard() {
     setFilters(EMPTY_FILTERS);
     setPage(1);
   };
-
-  // When the user changes the sort, restart at page 1.
   const handleSortChange = (nextSort) => {
     setSort(nextSort);
     setPage(1);
@@ -792,13 +699,7 @@ function Dashboard() {
   const email = user?.email || "";
   const phone = user?.phoneNo || user?.phone || "";
   const firstName = displayName.split(" ")[0];
-
-  // Count of currently applied filters — used to render the badge on the
-  // Filter button. Derived directly from `filters` (no extra effect needed).
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
-
-  // Pagination: show a window of up to 5 page numbers, centered on the
-  // current page. (Same shape as PhoneListing.jsx.)
   const paginationStart =
     totalPages <= 5 ? 1 : Math.max(1, Math.min(totalPages - 4, page - 2));
   const pageNumbers = Array.from(
@@ -1217,9 +1118,7 @@ function Dashboard() {
         {/* ---- ML recommendations (from POST /api/recommend/recommend) ----
             Sits above the standard /phones grid. The standard grid still
             renders below, so the user always has a fallback view. */}
-        {recsLoading && (
-          <p className="dash-status">Finding phones for you…</p>
-        )}
+        {recsLoading && <p className="dash-status">Finding phones for you…</p>}
 
         {recsError && (
           <div className="dash-status dash-status-error">
@@ -1256,8 +1155,8 @@ function Dashboard() {
             </div>
             {recs.length === 0 ? (
               <p className="dash-status">
-                No matches for the chosen persona and budget. Try widening
-                your budget or picking a different category.
+                No matches for the chosen persona and budget. Try widening your
+                budget or picking a different category.
               </p>
             ) : (
               <div className="phone-grid">
@@ -1565,9 +1464,9 @@ function Dashboard() {
                     className="btn btn-outline btn-small weight-reset-btn"
                     onClick={() => handleCategorySelect(selectedCategory)}
                   >
-                    Reset to {CATEGORY_OPTIONS.find(
-                      (o) => o.key === selectedCategory,
-                    )?.label || "persona"}{" "}
+                    Reset to{" "}
+                    {CATEGORY_OPTIONS.find((o) => o.key === selectedCategory)
+                      ?.label || "persona"}{" "}
                     defaults
                   </button>
                 )}
@@ -1657,7 +1556,10 @@ function Dashboard() {
                 onChange={(e) => {
                   setCurrentPassword(e.target.value);
                   if (changePwErrors.currentPassword)
-                    setChangePwErrors((prev) => ({ ...prev, currentPassword: "" }));
+                    setChangePwErrors((prev) => ({
+                      ...prev,
+                      currentPassword: "",
+                    }));
                 }}
                 error={changePwErrors.currentPassword}
               />

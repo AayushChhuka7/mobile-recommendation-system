@@ -1,9 +1,28 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import "./Login.css";
-import holdingPhone from "../assets/holdingphone2.jpg";
-import redmi14 from "../assets/redmi14c.jpg";
+// import holdingPhone from "../assets/holdingphone2.jpg";
+import p1 from "../assets/redmi14c.jpg";
+import p2 from "../assets/redmia3.jpg";
+import p3 from "../assets/redminote15.jpeg";
+import p4 from "../assets/iphone12pm.jpeg";
+import p5 from "../assets/pocox3.jpg";
+import p6 from "../assets/samsungs26ultra.jpeg";
+import p7 from "../assets/samsungs25.jpeg";
+import p8 from "../assets/samsungs25ultra.jpeg";
+import p9 from "../assets/oneplus13.jpeg";
+import p10 from "../assets/samsungs252.jpeg";
+import p11 from "../assets/nokia keypad.jpg";
+import p12 from "../assets/pop6.jpg";
+import p13 from "../assets/nokiag42.jpg";
+import p14 from "../assets/spark30c.jpg";
+import p15 from "../assets/xiaomi13t.jpg";
+import p16 from "../assets/camon40.jpg";
+import p17 from "../assets/iphone16.jpg";
+import p18 from "../assets/iphonerandom2.jpeg";
+import p19 from "../assets/nokia6280.jpg";
+
 import {
   MailIcon,
   TextField,
@@ -13,16 +32,95 @@ import {
   PASSWORD_RULES,
 } from "./AuthShared";
 
+const ALL_LOGIN_PHONES = [
+  { src: p1, alt: "Redmi 14C" },
+  { src: p2, alt: "Redmi A3" },
+  { src: p3, alt: "Redmi Note 15" },
+  { src: p4, alt: "iPhone 12 Pro Max" },
+  { src: p5, alt: "Poco X3" },
+  { src: p6, alt: "Samsung Galaxy S26 Ultra" },
+  { src: p7, alt: "Samsung Galaxy S25" },
+  { src: p8, alt: "Samsung Galaxy S25 Ultra" },
+  { src: p9, alt: "OnePlus 13" },
+  { src: p10, alt: "Samsung Galaxy S25" },
+  { src: p11, alt: "Nokia Keypad" },
+  { src: p12, alt: "Tecno Pop 6" },
+  { src: p13, alt: "Nokia G42" },
+  { src: p14, alt: "Tecno Spark 30C" },
+  { src: p15, alt: "Xiaomi 13T" },
+  { src: p16, alt: "Tecno Camon 40" },
+  { src: p17, alt: "iPhone 16" },
+  { src: p18, alt: "iPhone 15" },
+  { src: p19, alt: "Nokia 6280" },
+];
+
+function getRandomFourPhones() {
+  const shuffled = [...ALL_LOGIN_PHONES].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 5);
+}
+
 function Login({ onLogin }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // Role is now selectable on the login page via dropdown, defaulting to Customer.
   const [roleName, setRoleName] = useState("Customer");
   const [loginErrors, setLoginErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [serverError, setServerError] = useState("");
+  const carouselPhones = useMemo(() => getRandomFourPhones(), []);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const dragStartX = useRef(null);
+  const dragDeltaX = useRef(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const goToSlide = useCallback(
+    (index) => {
+      const total = carouselPhones.length;
+      setCarouselIndex(((index % total) + total) % total);
+    },
+    [carouselPhones.length],
+  );
+
+  const goNext = useCallback(() => {
+    setCarouselIndex((prev) => (prev + 1) % carouselPhones.length);
+  }, [carouselPhones.length]);
+
+  const goPrev = useCallback(() => {
+    setCarouselIndex(
+      (prev) => (prev - 1 + carouselPhones.length) % carouselPhones.length,
+    );
+  }, [carouselPhones.length]);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      goNext();
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [carouselIndex, goNext]);
+
+  const handleDragStart = (clientX) => {
+    dragStartX.current = clientX;
+    dragDeltaX.current = 0;
+    setIsDragging(true);
+  };
+
+  const handleDragMove = (clientX) => {
+    if (dragStartX.current === null) return;
+    dragDeltaX.current = clientX - dragStartX.current;
+  };
+
+  const handleDragEnd = () => {
+    if (dragStartX.current === null) return;
+    const threshold = 50;
+    if (dragDeltaX.current > threshold) {
+      goPrev();
+    } else if (dragDeltaX.current < -threshold) {
+      goNext();
+    }
+    dragStartX.current = null;
+    dragDeltaX.current = 0;
+    setIsDragging(false);
+  };
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
@@ -67,8 +165,6 @@ function Login({ onLogin }) {
           password,
           roleName,
         });
-
-        // Let App.jsx handle navigation via onLogin
         if (onLogin) {
           onLogin(response.data);
         }
@@ -93,15 +189,60 @@ function Login({ onLogin }) {
   return (
     <div className="auth-page login-page">
       <div className="login-container">
-        <div
-          className="login-left"
-          style={{ backgroundImage: `url(${holdingPhone})` }}
-        >
-          <div className="login-overlay">
-            <div className="brand-tagline">
-              <h1>Welcome to</h1>
-              <h2>Mobile Phone Recommendation System</h2>
-              <p>Get mobile phones recommended instantly</p>
+        <div className="login-left">
+          <div
+            className="login-carousel"
+            onMouseDown={(e) => handleDragStart(e.clientX)}
+            onMouseMove={(e) => isDragging && handleDragMove(e.clientX)}
+            onMouseUp={handleDragEnd}
+            onMouseLeave={() => isDragging && handleDragEnd()}
+            onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
+            onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
+            onTouchEnd={handleDragEnd}
+          >
+            <div
+              className="login-carousel-track"
+              style={{
+                transform: `translateX(-${carouselIndex * 100}%)`,
+              }}
+            >
+              {carouselPhones.map((phone, idx) => (
+                <div className="login-carousel-slide" key={idx}>
+                  <img
+                    src={phone.src}
+                    alt={phone.alt}
+                    className="login-carousel-image"
+                    draggable={false}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className="login-carousel-arrow login-carousel-arrow-prev"
+              onClick={goPrev}
+              aria-label="Previous phone"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              className="login-carousel-arrow login-carousel-arrow-next"
+              onClick={goNext}
+              aria-label="Next phone"
+            >
+              ›
+            </button>
+
+            <div className="login-carousel-dots">
+              {carouselPhones.map((_, idx) => (
+                <span
+                  key={idx}
+                  className={`login-carousel-dot ${idx === carouselIndex ? "active" : ""}`}
+                  onClick={() => goToSlide(idx)}
+                />
+              ))}
             </div>
           </div>
         </div>
@@ -136,7 +277,7 @@ function Login({ onLogin }) {
                 type="email"
                 name="email"
                 autoComplete="email"
-                placeholder="you@example.com"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 error={loginErrors.email}
