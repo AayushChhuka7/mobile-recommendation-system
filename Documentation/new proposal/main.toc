@@ -24,7 +24,7 @@
 \contentsline {subsection}{\numberline {2.3.2}Customer Functionality}{7}{subsection.39}%
 \contentsline {subsection}{\numberline {2.3.3}Salesman Functionality}{8}{subsection.40}%
 \contentsline {subsection}{\numberline {2.3.4}Admin Functionality}{8}{subsection.41}%
-\contentsline {chapter}{\numberline {3}Proposed Methodology}{9}{chapter.42}%
+\contentsline {chapter}{\numberline {3}Methodology}{9}{chapter.42}%
 \contentsline {section}{\numberline {3.1}Software Development Model}{9}{section.43}%
 \contentsline {section}{\numberline {3.2}Feasibility Study}{10}{section.49}%
 \contentsline {subsection}{\numberline {3.2.1}Technical Feasibility}{10}{subsection.50}%
