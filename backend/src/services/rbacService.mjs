@@ -9,6 +9,7 @@
 // read/write on that FK goes through this module.
 
 import { prisma } from "../config/prisma.mjs";
+import { notFound } from "../utils/ApiError.mjs";
 
 // Select used by deserializeUser — `password` and other sensitive
 // fields are deliberately excluded. Use this on every code path that
@@ -48,7 +49,7 @@ export const findUserRoles = async (userId) => {
     select: ROLES_SAFE_USER_FIELDS,
   });
   if (!user) return [];
-  
+
   if (user.role && user.role.roleName) {
     return [user.role.roleName];
   }
@@ -62,9 +63,7 @@ export const findUserRoles = async (userId) => {
 export const assignRole = async (userId, roleName) => {
   const role = await findRoleByName(roleName);
   if (!role) {
-    const error = new Error(`Role "${roleName}" does not exist`);
-    error.status = 404;
-    throw error;
+    throw notFound(`Role "${roleName}" does not exist`);
   }
 
   const userExists = await prisma.users.findUnique({
@@ -72,9 +71,7 @@ export const assignRole = async (userId, roleName) => {
     select: { userId: true },
   });
   if (!userExists) {
-    const error = new Error("User not found");
-    error.status = 404;
-    throw error;
+    throw notFound("User not found");
   }
 
   return prisma.users.update({
@@ -92,9 +89,7 @@ export const revokeRole = async (userId) => {
     select: { userId: true },
   });
   if (!userExists) {
-    const error = new Error("User not found");
-    error.status = 404;
-    throw error;
+    throw notFound("User not found");
   }
 
   return prisma.users.update({
@@ -132,7 +127,6 @@ export const isAssignableRole = (roleName) => {
   return ASSIGNABLE_ROLES.includes(roleName);
 };
 
-
 export const assertUserRoleMatches = async (userId, roleName) => {
   if (typeof userId !== "string" || userId.length === 0) {
     return { matched: false, actualRole: null };
@@ -142,7 +136,7 @@ export const assertUserRoleMatches = async (userId, roleName) => {
   }
 
   const userRoles = await findUserRoles(userId);
- 
+
   const actualRole = userRoles.length > 0 ? userRoles[0] : null;
   const matched = actualRole === roleName;
   return { matched, actualRole };

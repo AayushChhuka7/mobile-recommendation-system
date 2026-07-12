@@ -38,6 +38,7 @@ function Registration({ onLogin }) {
   });
   const [registerRole, setRegisterRole] = useState("Customer");
   const [registerErrors, setRegisterErrors] = useState({});
+  const [serverError, setServerError] = useState("");
   const [registerLoading, setRegisterLoading] = useState(false);
 
   const [otp, setOtp] = useState(EMPTY_OTP);
@@ -52,14 +53,10 @@ function Registration({ onLogin }) {
     const timer = setTimeout(() => setResendCooldown((c) => c - 1), 1000);
     return () => clearTimeout(timer);
   }, [resendCooldown]);
-
-  // Landed on /register/otp directly (refresh, bookmark, back button after
-  // state was lost) without having gone through step 1 in this session.
   useEffect(() => {
     if (step === 2 && !registerData.email) {
       navigate("/register", { replace: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
   const validateRegister = useCallback(() => {
@@ -80,9 +77,48 @@ function Registration({ onLogin }) {
     return e;
   }, [registerData]);
 
+  // Map a backend validation `details` array (express-validator) onto the
+  // FE's per-field error map. Each entry has `path` (field name) and `msg`
+  // (human-readable message). Unknown fields fall through to the banner.
+  const mapServerFieldErrors = useCallback((details) => {
+    const fieldErrors = {};
+    let bannerMessage = "";
+    if (!Array.isArray(details)) return { fieldErrors, bannerMessage };
+
+    for (const entry of details) {
+      const rawPath = entry?.path;
+      const msg = entry?.msg || entry?.message;
+      // express-validator uses `path`; older responses may use `field`.
+      const serverKey = rawPath || entry?.field;
+      if (!msg) continue;
+
+      // Map backend field names to the FE's local names.
+      let feKey = null;
+      if (serverKey === "name") feKey = "username";
+      else if (serverKey === "phoneNo") feKey = "phone";
+      else if (
+        serverKey === "email" ||
+        serverKey === "password" ||
+        serverKey === "confirmPassword"
+      ) {
+        feKey = serverKey;
+      }
+
+      if (feKey) {
+        fieldErrors[feKey] = msg;
+      } else {
+        // No matching field — surface in the form-level banner.
+        bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
+      }
+    }
+    return { fieldErrors, bannerMessage };
+  }, []);
+
   const handleRegisterNext = useCallback(
     async (e) => {
       e?.preventDefault();
+      setServerError("");
+      setRegisterErrors({});
       const validationErrors = validateRegister();
       setRegisterErrors(validationErrors);
       if (Object.keys(validationErrors).length) return;
@@ -102,17 +138,27 @@ function Registration({ onLogin }) {
         navigate("/register/otp");
       } catch (error) {
         console.error(error);
-        const serverErrors = error.response?.data?.errors;
-        if (serverErrors && typeof serverErrors === "object") {
-          setRegisterErrors(serverErrors);
-        } else {
-          alert(error.response?.data?.message || "Registration failed");
+        const data = error.response?.data;
+        const { fieldErrors, bannerMessage } = mapServerFieldErrors(
+          data?.details,
+        );
+        if (Object.keys(fieldErrors).length) {
+          setRegisterErrors(fieldErrors);
         }
+        setServerError(
+          bannerMessage || data?.message || "Registration failed. Please try again.",
+        );
       } finally {
         setRegisterLoading(false);
       }
     },
-    [registerData, registerRole, validateRegister, navigate],
+    [
+      registerData,
+      registerRole,
+      validateRegister,
+      navigate,
+      mapServerFieldErrors,
+    ],
   );
 
   const handleOtpChange = useCallback((index, value) => {
@@ -144,8 +190,10 @@ function Registration({ onLogin }) {
 
   const completeRegistration = useCallback(() => {
     onLogin({
+      id: registerData.email,
       name: registerData.username,
       email: registerData.email,
+      phoneNo: registerData.phone,
       roleName: registerRole,
     });
   }, [registerData, registerRole, onLogin]);
@@ -213,7 +261,9 @@ function Registration({ onLogin }) {
       setOtpResult(null);
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || "Couldn't resend the code");
+      setOtpError(
+        error.response?.data?.message || "Couldn't resend the code",
+      );
     } finally {
       setResendLoading(false);
     }
@@ -228,6 +278,13 @@ function Registration({ onLogin }) {
 
   const updateRegister = useCallback((key, value) => {
     setRegisterData((prev) => ({ ...prev, [key]: value }));
+    setRegisterErrors((prev) => {
+      if (!prev[key]) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+    setServerError("");
   }, []);
 
   return (
@@ -254,6 +311,23 @@ function Registration({ onLogin }) {
               Create an account to get started
             </div>
 
+            {serverError && (
+              <div
+                className="server-error"
+                role="alert"
+                style={{
+                  background: "#fef2f2",
+                  color: "#dc2626",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  marginBottom: "16px",
+                  fontSize: "14px",
+                }}
+              >
+                {serverError}
+              </div>
+            )}
+
             <TextField
               label="Username"
               icon={<UserIcon />}
@@ -271,7 +345,7 @@ function Registration({ onLogin }) {
               type="email"
               name="email"
               autoComplete="email"
-              placeholder="you@example.com"
+              placeholder="Enter your email"
               value={registerData.email}
               onChange={(e) => updateRegister("email", e.target.value)}
               error={registerErrors.email}
