@@ -1,10 +1,20 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getRecommendations } from "../services/recommend";
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
-import { UserIcon } from "./AuthShared";
+import {
+  UserIcon,
+  LockIcon,
+  PhoneIcon,
+  MailIcon,
+  PasswordField,
+  PASSWORD_HINT,
+  PASSWORD_RULES,
+  PASSWORD_MIN_LENGTH,
+} from "./AuthShared";
 
 function SearchIcon() {
   return (
@@ -184,6 +194,27 @@ function SparklesIcon() {
   );
 }
 
+function GamerIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="6" y1="11" x2="10" y2="11" />
+      <line x1="8" y1="9" x2="8" y2="13" />
+      <line x1="15" y1="12" x2="15.01" y2="12" />
+      <line x1="18" y1="10" x2="18.01" y2="10" />
+      <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z" />
+    </svg>
+  );
+}
+
 function ChevronIcon({ open }) {
   return (
     <svg
@@ -205,25 +236,39 @@ function ChevronIcon({ open }) {
   );
 }
 
-const CATEGORY_OPTIONS = [
-  { key: "gamer", label: "Gamer", icon: "🎮" },
-  { key: "camera", label: "Camera lover", icon: "📷" },
-  { key: "battery", label: "Battery focused", icon: "🔋" },
-  { key: "allrounder", label: "All-rounder", icon: "✨" },
-];
+function ThemeIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
 
-// Backend supports `hasOis` and `minBattery` as query params, mapped to specs filters.
-const CATEGORY_FILTERS = {
-  gamer: { sort: "antutu" },
-  camera: { hasOis: "true", sort: "newest" },
-  battery: { minBattery: 5000, sort: "newest" },
-  allrounder: { sort: "newest" },
-};
+const CATEGORY_OPTIONS = [
+  { key: "gamer", label: "Gamer", Icon: GamerIcon },
+  { key: "camera", label: "Camera lover", Icon: CameraIcon },
+  { key: "battery", label: "Battery focused", Icon: BatteryIcon },
+  { key: "allrounder", label: "All-rounder", Icon: SparklesIcon },
+];
 
 const DEFAULT_WEIGHTS = { gaming: 3, camera: 3, battery: 3, display: 3 };
 
-// Filter options for the dashboard filter panel — only fields the backend
-// already accepts in /api/phones (see buildPhoneWhereClause in phoneService.mjs).
+const PERSONA_WEIGHT_PRESETS = {
+  gamer: { gaming: 5, camera: 2, battery: 4, display: 4 },
+  camera: { gaming: 2, camera: 5, battery: 3, display: 3 },
+  battery: { gaming: 2, camera: 2, battery: 5, display: 2 },
+  allrounder: { gaming: 3, camera: 3, battery: 3, display: 3 },
+};
+
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest First" },
   { value: "oldest", label: "Oldest First" },
@@ -251,8 +296,6 @@ const BATTERY_OPTIONS = [
   { value: "5000", label: "5000+ mAh" },
   { value: "6000", label: "6000+ mAh" },
 ];
-
-// Initial empty filter state.
 const EMPTY_FILTERS = {
   brand: "",
   minPrice: "",
@@ -265,7 +308,6 @@ const EMPTY_FILTERS = {
   hasOis: false,
 };
 
-// Build the query params for /phones from the active filters, sort, and page.
 function buildPhonesQuery(filters, sort, extra = {}) {
   const params = { limit: 6, sort, ...extra };
   if (filters.brand) params.brand = filters.brand;
@@ -302,40 +344,68 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, setUser } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
-  // Tracks the recommendation panel's animation phase.
-  //   "closed"  — not rendered
-  //   "open"    — fully visible
-  //   "closing" — playing the close animation, will unmount after a short delay
+
   const [panelPhase, setPanelPhase] = useState("closed");
   const closeAnimMs = 180;
 
-  // Keep a ref to the close-timer so a quick reopen can cancel the pending unmount.
   const closeTimerRef = useRef(null);
-  const [selectedCategory, setSelectedCategory] = useState("gamer");
-  const [weights, setWeights] = useState(DEFAULT_WEIGHTS);
-  const [weightsOpen, setWeightsOpen] = useState(false);
-  const [hoveredCard, setHoveredCard] = useState(null);
 
-  // ---- Search + Filter state ----
-  // `searchInput` is what's in the input; `searchTerm` is the committed term
-  // used in the API call (mirrors the pattern in PhoneListing.jsx).
+  const [changePwPhase, setChangePwPhase] = useState("closed");
+  const changePwCloseTimerRef = useRef(null);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changePwErrors, setChangePwErrors] = useState({});
+  const [changePwSubmitError, setChangePwSubmitError] = useState("");
+  const [isChangePwSubmitting, setIsChangePwSubmitting] = useState(false);
+
+  const DARK_MODE_KEY = "dashboardDarkMode";
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => localStorage.getItem(DARK_MODE_KEY) === "true",
+  );
+
+  useEffect(() => {
+    localStorage.setItem(DARK_MODE_KEY, String(isDarkMode));
+  }, [isDarkMode]);
+
+  const toggleDarkMode = useCallback(() => {
+    setIsDarkMode((d) => !d);
+  }, []);
+  const [selectedCategory, setSelectedCategory] = useState("gamer");
+  const [weights, setWeights] = useState(() => ({
+    ...PERSONA_WEIGHT_PRESETS.gamer,
+  }));
+
+  const [weightsTouched, setWeightsTouched] = useState(false);
+  const [weightsOpen, setWeightsOpen] = useState(true);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const handleCategorySelect = useCallback((key) => {
+    setSelectedCategory(key);
+    const preset = PERSONA_WEIGHT_PRESETS[key] || DEFAULT_WEIGHTS;
+    setWeights({ ...preset });
+    setWeightsTouched(false);
+  }, []);
+
+  const [budgetMin, setBudgetMin] = useState("");
+  const [budgetMax, setBudgetMax] = useState("");
+
+  const [recs, setRecs] = useState(null);
+  const [recsLoading, setRecsLoading] = useState(false);
+  const [recsError, setRecsError] = useState("");
+  const [recsPersona, setRecsPersona] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [pendingFilters, setPendingFilters] = useState(EMPTY_FILTERS);
   const [sort, setSort] = useState("newest");
-
-  // Pagination state (mirrors the pattern in PhoneListing.jsx)
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-
-  // Filter options fetched from the backend (brands, OS list)
   const [brands, setBrands] = useState([]);
   const [osOptions, setOsOptions] = useState([]);
 
@@ -345,8 +415,6 @@ function Dashboard() {
 
   const profileRef = useRef(null);
   const filterRef = useRef(null);
-
-  // ---- Close profile/filter popovers on outside click ----
   useEffect(() => {
     function handleClickOutside(e) {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
@@ -359,8 +427,6 @@ function Dashboard() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // ---- Load filter options (brands + OS) once on mount ----
   useEffect(() => {
     let ignore = false;
     async function loadFilterOptions() {
@@ -371,7 +437,6 @@ function Dashboard() {
         if (Array.isArray(data.brands)) setBrands(data.brands);
         if (Array.isArray(data.os)) setOsOptions(data.os);
       } catch (err) {
-        // Non-fatal: filter dropdowns just stay empty.
         console.error("Failed to load filter options:", err);
       }
     }
@@ -381,8 +446,40 @@ function Dashboard() {
     };
   }, []);
 
-  // ---- Keep the recommendation modal mounted for the close animation ----
-  // Driven from event handlers (not effects) so we don't cascade-render.
+  // Hydrate the stored user with full profile fields. Login only returns
+  // { id, email }, but the dashboard needs name/phoneNo. Pull them from
+  // the existing GET /users/me endpoint and merge into the auth context
+  // (which persists to localStorage, so the values survive reloads).
+  useEffect(() => {
+    let ignore = false;
+    async function loadProfile() {
+      try {
+        const res = await api.get("/users/me");
+        const profile = res?.data?.data;
+        if (ignore || !profile) return;
+        setUser({
+          id: profile.userId ?? user?.id,
+          name: profile.name ?? user?.name,
+          email: profile.email ?? user?.email,
+          phoneNo: profile.phoneNo ?? user?.phoneNo,
+        });
+      } catch (err) {
+        // 401 is handled by the phones loader below; we don't want to
+        // double-handle it here. Just log and continue.
+        if (err.response?.status !== 401) {
+          console.error("Failed to load user profile:", err);
+        }
+      }
+    }
+    loadProfile();
+    return () => {
+      ignore = true;
+    };
+    // We intentionally only run this on mount. The `user` reads inside
+    // are just fallbacks for the merge; we don't want to refetch on
+    // every context update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const openRecommend = useCallback(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -402,14 +499,13 @@ function Dashboard() {
     }, closeAnimMs);
   }, []);
 
-  // Clean up the close timer on unmount.
   useEffect(() => {
     return () => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+      if (changePwCloseTimerRef.current)
+        clearTimeout(changePwCloseTimerRef.current);
     };
   }, []);
-
-  // ---- Initial phone load: respect search + filters if any are set ----
   useEffect(() => {
     let ignore = false;
 
@@ -418,8 +514,6 @@ function Dashboard() {
       setError(null);
       try {
         const extra = { page };
-        // `search` is supported by buildPhoneWhereClause on /phones, so we
-        // can combine text + filter params in a single request.
         if (searchTerm) extra.search = searchTerm;
 
         const params = buildPhonesQuery(filters, sort, extra);
@@ -474,53 +568,136 @@ function Dashboard() {
     navigate("/login", { replace: true });
   }, [logout, navigate]);
 
-  const handleWeightChange = useCallback((key, value) => {
-    setWeights((prev) => ({ ...prev, [key]: Number(value) }));
+  const openChangePassword = useCallback(() => {
+    if (changePwCloseTimerRef.current) {
+      clearTimeout(changePwCloseTimerRef.current);
+      changePwCloseTimerRef.current = null;
+    }
+    setChangePwErrors({});
+    setChangePwSubmitError("");
+    setChangePwPhase("open");
+    setProfileOpen(false);
   }, []);
 
-  // "Find my phone" from the questionnaire modal — preserves the original
-  // recommendation behaviour by mapping a category to a filter set.
-  const handleFindPhone = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      // The category drives a fresh query, clearing the explicit search/filters
-      // so we don't double-apply them.
-      const categoryQuery = CATEGORY_FILTERS[selectedCategory] || {};
-      const params = { limit: 6, page: 1, ...categoryQuery };
+  const resetChangePwForm = useCallback(() => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setChangePwErrors({});
+    setChangePwSubmitError("");
+    setIsChangePwSubmitting(false);
+  }, []);
 
-      const res = await api.get("/phones", { params });
+  const closeChangePassword = useCallback(() => {
+    setChangePwPhase("closing");
+    if (changePwCloseTimerRef.current)
+      clearTimeout(changePwCloseTimerRef.current);
+    changePwCloseTimerRef.current = setTimeout(() => {
+      setChangePwPhase("closed");
+      changePwCloseTimerRef.current = null;
+      resetChangePwForm();
+    }, closeAnimMs);
+  }, [resetChangePwForm]);
+  const validateChangePw = useCallback(() => {
+    const errs = {};
+    if (!currentPassword) errs.currentPassword = "Current password is required";
+    if (!newPassword) errs.newPassword = "Password is required";
+    else if (newPassword.length < PASSWORD_MIN_LENGTH)
+      errs.newPassword = `Minimum ${PASSWORD_MIN_LENGTH} characters`;
+    else if (!PASSWORD_RULES.test(newPassword))
+      errs.newPassword =
+        "Must include uppercase, lowercase, number, and special character";
+    if (confirmPassword !== newPassword)
+      errs.confirmPassword = "Passwords do not match";
+    return errs;
+  }, [currentPassword, newPassword, confirmPassword]);
 
-      const phoneList = unwrapPhones(res);
-      setPhones(phoneList);
-
-      const meta = res?.data?.meta;
-      if (meta) {
-        setTotalPages(meta.totalPages || 1);
-        setTotal(meta.total || phoneList.length);
-      } else {
-        setTotalPages(1);
-        setTotal(phoneList.length);
+  const handleChangePwSubmit = useCallback(
+    (e) => {
+      e?.preventDefault();
+      const errs = validateChangePw();
+      setChangePwErrors(errs);
+      if (Object.keys(errs).length) {
+        setChangePwSubmitError("");
+        return;
       }
-      setPage(1);
-      closeRecommend();
+
+      setIsChangePwSubmitting(true);
+      console.log(
+        "[Change Password] submit (UI only — backend wiring pending):",
+        { currentPassword, newPassword, confirmPassword },
+      );
+      setIsChangePwSubmitting(false);
+      closeChangePassword();
+    },
+    [
+      validateChangePw,
+      currentPassword,
+      newPassword,
+      confirmPassword,
+      closeChangePassword,
+    ],
+  );
+
+  const handleWeightChange = useCallback((key, value) => {
+    setWeights((prev) => ({ ...prev, [key]: Number(value) }));
+    setWeightsTouched(true);
+  }, []);
+  const handleFindPhone = useCallback(async () => {
+    const max = Number(budgetMax);
+    if (!Number.isFinite(max) || max <= 0) {
+      setRecsError("Please enter a maximum budget before finding your phone.");
+      return;
+    }
+    const min = Number(budgetMin);
+    const budget = {
+      max,
+      ...(Number.isFinite(min) && min >= 0 ? { min } : {}),
+    };
+
+    setRecsLoading(true);
+    setRecsError("");
+    setRecs(null);
+    setRecsPersona(selectedCategory);
+    closeRecommend();
+    const persona = weightsTouched ? "Custom" : selectedCategory;
+    const preferences = weightsTouched ? { ...weights } : undefined;
+
+    try {
+      const results = await getRecommendations({
+        persona,
+        budget,
+        preferences,
+        topN: 6,
+      });
+      setRecs(results);
     } catch (err) {
-      setError(
+      setRecsError(
         err.response?.data?.message ||
-          "Couldn't fetch recommendations. Please try again.",
+          "Couldn't get recommendations right now. Please try again.",
       );
     } finally {
-      setIsLoading(false);
+      setRecsLoading(false);
     }
-  }, [selectedCategory, closeRecommend]);
-
-  // ---- Search bar handlers ----
+  }, [
+    budgetMin,
+    budgetMax,
+    selectedCategory,
+    weights,
+    weightsTouched,
+    closeRecommend,
+  ]);
+  const handleClearRecommendations = useCallback(() => {
+    setRecs(null);
+    setRecsError("");
+    setRecsPersona(null);
+  }, []);
   const handleSearch = (e) => {
     e.preventDefault();
     const term = searchInput.trim();
-    setSearchTerm(term); // empty string clears the term on the next load
+    setSearchTerm(term);
     setShowFilters(false);
-    setPage(1); // new search → restart at page 1
+    setPage(1);
   };
 
   const handleClearSearch = () => {
@@ -528,8 +705,6 @@ function Dashboard() {
     setSearchTerm("");
     setPage(1);
   };
-
-  // ---- Filter popover handlers ----
   const openFilters = () => {
     setPendingFilters(filters);
     setShowFilters((s) => !s);
@@ -550,8 +725,6 @@ function Dashboard() {
     setFilters(EMPTY_FILTERS);
     setPage(1);
   };
-
-  // When the user changes the sort, restart at page 1.
   const handleSortChange = (nextSort) => {
     setSort(nextSort);
     setPage(1);
@@ -561,13 +734,7 @@ function Dashboard() {
   const email = user?.email || "";
   const phone = user?.phoneNo || user?.phone || "";
   const firstName = displayName.split(" ")[0];
-
-  // Count of currently applied filters — used to render the badge on the
-  // Filter button. Derived directly from `filters` (no extra effect needed).
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
-
-  // Pagination: show a window of up to 5 page numbers, centered on the
-  // current page. (Same shape as PhoneListing.jsx.)
   const paginationStart =
     totalPages <= 5 ? 1 : Math.max(1, Math.min(totalPages - 4, page - 2));
   const pageNumbers = Array.from(
@@ -576,7 +743,7 @@ function Dashboard() {
   );
 
   return (
-    <div className="dashboard-page">
+    <div className={`dashboard-page ${isDarkMode ? "dash-dark" : ""}`}>
       <header className="dash-header">
         <div className="login-brand">
           <div className="brand-icon" style={{ color: "#fff" }}>
@@ -597,7 +764,6 @@ function Dashboard() {
             aria-expanded={isSearchOpen}
             title="Get personalized phone recommendations"
           >
-            <SparklesIcon />
             <span>Recommend Me a Phone</span>
           </button>
 
@@ -616,7 +782,9 @@ function Dashboard() {
               type="button"
               className={`icon-btn profile-trigger ${isProfileOpen ? "active" : ""}`}
               aria-label="Account menu"
-              onClick={() => setProfileOpen((o) => !o)}
+              onClick={() => {
+                setProfileOpen((o) => !o);
+              }}
             >
               <UserIcon />
             </button>
@@ -628,20 +796,80 @@ function Dashboard() {
                     {displayName.charAt(0).toUpperCase()}
                   </div>
                   <div className="profile-details">
-                    <div className="profile-name">{displayName}</div>
-                    {email && <div className="profile-email">{email}</div>}
-                    {phone && <div className="profile-phone">{phone}</div>}
+                    <div className="profile-name">{displayName || "—"}</div>
                   </div>
                 </div>
+                <ul className="profile-fields" aria-label="Account details">
+                  <li className="profile-field">
+                    <span className="profile-field-icon" aria-hidden="true">
+                      <UserIcon />
+                    </span>
+                    <span className="profile-field-label">Username</span>
+                    <span className="profile-field-value">
+                      {displayName || "—"}
+                    </span>
+                  </li>
+                  <li className="profile-field">
+                    <span className="profile-field-icon" aria-hidden="true">
+                      <MailIcon />
+                    </span>
+                    <span className="profile-field-label">Email</span>
+                    <span className="profile-field-value">{email || "—"}</span>
+                  </li>
+                  <li className="profile-field">
+                    <span className="profile-field-icon" aria-hidden="true">
+                      <PhoneIcon />
+                    </span>
+                    <span className="profile-field-label">Phone</span>
+                    <span className="profile-field-value">{phone || "—"}</span>
+                  </li>
+                </ul>
                 <div className="profile-divider" />
-                <button
-                  type="button"
-                  className="signout-btn"
-                  onClick={handleSignOut}
-                >
-                  <LogoutIcon />
-                  Sign out
-                </button>
+                <div className="profile-actions">
+                  <button
+                    type="button"
+                    className="theme-toggle-row"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleDarkMode();
+                    }}
+                    aria-label="Toggle dark mode"
+                  >
+                    <span className="theme-toggle-row-label">
+                      <ThemeIcon />
+                      Dark mode
+                    </span>
+                    <span
+                      className={`theme-switch ${isDarkMode ? "on" : ""}`}
+                      role="switch"
+                      aria-checked={isDarkMode}
+                      aria-label="Dark mode"
+                      tabIndex={-1}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDarkMode();
+                      }}
+                    >
+                      <span className="theme-switch-knob" />
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className="change-password-btn"
+                    onClick={openChangePassword}
+                  >
+                    <LockIcon />
+                    Change password
+                  </button>
+                  <button
+                    type="button"
+                    className="signout-btn"
+                    onClick={handleSignOut}
+                  >
+                    <LogoutIcon />
+                    Sign out
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -896,11 +1124,13 @@ function Dashboard() {
         <div className="dash-welcome">
           <h1>Welcome back, {firstName}</h1>
           <p>
-            {searchTerm
-              ? `Results for "${searchTerm}"`
-              : activeFilterCount > 0
-                ? "Phones matching your filters"
-                : "Phones recommended to you"}
+            {recs
+              ? `Personalized picks for the ${recsPersona} persona`
+              : searchTerm
+                ? `Results for "${searchTerm}"`
+                : activeFilterCount > 0
+                  ? "Phones matching your filters"
+                  : "Phones recommended to you"}
           </p>
         </div>
 
@@ -918,6 +1148,137 @@ function Dashboard() {
               Retry
             </button>
           </div>
+        )}
+
+        {/* ---- ML recommendations (from POST /api/recommend/recommend) ----
+            Sits above the standard /phones grid. The standard grid still
+            renders below, so the user always has a fallback view. */}
+        {recsLoading && <p className="dash-status">Finding phones for you…</p>}
+
+        {recsError && (
+          <div className="dash-status dash-status-error">
+            <p>{recsError}</p>
+            <button
+              type="button"
+              className="btn btn-small"
+              onClick={handleClearRecommendations}
+              style={{ marginTop: 8 }}
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        {recs && !recsLoading && (
+          <section
+            className="dash-recs-section"
+            aria-label="Recommended for you"
+          >
+            <div className="dash-recs-header">
+              <h2>
+                {recsPersona
+                  ? `Recommended for you · ${recsPersona}`
+                  : "Recommended for you"}
+              </h2>
+              <button
+                type="button"
+                className="btn btn-outline btn-small"
+                onClick={handleClearRecommendations}
+              >
+                Clear recommendations
+              </button>
+            </div>
+            {recs.length === 0 ? (
+              <p className="dash-status">
+                No matches for the chosen persona and budget. Try widening your
+                budget or picking a different category.
+              </p>
+            ) : (
+              <div className="phone-grid">
+                {recs.map((r) => (
+                  <div
+                    key={r.id || `${r.brand?.name}-${r.modelName}`}
+                    className="phone-card rec-card"
+                    onMouseEnter={() => r.id && setHoveredCard(r.id)}
+                    onMouseLeave={() => setHoveredCard(null)}
+                  >
+                    <div className="phone-card-top">
+                      <div className="phone-card-image">
+                        {r.imageUrl ? (
+                          <img
+                            src={r.imageUrl}
+                            alt={r.modelName}
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.parentElement.classList.add("no-image");
+                            }}
+                          />
+                        ) : (
+                          <span className="phone-card-emoji">📱</span>
+                        )}
+                        {typeof r.matchScore === "number" && (
+                          <span
+                            className="rec-match-badge"
+                            title="Match score from the recommender"
+                          >
+                            {Math.round(r.matchScore * 100)}% match
+                          </span>
+                        )}
+                      </div>
+                      <div className="phone-card-name">{r.modelName}</div>
+                      <div className="phone-card-tagline">
+                        {r.brand?.name || "Unknown brand"}
+                      </div>
+                    </div>
+
+                    <div className="phone-card-details">
+                      {r.keySpecs?.os && (
+                        <div className="phone-spec">
+                          <CpuIcon />
+                          <span>{r.keySpecs.os}</span>
+                        </div>
+                      )}
+                      {r.keySpecs?.camera && (
+                        <div className="phone-spec">
+                          <CameraIcon />
+                          <span>{r.keySpecs.camera}</span>
+                        </div>
+                      )}
+                      {r.keySpecs?.battery && (
+                        <div className="phone-spec">
+                          <BatteryIcon />
+                          <span>{r.keySpecs.battery} mAh</span>
+                        </div>
+                      )}
+                      {r.cheapestVariant?.price && (
+                        <div className="phone-spec phone-price">
+                          <TagIcon />
+                          <span>
+                            €{r.cheapestVariant.price}
+                            {r.cheapestVariant.ram && r.cheapestVariant.storage
+                              ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
+                              : ""}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {Array.isArray(r.why) && r.why.length > 0 && (
+                      <ul className="rec-why-list" aria-label="Why this match">
+                        {r.why.slice(0, 3).map((reason, idx) => (
+                          <li key={idx}>{reason}</li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {r.inDatabase === false && (
+                      <div className="rec-not-in-db">Not in our catalog</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
         )}
 
         {!isLoading && !error && phones.length === 0 && (
@@ -1076,17 +1437,20 @@ function Dashboard() {
             </div>
 
             <div className="usage-options" style={{ marginTop: 20 }}>
-              {CATEGORY_OPTIONS.map((opt) => (
-                <button
-                  type="button"
-                  key={opt.key}
-                  className={`usage-chip ${selectedCategory === opt.key ? "selected" : ""}`}
-                  onClick={() => setSelectedCategory(opt.key)}
-                >
-                  <span style={{ marginRight: 6 }}>{opt.icon}</span>
-                  {opt.label}
-                </button>
-              ))}
+              {CATEGORY_OPTIONS.map((opt) => {
+                const Icon = opt.Icon;
+                return (
+                  <button
+                    type="button"
+                    key={opt.key}
+                    className={`usage-chip ${selectedCategory === opt.key ? "selected" : ""}`}
+                    onClick={() => handleCategorySelect(opt.key)}
+                  >
+                    <Icon />
+                    {opt.label}
+                  </button>
+                );
+              })}
             </div>
 
             <div className="questionnaire-section" style={{ marginTop: 20 }}>
@@ -1104,7 +1468,9 @@ function Dashboard() {
                 <ChevronIcon open={weightsOpen} />
               </button>
               <div className="questionnaire-hint">
-                Fine-tune how much each factor matters to you
+                {weightsTouched
+                  ? "Custom weights active — these will be sent to the recommender."
+                  : "Fine-tune how much each factor matters to you"}
               </div>
 
               <div
@@ -1127,6 +1493,45 @@ function Dashboard() {
                     />
                   </div>
                 ))}
+                {weightsTouched && (
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-small weight-reset-btn"
+                    onClick={() => handleCategorySelect(selectedCategory)}
+                  >
+                    Reset to{" "}
+                    {CATEGORY_OPTIONS.find((o) => o.key === selectedCategory)
+                      ?.label || "persona"}{" "}
+                    defaults
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="questionnaire-section" style={{ marginTop: 16 }}>
+              <div className="questionnaire-hint" style={{ marginBottom: 8 }}>
+                Budget (EUR) — required
+              </div>
+              <div className="filter-range">
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="Min"
+                  className="filter-input"
+                  value={budgetMin}
+                  onChange={(e) => setBudgetMin(e.target.value)}
+                  aria-label="Minimum budget"
+                />
+                <span className="filter-range-sep">–</span>
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="Max"
+                  className="filter-input"
+                  value={budgetMax}
+                  onChange={(e) => setBudgetMax(e.target.value)}
+                  aria-label="Maximum budget"
+                />
               </div>
             </div>
 
@@ -1134,9 +1539,112 @@ function Dashboard() {
               type="button"
               className="btn btn-primary w-full"
               onClick={handleFindPhone}
+              disabled={recsLoading}
             >
-              Find my phone →
+              {recsLoading ? "Finding…" : "Find my phone →"}
             </button>
+          </div>
+        </div>
+      )}
+
+      {changePwPhase !== "closed" && (
+        <div
+          className={`search-overlay dash-change-pw-overlay ${changePwPhase === "closing" ? "closing" : ""}`}
+          onClick={closeChangePassword}
+        >
+          <div
+            className={`search-modal dash-change-pw-modal ${changePwPhase === "closing" ? "closing" : ""}`}
+            role="dialog"
+            aria-label="Change password"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="search-modal-header">
+              <div>
+                <div className="auth-title" style={{ marginBottom: 4 }}>
+                  Change password
+                </div>
+                <div className="auth-subtitle" style={{ marginBottom: 0 }}>
+                  Enter your current password and choose a new one.
+                </div>
+              </div>
+              <button
+                type="button"
+                className="icon-btn"
+                aria-label="Close change password"
+                onClick={closeChangePassword}
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <form
+              className="dash-change-pw-body"
+              onSubmit={handleChangePwSubmit}
+              noValidate
+            >
+              <PasswordField
+                label="Current password"
+                name="current-password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                value={currentPassword}
+                onChange={(e) => {
+                  setCurrentPassword(e.target.value);
+                  if (changePwErrors.currentPassword)
+                    setChangePwErrors((prev) => ({
+                      ...prev,
+                      currentPassword: "",
+                    }));
+                }}
+                error={changePwErrors.currentPassword}
+              />
+
+              <PasswordField
+                label="New password"
+                name="new-password"
+                autoComplete="new-password"
+                placeholder="••••••••"
+                value={newPassword}
+                onChange={(e) => {
+                  setNewPassword(e.target.value);
+                  if (changePwErrors.newPassword)
+                    setChangePwErrors((prev) => ({ ...prev, newPassword: "" }));
+                }}
+                error={changePwErrors.newPassword}
+                hint={PASSWORD_HINT}
+              />
+
+              <PasswordField
+                label="Re-enter new password"
+                name="confirm-new-password"
+                autoComplete="new-password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  if (changePwErrors.confirmPassword)
+                    setChangePwErrors((prev) => ({
+                      ...prev,
+                      confirmPassword: "",
+                    }));
+                }}
+                error={changePwErrors.confirmPassword}
+              />
+
+              {changePwSubmitError && (
+                <div className="form-submit-error" role="alert">
+                  {changePwSubmitError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="btn btn-primary w-full"
+                disabled={isChangePwSubmitting}
+              >
+                {isChangePwSubmitting ? "Saving..." : "Submit"}
+              </button>
+            </form>
           </div>
         </div>
       )}
