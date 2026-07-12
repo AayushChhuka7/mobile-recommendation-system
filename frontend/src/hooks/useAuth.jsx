@@ -20,13 +20,15 @@ function readStoredUser() {
 
 export function AuthProvider({ children }) {
   // Lazy initializer reads from localStorage exactly once on mount.
-  const [user, setUser] = useState(() => readStoredUser());
+  // `setStoredUser` is the raw React state setter; `setUser` (below) is
+  // the public merge helper exposed via context.
+  const [user, setStoredUser] = useState(() => readStoredUser());
 
   // Keep state in sync if another tab logs in / out.
   useEffect(() => {
     const onStorage = (event) => {
       if (event.key === AUTH_STORAGE_KEY) {
-        setUser(readStoredUser());
+        setStoredUser(readStoredUser());
       }
     };
     window.addEventListener("storage", onStorage);
@@ -41,16 +43,30 @@ export function AuthProvider({ children }) {
     }
     // setState after localStorage so listeners that read from storage
     // in the same tick see the new value.
-    setUser(userData);
+    setStoredUser(userData);
+  }, []);
+
+  // Merge a partial update into the existing stored user. Used to fill in
+  // fields (name, phoneNo) that the login response doesn't include but a
+  // later /users/me call returns. Falls back to replacing if no user
+  // exists yet (e.g. when a registration flow completes before the
+  // dashboard mounts).
+  const setUser = useCallback((partial) => {
+    setStoredUser((prev) => {
+      if (!partial) return prev;
+      const next = { ...(prev || {}), ...partial };
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
   }, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem(AUTH_STORAGE_KEY);
-    setUser(null);
+    setStoredUser(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, setUser }}>
       {children}
     </AuthContext.Provider>
   );

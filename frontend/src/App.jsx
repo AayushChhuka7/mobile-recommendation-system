@@ -14,15 +14,11 @@ function App() {
   const handleLogin = (userData) => {
     if (!userData) return;
 
-    // Extract user data — handle both shapes
     const unwrapped = userData.user
       ? { ...userData.user, ...(userData.role ? { role: userData.role } : {}) }
       : userData;
-
-    // Store in auth context
     login(unwrapped);
 
-    // Navigate to dashboard (single source of navigation)
     navigate("/dashboard", { replace: true });
   };
 

@@ -122,6 +122,83 @@
   margin: 14px 0;
 }
 
+.profile-fields {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-field {
+  display: grid;
+  grid-template-columns: 18px auto 1fr;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+  min-width: 0;
+}
+
+.profile-field-icon {
+  color: var(--slate-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-field-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.profile-field-value {
+  color: var(--text);
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.change-password-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--slate-dark);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.change-password-btn:hover:not(:disabled) {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.change-password-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .signout-btn {
   display: flex;
   align-items: center;
@@ -217,7 +294,7 @@
 }
 
 .phone-card-image.no-image::after {
-  content: "📱";
+  content: url("../assets/backup.png");
   font-size: 48px;
 }
 
@@ -281,8 +358,6 @@
   color: var(--success);
 }
 
-/* Search modal */
-
 .search-overlay {
   position: fixed;
   inset: 0;
@@ -318,7 +393,6 @@
   gap: 8px;
 }
 
-/* Recommend Me a Phone — header button */
 .dash-recommend-btn {
   display: inline-flex;
   align-items: center;
@@ -334,7 +408,6 @@
   flex-shrink: 0;
 }
 
-/* Recommendation panel: smooth appear / disappear */
 .dash-recommend-overlay {
   animation: dash-recommend-fade-in 0.18s ease-out forwards;
 }
@@ -351,6 +424,31 @@
 
 .dash-recommend-modal.closing {
   animation: dash-recommend-pop-out 0.18s ease-in forwards;
+}
+
+.dash-change-pw-overlay {
+  animation: dash-recommend-fade-in 0.18s ease-out forwards;
+}
+
+.dash-change-pw-overlay.closing {
+  animation: dash-recommend-fade-out 0.18s ease-in forwards;
+  pointer-events: none;
+}
+
+.dash-change-pw-modal {
+  max-width: 440px;
+  animation: dash-recommend-pop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: center;
+}
+
+.dash-change-pw-modal.closing {
+  animation: dash-recommend-pop-out 0.18s ease-in forwards;
+}
+
+.dash-change-pw-body {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
 }
 
 @keyframes dash-recommend-fade-in {
@@ -393,7 +491,6 @@
   }
 }
 
-/* Collapsible Customize Weights section */
 .dash-weights-toggle {
   display: flex;
   align-items: center;
@@ -435,6 +532,8 @@
 @media (prefers-reduced-motion: reduce) {
   .dash-recommend-overlay,
   .dash-recommend-modal,
+  .dash-change-pw-overlay,
+  .dash-change-pw-modal,
   .dash-weights-body {
     animation: none;
     transition: none;
@@ -495,10 +594,6 @@
   box-shadow: 0 0 0 1px var(--primary);
   cursor: pointer;
 }
-
-/* ------------------------------------------------------------------
-   Search bar + Filter button (Dashboard)
-   ------------------------------------------------------------------ */
 
 .dash-search-section {
   margin-bottom: 28px;
@@ -689,9 +784,6 @@
   border-top: 1px solid var(--border);
 }
 
-/* Filter group / shared form controls (mirrored from PhoneListing.css
-   so the dashboard popover looks consistent with the rest of the app). */
-
 .filter-group {
   display: flex;
   flex-direction: column;
@@ -786,8 +878,6 @@
   color: var(--danger);
 }
 
-/* Pagination — same look as PhoneListing.jsx for consistency across the app */
-
 .pagination {
   display: flex;
   flex-wrap: wrap;
@@ -809,8 +899,6 @@
   color: var(--text-muted);
   margin-left: 4px;
 }
-
-/* Buttons used by the search/filter UI (overrides + additions) */
 
 .btn {
   display: inline-flex;
@@ -917,4 +1005,320 @@
     width: auto;
     max-width: 100%;
   }
+}
+
+.theme-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--slate-dark);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.theme-toggle-row:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.theme-toggle-row-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  text-align: left;
+}
+
+.theme-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--border-dark);
+  transition: background var(--transition);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.theme-switch.on {
+  background: var(--primary);
+}
+
+.theme-switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform var(--transition);
+}
+
+.theme-switch.on .theme-switch-knob {
+  transform: translateX(16px);
+}
+
+.dashboard-page.dash-dark {
+  --bg: #0f172a;
+  --white: #1e293b;
+  --border: #334155;
+  --border-dark: #475569;
+
+  /* Text */
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --slate: #cbd5e1;
+  --slate-dark: #e2e8f0;
+  --slate-light: #64748b;
+
+  --primary: #60a5fa;
+  --primary-dark: #3b82f6;
+  --primary-light: rgba(96, 165, 250, 0.16);
+
+  --success: #34d399;
+  --success-light: #064e3b;
+  --danger: #f87171;
+  --danger-light: rgba(248, 113, 113, 0.18);
+
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-page.dash-dark .phone-card-image {
+  background: #0b1220;
+}
+
+.dashboard-page.dash-dark .weight-slider {
+  background: #475569;
+}
+
+.dashboard-page.dash-dark .weight-slider::-webkit-slider-thumb {
+  background: var(--primary);
+  border-color: var(--white);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.dashboard-page.dash-dark .weight-slider::-moz-range-thumb {
+  background: var(--primary);
+  border-color: var(--white);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.dashboard-page.dash-dark .search-overlay {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.dashboard-page.dash-dark .input-field::placeholder,
+.dashboard-page.dash-dark .filter-input::placeholder,
+.dashboard-page.dash-dark .dash-search-input::placeholder {
+  color: var(--slate-light);
+}
+
+.dashboard-page.dash-dark .input-icon,
+.dashboard-page.dash-dark .password-toggle,
+.dashboard-page.dash-dark .dash-search-input-icon,
+.dashboard-page.dash-dark .profile-field-icon {
+  color: var(--slate);
+}
+
+.dashboard-page.dash-dark .questionnaire-section {
+  background: rgba(96, 165, 250, 0.1);
+  border-color: var(--border);
+}
+
+.dashboard-page.dash-dark .questionnaire-hint {
+  color: var(--text-muted);
+}
+
+.dashboard-page.dash-dark .usage-chip {
+  background: var(--white);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.dashboard-page.dash-dark .usage-chip.selected {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.dashboard-page.dash-dark .usage-chip:hover {
+  border-color: var(--primary);
+}
+
+.dashboard-page.dash-dark .form-submit-error,
+.dashboard-page.dash-dark .input-error,
+.dashboard-page.dash-dark .dash-status-error {
+  color: var(--danger);
+}
+
+.dashboard-page.dash-dark .icon-btn {
+  background: var(--white);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.dashboard-page.dash-dark .icon-btn:hover,
+.dashboard-page.dash-dark .icon-btn.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.dashboard-page.dash-dark .change-password-btn,
+.dashboard-page.dash-dark .signout-btn,
+.dashboard-page.dash-dark .theme-toggle-row {
+  background: var(--white);
+  border-color: var(--border);
+  color: var(--slate-dark);
+}
+
+.dashboard-page.dash-dark .signout-btn {
+  color: var(--danger);
+}
+
+.dashboard-page.dash-dark .signout-btn:hover {
+  background: var(--danger-light);
+  border-color: var(--danger);
+}
+
+.dashboard-page.dash-dark .btn-outline {
+  background: var(--white);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.dashboard-page.dash-dark .btn-outline:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.dashboard-page.dash-dark .dash-search-clear {
+  background: #0b1220;
+  color: var(--slate);
+}
+
+.dashboard-page.dash-dark .dash-search-clear:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.dashboard-page.dash-dark .phone-card-details,
+.dashboard-page.dash-dark .phone-card.expanded .phone-card-details {
+  border-top-color: var(--border);
+}
+
+.dashboard-page.dash-dark .phone-spec {
+  color: var(--text);
+}
+
+.dashboard-page.dash-dark .dash-filter-popover-header {
+  background: var(--white);
+  border-bottom-color: var(--border);
+}
+
+.dashboard-page.dash-dark .dash-filter-popover-footer {
+  border-top-color: var(--border);
+}
+
+.dash-recs-section {
+  margin-bottom: 24px;
+}
+
+.dash-recs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+
+.dash-recs-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  text-transform: capitalize;
+  color: var(--text);
+}
+
+.rec-match-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.02em;
+}
+
+.phone-card-image {
+  position: relative;
+}
+
+.rec-why-list {
+  list-style: none;
+  padding: 10px 12px 14px;
+  margin: 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rec-why-list li {
+  position: relative;
+  padding-left: 16px;
+  line-height: 1.35;
+}
+
+.rec-why-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.rec-not-in-db {
+  font-size: 0.7rem;
+  color: #b45309;
+  background: #fef3c7;
+  padding: 4px 8px;
+  margin: 0 12px 12px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.dashboard-page.dash-dark .rec-why-list {
+  color: var(--text);
+}
+
+.dashboard-page.dash-dark .dash-recs-header h2 {
+  color: var(--text);
+}
+
+.weight-reset-btn {
+  margin-top: 4px;
+  width: 100%;
 }

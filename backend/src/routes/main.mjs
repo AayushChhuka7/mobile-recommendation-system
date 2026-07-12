@@ -5,6 +5,7 @@ import { authRoutes } from "./authRoutes.mjs";
 import { phoneRoutes } from "./phoneRoutes.mjs";
 import { productRoutes } from "./productRoutes.mjs";
 import { isAuthenticate } from "../middleware/auth.mjs";
+import { recommendRoutes } from "./recommendRoutes.mjs";
 
 export const router = Router();
 
@@ -18,3 +19,4 @@ router.use("/users", userRoutes);
 router.use("/auth", authRoutes);
 router.use("/products", isAuthenticate, productRoutes);
 router.use("/phones", phoneRoutes);
+router.use("/recommend", recommendRoutes);
