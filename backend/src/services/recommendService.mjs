@@ -151,3 +151,21 @@ const formatRecommendation = (mlItem, phone) => {
     inDatabase: true,
   };
 };
+
+export const compareWithML = async (modelNameA, modelNameB) => {
+  if (!modelNameA || !modelNameB) throw badRequest("Both phone model names are required");
+
+  try {
+    const data = await mlFetch("/compare", {
+      method: "POST",
+      body: JSON.stringify({
+        model_name_a: modelNameA,
+        model_name_b: modelNameB,
+      }),
+    });
+    return data;
+  } catch (err) {
+    if (err.statusCode) throw err;
+    throw internal(`ML compare failed (${err.message})`);
+  }
+};
