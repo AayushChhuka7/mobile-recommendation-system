@@ -1,6 +1,17 @@
 """FastAPI wrapper around `MobileRecommendationPipeline`.
 
 Run with: `uvicorn pipeline.serve:app --port 8002`
+<<<<<<< HEAD
+=======
+Endpoints:
+    GET  /health                  liveness + model status
+    POST /predict                 body: {phone_features} -> predicted AnTuTu + SHAP top-N
+    POST /predict_new             body: {raw: <cleaned phone row>} -> predict + score + SHAP
+    POST /score                   body: {phone_features} -> composite score dict
+    POST /recommend               body: UserPreferenceInput -> ranked list of phones
+    POST /compare                 body: {model_name_a, model_name_b} -> per-dim winner
+    GET  /explain/<model_name>    -> SHAP top-N for a phone in the pool
+>>>>>>> 5690c62 (add ML part)
 
 Endpoints:
     GET  /health         liveness + model status + candidate count
@@ -172,6 +183,15 @@ def _load_candidates() -> Optional[pd.DataFrame]:
     return df
 
 
+@app.on_event("startup")
+def _warm_cache() -> None:
+    df = _load_candidates()
+    # Hand the scored pool to the pipeline so /explain and /compare
+    # (which read pipeline._candidates) work without a second load.
+    if not df.empty:
+        pipeline._candidates = df  # noqa: SLF001 — intentional bootstrap
+
+
 # ---------------------------------------------------------------------------
 # schemas
 # ---------------------------------------------------------------------------
@@ -228,6 +248,16 @@ def _error_envelope(
     return JSONResponse(status_code=status, content=body)
 
 
+class PredictNewRequest(BaseModel):
+    """A raw phone row in the cleaned schema (single row, dict-shaped)."""
+    raw: Dict[str, Any]
+
+
+class CompareRequest(BaseModel):
+    model_name_a: str
+    model_name_b: str
+
+
 # ---------------------------------------------------------------------------
 # endpoints
 # ---------------------------------------------------------------------------
@@ -267,6 +297,44 @@ def predict(req: PredictRequest) -> Dict[str, Any]:
             {"feature": f, "shap": v} for f, v in shap_pairs
         ],
     }
+
+
+@app.post("/predict_new")
+def predict_new(req: PredictNewRequest) -> Dict[str, Any]:
+    """Score a phone that isn't in the dataset (raw cleaned row)."""
+    try:
+        return pipeline.predict_new(req.raw)
+    except (ValueError, TypeError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:  # pragma: no cover
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/compare")
+def compare(req: CompareRequest) -> Dict[str, Any]:
+    """Compare two phones from the candidates pool across all 9 score dimensions."""
+    if _load_candidates().empty:
+        raise HTTPException(status_code=503, detail="No candidate dataset available")
+    try:
+        return pipeline.compare_phones(req.model_name_a, req.model_name_b)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except Exception as exc:  # pragma: no cover
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.get("/explain/{model_name}")
+def explain(model_name: str, top_n: int = 5) -> Dict[str, Any]:
+    """SHAP top-|n| features for a phone in the candidates pool."""
+    if _load_candidates().empty:
+        raise HTTPException(status_code=503, detail="No candidate dataset available")
+    try:
+        pairs = pipeline.explain_phone(model_name, top_n=top_n)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except Exception as exc:  # pragma: no cover
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    return {"model_name": model_name, "top_features": [{"feature": f, "shap": v} for f, v in pairs]}
 
 
 @app.post("/score")
