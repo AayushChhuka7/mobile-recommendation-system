@@ -49,3 +49,5 @@ tmp/
 prompt.txt
 
 ML Model/.venv
+
+ML\ Model/pipeline/__pycache__
