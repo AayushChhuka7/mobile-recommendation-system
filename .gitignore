@@ -50,4 +50,4 @@ prompt.txt
 
 ML Model/.venv
 
-ML\ Model/pipeline/__pycache__
+./ML Model/pipeline/__pycache__
