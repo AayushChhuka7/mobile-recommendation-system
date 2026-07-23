@@ -407,8 +407,30 @@ function Dashboard() {
     return errs;
   }, [currentPassword, newPassword, confirmPassword]);
 
+  // Map backend `details` array (express-validator) onto the FE's
+  // per-field error map, falling back to a banner for unknown fields.
+  const mapChangePwFieldErrors = useCallback((details) => {
+    const fieldErrors = {};
+    let bannerMessage = "";
+    if (!Array.isArray(details)) return { fieldErrors, bannerMessage };
+
+    for (const entry of details) {
+      const serverKey = entry?.path || entry?.field;
+      const msg = entry?.msg || entry?.message;
+      if (!msg) continue;
+
+      if (serverKey === "currentPassword") fieldErrors.currentPassword = msg;
+      else if (serverKey === "password") fieldErrors.newPassword = msg;
+      else if (serverKey === "confirmPassword")
+        fieldErrors.confirmPassword = msg;
+      else
+        bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
+    }
+    return { fieldErrors, bannerMessage };
+  }, []);
+
   const handleChangePwSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e?.preventDefault();
       const errs = validateChangePw();
       setChangePwErrors(errs);
@@ -418,12 +440,35 @@ function Dashboard() {
       }
 
       setIsChangePwSubmitting(true);
-      console.log(
-        "[Change Password] submit (UI only — backend wiring pending):",
-        { currentPassword, newPassword, confirmPassword },
-      );
-      setIsChangePwSubmitting(false);
-      closeChangePassword();
+      setChangePwSubmitError("");
+      try {
+        await api.patch("/users/me/password", {
+          currentPassword,
+          password: newPassword,
+          confirmPassword,
+        });
+        closeChangePassword();
+      } catch (err) {
+        const data = err?.response?.data;
+        if (err?.response?.status === 401) {
+          // AUTH_INVALID_CREDENTIALS — surface on the currentPassword field.
+          setChangePwErrors((prev) => ({
+            ...prev,
+            currentPassword: data?.message || "Current password is incorrect",
+          }));
+        } else {
+          const { fieldErrors, bannerMessage } =
+            mapChangePwFieldErrors(data?.details);
+          if (Object.keys(fieldErrors).length) {
+            setChangePwErrors((prev) => ({ ...prev, ...fieldErrors }));
+          }
+          setChangePwSubmitError(
+            bannerMessage || data?.message || "Couldn't change password. Please try again.",
+          );
+        }
+      } finally {
+        setIsChangePwSubmitting(false);
+      }
     },
     [
       validateChangePw,
@@ -431,6 +476,7 @@ function Dashboard() {
       newPassword,
       confirmPassword,
       closeChangePassword,
+      mapChangePwFieldErrors,
     ],
   );
 
