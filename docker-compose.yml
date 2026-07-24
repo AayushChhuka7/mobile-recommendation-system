@@ -1,5 +1,3 @@
-
-
 # ----------------------------------------------------------------------------
 # Mobile Recommendation System — local dev stack
 #
@@ -30,7 +28,11 @@ services:
     healthcheck:
       # Reuses the POSTGRES_USER / POSTGRES_DB env vars so healthcheck stays
       # in sync with whatever the dev configured in .env.
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-mobile_recommender}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-mobile_recommender}",
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -48,7 +50,7 @@ services:
     # Override CMD. We pass the CSV path explicitly so the script doesn't need
     # to know where the file lives relative to itself.
     command: >
-      sh -c "npx prisma db push --skip-generate &&
+      sh -c "npx prisma db push &&
              npm run seed:rbac &&
              node ./prisma/import-gsmarena-bulk.mjs /seed/GSMArena_Cleaned_Dataset.csv"
     environment:

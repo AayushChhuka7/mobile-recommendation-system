@@ -96,7 +96,7 @@ RUN apt-get update \
 #   2. Future-proofing: when you add a build step (e.g. esbuild bundle),
 #      it goes in the builder stage and the runtime stays clean.
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev --no-audit --no-fund --loglevel=error \
+RUN npm ci --no-audit --no-fund --loglevel=error \
  && npm cache clean --force
 
 # Copy the prebuilt Prisma client from the prisma-gen stage. This is the
