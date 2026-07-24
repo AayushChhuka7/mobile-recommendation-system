@@ -543,6 +543,73 @@
   margin-top: 2px;
 }
 
+/* ---- SHAP explainers ---- */
+.cmp-shap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.cmp-shap-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cmp-shap-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.cmp-shap-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cmp-shap-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.cmp-shap-feat {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--slate-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cmp-shap-val {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .cmp-shap-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---- Dark mode ---- */
 .dashboard-page.dash-dark .cmp-panel {
   background: var(--white);
@@ -621,6 +688,16 @@
 
 .dashboard-page.dash-dark .cmp-cat-val.loser {
   color: var(--text-muted);
+}
+
+.dashboard-page.dash-dark .cmp-shap {
+  background: #0b1220;
+  border-color: var(--border);
+}
+
+.dashboard-page.dash-dark .cmp-shap-list li {
+  background: var(--bg);
+  border-color: var(--border);
 }
 
 /* ---- Responsive: stack below main content on narrow screens ---- */

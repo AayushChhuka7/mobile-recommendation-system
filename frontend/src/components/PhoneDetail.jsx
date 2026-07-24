@@ -253,7 +253,39 @@ function PhoneDetail() {
 
   if (!phone) return null;
 
-  // ---- Derived data ----
+  return (
+    <div className="phone-detail-page">
+      <TopBar onBack={handleBack} />
+      <PhoneDetailView phone={phone} />
+    </div>
+  );
+}
+
+function TopBar({ onBack }) {
+  return (
+    <div className="phone-detail-topbar">
+      <button
+        type="button"
+        className="phone-detail-back"
+        onClick={onBack}
+        aria-label="Go back"
+      >
+        <ChevronLeftIcon />
+        <span>Back</span>
+      </button>
+      <span className="phone-detail-breadcrumb">Phone details</span>
+    </div>
+  );
+}
+
+/**
+ * Reusable, data-driven rendering of a phone's full specification tree.
+ * Owns no router / no data-fetching — the caller passes in a `phone`
+ * object (same shape as `getPhoneById` returns). Used by both the
+ * `/phones/:id` route page and the Compare page's expandable panels.
+ */
+export function PhoneDetailView({ phone }) {
+  if (!phone) return null;
 
   const brand = phone.brand || {};
   const specs = phone.specs || {};
@@ -267,9 +299,7 @@ function PhoneDetail() {
   const cheapestText = formatPrice(cheapest?.price);
 
   return (
-    <div className="phone-detail-page">
-      <TopBar onBack={handleBack} />
-
+    <>
       {/* Hero: image + brand + model */}
       <section className="phone-detail-hero" aria-label="Phone overview">
         <div className="phone-detail-image">
@@ -463,24 +493,7 @@ function PhoneDetail() {
           </span>
         </section>
       )}
-    </div>
-  );
-}
-
-function TopBar({ onBack }) {
-  return (
-    <div className="phone-detail-topbar">
-      <button
-        type="button"
-        className="phone-detail-back"
-        onClick={onBack}
-        aria-label="Go back"
-      >
-        <ChevronLeftIcon />
-        <span>Back</span>
-      </button>
-      <span className="phone-detail-breadcrumb">Phone details</span>
-    </div>
+    </>
   );
 }
 
