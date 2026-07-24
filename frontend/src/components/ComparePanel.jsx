@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import api from "../services/api";
+import { postCompareMl } from "../services/recommend";
 import { CloseIcon, SearchIcon, CameraIcon, BatteryIcon, CpuIcon, TagIcon } from "./AuthShared";
 import "./ComparePanel.css";
 
@@ -250,14 +251,24 @@ function ComparePanel({ open, onClose }) {
 
     setIsLoading(true);
     setError("");
+    setCompareResult(null);
     try {
-      const res = await api.post("/phones/compare", {
-        phoneIds: [phone1.id, phone2.id],
+      // Use the ML-powered compare endpoint. The selected phones stay in
+      // state so the result cards can still render full specs (image,
+      // brand, chipset, etc.) — the ML response only carries names + prices.
+      const data = await postCompareMl({
+        modelNameA: phone1.modelName,
+        modelNameB: phone2.modelName,
       });
-      setCompareResult(res.data?.data || []);
+      if (!data) {
+        throw new Error("Empty response from comparison service.");
+      }
+      setCompareResult(data);
     } catch (err) {
       setError(
-        err.response?.data?.message || "Comparison failed. Please try again.",
+        err.response?.data?.message ||
+          err.message ||
+          "Comparison failed. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -272,53 +283,34 @@ function ComparePanel({ open, onClose }) {
     setValidationError("");
   };
 
-  // Build comparison categories from API result
-  const categories = compareResult && compareResult.length === 2
-    ? [
-        {
-          label: "Performance",
-          value1: compareResult[0]?.antutuScore,
-          value2: compareResult[1]?.antutuScore,
-          higherIsBetter: true,
-          format: (v) => (v ? v.toLocaleString() : "—"),
-        },
-        {
-          label: "Camera",
-          value1: compareResult[0]?.specs?.camera?.lensCount,
-          value2: compareResult[1]?.specs?.camera?.lensCount,
-          higherIsBetter: true,
-          format: (v) => (v ? `${v} lenses` : "—"),
-        },
-        {
-          label: "Battery",
-          value1: compareResult[0]?.specs?.battery?.capacity,
-          value2: compareResult[1]?.specs?.battery?.capacity,
-          higherIsBetter: true,
-          format: (v) => (v ? `${v} mAh` : "—"),
-        },
-        {
-          label: "Display",
-          value1: parseFloat(compareResult[0]?.specs?.display?.size || 0),
-          value2: parseFloat(compareResult[1]?.specs?.display?.size || 0),
-          higherIsBetter: true,
-          format: (v) => (v ? `${v}"` : "—"),
-        },
-      ]
-    : [];
+  // Derive per-dimension rows + overall winner from the ML response.
+  // compareResult shape: { Phone_A, Price_A, Phone_B, Price_B,
+  //   Dimension_Comparison: { Gaming: {A, B, Winner}, ... },
+  //   Overall_Winner, SHAP_A, SHAP_B }
+  const dimComparison =
+    compareResult && typeof compareResult === "object"
+      ? compareResult.Dimension_Comparison
+      : null;
 
-  // Overall winner: count category wins
-  const categoryWins = { phone1: 0, phone2: 0 };
-  categories.forEach((cat) => {
-    const w = getWinner(cat.value1, cat.value2, cat.higherIsBetter);
-    if (w === "phone1") categoryWins.phone1++;
-    else if (w === "phone2") categoryWins.phone2++;
-  });
-  const overallWinner =
-    categoryWins.phone1 > categoryWins.phone2
-      ? "phone1"
-      : categoryWins.phone2 > categoryWins.phone1
-        ? "phone2"
-        : null;
+  const formatMlScore = (v) =>
+    v == null || Number.isNaN(Number(v)) ? "—" : Number(v).toFixed(1);
+
+  const formatMlPrice = (price) =>
+    price == null || Number.isNaN(Number(price))
+      ? "—"
+      : `€${Number(price).toLocaleString()}`;
+
+  // Map the ML "Winner" string to a UI side key.
+  const overallWinnerName = compareResult?.Overall_Winner || null;
+  const overallWinnerKey =
+    !compareResult
+      ? null
+      : overallWinnerName === compareResult.Phone_A
+        ? "phone1"
+        : overallWinnerName === compareResult.Phone_B
+          ? "phone2"
+          : null; // "Tie" or missing
+  const isOverallTie = overallWinnerName === "Tie";
 
   return (
     <aside
@@ -384,17 +376,24 @@ function ComparePanel({ open, onClose }) {
           </div>
         ) : (
           <div className="cmp-results">
+            {/* Result cards: keep using the selected phone objects so we
+                still have image, brand, chipset, etc. The ML response
+                itself only carries names + prices. */}
             <div className="cmp-result-cards">
-              {compareResult.map((phone, idx) => {
+              {[phone1, phone2].map((phone, idx) => {
+                if (!phone) return null;
                 const phoneKey = idx === 0 ? "phone1" : "phone2";
-                const isOverallWinner = overallWinner === phoneKey;
+                const isOverallWinner = overallWinnerKey === phoneKey;
                 return (
                   <div
                     key={phone.id}
                     className={`cmp-result-card ${isOverallWinner ? "winner" : ""}`}
                   >
-                    {isOverallWinner && (
-                      <span className="cmp-overall-badge">🏆 Overall Winner</span>
+                    {isOverallWinner && !isOverallTie && (
+                      <span className="cmp-overall-badge">🏆 ML Pick</span>
+                    )}
+                    {isOverallTie && idx === 0 && (
+                      <span className="cmp-overall-badge">🤝 Tie</span>
                     )}
                     <div className="cmp-result-image">
                       {phone.imageUrl ? (
@@ -410,7 +409,9 @@ function ComparePanel({ open, onClose }) {
                     <div className="cmp-result-price">
                       <TagIcon />
                       <span>
-                        €{phone.pricing?.cheapest?.price || "—"}
+                        {formatMlPrice(
+                          idx === 0 ? compareResult?.Price_A : compareResult?.Price_B,
+                        )}
                       </span>
                     </div>
                     <div className="cmp-result-specs">
@@ -438,26 +439,87 @@ function ComparePanel({ open, onClose }) {
               })}
             </div>
 
+            {/* Per-dimension ML scores */}
             <div className="cmp-categories">
-              <h4 className="cmp-categories-title">Category Breakdown</h4>
-              {categories.map((cat) => {
-                const winner = getWinner(
-                  cat.value1,
-                  cat.value2,
-                  cat.higherIsBetter,
-                );
-                return (
-                  <CompareRow
-                    key={cat.label}
-                    label={cat.label}
-                    value1={cat.value1}
-                    value2={cat.value2}
-                    winner={winner}
-                    format={cat.format}
-                  />
-                );
-              })}
+              <h4 className="cmp-categories-title">ML Dimension Scores</h4>
+              {dimComparison && Object.keys(dimComparison).length > 0 ? (
+                Object.entries(dimComparison).map(([dim, vals]) => {
+                  const winner =
+                    vals?.Winner === compareResult?.Phone_A
+                      ? "phone1"
+                      : vals?.Winner === compareResult?.Phone_B
+                        ? "phone2"
+                        : "tie";
+                  return (
+                    <CompareRow
+                      key={dim}
+                      label={dim}
+                      value1={vals?.A}
+                      value2={vals?.B}
+                      winner={winner}
+                      format={formatMlScore}
+                    />
+                  );
+                })
+              ) : (
+                <p style={{ fontSize: 12.5, color: "var(--text-muted)", margin: 0 }}>
+                  No per-dimension scores returned.
+                </p>
+              )}
             </div>
+
+            {/* SHAP explainers — top positive feature contributions for
+                each phone. */}
+            {(compareResult?.SHAP_A?.length > 0 ||
+              compareResult?.SHAP_B?.length > 0) && (
+              <div className="cmp-shap">
+                <h4 className="cmp-categories-title">Why these scores?</h4>
+                <div className="cmp-shap-grid">
+                  <div>
+                    <div className="cmp-shap-name">
+                      {compareResult.Phone_A}
+                    </div>
+                    <ul className="cmp-shap-list">
+                      {(compareResult.SHAP_A || []).map((s) => (
+                        <li key={s.feature}>
+                          <span className="cmp-shap-feat">{s.feature}</span>
+                          <span className="cmp-shap-val">
+                            +{Number(s.shap).toFixed(2)}
+                          </span>
+                        </li>
+                      ))}
+                      {(!compareResult.SHAP_A ||
+                        compareResult.SHAP_A.length === 0) && (
+                        <li className="cmp-no-results">
+                          No feature data available.
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                  <div>
+                    <div className="cmp-shap-name">
+                      {compareResult.Phone_B}
+                    </div>
+                    <ul className="cmp-shap-list">
+                      {(compareResult.SHAP_B || []).map((s) => (
+                        <li key={s.feature}>
+                          <span className="cmp-shap-feat">{s.feature}</span>
+                          <span className="cmp-shap-val">
+                            +{Number(s.shap).toFixed(2)}
+                          </span>
+                        </li>
+                      ))}
+                      {(!compareResult.SHAP_B ||
+                        compareResult.SHAP_B.length === 0) && (
+                        <li className="cmp-no-results">
+                          No feature data available.
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <button
               type="button"
