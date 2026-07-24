@@ -29,10 +29,6 @@ function ForgotPassword() {
   const navigate = useNavigate();
   const location = useLocation();
   const forgotStep = stepFromPath(location.pathname);
-
-  // Pre-seed the email from location.state when the user lands directly on a
-  // later step (e.g. Change Password from the profile menu, or a deep link).
-  // This avoids a useEffect that would have to setState synchronously.
   const [forgotEmail, setForgotEmail] = useState(
     () => location.state?.email || "",
   );
@@ -54,14 +50,10 @@ function ForgotPassword() {
     const timer = setTimeout(() => setForgotResendCooldown((c) => c - 1), 1000);
     return () => clearTimeout(timer);
   }, [forgotResendCooldown]);
-
-  // Landed on step 2/3 directly (refresh, bookmark) without the email from
-  // step 1 in this session — send back to the start of the flow.
   useEffect(() => {
     if (forgotStep > 1 && !forgotEmail) {
       navigate("/forgot-password", { replace: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forgotStep]);
 
   const handleForgotEmailSubmit = useCallback(
@@ -155,7 +147,9 @@ function ForgotPassword() {
       setForgotOtpError("");
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || "Couldn't resend the code");
+      setForgotOtpError(
+        error.response?.data?.message || "Couldn't resend the code",
+      );
     } finally {
       setForgotResendLoading(false);
     }
@@ -200,10 +194,16 @@ function ForgotPassword() {
       setResetLoading(true);
 
       try {
+        // Backend's `changePasswordValidation` schema (and its route's
+        // field whitelist) only accepts `password` and `confirmPassword`.
+        // Sending `email`/`newPassword`/`confirmNewPassword` is rejected
+        // with "Validation failed" / "Unknown fields: …", so we map our
+        // local state to the schema's names here. The email is already
+        // tied to the session via the OTP-verify step, so we don't
+        // need to resend it.
         await api.post("/auth/forget/changePassword", {
-          email: forgotEmail,
-          newPassword,
-          confirmNewPassword,
+          password: newPassword,
+          confirmPassword: confirmNewPassword,
         });
         setResetResult({
           status: "success",
@@ -224,7 +224,6 @@ function ForgotPassword() {
     },
     [
       validateNewPassword,
-      forgotEmail,
       newPassword,
       confirmNewPassword,
       goToLoginAfterReset,

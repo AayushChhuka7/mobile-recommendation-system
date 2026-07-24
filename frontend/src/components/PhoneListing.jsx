@@ -5,156 +5,18 @@ import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneListing.css";
-import { UserIcon } from "./AuthShared";
+import {
+  UserIcon,
+  SearchIcon,
+  LogoutIcon,
+  FilterIcon,
+  XIcon,
+  TagIcon,
+  CpuIcon,
+  BatteryIcon,
+  CameraIcon,
+} from "./AuthShared";
 
-// ---- Icons ----
-function SearchIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="7" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
-
-function LogoutIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-      <polyline points="16 17 21 12 16 7" />
-      <line x1="21" y1="12" x2="9" y2="12" />
-    </svg>
-  );
-}
-
-function FilterIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="4" y1="21" x2="4" y2="14" />
-      <line x1="4" y1="10" x2="4" y2="3" />
-      <line x1="12" y1="21" x2="12" y2="12" />
-      <line x1="12" y1="8" x2="12" y2="3" />
-      <line x1="20" y1="21" x2="20" y2="16" />
-      <line x1="20" y1="10" x2="20" y2="3" />
-      <line x1="1" y1="14" x2="7" y2="14" />
-      <line x1="9" y1="8" x2="15" y2="8" />
-      <line x1="17" y1="16" x2="23" y2="16" />
-    </svg>
-  );
-}
-
-function XIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  );
-}
-
-function TagIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.82 0l4.6-4.6a2 2 0 0 0 0-2.82z" />
-      <line x1="7.5" y1="7.5" x2="7.51" y2="7.5" />
-    </svg>
-  );
-}
-
-function CpuIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
-      <rect x="9" y="9" width="6" height="6" />
-    </svg>
-  );
-}
-
-function BatteryIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <rect x="1" y="7" width="18" height="10" rx="2" ry="2" />
-      <line x1="23" y1="11" x2="23" y2="13" />
-    </svg>
-  );
-}
-
-function CameraIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-      <circle cx="12" cy="13" r="4" />
-    </svg>
-  );
-}
-
-// ---- Sort Options ----
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest First" },
   { value: "oldest", label: "Oldest First" },
@@ -164,8 +26,6 @@ const SORT_OPTIONS = [
   { value: "price_desc", label: "Price: High to Low" },
   { value: "antutu", label: "Performance" },
 ];
-
-// ---- Unwrap API response ----
 function unwrapPhones(res) {
   const apiResponse = res?.data;
   if (!apiResponse) return [];
@@ -180,22 +40,17 @@ function PhoneListing() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
-  // Phone data
   const [phones, setPhones] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Search mode (when true, we hit /phones/search; when false, /phones with filters)
   const [searchMode, setSearchMode] = useState(false);
-  const [searchInput, setSearchInput] = useState(""); // text in the input
-  const [searchTerm, setSearchTerm] = useState(""); // committed term used in the API call
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Pagination
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
 
-  // Filters (only used in non-search mode)
   const [sort, setSort] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState("");
@@ -206,13 +61,10 @@ function PhoneListing() {
   const [hasNfc, setHasNfc] = useState(false);
   const [minBattery, setMinBattery] = useState("");
 
-  // Filter options from API
   const [brands, setBrands] = useState([]);
 
-  // Profile dropdown
   const [isProfileOpen, setProfileOpen] = useState(false);
 
-  // Load filter options once
   useEffect(() => {
     async function loadFilters() {
       try {
@@ -226,8 +78,6 @@ function PhoneListing() {
     }
     loadFilters();
   }, []);
-
-  // List mode — GET /phones with filters/sort/pagination
   const loadPhones = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -276,8 +126,6 @@ function PhoneListing() {
     navigate,
     logout,
   ]);
-
-  // Search mode — GET /phones/search?q=term with pagination
   const loadSearchResults = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -307,7 +155,6 @@ function PhoneListing() {
     }
   }, [searchTerm, page, navigate, logout]);
 
-  // Drive the right loader whenever inputs change
   useEffect(() => {
     if (searchMode) {
       loadSearchResults();
@@ -316,14 +163,10 @@ function PhoneListing() {
     }
   }, [searchMode, loadPhones, loadSearchResults]);
 
-  // ---- Handlers ----
-
-  // Submit the search form
   const handleSearch = (e) => {
     e.preventDefault();
     const term = searchInput.trim();
     if (!term) {
-      // Empty submit => clear search and show all phones
       handleClearSearch();
       return;
     }
@@ -368,12 +211,8 @@ function PhoneListing() {
 
   const displayName = user?.name || user?.username || "there";
   const email = user?.email || "";
-
-  // Page-number window (up to 5, centered on current page)
   const start =
-    totalPages <= 5
-      ? 1
-      : Math.max(1, Math.min(totalPages - 4, page - 2));
+    totalPages <= 5 ? 1 : Math.max(1, Math.min(totalPages - 4, page - 2));
   const pageNumbers = Array.from(
     { length: Math.min(5, totalPages) },
     (_, i) => start + i,
