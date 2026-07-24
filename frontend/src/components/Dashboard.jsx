@@ -137,7 +137,7 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout, setUser } = useAuth();
+  const { user, logout } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -241,40 +241,10 @@ function Dashboard() {
     };
   }, []);
 
-  // Hydrate the stored user with full profile fields. Login only returns
-  // { id, email }, but the dashboard needs name/phoneNo. Pull them from
-  // the existing GET /users/me endpoint and merge into the auth context
-  // (which persists to localStorage, so the values survive reloads).
-  useEffect(() => {
-    let ignore = false;
-    async function loadProfile() {
-      try {
-        const res = await api.get("/users/me");
-        const profile = res?.data?.data;
-        if (ignore || !profile) return;
-        setUser({
-          id: profile.userId ?? user?.id,
-          name: profile.name ?? user?.name,
-          email: profile.email ?? user?.email,
-          phoneNo: profile.phoneNo ?? user?.phoneNo,
-        });
-      } catch (err) {
-        // 401 is handled by the phones loader below; we don't want to
-        // double-handle it here. Just log and continue.
-        if (err.response?.status !== 401) {
-          console.error("Failed to load user profile:", err);
-        }
-      }
-    }
-    loadProfile();
-    return () => {
-      ignore = true;
-    };
-    // We intentionally only run this on mount. The `user` reads inside
-    // are just fallbacks for the merge; we don't want to refetch on
-    // every context update.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Profile fields (name, phoneNo) are hydrated by AuthProvider's
+  // session-validation effect on app boot, so by the time the
+  // dashboard mounts the auth context already has fresh data.
+  // No on-mount fetch needed here.
   const openRecommend = useCallback(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -1146,6 +1116,8 @@ function Dashboard() {
                 className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
                 onMouseEnter={() => setHoveredCard(p.id)}
                 onMouseLeave={() => setHoveredCard(null)}
+                onClick={() => p.id && navigate(`/phones/${p.id}`)}
+                style={{ cursor: "pointer" }}
               >
                 <div className="phone-card-top">
                   <div className="phone-card-image">
