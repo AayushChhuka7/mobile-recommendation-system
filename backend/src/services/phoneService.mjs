@@ -1,8 +1,11 @@
 import { prisma } from "../config/prisma.mjs";
-import { notFound } from "../utils/ApiError.mjs";
+import { notFound, badRequest } from "../utils/ApiError.mjs";
 import { buildPaginationMeta } from "../utils/ApiResponse.mjs";
 
-// Build where clause from query parameters
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
 const buildPhoneWhereClause = (queryParams) => {
   const where = { isActive: true };
   const specsWhere = {};
@@ -50,9 +53,32 @@ const buildPhoneWhereClause = (queryParams) => {
     specsWhere.os = { contains: queryParams.os, mode: "insensitive" };
   }
 
+  // Chipset filter
+  if (queryParams.chipset) {
+    specsWhere.chipset = { contains: queryParams.chipset, mode: "insensitive" };
+  }
+
+  // Display type filter
+  if (queryParams.displayType) {
+    specsWhere.displayType = {
+      contains: queryParams.displayType,
+      mode: "insensitive",
+    };
+  }
+
   // Battery filter
   if (queryParams.minBattery) {
     specsWhere.batteryMah = { gte: parseInt(queryParams.minBattery) };
+  }
+
+  // Refresh rate filter
+  if (queryParams.minRefreshRate) {
+    specsWhere.refreshRate = { gte: parseInt(queryParams.minRefreshRate) };
+  }
+
+  // Lens count filter
+  if (queryParams.minLensCount) {
+    specsWhere.lensCount = { gte: parseInt(queryParams.minLensCount) };
   }
 
   // Year filter
@@ -77,7 +103,9 @@ const buildPhoneWhereClause = (queryParams) => {
   return where;
 };
 
-// Build sort order
+// Returns Prisma orderBy for non-price sorts. Price sorting is handled
+// in getAllPhones via post-processing because price lives on the related
+// variants table, which Prisma cannot sort by directly.
 const buildSortOrder = (sortParam) => {
   if (!sortParam) return { createdAt: "desc" };
 
@@ -86,8 +114,6 @@ const buildSortOrder = (sortParam) => {
     oldest: { createdAt: "asc" },
     name_asc: { modelName: "asc" },
     name_desc: { modelName: "desc" },
-    price_asc: { variants: { _count: "asc" } },
-    price_desc: { variants: { _count: "desc" } },
     antutu: { antutuScore: "desc" },
     popular: { antutuScore: "desc" },
   };
@@ -95,69 +121,167 @@ const buildSortOrder = (sortParam) => {
   return sortMappings[sortParam] || { createdAt: "desc" };
 };
 
-export const getAllPhones = async (queryParams) => {
+// Check if sort requires post-processing (price sorts)
+const isPriceSort = (sortParam) =>
+  sortParam === "price_asc" || sortParam === "price_desc";
+
+// Common include object reused across all list queries
+const phoneListInclude = {
+  brand: {
+    select: { brandId: true, name: true, logoUrl: true },
+  },
+  specs: {
+    select: {
+      os: true,
+      chipset: true,
+      displaySize: true,
+      displayType: true,
+      refreshRate: true,
+      mainCamera: true,
+      batteryMah: true,
+      supports5g: true,
+      supportsNfc: true,
+    },
+  },
+  variants: {
+    where: { isAvailable: true },
+    orderBy: { price: "asc" },
+    select: {
+      variantId: true,
+      ramGb: true,
+      storageGb: true,
+      price: true,
+      storageType: true,
+    },
+  },
+};
+
+// Full include for detail views
+const phoneDetailInclude = {
+  brand: true,
+  specs: true,
+  variants: {
+    where: { isAvailable: true },
+    orderBy: { price: "asc" },
+  },
+};
+
+// Sort phones by cheapest variant price
+// const sortByPrice = (phones, direction) => {
+//   const isAsc = direction === "asc";
+//   return [...phones].sort((a, b) => {
+//     const priceA = a.variants[0]?.price
+//       ? parseFloat(a.variants[0].price)
+//       : isAsc
+//         ? Infinity
+//         : -Infinity;
+//     const priceB = b.variants[0]?.price
+//       ? parseFloat(b.variants[0].price)
+//       : isAsc
+//         ? Infinity
+//         : -Infinity;
+//     return isAsc ? priceA - priceB : priceB - priceA;
+//   });
+// };
+
+const sortByPrice = (phones, direction) => {
+  const isAsc = direction === "asc";
+  return [...phones].sort((a, b) => {
+    const priceA = a.variants?.[0]?.price
+      ? parseFloat(a.variants[0].price)
+      : isAsc
+        ? Infinity
+        : -Infinity;
+    const priceB = b.variants?.[0]?.price
+      ? parseFloat(b.variants[0].price)
+      : isAsc
+        ? Infinity
+        : -Infinity;
+    return isAsc ? priceA - priceB : priceB - priceA;
+  });
+};
+
+// Build pagination from query params
+const getPaginationParams = (queryParams) => {
   const page = parseInt(queryParams.page) || 1;
   const limit = Math.min(parseInt(queryParams.limit) || 20, 100);
   const skip = (page - 1) * limit;
+  return { page, limit, skip };
+};
+
+// ---------------------------------------------------------------------------
+// Public Service Functions
+// ---------------------------------------------------------------------------
+
+// export const getAllPhones = async (queryParams) => {
+//   const { page, limit, skip } = getPaginationParams(queryParams);
+//   const sortParam = queryParams.sort || "newest";
+
+//   const where = buildPhoneWhereClause(queryParams);
+//   const total = await prisma.phones.count({ where });
+
+//   const phones = await prisma.phones.findMany({
+//     where,
+//     include: phoneListInclude,
+//     // Only use Prisma orderBy for non-price sorts
+//     ...(!isPriceSort(sortParam) && { orderBy: buildSortOrder(sortParam) }),
+//     skip,
+//     take: limit,
+//   });
+
+//   // Post-process: sort by cheapest variant price
+//   if (isPriceSort(sortParam)) {
+//     const direction = sortParam === "price_asc" ? "asc" : "desc";
+//     const sorted = sortByPrice(phones, direction);
+//     const pagination = buildPaginationMeta({ page, limit, total });
+//     return { phones: sorted, pagination };
+//   }
+
+//   const pagination = buildPaginationMeta({ page, limit, total });
+//   return { phones, pagination };
+// };
+
+export const getAllPhones = async (queryParams) => {
+  const { page, limit, skip } = getPaginationParams(queryParams);
+  const sortParam = queryParams.sort || "newest";
 
   const where = buildPhoneWhereClause(queryParams);
-  const orderBy = buildSortOrder(queryParams.sort);
+  const total = await prisma.phones.count({ where });
 
-  const [phones, total] = await Promise.all([
-    prisma.phones.findMany({
+  // For price sorting: fetch ALL matching phones, sort, then paginate
+  if (isPriceSort(sortParam)) {
+    const allPhones = await prisma.phones.findMany({
       where,
-      include: {
-        brand: {
-          select: { brandId: true, name: true, logoUrl: true },
-        },
-        specs: {
-          select: {
-            os: true,
-            chipset: true,
-            displaySize: true,
-            displayType: true,
-            refreshRate: true,
-            mainCamera: true,
-            batteryMah: true,
-            supports5g: true,
-            supportsNfc: true,
-          },
-        },
-        variants: {
-          where: { isAvailable: true },
-          orderBy: { price: "asc" },
-          select: {
-            variantId: true,
-            ramGb: true,
-            storageGb: true,
-            price: true,
-            storageType: true,
-          },
-        },
-      },
-      orderBy,
-      skip,
-      take: limit,
-    }),
-    prisma.phones.count({ where }),
-  ]);
+      include: phoneListInclude,
+    });
+
+    const direction = sortParam === "price_asc" ? "asc" : "desc";
+    const sorted = sortByPrice(allPhones, direction);
+    
+    // Apply pagination AFTER sorting all phones
+    const paginated = sorted.slice(skip, skip + limit);
+    const pagination = buildPaginationMeta({ page, limit, total });
+    
+    return { phones: paginated, pagination };
+  }
+
+  // Non-price sorts: use Prisma orderBy (direct fields only)
+  const phones = await prisma.phones.findMany({
+    where,
+    include: phoneListInclude,
+    orderBy: buildSortOrder(sortParam),
+    skip,
+    take: limit,
+  });
 
   const pagination = buildPaginationMeta({ page, limit, total });
-
   return { phones, pagination };
 };
 
 export const getPhoneById = async (phoneId) => {
   const phone = await prisma.phones.findUnique({
     where: { phoneId },
-    include: {
-      brand: true,
-      specs: true,
-      variants: {
-        where: { isAvailable: true },
-        orderBy: { price: "asc" },
-      },
-    },
+    include: phoneDetailInclude,
   });
 
   if (!phone) {
@@ -167,9 +291,6 @@ export const getPhoneById = async (phoneId) => {
   return phone;
 };
 
-// Add these functions after getAllPhones
-
-// GET /api/phones/search?q=iPhone
 export const searchPhones = async (queryParams) => {
   const searchTerm = queryParams.q || queryParams.search;
 
@@ -187,9 +308,7 @@ export const searchPhones = async (queryParams) => {
     };
   }
 
-  const page = parseInt(queryParams.page) || 1;
-  const limit = Math.min(parseInt(queryParams.limit) || 20, 100);
-  const skip = (page - 1) * limit;
+  const { page, limit, skip } = getPaginationParams(queryParams);
 
   const where = {
     isActive: true,
@@ -199,35 +318,7 @@ export const searchPhones = async (queryParams) => {
   const [phones, total] = await Promise.all([
     prisma.phones.findMany({
       where,
-      include: {
-        brand: {
-          select: { brandId: true, name: true, logoUrl: true },
-        },
-        specs: {
-          select: {
-            os: true,
-            chipset: true,
-            displaySize: true,
-            displayType: true,
-            refreshRate: true,
-            mainCamera: true,
-            batteryMah: true,
-            supports5g: true,
-            supportsNfc: true,
-          },
-        },
-        variants: {
-          where: { isAvailable: true },
-          orderBy: { price: "asc" },
-          select: {
-            variantId: true,
-            ramGb: true,
-            storageGb: true,
-            price: true,
-            storageType: true,
-          },
-        },
-      },
+      include: phoneListInclude,
       orderBy: { createdAt: "desc" },
       skip,
       take: limit,
@@ -236,17 +327,12 @@ export const searchPhones = async (queryParams) => {
   ]);
 
   const pagination = buildPaginationMeta({ page, limit, total });
-
   return { phones, pagination };
 };
 
-// GET /api/phones/brand/:brandName
 export const getPhonesByBrand = async (brandName, queryParams) => {
-  const page = parseInt(queryParams.page) || 1;
-  const limit = Math.min(parseInt(queryParams.limit) || 20, 100);
-  const skip = (page - 1) * limit;
+  const { page, limit, skip } = getPaginationParams(queryParams);
 
-  // First find the brand
   const brand = await prisma.brands.findFirst({
     where: { name: { equals: brandName, mode: "insensitive" } },
   });
@@ -255,43 +341,12 @@ export const getPhonesByBrand = async (brandName, queryParams) => {
     throw notFound(`Brand '${brandName}' not found`);
   }
 
-  const where = {
-    isActive: true,
-    brandId: brand.brandId,
-  };
+  const where = { isActive: true, brandId: brand.brandId };
 
   const [phones, total] = await Promise.all([
     prisma.phones.findMany({
       where,
-      include: {
-        brand: {
-          select: { brandId: true, name: true, logoUrl: true },
-        },
-        specs: {
-          select: {
-            os: true,
-            chipset: true,
-            displaySize: true,
-            displayType: true,
-            refreshRate: true,
-            mainCamera: true,
-            batteryMah: true,
-            supports5g: true,
-            supportsNfc: true,
-          },
-        },
-        variants: {
-          where: { isAvailable: true },
-          orderBy: { price: "asc" },
-          select: {
-            variantId: true,
-            ramGb: true,
-            storageGb: true,
-            price: true,
-            storageType: true,
-          },
-        },
-      },
+      include: phoneListInclude,
       orderBy: { createdAt: "desc" },
       skip,
       take: limit,
@@ -300,14 +355,11 @@ export const getPhonesByBrand = async (brandName, queryParams) => {
   ]);
 
   const pagination = buildPaginationMeta({ page, limit, total });
-
   return { brand, phones, pagination };
 };
 
-// GET /api/phones/filters
 export const getFilterOptions = async () => {
   const [brands, osList, displayTypes, years, priceRange] = await Promise.all([
-    // All brands with phone counts
     prisma.brands.findMany({
       select: {
         brandId: true,
@@ -317,32 +369,24 @@ export const getFilterOptions = async () => {
       },
       orderBy: { name: "asc" },
     }),
-
-    // Distinct OS versions
     prisma.phoneSpecs.findMany({
       select: { os: true },
       distinct: ["os"],
       where: { os: { not: null } },
       orderBy: { os: "asc" },
     }),
-
-    // Distinct display types
     prisma.phoneSpecs.findMany({
       select: { displayType: true },
       distinct: ["displayType"],
       where: { displayType: { not: null } },
       orderBy: { displayType: "asc" },
     }),
-
-    // Available years
     prisma.$queryRaw`
       SELECT DISTINCT EXTRACT(YEAR FROM announced)::int as year
       FROM phone_specs
       WHERE announced IS NOT NULL
       ORDER BY year DESC
     `,
-
-    // Price range
     prisma.phoneVariants.aggregate({
       _min: { price: true },
       _max: { price: true },
@@ -384,7 +428,6 @@ export const getFilterOptions = async () => {
   };
 };
 
-// GET /api/phones/stats
 export const getPhoneStats = async () => {
   const [
     totalPhones,
@@ -397,14 +440,11 @@ export const getPhoneStats = async () => {
     prisma.phones.count({ where: { isActive: true } }),
     prisma.brands.count(),
     prisma.phoneVariants.count({ where: { isAvailable: true } }),
-
     prisma.phoneVariants.aggregate({
       _min: { price: true },
       _max: { price: true },
       _avg: { price: true },
     }),
-
-    // Specs aggregates
     Promise.all([
       prisma.phoneSpecs.count({ where: { supports5g: true } }),
       prisma.phoneSpecs.count({ where: { supportsNfc: true } }),
@@ -413,8 +453,6 @@ export const getPhoneStats = async () => {
         _avg: { batteryMah: true, displaySize: true, lensCount: true },
       }),
     ]),
-
-    // Top 5 brands
     prisma.brands.findMany({
       select: {
         name: true,
@@ -469,179 +507,64 @@ export const getPhoneStats = async () => {
     })),
   };
 };
-// POST /api/phones/compare
-// Body: { phoneIds: ["uuid1", "uuid2", "uuid3"] }
-export const comparePhones = async (phoneIds) => {
-  // Maximum 5 phones for comparison
-  if (phoneIds.length > 5) {
-    throw badRequest("Maximum 5 phones can be compared at once");
-  }
 
-  if (phoneIds.length < 2) {
+export const comparePhones = async (phoneIds) => {
+  if (phoneIds.length > 5)
+    throw badRequest("Maximum 5 phones can be compared at once");
+  if (phoneIds.length < 2)
     throw badRequest("At least 2 phones are required for comparison");
-  }
 
   const phones = await prisma.phones.findMany({
-    where: {
-      phoneId: { in: phoneIds },
-      isActive: true,
-    },
-    include: {
-      brand: true,
-      specs: true,
-      variants: {
-        where: { isAvailable: true },
-        orderBy: { price: "asc" },
-      },
-    },
+    where: { phoneId: { in: phoneIds }, isActive: true },
+    include: phoneDetailInclude,
   });
 
-  // Check if all phones were found
-  if (phones.length !== phoneIds.length) {
+  if (phones.length !== phoneIds.length)
     throw notFound("One or more phones not found");
-  }
 
-  // Return phones in the same order as requested IDs
   return phoneIds.map((id) => phones.find((p) => p.phoneId === id));
 };
 
-// GET /api/phones/featured — Popular/featured phones
 export const getFeaturedPhones = async () => {
-  const phones = await prisma.phones.findMany({
-    where: {
-      isActive: true,
-      specs: {
-        supports5g: true,
-      },
-    },
-    include: {
-      brand: {
-        select: { brandId: true, name: true, logoUrl: true },
-      },
-      specs: {
-        select: {
-          os: true,
-          chipset: true,
-          displaySize: true,
-          displayType: true,
-          refreshRate: true,
-          mainCamera: true,
-          batteryMah: true,
-          supports5g: true,
-          supportsNfc: true,
-        },
-      },
-      variants: {
-        where: { isAvailable: true },
-        orderBy: { price: "asc" },
-        select: {
-          variantId: true,
-          ramGb: true,
-          storageGb: true,
-          price: true,
-          storageType: true,
-        },
-      },
-    },
+  return prisma.phones.findMany({
+    where: { isActive: true, specs: { supports5g: true } },
+    include: phoneListInclude,
     orderBy: { antutuScore: "desc" },
     take: 10,
   });
-
-  return phones;
 };
 
-// GET /api/phones/latest — Latest releases
 export const getLatestPhones = async () => {
-  const phones = await prisma.phones.findMany({
-    where: {
-      isActive: true,
-      specs: {
-        announced: { not: null },
-      },
-    },
+  return prisma.phones.findMany({
+    where: { isActive: true, specs: { announced: { not: null } } },
     include: {
-      brand: {
-        select: { brandId: true, name: true, logoUrl: true },
-      },
+      brand: phoneListInclude.brand,
       specs: {
-        select: {
-          os: true,
-          chipset: true,
-          displaySize: true,
-          displayType: true,
-          refreshRate: true,
-          mainCamera: true,
-          batteryMah: true,
-          supports5g: true,
-          supportsNfc: true,
-          announced: true,
-        },
+        select: { ...phoneListInclude.specs.select, announced: true },
       },
-      variants: {
-        where: { isAvailable: true },
-        orderBy: { price: "asc" },
-        select: {
-          variantId: true,
-          ramGb: true,
-          storageGb: true,
-          price: true,
-          storageType: true,
-        },
-      },
+      variants: phoneListInclude.variants,
     },
-    orderBy: {
-      specs: { announced: "desc" },
-    },
+    orderBy: { specs: { announced: "desc" } },
     take: 10,
   });
-
-  return phones;
 };
 
-// GET /api/phones/best-value — Phones under €300 with 6GB+ RAM
 export const getBestValuePhones = async () => {
-  const phones = await prisma.phones.findMany({
+  return prisma.phones.findMany({
     where: {
       isActive: true,
-      variants: {
-        some: {
-          price: { lte: 300 },
-          ramGb: { gte: 6 },
-        },
-      },
+      variants: { some: { price: { lte: 300 }, ramGb: { gte: 6 } } },
     },
     include: {
-      brand: {
-        select: { brandId: true, name: true, logoUrl: true },
-      },
-      specs: {
-        select: {
-          os: true,
-          chipset: true,
-          displaySize: true,
-          displayType: true,
-          refreshRate: true,
-          mainCamera: true,
-          batteryMah: true,
-          supports5g: true,
-          supportsNfc: true,
-        },
-      },
+      brand: phoneListInclude.brand,
+      specs: phoneListInclude.specs,
       variants: {
         where: { isAvailable: true, price: { lte: 300 }, ramGb: { gte: 6 } },
         orderBy: { price: "asc" },
-        select: {
-          variantId: true,
-          ramGb: true,
-          storageGb: true,
-          price: true,
-          storageType: true,
-        },
+        select: phoneListInclude.variants.select,
       },
     },
     orderBy: { antutuScore: "desc" },
     take: 10,
   });
-
-  return phones;
 };

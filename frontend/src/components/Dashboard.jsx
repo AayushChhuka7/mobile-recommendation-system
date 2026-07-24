@@ -10,248 +10,41 @@ import {
   LockIcon,
   PhoneIcon,
   MailIcon,
+  SearchIcon,
+  CloseIcon,
+  LogoutIcon,
+  SlidersIcon,
+  CameraIcon,
+  BatteryIcon,
+  CpuIcon,
+  TagIcon,
+  SparklesIcon,
+  GamerIcon,
+  ChevronIcon,
+  ThemeIcon,
   PasswordField,
   PASSWORD_HINT,
   PASSWORD_RULES,
   PASSWORD_MIN_LENGTH,
 } from "./AuthShared";
+import ComparePanel from "./ComparePanel.jsx";
 
-function SearchIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="7" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
-
-function CloseIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  );
-}
-
-function LogoutIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1-2-2h4" />
-      <polyline points="16 17 21 12 16 7" />
-      <line x1="21" y1="12" x2="9" y2="12" />
-    </svg>
-  );
-}
-
-function SlidersIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="4" y1="21" x2="4" y2="14" />
-      <line x1="4" y1="10" x2="4" y2="3" />
-      <line x1="12" y1="21" x2="12" y2="12" />
-      <line x1="12" y1="8" x2="12" y2="3" />
-      <line x1="20" y1="21" x2="20" y2="16" />
-      <line x1="20" y1="10" x2="20" y2="3" />
-      <line x1="1" y1="14" x2="7" y2="14" />
-      <line x1="9" y1="8" x2="15" y2="8" />
-      <line x1="17" y1="16" x2="23" y2="16" />
-    </svg>
-  );
-}
-
-function CameraIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-      <circle cx="12" cy="13" r="4" />
-    </svg>
-  );
-}
-
-function BatteryIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="1" y="7" width="18" height="10" rx="2" ry="2" />
-      <line x1="23" y1="11" x2="23" y2="13" />
-    </svg>
-  );
-}
-
-function CpuIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
-      <rect x="9" y="9" width="6" height="6" />
-      <line x1="9" y1="1" x2="9" y2="4" />
-      <line x1="15" y1="1" x2="15" y2="4" />
-      <line x1="9" y1="20" x2="9" y2="23" />
-      <line x1="15" y1="20" x2="15" y2="23" />
-      <line x1="1" y1="9" x2="4" y2="9" />
-      <line x1="1" y1="15" x2="4" y2="15" />
-      <line x1="20" y1="9" x2="23" y2="9" />
-      <line x1="20" y1="15" x2="23" y2="15" />
-    </svg>
-  );
-}
-
-function TagIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.82 0l4.6-4.6a2 2 0 0 0 0-2.82z" />
-      <line x1="7.5" y1="7.5" x2="7.51" y2="7.5" />
-    </svg>
-  );
-}
-
-function SparklesIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" />
-      <path d="M19 14l.7 1.7L21.5 16.5l-1.8.8L19 19l-.7-1.7-1.8-.8 1.8-.8z" />
-    </svg>
-  );
-}
-
-function GamerIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="6" y1="11" x2="10" y2="11" />
-      <line x1="8" y1="9" x2="8" y2="13" />
-      <line x1="15" y1="12" x2="15.01" y2="12" />
-      <line x1="18" y1="10" x2="18.01" y2="10" />
-      <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z" />
-    </svg>
-  );
-}
-
-function ChevronIcon({ open }) {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{
-        transform: open ? "rotate(180deg)" : "rotate(0deg)",
-        transition: "transform 0.2s ease",
-      }}
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  );
-}
-
-function ThemeIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    </svg>
-  );
-}
+// function ThemeIcon() {
+//   return (
+//     <svg
+//       width="14"
+//       height="14"
+//       viewBox="0 0 24 24"
+//       fill="none"
+//       stroke="currentColor"
+//       strokeWidth="2"
+//       strokeLinecap="round"
+//       strokeLinejoin="round"
+//     >
+//       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+//     </svg>
+//   );
+// }
 
 const CATEGORY_OPTIONS = [
   { key: "gamer", label: "Gamer", Icon: GamerIcon },
@@ -260,18 +53,8 @@ const CATEGORY_OPTIONS = [
   { key: "allrounder", label: "All-rounder", Icon: SparklesIcon },
 ];
 
-// Default slider position when the user hasn't picked a category yet — all
-// neutral. Kept distinct from the per-persona presets below so the UI can
-// tell "user hasn't chosen" apart from "user picked All-rounder".
 const DEFAULT_WEIGHTS = { gaming: 3, camera: 3, battery: 3, display: 3 };
 
-// Per-persona slider presets (1..5 stars).
-// Mirrors the ML service's PERSONA_PRESETS one-to-one: when the user picks
-// a category, the sliders snap to these values so the user can see what
-// each persona prioritizes, and so the FE sends meaningful weights to the
-// backend. The server's `Custom` persona accepts these same 4 keys
-// (gaming/camera/battery/display) as `preferences`, so a tweaked slider
-// is a real input — not cosmetic.
 const PERSONA_WEIGHT_PRESETS = {
   gamer: { gaming: 5, camera: 2, battery: 4, display: 4 },
   camera: { gaming: 2, camera: 5, battery: 3, display: 3 },
@@ -279,8 +62,6 @@ const PERSONA_WEIGHT_PRESETS = {
   allrounder: { gaming: 3, camera: 3, battery: 3, display: 3 },
 };
 
-// Filter options for the dashboard filter panel — only fields the backend
-// already accepts in /api/phones (see buildPhoneWhereClause in phoneService.mjs).
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest First" },
   { value: "oldest", label: "Oldest First" },
@@ -308,8 +89,6 @@ const BATTERY_OPTIONS = [
   { value: "5000", label: "5000+ mAh" },
   { value: "6000", label: "6000+ mAh" },
 ];
-
-// Initial empty filter state.
 const EMPTY_FILTERS = {
   brand: "",
   minPrice: "",
@@ -322,7 +101,6 @@ const EMPTY_FILTERS = {
   hasOis: false,
 };
 
-// Build the query params for /phones from the active filters, sort, and page.
 function buildPhonesQuery(filters, sort, extra = {}) {
   const params = { limit: 6, sort, ...extra };
   if (filters.brand) params.brand = filters.brand;
@@ -359,23 +137,18 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, setUser } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
-  // Tracks the recommendation panel's animation phase.
-  //   "closed"  — not rendered
-  //   "open"    — fully visible
-  //   "closing" — playing the close animation, will unmount after a short delay
+
   const [panelPhase, setPanelPhase] = useState("closed");
   const closeAnimMs = 180;
 
-  // Keep a ref to the close-timer so a quick reopen can cancel the pending unmount.
   const closeTimerRef = useRef(null);
 
-  // ---- Change-password modal state ----
-  // Mirrors the Recommend panel's phase machine so the close animation can
-  // finish before unmount, and so a quick reopen cancels the pending unmount.
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+
   const [changePwPhase, setChangePwPhase] = useState("closed");
   const changePwCloseTimerRef = useRef(null);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -385,9 +158,6 @@ function Dashboard() {
   const [changePwSubmitError, setChangePwSubmitError] = useState("");
   const [isChangePwSubmitting, setIsChangePwSubmitting] = useState(false);
 
-  // ---- Dark mode (dashboard-only) ----
-  // Lazy initializer so the very first render picks up the saved preference
-  // and avoids a light-mode flash when dark was previously enabled.
   const DARK_MODE_KEY = "dashboardDarkMode";
   const [isDarkMode, setIsDarkMode] = useState(
     () => localStorage.getItem(DARK_MODE_KEY) === "true",
@@ -401,24 +171,13 @@ function Dashboard() {
     setIsDarkMode((d) => !d);
   }, []);
   const [selectedCategory, setSelectedCategory] = useState("gamer");
-  // Seed the sliders with the gamer preset on mount so the UI shows what
-  // "Gamer" actually means, instead of a flat 3/3/3/3 that the user can't
-  // tell apart from "I haven't picked anything yet".
   const [weights, setWeights] = useState(() => ({
     ...PERSONA_WEIGHT_PRESETS.gamer,
   }));
-  // True once the user drags a slider. Resets when they pick a category
-  // (a category click is treated as "I'm using the preset for this persona",
-  // not a customization). Used to decide whether to send `persona: "Custom"`
-  // + the slider values, or just the persona key, to the server.
+
   const [weightsTouched, setWeightsTouched] = useState(false);
   const [weightsOpen, setWeightsOpen] = useState(true);
   const [hoveredCard, setHoveredCard] = useState(null);
-
-  // Category chip click — updates the selected persona AND snaps the
-  // sliders to that persona's preset so the user can see the priorities
-  // change. We also reset `weightsTouched` because the slider move is
-  // a programmatic side-effect of the click, not a user customization.
   const handleCategorySelect = useCallback((key) => {
     setSelectedCategory(key);
     const preset = PERSONA_WEIGHT_PRESETS[key] || DEFAULT_WEIGHTS;
@@ -426,37 +185,22 @@ function Dashboard() {
     setWeightsTouched(false);
   }, []);
 
-  // ---- Budget for the ML recommender (€/EUR) ----
-  // The backend requires `budget.max`; `min` is optional and defaults to 0.
   const [budgetMin, setBudgetMin] = useState("");
   const [budgetMax, setBudgetMax] = useState("");
 
-  // ---- ML recommendation results ----
-  // `recs` holds the latest response from POST /api/recommend/recommend.
-  // `recsPersona` records which persona produced them so the UI can label
-  // the section ("Recommended for: Gamer") and so a stale "loading" label
-  // never bleeds across requests.
   const [recs, setRecs] = useState(null);
   const [recsLoading, setRecsLoading] = useState(false);
   const [recsError, setRecsError] = useState("");
   const [recsPersona, setRecsPersona] = useState(null);
-
-  // ---- Search + Filter state ----
-  // `searchInput` is what's in the input; `searchTerm` is the committed term
-  // used in the API call (mirrors the pattern in PhoneListing.jsx).
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [pendingFilters, setPendingFilters] = useState(EMPTY_FILTERS);
   const [sort, setSort] = useState("newest");
-
-  // Pagination state (mirrors the pattern in PhoneListing.jsx)
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-
-  // Filter options fetched from the backend (brands, OS list)
   const [brands, setBrands] = useState([]);
   const [osOptions, setOsOptions] = useState([]);
 
@@ -466,8 +210,6 @@ function Dashboard() {
 
   const profileRef = useRef(null);
   const filterRef = useRef(null);
-
-  // ---- Close profile/filter popovers on outside click ----
   useEffect(() => {
     function handleClickOutside(e) {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
@@ -480,8 +222,6 @@ function Dashboard() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // ---- Load filter options (brands + OS) once on mount ----
   useEffect(() => {
     let ignore = false;
     async function loadFilterOptions() {
@@ -492,7 +232,6 @@ function Dashboard() {
         if (Array.isArray(data.brands)) setBrands(data.brands);
         if (Array.isArray(data.os)) setOsOptions(data.os);
       } catch (err) {
-        // Non-fatal: filter dropdowns just stay empty.
         console.error("Failed to load filter options:", err);
       }
     }
@@ -502,8 +241,40 @@ function Dashboard() {
     };
   }, []);
 
-  // ---- Keep the recommendation modal mounted for the close animation ----
-  // Driven from event handlers (not effects) so we don't cascade-render.
+  // Hydrate the stored user with full profile fields. Login only returns
+  // { id, email }, but the dashboard needs name/phoneNo. Pull them from
+  // the existing GET /users/me endpoint and merge into the auth context
+  // (which persists to localStorage, so the values survive reloads).
+  useEffect(() => {
+    let ignore = false;
+    async function loadProfile() {
+      try {
+        const res = await api.get("/users/me");
+        const profile = res?.data?.data;
+        if (ignore || !profile) return;
+        setUser({
+          id: profile.userId ?? user?.id,
+          name: profile.name ?? user?.name,
+          email: profile.email ?? user?.email,
+          phoneNo: profile.phoneNo ?? user?.phoneNo,
+        });
+      } catch (err) {
+        // 401 is handled by the phones loader below; we don't want to
+        // double-handle it here. Just log and continue.
+        if (err.response?.status !== 401) {
+          console.error("Failed to load user profile:", err);
+        }
+      }
+    }
+    loadProfile();
+    return () => {
+      ignore = true;
+    };
+    // We intentionally only run this on mount. The `user` reads inside
+    // are just fallbacks for the merge; we don't want to refetch on
+    // every context update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const openRecommend = useCallback(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -523,7 +294,6 @@ function Dashboard() {
     }, closeAnimMs);
   }, []);
 
-  // Clean up the close timers on unmount.
   useEffect(() => {
     return () => {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
@@ -531,8 +301,6 @@ function Dashboard() {
         clearTimeout(changePwCloseTimerRef.current);
     };
   }, []);
-
-  // ---- Initial phone load: respect search + filters if any are set ----
   useEffect(() => {
     let ignore = false;
 
@@ -541,8 +309,6 @@ function Dashboard() {
       setError(null);
       try {
         const extra = { page };
-        // `search` is supported by buildPhoneWhereClause on /phones, so we
-        // can combine text + filter params in a single request.
         if (searchTerm) extra.search = searchTerm;
 
         const params = buildPhonesQuery(filters, sort, extra);
@@ -597,9 +363,6 @@ function Dashboard() {
     navigate("/login", { replace: true });
   }, [logout, navigate]);
 
-  // ---- Change-password modal handlers ----
-  // Open the modal; close the profile dropdown so the menu doesn't sit
-  // behind the overlay, and clear any stale errors from a previous attempt.
   const openChangePassword = useCallback(() => {
     if (changePwCloseTimerRef.current) {
       clearTimeout(changePwCloseTimerRef.current);
@@ -611,8 +374,6 @@ function Dashboard() {
     setProfileOpen(false);
   }, []);
 
-  // Helper: reset the change-pw form back to its initial state. Pulled out
-  // so both the close handler and the unmount cleanup can call it.
   const resetChangePwForm = useCallback(() => {
     setCurrentPassword("");
     setNewPassword("");
@@ -632,9 +393,6 @@ function Dashboard() {
       resetChangePwForm();
     }, closeAnimMs);
   }, [resetChangePwForm]);
-
-  // Mirrors the validation in ForgotPassword.jsx so the error copy is
-  // consistent across the app.
   const validateChangePw = useCallback(() => {
     const errs = {};
     if (!currentPassword) errs.currentPassword = "Current password is required";
@@ -659,11 +417,6 @@ function Dashboard() {
         return;
       }
 
-      // Frontend-only for now: per the spec we build the UI and connect the
-      // button, but the actual password update is out of scope. When the
-      // backend endpoint is ready, replace the body of this branch with a
-      // call (e.g. api.post("/auth/change-password", { ... })) and handle
-      // success / error transitions here.
       setIsChangePwSubmitting(true);
       console.log(
         "[Change Password] submit (UI only — backend wiring pending):",
@@ -672,24 +425,20 @@ function Dashboard() {
       setIsChangePwSubmitting(false);
       closeChangePassword();
     },
-    [validateChangePw, currentPassword, newPassword, confirmPassword, closeChangePassword],
+    [
+      validateChangePw,
+      currentPassword,
+      newPassword,
+      confirmPassword,
+      closeChangePassword,
+    ],
   );
 
   const handleWeightChange = useCallback((key, value) => {
     setWeights((prev) => ({ ...prev, [key]: Number(value) }));
-    // Flag the sliders as user-customized so handleFindPhone knows to
-    // forward the values as `preferences` and switch to `persona: "Custom"`
-    // (the only persona for which the ML service actually reads them).
     setWeightsTouched(true);
   }, []);
-
-  // "Find my phone" from the questionnaire modal — calls the backend ML
-  // recommender (POST /api/recommend/recommend) with the selected persona,
-  // budget, and weight preferences, then renders the results in a dedicated
-  // section above the standard phone grid.
   const handleFindPhone = useCallback(async () => {
-    // The backend requires `budget.max`; reject empty max inline so we don't
-    // burn a request on something we know will 400.
     const max = Number(budgetMax);
     if (!Number.isFinite(max) || max <= 0) {
       setRecsError("Please enter a maximum budget before finding your phone.");
@@ -706,13 +455,6 @@ function Dashboard() {
     setRecs(null);
     setRecsPersona(selectedCategory);
     closeRecommend();
-
-    // The ML service (pipeline/recommend.py → resolve_weights) only
-    // honours `custom_weights_stars` when persona=CUSTOM. For the four
-    // persona presets it uses hard-coded weights and ignores the sliders.
-    // So if the user dragged a slider we send `persona: "Custom"` plus
-    // the slider values; otherwise we send the persona key (and skip
-    // preferences to keep the payload minimal).
     const persona = weightsTouched ? "Custom" : selectedCategory;
     const preferences = weightsTouched ? { ...weights } : undefined;
 
@@ -725,8 +467,6 @@ function Dashboard() {
       });
       setRecs(results);
     } catch (err) {
-      // Leave `recs` as null so the standard listing still shows below the
-      // error banner — the user always has a fallback.
       setRecsError(
         err.response?.data?.message ||
           "Couldn't get recommendations right now. Please try again.",
@@ -734,24 +474,25 @@ function Dashboard() {
     } finally {
       setRecsLoading(false);
     }
-  }, [budgetMin, budgetMax, selectedCategory, weights, weightsTouched, closeRecommend]);
-
-  // Clear the recommendation panel and go back to the standard listing
-  // (search/filter/sort state is untouched, so the next /phones load just
-  // re-runs the existing effect with whatever filters are active).
+  }, [
+    budgetMin,
+    budgetMax,
+    selectedCategory,
+    weights,
+    weightsTouched,
+    closeRecommend,
+  ]);
   const handleClearRecommendations = useCallback(() => {
     setRecs(null);
     setRecsError("");
     setRecsPersona(null);
   }, []);
-
-  // ---- Search bar handlers ----
   const handleSearch = (e) => {
     e.preventDefault();
     const term = searchInput.trim();
-    setSearchTerm(term); // empty string clears the term on the next load
+    setSearchTerm(term);
     setShowFilters(false);
-    setPage(1); // new search → restart at page 1
+    setPage(1);
   };
 
   const handleClearSearch = () => {
@@ -759,8 +500,6 @@ function Dashboard() {
     setSearchTerm("");
     setPage(1);
   };
-
-  // ---- Filter popover handlers ----
   const openFilters = () => {
     setPendingFilters(filters);
     setShowFilters((s) => !s);
@@ -781,8 +520,6 @@ function Dashboard() {
     setFilters(EMPTY_FILTERS);
     setPage(1);
   };
-
-  // When the user changes the sort, restart at page 1.
   const handleSortChange = (nextSort) => {
     setSort(nextSort);
     setPage(1);
@@ -792,13 +529,7 @@ function Dashboard() {
   const email = user?.email || "";
   const phone = user?.phoneNo || user?.phone || "";
   const firstName = displayName.split(" ")[0];
-
-  // Count of currently applied filters — used to render the badge on the
-  // Filter button. Derived directly from `filters` (no extra effect needed).
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
-
-  // Pagination: show a window of up to 5 page numbers, centered on the
-  // current page. (Same shape as PhoneListing.jsx.)
   const paginationStart =
     totalPages <= 5 ? 1 : Math.max(1, Math.min(totalPages - 4, page - 2));
   const pageNumbers = Array.from(
@@ -820,6 +551,16 @@ function Dashboard() {
         </div>
 
         <div className="dash-header-actions">
+          <button
+            type="button"
+            className={`btn btn-outline dash-compare-btn ${isCompareOpen ? "active" : ""}`}
+            onClick={() => setIsCompareOpen((o) => !o)}
+            aria-expanded={isCompareOpen}
+            aria-controls="dash-compare-panel"
+            title="Compare two phones side by side"
+          >
+            <span>Compare</span>
+          </button>
           <button
             type="button"
             className="btn btn-primary dash-recommend-btn"
@@ -1217,9 +958,7 @@ function Dashboard() {
         {/* ---- ML recommendations (from POST /api/recommend/recommend) ----
             Sits above the standard /phones grid. The standard grid still
             renders below, so the user always has a fallback view. */}
-        {recsLoading && (
-          <p className="dash-status">Finding phones for you…</p>
-        )}
+        {recsLoading && <p className="dash-status">Finding phones for you…</p>}
 
         {recsError && (
           <div className="dash-status dash-status-error">
@@ -1256,8 +995,8 @@ function Dashboard() {
             </div>
             {recs.length === 0 ? (
               <p className="dash-status">
-                No matches for the chosen persona and budget. Try widening
-                your budget or picking a different category.
+                No matches for the chosen persona and budget. Try widening your
+                budget or picking a different category.
               </p>
             ) : (
               <div className="phone-grid">
@@ -1565,9 +1304,9 @@ function Dashboard() {
                     className="btn btn-outline btn-small weight-reset-btn"
                     onClick={() => handleCategorySelect(selectedCategory)}
                   >
-                    Reset to {CATEGORY_OPTIONS.find(
-                      (o) => o.key === selectedCategory,
-                    )?.label || "persona"}{" "}
+                    Reset to{" "}
+                    {CATEGORY_OPTIONS.find((o) => o.key === selectedCategory)
+                      ?.label || "persona"}{" "}
                     defaults
                   </button>
                 )}
@@ -1657,7 +1396,10 @@ function Dashboard() {
                 onChange={(e) => {
                   setCurrentPassword(e.target.value);
                   if (changePwErrors.currentPassword)
-                    setChangePwErrors((prev) => ({ ...prev, currentPassword: "" }));
+                    setChangePwErrors((prev) => ({
+                      ...prev,
+                      currentPassword: "",
+                    }));
                 }}
                 error={changePwErrors.currentPassword}
               />
@@ -1711,6 +1453,11 @@ function Dashboard() {
           </div>
         </div>
       )}
+
+      <ComparePanel
+        open={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+      />
     </div>
   );
 }
