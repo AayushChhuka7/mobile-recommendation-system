@@ -7,6 +7,7 @@ import Dashboard from "./components/Dashboard";
 import PhoneListing from "./components/PhoneListing";
 import { useAuth } from "./hooks/useAuth.jsx";
 import Compare from "./components/Compare.jsx";
+import PhoneDetail from "./components/PhoneDetail.jsx";
 
 function App() {
   const { login } = useAuth();
@@ -29,6 +30,9 @@ function App() {
     return <Registration onLogin={handleLogin} />;
   if (path.startsWith("/forgot-password")) return <ForgotPassword />;
   if (path.startsWith("/dashboard")) return <Dashboard />;
+  // /phones/:id must be matched before the broader /phones check below,
+  // since startsWith("/phones") would otherwise swallow the detail route.
+  if (path.match(/^\/phones\/[^/]+/)) return <PhoneDetail />;
   if (path.startsWith("/phones")) return <PhoneListing />;
   if (path.startsWith("/compare")) return <Compare />;
 
