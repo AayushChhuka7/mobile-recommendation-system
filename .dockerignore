@@ -1,0 +1,137 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Repo root — Docker build context exclusions
+#
+# This file protects against anyone running `docker build .` from the repo
+# root, or any future service whose build context is the entire monorepo.
+# The currently active Dockerfiles use `./backend`, `./frontend`, and
+# `./ML Model` as their build contexts (not the root), so this file does not
+# affect today's builds. It is here as a safety net.
+#
+# Individual service `.dockerignore` files in backend/, frontend/, and
+# ML Model/ handle the actual context filtering for current builds.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# --- Version control ---
+.git
+.git/**
+.gitignore
+.gitattributes
+.github
+
+# --- Node ---
+node_modules
+**/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store
+
+# --- Python ---
+.venv
+**/.venv
+venv
+**/venv
+__pycache__
+**/__pycache__
+*.py[cod]
+*$py.class
+*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+
+# --- Notebooks ---
+*.ipynb
+.ipynb_checkpoints
+**/.ipynb_checkpoints
+
+# --- Secrets & local config ---
+# Real .env files are NEVER sent to the daemon. .env.example is intentionally
+# kept (per project policy) so it remains available for env_file references.
+.env
+.env.*
+!**/.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# --- Tooling & IDE caches ---
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.eslintcache
+.cache
+.parcel-cache
+.vite
+
+# --- Claude / agent state ---
+.claude
+.claude/**
+**/.claude
+CLAUDE.md
+**/CLAUDE.md
+CLAUDE_CONTEXT.md
+**/CLAUDE_CONTEXT.md
+
+# --- Build outputs ---
+dist
+build
+coverage
+**/dist
+**/build
+**/coverage
+
+# --- Docs (not needed at runtime in any container) ---
+Documentation
+docs
+**/docs
+**/Documentation
+
+# --- Datasets & large data artefacts (not needed in any container) ---
+# `dataset/` is bind-mounted by compose into db-init. It must NOT be COPY'd
+# into any image. (The ML service uses its own copy of the CSV, which lives
+# in ML Model/After_EDA_and_Feature_ENginering.csv, and is excluded by
+# `ML Model/.dockerignore`'s patterns for the OTHER CSVs in that folder.)
+dataset
+**/dataset
+
+# --- Semester / academic project folders (not part of the product) ---
+semester
+**/semester
+
+# --- ML Model scratch dirs (defence-in-depth; ML Model/.dockerignore covers them too) ---
+GSMArenaDataset
+GSMArenaDataset_BATCH*
+**/GSMArenaDataset_BATCH*
+segmentation_outputs
+**/segmentation_outputs
+cells_dump*
+preproc_cells.txt
+**/Progress Fetch Data
+**/web_scribing_to_fetch_data
+
+# --- Uploads / logs / tmp ---
+uploads
+**/uploads
+logs
+**/logs
+*.log
+tmp
+**/tmp
+*.local
+*.tmp
+
+# --- Test artefacts ---
+**/*.test.*
+**/*.spec.*
+**/__tests__/**
+**/__mocks__/**
+**/test_*.py
+**/*_test.py
+**/tests/**
