@@ -30,9 +30,14 @@ export function AuthProvider({ children }) {
   const [user, setStoredUser] = useState(() => readStoredUser());
   const [loading, setLoading] = useState(true);
 
-  // Track whether the boot-time validation has completed. We only
-  // want it to run once, even though `user` may change later.
-  const validatedRef = useRef(false);
+  // Track the in-flight boot-time validation. Under React.StrictMode
+  // the effect runs twice on mount; we share the same promise across
+  // both invocations so `setLoading(false)` always fires exactly once
+  // after the real network call settles. (Previously a `validatedRef`
+  // boolean flipped synchronously on the first run, which caused
+  // StrictMode's second run to short-circuit before the network call
+  // resolved — leaving `loading` stuck at `true` forever.)
+  const validationPromiseRef = useRef(null);
 
   // Keep state in sync if another tab logs in / out.
   useEffect(() => {
@@ -52,20 +57,18 @@ export function AuthProvider({ children }) {
   // user object. On 401 we drop the stale user so route guards kick
   // the visitor to /login. On 2xx we merge fresh profile fields.
   useEffect(() => {
-    if (validatedRef.current) return;
-    validatedRef.current = true;
+    if (validationPromiseRef.current) {
+      // Already in flight (or settled) from a prior mount under
+      // StrictMode — share the same promise so we only flip
+      // `loading` once after the real network call settles.
+      return () => {};
+    }
 
-    let ignore = false;
-
-    async function validate() {
+    validationPromiseRef.current = (async () => {
       const stored = readStoredUser();
-      if (!stored) {
-        if (!ignore) setLoading(false);
-        return;
-      }
+      if (!stored) return; // No stored user → nothing to validate.
       try {
         const res = await api.get("/users/me");
-        if (ignore) return;
         const profile = res?.data?.data;
         if (profile) {
           // Merge fresh server fields onto whatever localStorage had.
@@ -81,7 +84,6 @@ export function AuthProvider({ children }) {
           setStoredUser(next);
         }
       } catch (err) {
-        if (ignore) return;
         // 401 = cookie gone or session row deleted. Any other error
         // (network, 5xx) leaves the stored user alone — we'd rather
         // keep someone logged in during a transient outage than
@@ -92,15 +94,13 @@ export function AuthProvider({ children }) {
         } else {
           console.error("Session validation failed:", err);
         }
-      } finally {
-        if (!ignore) setLoading(false);
       }
-    }
-
-    validate();
-    return () => {
-      ignore = true;
-    };
+    })().finally(() => {
+      // Always flip `loading` once the validation (or the early
+      // no-stored-user return) settles. The `.finally` lives on the
+      // outer promise so it fires regardless of which branch exited.
+      setLoading(false);
+    });
   }, []);
 
   const login = useCallback((userData) => {
