@@ -10,248 +10,41 @@ import {
   LockIcon,
   PhoneIcon,
   MailIcon,
+  SearchIcon,
+  CloseIcon,
+  LogoutIcon,
+  SlidersIcon,
+  CameraIcon,
+  BatteryIcon,
+  CpuIcon,
+  TagIcon,
+  SparklesIcon,
+  GamerIcon,
+  ChevronIcon,
+  ThemeIcon,
   PasswordField,
   PASSWORD_HINT,
   PASSWORD_RULES,
   PASSWORD_MIN_LENGTH,
 } from "./AuthShared";
+import ComparePanel from "./ComparePanel.jsx";
 
-function SearchIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="7" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
-
-function CloseIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  );
-}
-
-function LogoutIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1-2-2h4" />
-      <polyline points="16 17 21 12 16 7" />
-      <line x1="21" y1="12" x2="9" y2="12" />
-    </svg>
-  );
-}
-
-function SlidersIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="4" y1="21" x2="4" y2="14" />
-      <line x1="4" y1="10" x2="4" y2="3" />
-      <line x1="12" y1="21" x2="12" y2="12" />
-      <line x1="12" y1="8" x2="12" y2="3" />
-      <line x1="20" y1="21" x2="20" y2="16" />
-      <line x1="20" y1="10" x2="20" y2="3" />
-      <line x1="1" y1="14" x2="7" y2="14" />
-      <line x1="9" y1="8" x2="15" y2="8" />
-      <line x1="17" y1="16" x2="23" y2="16" />
-    </svg>
-  );
-}
-
-function CameraIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-      <circle cx="12" cy="13" r="4" />
-    </svg>
-  );
-}
-
-function BatteryIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="1" y="7" width="18" height="10" rx="2" ry="2" />
-      <line x1="23" y1="11" x2="23" y2="13" />
-    </svg>
-  );
-}
-
-function CpuIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
-      <rect x="9" y="9" width="6" height="6" />
-      <line x1="9" y1="1" x2="9" y2="4" />
-      <line x1="15" y1="1" x2="15" y2="4" />
-      <line x1="9" y1="20" x2="9" y2="23" />
-      <line x1="15" y1="20" x2="15" y2="23" />
-      <line x1="1" y1="9" x2="4" y2="9" />
-      <line x1="1" y1="15" x2="4" y2="15" />
-      <line x1="20" y1="9" x2="23" y2="9" />
-      <line x1="20" y1="15" x2="23" y2="15" />
-    </svg>
-  );
-}
-
-function TagIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24L3 3v6.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.82 0l4.6-4.6a2 2 0 0 0 0-2.82z" />
-      <line x1="7.5" y1="7.5" x2="7.51" y2="7.5" />
-    </svg>
-  );
-}
-
-function SparklesIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" />
-      <path d="M19 14l.7 1.7L21.5 16.5l-1.8.8L19 19l-.7-1.7-1.8-.8 1.8-.8z" />
-    </svg>
-  );
-}
-
-function GamerIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="6" y1="11" x2="10" y2="11" />
-      <line x1="8" y1="9" x2="8" y2="13" />
-      <line x1="15" y1="12" x2="15.01" y2="12" />
-      <line x1="18" y1="10" x2="18.01" y2="10" />
-      <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z" />
-    </svg>
-  );
-}
-
-function ChevronIcon({ open }) {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{
-        transform: open ? "rotate(180deg)" : "rotate(0deg)",
-        transition: "transform 0.2s ease",
-      }}
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  );
-}
-
-function ThemeIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    </svg>
-  );
-}
+// function ThemeIcon() {
+//   return (
+//     <svg
+//       width="14"
+//       height="14"
+//       viewBox="0 0 24 24"
+//       fill="none"
+//       stroke="currentColor"
+//       strokeWidth="2"
+//       strokeLinecap="round"
+//       strokeLinejoin="round"
+//     >
+//       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+//     </svg>
+//   );
+// }
 
 const CATEGORY_OPTIONS = [
   { key: "gamer", label: "Gamer", Icon: GamerIcon },
@@ -344,7 +137,7 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout, setUser } = useAuth();
+  const { user, logout } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -353,6 +146,8 @@ function Dashboard() {
   const closeAnimMs = 180;
 
   const closeTimerRef = useRef(null);
+
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
 
   const [changePwPhase, setChangePwPhase] = useState("closed");
   const changePwCloseTimerRef = useRef(null);
@@ -446,40 +241,10 @@ function Dashboard() {
     };
   }, []);
 
-  // Hydrate the stored user with full profile fields. Login only returns
-  // { id, email }, but the dashboard needs name/phoneNo. Pull them from
-  // the existing GET /users/me endpoint and merge into the auth context
-  // (which persists to localStorage, so the values survive reloads).
-  useEffect(() => {
-    let ignore = false;
-    async function loadProfile() {
-      try {
-        const res = await api.get("/users/me");
-        const profile = res?.data?.data;
-        if (ignore || !profile) return;
-        setUser({
-          id: profile.userId ?? user?.id,
-          name: profile.name ?? user?.name,
-          email: profile.email ?? user?.email,
-          phoneNo: profile.phoneNo ?? user?.phoneNo,
-        });
-      } catch (err) {
-        // 401 is handled by the phones loader below; we don't want to
-        // double-handle it here. Just log and continue.
-        if (err.response?.status !== 401) {
-          console.error("Failed to load user profile:", err);
-        }
-      }
-    }
-    loadProfile();
-    return () => {
-      ignore = true;
-    };
-    // We intentionally only run this on mount. The `user` reads inside
-    // are just fallbacks for the merge; we don't want to refetch on
-    // every context update.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Profile fields (name, phoneNo) are hydrated by AuthProvider's
+  // session-validation effect on app boot, so by the time the
+  // dashboard mounts the auth context already has fresh data.
+  // No on-mount fetch needed here.
   const openRecommend = useCallback(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -612,8 +377,30 @@ function Dashboard() {
     return errs;
   }, [currentPassword, newPassword, confirmPassword]);
 
+  // Map backend `details` array (express-validator) onto the FE's
+  // per-field error map, falling back to a banner for unknown fields.
+  const mapChangePwFieldErrors = useCallback((details) => {
+    const fieldErrors = {};
+    let bannerMessage = "";
+    if (!Array.isArray(details)) return { fieldErrors, bannerMessage };
+
+    for (const entry of details) {
+      const serverKey = entry?.path || entry?.field;
+      const msg = entry?.msg || entry?.message;
+      if (!msg) continue;
+
+      if (serverKey === "currentPassword") fieldErrors.currentPassword = msg;
+      else if (serverKey === "password") fieldErrors.newPassword = msg;
+      else if (serverKey === "confirmPassword")
+        fieldErrors.confirmPassword = msg;
+      else
+        bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
+    }
+    return { fieldErrors, bannerMessage };
+  }, []);
+
   const handleChangePwSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e?.preventDefault();
       const errs = validateChangePw();
       setChangePwErrors(errs);
@@ -623,12 +410,35 @@ function Dashboard() {
       }
 
       setIsChangePwSubmitting(true);
-      console.log(
-        "[Change Password] submit (UI only — backend wiring pending):",
-        { currentPassword, newPassword, confirmPassword },
-      );
-      setIsChangePwSubmitting(false);
-      closeChangePassword();
+      setChangePwSubmitError("");
+      try {
+        await api.patch("/users/me/password", {
+          currentPassword,
+          password: newPassword,
+          confirmPassword,
+        });
+        closeChangePassword();
+      } catch (err) {
+        const data = err?.response?.data;
+        if (err?.response?.status === 401) {
+          // AUTH_INVALID_CREDENTIALS — surface on the currentPassword field.
+          setChangePwErrors((prev) => ({
+            ...prev,
+            currentPassword: data?.message || "Current password is incorrect",
+          }));
+        } else {
+          const { fieldErrors, bannerMessage } =
+            mapChangePwFieldErrors(data?.details);
+          if (Object.keys(fieldErrors).length) {
+            setChangePwErrors((prev) => ({ ...prev, ...fieldErrors }));
+          }
+          setChangePwSubmitError(
+            bannerMessage || data?.message || "Couldn't change password. Please try again.",
+          );
+        }
+      } finally {
+        setIsChangePwSubmitting(false);
+      }
     },
     [
       validateChangePw,
@@ -636,6 +446,7 @@ function Dashboard() {
       newPassword,
       confirmPassword,
       closeChangePassword,
+      mapChangePwFieldErrors,
     ],
   );
 
@@ -756,6 +567,16 @@ function Dashboard() {
         </div>
 
         <div className="dash-header-actions">
+          <button
+            type="button"
+            className={`btn btn-outline dash-compare-btn ${isCompareOpen ? "active" : ""}`}
+            onClick={() => setIsCompareOpen((o) => !o)}
+            aria-expanded={isCompareOpen}
+            aria-controls="dash-compare-panel"
+            title="Compare two phones side by side"
+          >
+            <span>Compare</span>
+          </button>
           <button
             type="button"
             className="btn btn-primary dash-recommend-btn"
@@ -1295,6 +1116,8 @@ function Dashboard() {
                 className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
                 onMouseEnter={() => setHoveredCard(p.id)}
                 onMouseLeave={() => setHoveredCard(null)}
+                onClick={() => p.id && navigate(`/phones/${p.id}`)}
+                style={{ cursor: "pointer" }}
               >
                 <div className="phone-card-top">
                   <div className="phone-card-image">
@@ -1648,6 +1471,11 @@ function Dashboard() {
           </div>
         </div>
       )}
+
+      <ComparePanel
+        open={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+      />
     </div>
   );
 }

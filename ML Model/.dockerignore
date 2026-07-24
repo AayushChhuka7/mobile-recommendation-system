@@ -1,0 +1,118 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# ML Model — Docker build context exclusions
+#
+# The ML Model Dockerfile (ML Model/Dockerfile) does ONLY explicit COPY lines
+# for: requirements.txt, pipeline/, artifacts/, After_EDA_and_Feature_ENginering.csv
+# So the .dockerignore below is mostly belt-and-suspenders — it ensures the
+# build CONTEXT sent to the daemon is small (sending 17 MB of unused notebooks
+# to the daemon on every rebuild is wasteful even if Dockerfile doesn't COPY them).
+#
+# Do NOT exclude pipeline/, artifacts/, requirements.txt, or the
+# After_EDA_and_Feature_ENginering.csv file (used at runtime by serve.py).
+# ─────────────────────────────────────────────────────────────────────────────
+
+# --- Python virtualenvs ---
+.venv
+venv
+**/.venv
+**/venv
+env/
+**/env
+
+# --- Python caches ---
+__pycache__
+**/__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+**/*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+
+# --- Notebooks & notebook metadata ---
+# These are huge (some >7 MB each) and never used by serve.py at runtime.
+*.ipynb
+**/*.ipynb
+.ipynb_checkpoints
+**/.ipynb_checkpoints
+
+# --- Datasets that are NOT the one serve.py loads ---
+# serve.py reads:  After_EDA_and_Feature_ENginering.csv  (KEEP)
+# Everything else under dataset/ is one-off exploration output.
+mobiles_data_with_predicted_antutu.csv
+GSMArena_AnTuTu_Final_two.csv
+GSMArena_Cleaned_Dataset.csv
+GSMArenaDataset
+GSMArenaDataset/**
+GSMArenaDataset_BATCH*
+**/GSMArenaDataset_BATCH*
+# Customer dataset is used by the backend, not the ML service.
+customer_dataset.csv
+
+# --- Per-batch raw data directories ---
+# The `GSMArenaDataset/` and `GSMArenaDataset_BATCH*` folders contain raw
+# scrape outputs that are 100+ MB combined and unused at runtime.
+
+# --- Scratch / debug / progress text dumps ---
+cells_dump.txt
+cells_dump2.txt
+cells_gap.txt
+preproc_cells.txt
+*.dump.txt
+*.scratch.*
+Progress Fetch Data
+**/Progress Fetch Data
+web_scribing_to_fetch_data
+**/web_scribing_to_fetch_data
+
+# --- Segmentation outputs (not used by serve.py) ---
+segmentation_outputs
+**/segmentation_outputs
+
+# --- Node / lockfiles (not used at all) ---
+package-lock.json
+node_modules
+
+# --- Secrets & local config ---
+.env
+.env.*
+!**/.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# --- Tooling & IDE caches ---
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# --- Claude / agent state ---
+.claude
+.claude/**
+**/.claude
+CLAUDE.md
+**/CLAUDE.md
+
+# --- Docs / housekeeping ---
+README.md
+**/README.md
+LICENSE
+**/LICENSE
+
+# --- Test artefacts ---
+# NOTE: We deliberately do NOT exclude `**/test_*.py` because the Dockerfile
+# does `COPY pipeline/ ./pipeline/` (whole directory). Excluding an individual
+# test file inside the source tree would break the COPY. The test file is
+# small (<10 KB) and harmless inside the image.
+# **/test_*.py
+# **/*_test.py
+# **/tests/**

@@ -1,0 +1,358 @@
+/* ----------------------------------------------------------------------
+   Compare page styles
+   ----------------------------------------------------------------------
+   The pre-existing selectors (.compare-page-main, .compare-selection-area,
+   .compare-input-group, .compare-results-area, .compare-result-card, etc.)
+   were already in use without local definitions. They're preserved here
+   so the page renders, and the new AI Comparison / full-detail sections
+   are added below in a clearly-namespaced block.
+   ---------------------------------------------------------------------- */
+
+.compare-page-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+  color: #1f2937;
+}
+
+.compare-page-header h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+  color: #0f172a;
+}
+
+.compare-page-header p {
+  margin: 0 0 24px;
+  color: #475569;
+}
+
+.compare-section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6366f1;
+  margin: 0 0 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.compare-ml-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  min-width: 22px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+/* ---- ML comparison section ---- */
+
+.compare-ml-area {
+  margin-top: 32px;
+  padding: 24px;
+  border: 1px solid #e0e7ff;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f5f3ff 0%, #ffffff 70%);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.08);
+}
+
+.compare-ml-empty,
+.compare-ml-loading,
+.compare-ml-error {
+  padding: 18px 16px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #475569;
+  text-align: center;
+}
+
+.compare-ml-empty p {
+  margin: 0;
+}
+
+.compare-ml-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+.compare-ml-error p {
+  margin: 0 0 12px;
+}
+
+.compare-ml-results {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.compare-ml-headline {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid #e0e7ff;
+  border-radius: 12px;
+}
+
+.compare-ml-headline-side {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.compare-ml-headline-side:nth-child(3) {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.compare-ml-headline-vs {
+  font-weight: 700;
+  color: #6366f1;
+  letter-spacing: 0.08em;
+}
+
+.compare-ml-side-name {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compare-ml-side-price {
+  color: #6366f1;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.compare-ml-winner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #e0e7ff;
+  border-radius: 12px;
+  color: #1f2937;
+}
+
+.compare-ml-winner strong {
+  color: #4f46e5;
+}
+
+.compare-ml-dim-table {
+  background: #ffffff;
+  border: 1px solid #e0e7ff;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.compare-ml-dim-table h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #4338ca;
+}
+
+.compare-ml-shap {
+  background: #ffffff;
+  border: 1px solid #e0e7ff;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.compare-ml-shap h4 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #4338ca;
+}
+
+.compare-ml-shap-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.compare-ml-shap-name {
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.compare-ml-shap ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.compare-ml-shap li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: #f5f3ff;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #312e81;
+}
+
+.compare-ml-shap-feat {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}
+
+.compare-ml-shap-val {
+  font-weight: 600;
+  color: #4f46e5;
+}
+
+@media (max-width: 640px) {
+  .compare-ml-headline {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .compare-ml-headline-side:nth-child(3) {
+    align-items: center;
+    text-align: center;
+  }
+  .compare-ml-shap-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Full-detail panel section ---- */
+
+.compare-fulldetail-area {
+  margin-top: 32px;
+}
+
+.compare-fulldetail-help {
+  color: #64748b;
+  margin: 0 0 14px;
+  font-size: 14px;
+}
+
+.compare-fulldetail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .compare-fulldetail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compare-fulldetail-panel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.compare-fulldetail-panel.open {
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  border-color: #c7d2fe;
+}
+
+.compare-fulldetail-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 18px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  color: #0f172a;
+}
+
+.compare-fulldetail-toggle:hover {
+  background: #f8fafc;
+}
+
+.compare-fulldetail-tag {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #4f46e5;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 6px;
+  vertical-align: middle;
+}
+
+.compare-fulldetail-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.compare-fulldetail-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: transform 0.2s ease;
+}
+
+.compare-fulldetail-panel.open .compare-fulldetail-chevron {
+  transform: rotate(180deg);
+  color: #4f46e5;
+}
+
+.compare-fulldetail-body {
+  padding: 0 18px 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.compare-fulldetail-body .phone-detail-page {
+  background: transparent;
+  padding: 0;
+}
+
+.compare-fulldetail-body .phone-detail-topbar {
+  display: none;
+}
+
+.compare-new-btn {
+  display: block;
+  margin: 32px auto 0;
+}
+
+/* ---- Minimal layout helpers used by the existing compare flow ----
+   (Kept conservative to avoid clobbering any other surface that might
+   pick up the same names.) */
+
+.compare-error-banner {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  font-size: 14px;
+}

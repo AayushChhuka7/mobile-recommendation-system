@@ -22,6 +22,7 @@ import p16 from "../assets/camon40.jpg";
 import p17 from "../assets/iphone16.jpg";
 import p18 from "../assets/iphonerandom2.jpeg";
 import p19 from "../assets/nokia6280.jpg";
+import p20 from "../assets/group.jpeg";
 
 import {
   MailIcon,
@@ -52,6 +53,7 @@ const ALL_LOGIN_PHONES = [
   { src: p17, alt: "iPhone 16" },
   { src: p18, alt: "iPhone 15" },
   { src: p19, alt: "Nokia 6280" },
+  { src: p20, alt: "Group Pic" },
 ];
 
 function getRandomFourPhones() {
