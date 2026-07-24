@@ -1,0 +1,94 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Backend — Docker build context exclusions
+#
+# The backend Dockerfile (backend/Dockerfile) does:
+#   COPY package*.json ./
+#   COPY . .
+#   RUN npx prisma generate
+# We exclude everything that is not needed at build OR runtime.
+#
+# Do NOT exclude .env.example — it is needed for compose's env_file.
+# Do NOT exclude src/, prisma/, seed.mjs, prisma.config.ts, package*.json.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# --- Node ---
+node_modules
+**/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store
+
+# --- Secrets & local config ---
+# Real .env files must NEVER enter the image. The .env.example template is
+# kept so compose's env_file lookup can find it if the dev wires that in.
+.env
+.env.*
+!**/.env.example
+**/.env
+**/.env.*
+!**/.env.example
+backend/.env
+
+# --- Tooling & IDE caches ---
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.eslintcache
+.cache
+.parcel-cache
+.vite
+
+# --- Claude / agent state ---
+.claude
+.claude/**
+backend/.claude
+CLAUDE.md
+CLAUDE_CONTEXT.md
+
+# --- Docs (not needed at runtime) ---
+docs
+docs/**
+backend/docs
+README.md
+**/README.md
+LICENSE
+**/LICENSE
+
+# --- Build output (if anyone runs `npm run build` locally before docker build) ---
+dist
+build
+coverage
+**/dist
+**/build
+**/coverage
+
+# --- Dev-only Prisma scripts ---
+# `prisma db push` is run by the db-init service, not the backend. The
+# data-quality and deep-verify scripts are manual ops, not runtime.
+prisma/data-quality.mjs
+prisma/data-quality.mjs.map
+prisma/deep-verify.mjs
+prisma/deep-verify.mjs.map
+prisma/verify-import.mjs
+prisma/verify-import.mjs.map
+
+# --- Misc dev artefacts ---
+inspect.sql
+*.local
+*.tmp
+tmp/
+tmp/**
+uploads/
+uploads/**
+
+# --- Test artefacts ---
+**/*.test.mjs
+**/*.spec.mjs
+**/__tests__/**
+**/__mocks__/**

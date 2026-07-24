@@ -1,0 +1,380 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(main.tex
+LaTeX2e <2025-11-01>
+L3 programming layer <2026-01-19>
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/base\report.cls
+Document Class: report 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/base\size12.clo))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)
+)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.
+cfg)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.de
+f)))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty)
+ (C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\times.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyhdr.sty)
+ (C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/tocloft\tocloft.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty)
+ (C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty))
+ (C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
+) (C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/tools\longtable.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.st
+y)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefin
+ekeys.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.
+sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmd
+s.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.
+sty)))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty)
+
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\getti
+tlestring.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.st
+y)))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.
+sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcal
+c.sty)))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfi
+lecheck.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\unique
+counter.sty)))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty)
+)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumitem.sty)
+ (C:\Users\Sushil\AppData\Local\MiKTeX\tex/latex/parskip\parskip.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ptm.fd))
+(C:\Users\Sushil\AppData\Local\MiKTeX\tex/latex/multirow\multirow.sty)
+(C:\Users\Sushil\AppData\Local\MiKTeX\tex/latex/pgfgantt\pgfgantt.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz
+.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
+
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.s
+ty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
+l-common.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfuti
+l-latex.def)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs
+.code.tex
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf\pgf.revision.tex
+)))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgfcore
+.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/systemlayer\pgfsys
+.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys.code.tex
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+s.code.tex
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+slibraryfiltered.code.tex))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.
+cfg)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys-pdftex.def
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ys-common-pdf.def)))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+yssoftpath.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfs
+ysprotocol.code.tex))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx
+))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+re.code.tex
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.cod
+e.tex
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathutil
+.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathpars
+er.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.basic.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.trigonometric.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.random.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.comparison.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.base.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.round.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.misc.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfunc
+tions.integerarithmetics.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathcalc
+.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloa
+t.code.tex))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code
+.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repoints.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathconstruct.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathusage.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rescopes.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+regraphicstate.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+retransformations.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+requick.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reobjects.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repathprocessing.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rearrows.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reshade.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reimage.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+reexternal.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+relayers.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+retransparency.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+repatterns.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfco
+rerdf.code.tex)))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+eshapes.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+eplot.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfc
+omp-version-0-65.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfc
+omp-version-1-18.sty))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgffor.s
+ty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfkeys.
+sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfkey
+s.code.tex))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/math\pgfmath.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmath.cod
+e.tex))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor
+.code.tex))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz\tikz.code.tex
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryplothandlers.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodul
+ematrix.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarytopaths.code.tex)))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryarrows.code.tex
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryarrows.code.tex))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarybackgrounds.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarycalc.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarypatterns.code.tex
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+rarypatterns.code.tex))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibrarypositioning.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/ti
+kz/libraries\tikzlibraryshapes.geometric.code.tex
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries/shapes
+\pgflibraryshapes.geometric.code.tex))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfcalen
+dar.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfcal
+endar.code.tex)))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/graphics\rotating.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/graphics\lscape.sty)
+(C:\Users\Sushil\AppData\Local\MiKTeX\tex/latex/chngcntr\chngcntr.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflib
+raryarrows.meta.code.tex)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pd
+ftex.def) (main.aux (titlepage.aux)
+
+LaTeX Warning: Label `fig:datacollection' multiply defined.
+
+)
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.m
+kii
+[Loading MPS to PDF converter (version 2006.09.02).]
+)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-
+base.sty
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.
+cfg))
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/caption\ltcaption.sty)
+(main.out) (main.out) (titlepage.tex [1{C:/Users/Sushil/AppData/Local/MiKTeX/fo
+nts/map/pdftex/pdftex.map}{C:/Users/Sushil/AppData/Local/Programs/MiKTeX/fonts/
+enc/dvips/base/8r.enc} <./Images/ncelogo.jpg>]) [1] (main.toc
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd)
+[2]) [3] (main.lof) [4] (main.lot) [5] [6]
+Chapter 1.
+[1] [2] [3]
+Overfull \hbox (2.15526pt too wide) in paragraph at lines 262--263
+[]\T1/ptm/m/n/12 To col-lect and pre-pro-cess mo-bile phone data from GS-MArena
+ and An-TuTu bench-
+[4]
+Chapter 2.
+[5] [6]
+Overfull \hbox (3.23514pt too wide) in paragraph at lines 311--312
+\T1/ptm/m/n/12 vant and prof-itable rec-om-men-da-tions. Fur-ther-more, ex-plai
+n-able rec-om-men-da-tion frame-
+[7] [8]
+Chapter 3.
+[9 <./Images/SystemFlowchart.png>] [10 <./Images/pipeline.png>] [11 <./Images/d
+atacollection.png>] [12] [13]
+Overfull \hbox (2.03528pt too wide) in paragraph at lines 420--421
+\T1/ptm/m/n/12 chased, and ex-change his-tory are first parsed into struc-tured
+ data af-ter cor-rect-ing boolean
+[14 <./Images/dataprocessing.png>] [15] [16] [17 <./Images/xgboost.png>]
+[18] [19 <./Images/kmeans.png>] [20] [21]
+Chapter 4.
+[22]
+Overfull \hbox (4.18344pt too wide) in paragraph at lines 698--699
+\T1/ptm/m/n/12 from mo-bile phone spec-i-fi-ca-tions and also pre-dict the mo-b
+ile phone. The model achieved
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1pcr.fd)
+[23] [24 <./Images/vis1.png> <./Images/vis2.png> <./Images/vis3.png> <./Images/
+vis4.png>]
+(C:\Users\Sushil\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd)
+[25 <./Images/frontendui.jpeg>] [26]
+Underfull \hbox (badness 6741) in paragraph at lines 844--845
+[]\T1/ptm/m/n/12 B. Singh, ``Cus-tomer Seg-men-ta-tion Rec-om-men-da-tion,'' Gi
+tHub Repos-i-
+
+Underfull \hbox (badness 10000) in paragraph at lines 844--845
+\T1/ptm/m/n/12 tory, 2020. [On-line]. Avail-able: [][]$https : / / github . com
+ / bhaveshsingh0206 /
+
+Underfull \hbox (badness 6396) in paragraph at lines 847--848
+[]\T1/ptm/m/n/12 B. K. Pandey, ``The Cold Start Prob-lem in Rec-om-mender Sys-t
+ems,''
+
+Underfull \hbox (badness 2261) in paragraph at lines 853--854
+\T1/ptm/m/n/12 able: [][]$https : / / www . researchgate . net / ^^\gure / A-[]
+general-[]architecture-[]of-[]XGBoost _
+
+Underfull \hbox (badness 10000) in paragraph at lines 856--857
+[]\T1/ptm/m/n/12 Towards AI, ``Fully Ex-plained K-Means Clus-ter-ing with
+
+Underfull \hbox (badness 10000) in paragraph at lines 856--857
+\T1/ptm/m/n/12 Python,'' 2026. [On-line]. Avail-able: [][]$https : / / pub . to
+wardsai . net /
+
+Underfull \hbox (badness 10000) in paragraph at lines 856--857
+\T1/ptm/m/n/12 fully-[]explained-[]k-[]means-[]clustering-[]with-[]python-[]e7c
+aa573176a$[][]. [Ac-cessed:
+
+Underfull \hbox (badness 2538) in paragraph at lines 859--860
+[]\T1/ptm/m/n/12 P. Qi, X. Zhang, and Z. Wang, ``An XG-Boost Rec-om-men-da-tion
+ Al-go-
+
+Underfull \hbox (badness 3612) in paragraph at lines 859--860
+\T1/ptm/m/n/12 rithm Based on Col-lab-o-ra-tive Fil-ter-ing,'' in \T1/ptm/m/it/
+12 Proc. IEEE 9th Int. Conf.
+
+Underfull \hbox (badness 1968) in paragraph at lines 859--860
+\T1/ptm/m/it/12 Soft-ware En-gi-neer-ing and Ser-vice Sci-ence (IC-SESS)\T1/ptm
+/m/n/12 , 2018, pp. 138--141,
+[27] [28] (main.aux (titlepage.aux))
+
+LaTeX Warning: There were multiply-defined labels.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)
+pdfTeX warning (dest): name{figure.caption.66} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.63} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.67} has been referenced but does not exist,
+ replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.64} has been referenced but does not exi
+st, replaced by a fixed one
+
+<C:/Users/Sushil/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
+mex10.pfb><C:/Users/Sushil/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmmi12.pfb><C:/Users/Sushil/AppData/Local/Programs/MiKTeX/fonts/type1/
+public/amsfonts/cm/cmmi6.pfb><C:/Users/Sushil/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Sushil/AppData/Local/Programs/M
+iKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Sushil/AppData/Local/P
+rograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Sushil/AppData
+/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Sush
+il/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/U
+sers/Sushil/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C
+:/Users/Sushil/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><
+C:/Users/Sushil/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb>
+<C:/Users/Sushil/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pf
+b>
+Output written on main.pdf (35 pages, 1816597 bytes).
+Transcript written on main.log.

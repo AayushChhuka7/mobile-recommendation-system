@@ -1,0 +1,88 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Frontend — Docker build context exclusions
+#
+# The frontend Dockerfile (frontend/Dockerfile) does:
+#   COPY package*.json ./
+#   COPY . .
+# We exclude everything that is not needed at build OR runtime.
+#
+# Do NOT exclude .env.example (kept for parity with the backend).
+# Do NOT exclude src/, public/, index.html, vite.config.js, package*.json.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# --- Node ---
+node_modules
+**/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store
+
+# --- Secrets & local config ---
+.env
+.env.*
+!**/.env.example
+**/.env
+**/.env.*
+!**/.env.example
+frontend/.env
+
+# --- Tooling & IDE caches ---
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.eslintcache
+.cache
+.parcel-cache
+.vite
+
+# --- Claude / agent state ---
+.claude
+.claude/**
+frontend/.claude
+CLAUDE.md
+CLAUDE_CONTEXT.md
+
+# --- Build output (rebuilt inside the image; never ship a stale build) ---
+dist
+dist-ssr
+build
+coverage
+**/dist
+**/dist-ssr
+**/build
+**/coverage
+
+# --- Docs / housekeeping (frontend is JS, no markdown docs ship in container) ---
+README.md
+**/README.md
+LICENSE
+**/LICENSE
+CHANGELOG.md
+
+# --- Misc dev artefacts ---
+*.local
+*.tmp
+tmp/
+tmp/**
+uploads/
+uploads/**
+
+# --- Test artefacts ---
+**/*.test.js
+**/*.test.jsx
+**/*.spec.js
+**/*.spec.jsx
+**/__tests__/**
+**/__mocks__/**
+**/*.test.ts
+**/*.test.tsx
+
+# --- ESLint config is dev-only; vite is invoked at runtime so vite.config.js stays ---
+.eslintrc*
+eslint.config.js
