@@ -137,7 +137,7 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout, setUser } = useAuth();
+  const { user, logout } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -241,40 +241,10 @@ function Dashboard() {
     };
   }, []);
 
-  // Hydrate the stored user with full profile fields. Login only returns
-  // { id, email }, but the dashboard needs name/phoneNo. Pull them from
-  // the existing GET /users/me endpoint and merge into the auth context
-  // (which persists to localStorage, so the values survive reloads).
-  useEffect(() => {
-    let ignore = false;
-    async function loadProfile() {
-      try {
-        const res = await api.get("/users/me");
-        const profile = res?.data?.data;
-        if (ignore || !profile) return;
-        setUser({
-          id: profile.userId ?? user?.id,
-          name: profile.name ?? user?.name,
-          email: profile.email ?? user?.email,
-          phoneNo: profile.phoneNo ?? user?.phoneNo,
-        });
-      } catch (err) {
-        // 401 is handled by the phones loader below; we don't want to
-        // double-handle it here. Just log and continue.
-        if (err.response?.status !== 401) {
-          console.error("Failed to load user profile:", err);
-        }
-      }
-    }
-    loadProfile();
-    return () => {
-      ignore = true;
-    };
-    // We intentionally only run this on mount. The `user` reads inside
-    // are just fallbacks for the merge; we don't want to refetch on
-    // every context update.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Profile fields (name, phoneNo) are hydrated by AuthProvider's
+  // session-validation effect on app boot, so by the time the
+  // dashboard mounts the auth context already has fresh data.
+  // No on-mount fetch needed here.
   const openRecommend = useCallback(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -407,8 +377,30 @@ function Dashboard() {
     return errs;
   }, [currentPassword, newPassword, confirmPassword]);
 
+  // Map backend `details` array (express-validator) onto the FE's
+  // per-field error map, falling back to a banner for unknown fields.
+  const mapChangePwFieldErrors = useCallback((details) => {
+    const fieldErrors = {};
+    let bannerMessage = "";
+    if (!Array.isArray(details)) return { fieldErrors, bannerMessage };
+
+    for (const entry of details) {
+      const serverKey = entry?.path || entry?.field;
+      const msg = entry?.msg || entry?.message;
+      if (!msg) continue;
+
+      if (serverKey === "currentPassword") fieldErrors.currentPassword = msg;
+      else if (serverKey === "password") fieldErrors.newPassword = msg;
+      else if (serverKey === "confirmPassword")
+        fieldErrors.confirmPassword = msg;
+      else
+        bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
+    }
+    return { fieldErrors, bannerMessage };
+  }, []);
+
   const handleChangePwSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e?.preventDefault();
       const errs = validateChangePw();
       setChangePwErrors(errs);
@@ -418,12 +410,35 @@ function Dashboard() {
       }
 
       setIsChangePwSubmitting(true);
-      console.log(
-        "[Change Password] submit (UI only — backend wiring pending):",
-        { currentPassword, newPassword, confirmPassword },
-      );
-      setIsChangePwSubmitting(false);
-      closeChangePassword();
+      setChangePwSubmitError("");
+      try {
+        await api.patch("/users/me/password", {
+          currentPassword,
+          password: newPassword,
+          confirmPassword,
+        });
+        closeChangePassword();
+      } catch (err) {
+        const data = err?.response?.data;
+        if (err?.response?.status === 401) {
+          // AUTH_INVALID_CREDENTIALS — surface on the currentPassword field.
+          setChangePwErrors((prev) => ({
+            ...prev,
+            currentPassword: data?.message || "Current password is incorrect",
+          }));
+        } else {
+          const { fieldErrors, bannerMessage } =
+            mapChangePwFieldErrors(data?.details);
+          if (Object.keys(fieldErrors).length) {
+            setChangePwErrors((prev) => ({ ...prev, ...fieldErrors }));
+          }
+          setChangePwSubmitError(
+            bannerMessage || data?.message || "Couldn't change password. Please try again.",
+          );
+        }
+      } finally {
+        setIsChangePwSubmitting(false);
+      }
     },
     [
       validateChangePw,
@@ -431,6 +446,7 @@ function Dashboard() {
       newPassword,
       confirmPassword,
       closeChangePassword,
+      mapChangePwFieldErrors,
     ],
   );
 
@@ -1100,6 +1116,8 @@ function Dashboard() {
                 className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
                 onMouseEnter={() => setHoveredCard(p.id)}
                 onMouseLeave={() => setHoveredCard(null)}
+                onClick={() => p.id && navigate(`/phones/${p.id}`)}
+                style={{ cursor: "pointer" }}
               >
                 <div className="phone-card-top">
                   <div className="phone-card-image">

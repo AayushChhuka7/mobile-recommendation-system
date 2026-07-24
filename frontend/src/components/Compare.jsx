@@ -1,18 +1,17 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getPhoneById } from "../services/phones";
+import { postCompareMl } from "../services/recommend";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { PhoneDetailView } from "./PhoneDetail";
 import "./Dashboard.css";
 import "./Compare.css";
 import {
   UserIcon,
-  SearchIcon,
   CloseIcon,
   LogoutIcon,
-  CameraIcon,
-  BatteryIcon,
-  CpuIcon,
-  TagIcon,
+  ChevronDownIcon,
 } from "./AuthShared";
 
 // ---- Debounce helper ----
@@ -154,19 +153,104 @@ function CompareCategoryRow({ label, value1, value2, winner, format }) {
   );
 }
 
-// ---- Get winner helper ----
-function getWinner(val1, val2, higherIsBetter = true) {
-  if (val1 == null && val2 == null) return null;
-  if (val1 == null) return "phone2";
-  if (val2 == null) return "phone1";
-  if (val1 === val2) return "tie";
-  return higherIsBetter
-    ? val1 > val2
-      ? "phone1"
-      : "phone2"
-    : val1 < val2
-      ? "phone1"
-      : "phone2";
+// ---- Pretty-print a dimension key like "Connectivity" -> "Connectivity" ----
+function prettyDim(dim) {
+  return dim;
+}
+
+function formatScore(v) {
+  if (v == null || Number.isNaN(Number(v))) return "—";
+  return Number(v).toFixed(1);
+}
+
+function formatMlPrice(price) {
+  if (price == null || Number.isNaN(Number(price))) return "—";
+  return `€${Number(price).toLocaleString()}`;
+}
+
+// ---- Full-detail panel for a single phone (uses GET /phones/:id) ----
+function PhoneFullDetailPanel({ phone, index, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const [detail, setDetail] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const inFlightRef = useRef(null);
+
+  const toggle = () => {
+    setOpen((prev) => {
+      const next = !prev;
+      // Lazy-load the full detail the first time we open.
+      if (next && !detail && !loading && inFlightRef.current !== phone.id) {
+        loadDetail();
+      }
+      return next;
+    });
+  };
+
+  const loadDetail = async () => {
+    inFlightRef.current = phone.id;
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getPhoneById(phone.id);
+      setDetail(data);
+    } catch (err) {
+      setError(
+        err?.response?.data?.message || "Couldn't load full specifications.",
+      );
+    } finally {
+      setLoading(false);
+      inFlightRef.current = null;
+    }
+  };
+
+  return (
+    <div className={`compare-fulldetail-panel ${open ? "open" : ""}`}>
+      <button
+        type="button"
+        className="compare-fulldetail-toggle"
+        onClick={toggle}
+        aria-expanded={open}
+        aria-controls={`compare-fulldetail-${phone.id}`}
+      >
+        <span>
+          <span className="compare-fulldetail-tag">Phone {index + 1}</span>
+          <span className="compare-fulldetail-name">
+            {phone.modelName || "—"}
+          </span>
+        </span>
+        <span className="compare-fulldetail-chevron" aria-hidden="true">
+          <ChevronDownIcon />
+        </span>
+      </button>
+
+      {open && (
+        <div
+          className="compare-fulldetail-body"
+          id={`compare-fulldetail-${phone.id}`}
+        >
+          {loading && (
+            <p className="dash-status" style={{ textAlign: "center" }}>
+              Loading full specifications…
+            </p>
+          )}
+          {error && !loading && (
+            <div className="phone-detail-error">
+              <p>{error}</p>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={loadDetail}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+          {detail && !loading && !error && <PhoneDetailView phone={detail} />}
+        </div>
+      )}
+    </div>
+  );
 }
 
 // ---- Main Compare Component ----
@@ -197,14 +281,18 @@ function Compare() {
     if (!phone1 || !phone2) return;
     setIsLoading(true);
     setError("");
+    setCompareResult(null);
     try {
-      const res = await api.post("/phones/compare", {
-        phoneIds: [phone1.id, phone2.id],
+      const data = await postCompareMl({
+        modelNameA: phone1.modelName,
+        modelNameB: phone2.modelName,
       });
-      setCompareResult(res.data?.data || []);
+      setCompareResult(data);
     } catch (err) {
       setError(
-        err.response?.data?.message || "Comparison failed. Please try again.",
+        err.response?.data?.message ||
+          err.message ||
+          "Comparison failed. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -230,95 +318,16 @@ function Compare() {
 
   const displayName = user?.name || "there";
 
-  // Build comparison categories from result
-  const comparisonCategories = compareResult
-    ? [
-        {
-          label: "Price",
-          value1: parseFloat(compareResult[0]?.pricing?.cheapest?.price || 0),
-          value2: parseFloat(compareResult[1]?.pricing?.cheapest?.price || 0),
-          higherIsBetter: false,
-          format: (v) => `€${v}`,
-        },
-        {
-          label: "Performance (AnTuTu)",
-          value1: compareResult[0]?.antutuScore,
-          value2: compareResult[1]?.antutuScore,
-          higherIsBetter: true,
-          format: (v) => v?.toLocaleString() || "—",
-        },
-        {
-          label: "Display Size",
-          value1: parseFloat(compareResult[0]?.specs?.display?.size || 0),
-          value2: parseFloat(compareResult[1]?.specs?.display?.size || 0),
-          higherIsBetter: true,
-          format: (v) => `${v}"`,
-        },
-        {
-          label: "Refresh Rate",
-          value1: compareResult[0]?.specs?.display?.refreshRate,
-          value2: compareResult[1]?.specs?.display?.refreshRate,
-          higherIsBetter: true,
-          format: (v) => (v ? `${v}Hz` : "—"),
-        },
-        {
-          label: "Main Camera",
-          value1: compareResult[0]?.specs?.camera?.lensCount,
-          value2: compareResult[1]?.specs?.camera?.lensCount,
-          higherIsBetter: true,
-          format: (v) => (v ? `${v} lenses` : "—"),
-        },
-        {
-          label: "Battery",
-          value1: compareResult[0]?.specs?.battery?.capacity,
-          value2: compareResult[1]?.specs?.battery?.capacity,
-          higherIsBetter: true,
-          format: (v) => (v ? `${v}mAh` : "—"),
-        },
-        {
-          label: "Charging",
-          value1: compareResult[0]?.specs?.battery?.wiredCharging,
-          value2: compareResult[1]?.specs?.battery?.wiredCharging,
-          higherIsBetter: true,
-          format: (v) => (v ? `${v}W` : "—"),
-        },
-        {
-          label: "OS",
-          value1: compareResult[0]?.specs?.platform?.os,
-          value2: compareResult[1]?.specs?.platform?.os,
-          higherIsBetter: true,
-          format: (v) => v || "—",
-        },
-        {
-          label: "5G",
-          value1: compareResult[0]?.specs?.network?.supports5g,
-          value2: compareResult[1]?.specs?.network?.supports5g,
-          higherIsBetter: true,
-          format: (v) => (v ? "✅" : "❌"),
-        },
-        {
-          label: "NFC",
-          value1: compareResult[0]?.specs?.network?.supportsNfc,
-          value2: compareResult[1]?.specs?.network?.supportsNfc,
-          higherIsBetter: true,
-          format: (v) => (v ? "✅" : "❌"),
-        },
-        {
-          label: "Headphone Jack",
-          value1: compareResult[0]?.specs?.network?.headphoneJack,
-          value2: compareResult[1]?.specs?.network?.headphoneJack,
-          higherIsBetter: true,
-          format: (v) => (v ? "✅" : "❌"),
-        },
-        {
-          label: "Weight",
-          value1: parseFloat(compareResult[0]?.specs?.physical?.weight || 0),
-          value2: parseFloat(compareResult[1]?.specs?.physical?.weight || 0),
-          higherIsBetter: false,
-          format: (v) => `${v}g`,
-        },
-      ]
-    : [];
+  // The Compare button now calls the ML compare endpoint. The result
+  // shape is: { Phone_A, Price_A, Phone_B, Price_B, Dimension_Comparison,
+  //              Overall_Winner, SHAP_A, SHAP_B }.
+  const dimComparison =
+    compareResult && typeof compareResult === "object"
+      ? compareResult.Dimension_Comparison
+      : null;
+
+  const hasSelection = !!(phone1 && phone2);
+  const hasResult = !!compareResult;
 
   return (
     <div className="dashboard-page">
@@ -384,7 +393,10 @@ function Compare() {
       <main className="compare-page-main">
         <div className="compare-page-header">
           <h1>Compare Phones</h1>
-          <p>Select two phones to compare their specifications side by side</p>
+          <p>
+            Select two phones to compare them with our ML model across every
+            dimension (gaming, camera, battery, display, and more).
+          </p>
         </div>
 
         {/* Selection Area */}
@@ -412,7 +424,7 @@ function Compare() {
               type="button"
               className="btn btn-primary compare-btn"
               onClick={handleCompare}
-              disabled={!phone1 || !phone2 || isLoading}
+              disabled={!hasSelection || isLoading}
             >
               {isLoading ? "Comparing..." : "Compare Phones"}
             </button>
@@ -430,87 +442,196 @@ function Compare() {
           {error && <p className="compare-error-banner">{error}</p>}
         </div>
 
-        {/* Results Area */}
-        {compareResult && compareResult.length === 2 && (
-          <div className="compare-results-area">
-            {/* Phone Cards */}
-            <div className="compare-results-cards">
-              {compareResult.map((phone, idx) => {
-                const other = compareResult[1 - idx];
-                const isOverallWinner =
-                  (phone.antutuScore || 0) > (other?.antutuScore || 0);
-                return (
-                  <div
-                    key={phone.id}
-                    className={`compare-result-card ${isOverallWinner ? "winner" : ""}`}
-                  >
-                    {isOverallWinner && (
-                      <span className="winner-badge">🏆 Best Pick</span>
-                    )}
-                    <div className="compare-result-image">
-                      {phone.imageUrl ? (
-                        <img src={phone.imageUrl} alt={phone.modelName} />
-                      ) : (
-                        <span className="compare-result-emoji">📱</span>
-                      )}
+        {/* ML comparison results */}
+        <section
+          className="compare-ml-area"
+          aria-label="ML comparison results"
+        >
+          <div className="compare-section-label">
+            <span className="compare-ml-badge">AI</span>
+            <span>ML-powered comparison</span>
+          </div>
+
+          {!hasSelection && (
+            <div className="compare-ml-empty">
+              <p>
+                Select two phones above, then click{" "}
+                <strong>Compare Phones</strong> to see how our ML model scores
+                them across every dimension.
+              </p>
+            </div>
+          )}
+
+          {hasSelection && !isLoading && !hasResult && !error && (
+            <div className="compare-ml-empty">
+              <p>
+                Ready to run. Click <strong>Compare Phones</strong> to compute
+                per-dimension ML scores and the overall winner.
+              </p>
+            </div>
+          )}
+
+          {isLoading && (
+            <div className="compare-ml-loading">
+              <span className="autocomplete-spinner">⟳</span>{" "}
+              <span>Running ML comparison…</span>
+            </div>
+          )}
+
+          {hasResult && !isLoading && (
+            <div className="compare-ml-results">
+              <div className="compare-ml-headline">
+                <div className="compare-ml-headline-side">
+                  <span className="compare-ml-side-name">
+                    {compareResult.Phone_A}
+                  </span>
+                  <span className="compare-ml-side-price">
+                    {formatMlPrice(compareResult.Price_A)}
+                  </span>
+                </div>
+                <div className="compare-ml-headline-vs">VS</div>
+                <div className="compare-ml-headline-side">
+                  <span className="compare-ml-side-name">
+                    {compareResult.Phone_B}
+                  </span>
+                  <span className="compare-ml-side-price">
+                    {formatMlPrice(compareResult.Price_B)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="compare-ml-winner">
+                {compareResult.Overall_Winner &&
+                compareResult.Overall_Winner !== "Tie" ? (
+                  <>
+                    <span className="winner-badge">🏆 ML Pick</span>
+                    <strong>{compareResult.Overall_Winner}</strong>
+                    <span>
+                      {" "}
+                      wins on more dimensions than{" "}
+                      {compareResult.Overall_Winner === compareResult.Phone_A
+                        ? compareResult.Phone_B
+                        : compareResult.Phone_A}
+                      .
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="winner-badge muted">🤝 Even</span>
+                    <strong>Overall tie</strong>
+                    <span> — both phones win the same number of dimensions.</span>
+                  </>
+                )}
+              </div>
+
+              {dimComparison && Object.keys(dimComparison).length > 0 && (
+                <div className="compare-categories-table compare-ml-dim-table">
+                  <h3>Per-dimension ML scores</h3>
+                  {Object.entries(dimComparison).map(([dim, vals]) => {
+                    const winner =
+                      vals.Winner === compareResult.Phone_A
+                        ? "phone1"
+                        : vals.Winner === compareResult.Phone_B
+                          ? "phone2"
+                          : "tie";
+                    return (
+                      <CompareCategoryRow
+                        key={dim}
+                        label={prettyDim(dim)}
+                        value1={vals.A}
+                        value2={vals.B}
+                        winner={winner}
+                        format={formatScore}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+
+              {(compareResult.SHAP_A?.length > 0 ||
+                compareResult.SHAP_B?.length > 0) && (
+                <div className="compare-ml-shap">
+                  <h4>Why these scores? (top ML features)</h4>
+                  <div className="compare-ml-shap-grid">
+                    <div>
+                      <div className="compare-ml-shap-name">
+                        {compareResult.Phone_A}
+                      </div>
+                      <ul>
+                        {(compareResult.SHAP_A || []).map((s) => (
+                          <li key={s.feature}>
+                            <span className="compare-ml-shap-feat">
+                              {s.feature}
+                            </span>
+                            <span className="compare-ml-shap-val">
+                              +{Number(s.shap).toFixed(2)}
+                            </span>
+                          </li>
+                        ))}
+                        {(!compareResult.SHAP_A ||
+                          compareResult.SHAP_A.length === 0) && (
+                          <li className="ac-no-results">
+                            No feature data available.
+                          </li>
+                        )}
+                      </ul>
                     </div>
-                    <h3 className="compare-result-name">{phone.modelName}</h3>
-                    <p className="compare-result-brand">{phone.brand?.name}</p>
-                    <p className="compare-result-price">
-                      €{phone.pricing?.cheapest?.price || "—"}
-                    </p>
-                    <div className="compare-result-specs">
-                      {phone.specs?.platform?.chipset && (
-                        <div className="compare-spec-chip">
-                          <CpuIcon /> {phone.specs.platform.chipset}
-                        </div>
-                      )}
-                      {phone.specs?.camera?.main && (
-                        <div className="compare-spec-chip">
-                          <CameraIcon /> {phone.specs.camera.main}
-                        </div>
-                      )}
-                      {phone.specs?.battery?.capacity && (
-                        <div className="compare-spec-chip">
-                          <BatteryIcon /> {phone.specs.battery.capacity}mAh
-                        </div>
-                      )}
+                    <div>
+                      <div className="compare-ml-shap-name">
+                        {compareResult.Phone_B}
+                      </div>
+                      <ul>
+                        {(compareResult.SHAP_B || []).map((s) => (
+                          <li key={s.feature}>
+                            <span className="compare-ml-shap-feat">
+                              {s.feature}
+                            </span>
+                            <span className="compare-ml-shap-val">
+                              +{Number(s.shap).toFixed(2)}
+                            </span>
+                          </li>
+                        ))}
+                        {(!compareResult.SHAP_B ||
+                          compareResult.SHAP_B.length === 0) && (
+                          <li className="ac-no-results">
+                            No feature data available.
+                          </li>
+                        )}
+                      </ul>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              )}
             </div>
+          )}
+        </section>
 
-            {/* Category Comparison Table */}
-            <div className="compare-categories-table">
-              <h3>Detailed Comparison</h3>
-              {comparisonCategories.map((cat) => {
-                const winner = getWinner(
-                  cat.value1,
-                  cat.value2,
-                  cat.higherIsBetter,
-                );
-                return (
-                  <CompareCategoryRow
-                    key={cat.label}
-                    label={cat.label}
-                    value1={cat.value1}
-                    value2={cat.value2}
-                    winner={winner}
-                    format={cat.format}
-                  />
-                );
-              })}
+        {/* Full-detail panels — opens inline, doesn't leave the page */}
+        {hasSelection && (
+          <section
+            className="compare-fulldetail-area"
+            aria-label="Full phone specifications"
+          >
+            <div className="compare-section-label">Full specifications</div>
+            <p className="compare-fulldetail-help">
+              Expand a phone to load its complete specification sheet (same data
+              as the Phone Detail page).
+            </p>
+            <div className="compare-fulldetail-grid">
+              <PhoneFullDetailPanel phone={phone1} index={0} />
+              <PhoneFullDetailPanel phone={phone2} index={1} />
             </div>
+          </section>
+        )}
 
-            <button
-              type="button"
-              className="btn btn-outline compare-new-btn"
-              onClick={handleReset}
-            >
-              Compare different phones
-            </button>
-          </div>
+        {hasResult && (
+          <button
+            type="button"
+            className="btn btn-outline compare-new-btn"
+            onClick={handleReset}
+          >
+            Compare different phones
+          </button>
         )}
       </main>
     </div>
