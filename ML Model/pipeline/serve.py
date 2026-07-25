@@ -1,21 +1,19 @@
-"""FastAPI wrapper around `MobileRecommendationPipeline`.
 
-Run with: `uvicorn pipeline.serve:app --port 8002`
+"""
+FastAPI wrapper around `MobileRecommendationPipeline`.
+
+Run with:
+    uvicorn pipeline.serve:app --port 8002
+
 Endpoints:
-    GET  /health                  liveness + model status
-    POST /predict                 body: {phone_features} -> predicted AnTuTu + SHAP top-N
+    GET  /health                  liveness + model status + candidate count
+    POST /predict                 body: {features} -> predicted AnTuTu + SHAP top-N
     POST /predict_new             body: {raw: <cleaned phone row>} -> predict + score + SHAP
-    POST /score                   body: {phone_features} -> composite score dict
+    POST /score                   body: {features} -> composite score dict
     POST /recommend               body: UserPreferenceInput -> ranked list of phones
-    POST /compare                 body: {model_name_a, model_name_b} -> per-dim winner
-    GET  /explain/<model_name>    -> SHAP top-N for a phone in the pool
-
-Endpoints:
-    GET  /health         liveness + model status + candidate count
-    POST /predict        body: {features} → predicted AnTuTu + SHAP top-N
-    POST /score          body: {features} → composite score dict
-    POST /recommend      body: {persona, budget, preferences, topN}
-                         → ranked list of phones (Brand/Model/Price_EUR/Match_Score/Why)
+    POST /compare                 body: {model_name_a, model_name_b} -> per-dimension comparison
+    GET  /explain/{model_name}    -> SHAP top-N explanation
+    GET  /phones                  -> searchable phone list
 
 The model is loaded once at process start. The Node/Express backend at
 `backend/src/routes/recommendRoutes.mjs` calls these endpoints over HTTP.
