@@ -27,6 +27,7 @@ import {
   PASSWORD_RULES,
   PASSWORD_MIN_LENGTH,
 } from "./AuthShared";
+import ComparePanel from "./ComparePanel.jsx";
 
 // function ThemeIcon() {
 //   return (
@@ -145,6 +146,8 @@ function Dashboard() {
   const closeAnimMs = 180;
 
   const closeTimerRef = useRef(null);
+
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
 
   const [changePwPhase, setChangePwPhase] = useState("closed");
   const changePwCloseTimerRef = useRef(null);
@@ -548,6 +551,16 @@ function Dashboard() {
         </div>
 
         <div className="dash-header-actions">
+          <button
+            type="button"
+            className={`btn btn-outline dash-compare-btn ${isCompareOpen ? "active" : ""}`}
+            onClick={() => setIsCompareOpen((o) => !o)}
+            aria-expanded={isCompareOpen}
+            aria-controls="dash-compare-panel"
+            title="Compare two phones side by side"
+          >
+            <span>Compare</span>
+          </button>
           <button
             type="button"
             className="btn btn-primary dash-recommend-btn"
@@ -1440,6 +1453,11 @@ function Dashboard() {
           </div>
         </div>
       )}
+
+      <ComparePanel
+        open={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+      />
     </div>
   );
 }

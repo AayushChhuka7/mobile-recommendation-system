@@ -16,3 +16,14 @@ export const postRecommend = catchAsync(async (req, res) => {
     message: `Found ${results.length} recommendations`,
   });
 });
+
+export const postCompareML = catchAsync(async (req, res) => {
+  if (!req.body || !req.body.modelNameA || !req.body.modelNameB) {
+    throw badRequest("modelNameA and modelNameB are required");
+  }
+  const result = await recommendService.compareWithML(
+    req.body.modelNameA,
+    req.body.modelNameB,
+  );
+  return sendSuccess(res, result, { message: "ML comparison complete" });
+});
