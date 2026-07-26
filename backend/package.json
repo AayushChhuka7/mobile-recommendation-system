@@ -8,6 +8,7 @@
     "dev": "nodemon ./src/index.mjs",
     "seed:rbac": "node ./seed.mjs",
     "seed:phones": "node ./prisma/import-gsmarena-bulk.mjs",
+    "seed:customers": "node ./prisma/imports/customer-csv/importCustomers.mjs",
     "db:init": "prisma db push --skip-generate && npm run seed:rbac && npm run seed:phones"
   },
   "keywords": [],
