@@ -1,7 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { getRecommendations } from "../services/recommend";
+import {
+  getRecommendations,
+  saveProfile,
+  loadSavedProfile,
+} from "../services/recommend";
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
@@ -27,7 +31,6 @@ import {
   PASSWORD_RULES,
   PASSWORD_MIN_LENGTH,
 } from "./AuthShared";
-import ComparePanel from "./ComparePanel.jsx";
 
 // function ThemeIcon() {
 //   return (
@@ -137,7 +140,7 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, setUser } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -146,8 +149,6 @@ function Dashboard() {
   const closeAnimMs = 180;
 
   const closeTimerRef = useRef(null);
-
-  const [isCompareOpen, setIsCompareOpen] = useState(false);
 
   const [changePwPhase, setChangePwPhase] = useState("closed");
   const changePwCloseTimerRef = useRef(null);
@@ -241,10 +242,81 @@ function Dashboard() {
     };
   }, []);
 
-  // Profile fields (name, phoneNo) are hydrated by AuthProvider's
-  // session-validation effect on app boot, so by the time the
-  // dashboard mounts the auth context already has fresh data.
-  // No on-mount fetch needed here.
+  // Hydrate the stored user with full profile fields. Login only returns
+  // { id, email }, but the dashboard needs name/phoneNo. Pull them from
+  // the existing GET /users/me endpoint and merge into the auth context
+  // (which persists to localStorage, so the values survive reloads).
+  useEffect(() => {
+    let ignore = false;
+    async function loadProfile() {
+      try {
+        const res = await api.get("/users/me");
+        const profile = res?.data?.data;
+        if (ignore || !profile) return;
+        setUser({
+          id: profile.userId ?? user?.id,
+          name: profile.name ?? user?.name,
+          email: profile.email ?? user?.email,
+          phoneNo: profile.phoneNo ?? user?.phoneNo,
+        });
+      } catch (err) {
+        // 401 is handled by the phones loader below; we don't want to
+        // double-handle it here. Just log and continue.
+        if (err.response?.status !== 401) {
+          console.error("Failed to load user profile:", err);
+        }
+      }
+    }
+    loadProfile();
+    return () => {
+      ignore = true;
+    };
+    // We intentionally only run this on mount. The `user` reads inside
+    // are just fallbacks for the merge; we don't want to refetch on
+    // every context update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Step A — pre-fill the questionnaire from the saved profile so a
+  // returning user sees their previous persona / budget without having
+  // to re-fill the form. Best-effort: silently no-ops for anon or when
+  // the user has never onboarded (returns `null`).
+  useEffect(() => {
+    if (!user) return undefined;
+    let ignore = false;
+    async function prefillFromProfile() {
+      const saved = await loadSavedProfile();
+      if (ignore || !saved) return;
+
+      // Pull persona + budget from the saved rows and prime the form
+      // state. We only overwrite if the user hasn't already typed
+      // something in this session (form fields default to "").
+      const persona = saved.customerProfile?.recommendationPersona;
+      if (persona) {
+        const matched = CATEGORY_OPTIONS.find(
+          (o) => o.key === persona.toLowerCase(),
+        );
+        if (matched) {
+          setSelectedCategory(matched.key);
+          setWeights({ ...PERSONA_WEIGHT_PRESETS[matched.key] });
+          setWeightsTouched(false);
+        }
+      }
+
+      const maxBudget = saved.preference?.maxBudget;
+      if (maxBudget !== null && maxBudget !== undefined && !budgetMax) {
+        setBudgetMax(String(maxBudget));
+      }
+    }
+    prefillFromProfile();
+    return () => {
+      ignore = true;
+    };
+    // We intentionally only run this on mount. The `user` dependency
+    // is the gate; we don't want to overwrite in-progress edits on
+    // subsequent context updates.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
   const openRecommend = useCallback(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -377,30 +449,8 @@ function Dashboard() {
     return errs;
   }, [currentPassword, newPassword, confirmPassword]);
 
-  // Map backend `details` array (express-validator) onto the FE's
-  // per-field error map, falling back to a banner for unknown fields.
-  const mapChangePwFieldErrors = useCallback((details) => {
-    const fieldErrors = {};
-    let bannerMessage = "";
-    if (!Array.isArray(details)) return { fieldErrors, bannerMessage };
-
-    for (const entry of details) {
-      const serverKey = entry?.path || entry?.field;
-      const msg = entry?.msg || entry?.message;
-      if (!msg) continue;
-
-      if (serverKey === "currentPassword") fieldErrors.currentPassword = msg;
-      else if (serverKey === "password") fieldErrors.newPassword = msg;
-      else if (serverKey === "confirmPassword")
-        fieldErrors.confirmPassword = msg;
-      else
-        bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
-    }
-    return { fieldErrors, bannerMessage };
-  }, []);
-
   const handleChangePwSubmit = useCallback(
-    async (e) => {
+    (e) => {
       e?.preventDefault();
       const errs = validateChangePw();
       setChangePwErrors(errs);
@@ -410,35 +460,12 @@ function Dashboard() {
       }
 
       setIsChangePwSubmitting(true);
-      setChangePwSubmitError("");
-      try {
-        await api.patch("/users/me/password", {
-          currentPassword,
-          password: newPassword,
-          confirmPassword,
-        });
-        closeChangePassword();
-      } catch (err) {
-        const data = err?.response?.data;
-        if (err?.response?.status === 401) {
-          // AUTH_INVALID_CREDENTIALS — surface on the currentPassword field.
-          setChangePwErrors((prev) => ({
-            ...prev,
-            currentPassword: data?.message || "Current password is incorrect",
-          }));
-        } else {
-          const { fieldErrors, bannerMessage } =
-            mapChangePwFieldErrors(data?.details);
-          if (Object.keys(fieldErrors).length) {
-            setChangePwErrors((prev) => ({ ...prev, ...fieldErrors }));
-          }
-          setChangePwSubmitError(
-            bannerMessage || data?.message || "Couldn't change password. Please try again.",
-          );
-        }
-      } finally {
-        setIsChangePwSubmitting(false);
-      }
+      console.log(
+        "[Change Password] submit (UI only — backend wiring pending):",
+        { currentPassword, newPassword, confirmPassword },
+      );
+      setIsChangePwSubmitting(false);
+      closeChangePassword();
     },
     [
       validateChangePw,
@@ -446,7 +473,6 @@ function Dashboard() {
       newPassword,
       confirmPassword,
       closeChangePassword,
-      mapChangePwFieldErrors,
     ],
   );
 
@@ -482,6 +508,14 @@ function Dashboard() {
         topN: 6,
       });
       setRecs(results);
+
+      // Step A — persist the questionnaire answers so the user
+      // doesn't have to re-fill them next time. Best-effort: don't
+      // block the dashboard on save failure (handled inside
+      // `saveProfile`).
+      if (user) {
+        saveProfile({ persona, budget, preferences });
+      }
     } catch (err) {
       setRecsError(
         err.response?.data?.message ||
@@ -497,6 +531,7 @@ function Dashboard() {
     weights,
     weightsTouched,
     closeRecommend,
+    user,
   ]);
   const handleClearRecommendations = useCallback(() => {
     setRecs(null);
@@ -567,16 +602,6 @@ function Dashboard() {
         </div>
 
         <div className="dash-header-actions">
-          <button
-            type="button"
-            className={`btn btn-outline dash-compare-btn ${isCompareOpen ? "active" : ""}`}
-            onClick={() => setIsCompareOpen((o) => !o)}
-            aria-expanded={isCompareOpen}
-            aria-controls="dash-compare-panel"
-            title="Compare two phones side by side"
-          >
-            <span>Compare</span>
-          </button>
           <button
             type="button"
             className="btn btn-primary dash-recommend-btn"
@@ -1116,8 +1141,6 @@ function Dashboard() {
                 className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
                 onMouseEnter={() => setHoveredCard(p.id)}
                 onMouseLeave={() => setHoveredCard(null)}
-                onClick={() => p.id && navigate(`/phones/${p.id}`)}
-                style={{ cursor: "pointer" }}
               >
                 <div className="phone-card-top">
                   <div className="phone-card-image">
@@ -1471,11 +1494,6 @@ function Dashboard() {
           </div>
         </div>
       )}
-
-      <ComparePanel
-        open={isCompareOpen}
-        onClose={() => setIsCompareOpen(false)}
-      />
     </div>
   );
 }

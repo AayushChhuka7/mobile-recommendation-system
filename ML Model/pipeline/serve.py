@@ -1,19 +1,16 @@
+"""FastAPI wrapper around `MobileRecommendationPipeline`.
 
-"""
-FastAPI wrapper around `MobileRecommendationPipeline`.
-
-Run with:
-    uvicorn pipeline.serve:app --port 8002
+Run with: `uvicorn pipeline.serve:app --port 8002`
 
 Endpoints:
-    GET  /health                  liveness + model status + candidate count
-    POST /predict                 body: {features} -> predicted AnTuTu + SHAP top-N
+    GET  /health                  liveness + model status
+    POST /predict                 body: {phone_features} -> predicted AnTuTu + SHAP top-N
     POST /predict_new             body: {raw: <cleaned phone row>} -> predict + score + SHAP
-    POST /score                   body: {features} -> composite score dict
+    POST /score                   body: {phone_features} -> composite score dict
     POST /recommend               body: UserPreferenceInput -> ranked list of phones
-    POST /compare                 body: {model_name_a, model_name_b} -> per-dimension comparison
-    GET  /explain/{model_name}    -> SHAP top-N explanation
-    GET  /phones                  -> searchable phone list
+    POST /compare                 body: {model_name_a, model_name_b} -> per-dim winner
+    GET  /explain/<model_name>    -> SHAP top-N for a phone in the pool
+
 
 The model is loaded once at process start. The Node/Express backend at
 `backend/src/routes/recommendRoutes.mjs` calls these endpoints over HTTP.
@@ -44,7 +41,6 @@ from pipeline.scoring import compute_scores  # noqa: E402
 
 ARTIFACT_DIR = PROJECT_ROOT / "artifacts"
 DATA_PATH = PROJECT_ROOT / "After_EDA_and_Feature_ENginering.csv"
-print("Running file:", __file__)
 
 
 # ---------------------------------------------------------------------------
@@ -179,24 +175,14 @@ def _load_candidates() -> Optional[pd.DataFrame]:
     return df
 
 
-# @app.on_event("startup")
-# def _warm_cache() -> None:
+@app.on_event("startup")
+def _warm_cache() -> None:
     df = _load_candidates()
     # Hand the scored pool to the pipeline so /explain and /compare
     # (which read pipeline._candidates) work without a second load.
-    # if not df.empty:
-    #     pipeline._candidates = df  # noqa: SLF001 — intentional bootstrap
+    if not df.empty:
+        pipeline._candidates = df  # noqa: SLF001 — intentional bootstrap
 
-@app.on_event("startup")
-def _warm_cache() -> None:
-    global pipeline, _candidates_scored
-    if pipeline is None:
-        return
-    df = _load_candidates()
-    if df is not None and not df.empty:
-        _candidates_scored = df
-        pipeline._candidates = df  # ← This is the key fix
-        print(f"[startup] candidates ready for /compare and /explain", flush=True)
 
 # ---------------------------------------------------------------------------
 # schemas
@@ -316,33 +302,18 @@ def predict_new(req: PredictNewRequest) -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-# @app.post("/compare")
-# def compare(req: CompareRequest) -> Dict[str, Any]:
-    # """Compare two phones from the candidates pool across all 9 score dimensions."""
-    # if _load_candidates().empty:
-    #     raise HTTPException(status_code=503, detail="No candidate dataset available")
-    # try:
-    #     return pipeline.compare_phones(req.model_name_a, req.model_name_b)
-    # except ValueError as exc:
-    #     raise HTTPException(status_code=404, detail=str(exc)) from exc
-    # except Exception as exc:  # pragma: no cover
-    #     raise HTTPException(status_code=500, detail=str(exc)) from exc
 @app.post("/compare")
 def compare(req: CompareRequest) -> Dict[str, Any]:
-    if pipeline is None:
-        raise HTTPException(status_code=503, detail="Model not loaded")
-    if pipeline.candidates is None and _candidates_scored is not None:
-        pipeline._candidates = _candidates_scored
-    if pipeline.candidates is None:
+    """Compare two phones from the candidates pool across all 9 score dimensions."""
+    if _load_candidates().empty:
         raise HTTPException(status_code=503, detail="No candidate dataset available")
     try:
         return pipeline.compare_phones(req.model_name_a, req.model_name_b)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
-    except RuntimeError as exc:
-        raise HTTPException(status_code=503, detail=str(exc)) from exc
-    except Exception as exc:
+    except Exception as exc:  # pragma: no cover
         raise HTTPException(status_code=500, detail=str(exc)) from exc
+
 
 @app.get("/explain/{model_name}")
 def explain(model_name: str, top_n: int = 5) -> Dict[str, Any]:
@@ -456,43 +427,21 @@ def recommend(req: RecommendRequest) -> Dict[str, Any]:
 # uniform error envelope — overrides FastAPI's default {"detail": ...} shape
 # so the FE only has to handle one error format
 # ---------------------------------------------------------------------------
-# @app.exception_handler(HTTPException)
-# async def _http_exception_handler(_req: Request, exc: HTTPException) -> JSONResponse:
-    # code = {
-    #     400: "VALIDATION_INVALID_INPUT",
-    #     404: "RESOURCE_NOT_FOUND",
-    #     503: "SERVICE_UNAVAILABLE",
-    # }.get(exc.status, "ERROR")
-    # return _error_envelope(exc.status, code, str(exc.detail))
-
-
-@app.get("/phones")
-def list_phones(search: str = "", limit: int = 10):
-    if _candidates_scored is None:
-        raise HTTPException(status_code=503, detail="No candidates")
-    df = _candidates_scored
-    if search:
-        df = df[df["Model_Name"].str.contains(search, case=False, na=False)]
-    return df[["Brand", "Model_Name", "Price_EUR"]].head(limit).to_dict(orient="records")
-
 @app.exception_handler(HTTPException)
 async def _http_exception_handler(_req: Request, exc: HTTPException) -> JSONResponse:
-    status_code = exc.status_code if hasattr(exc, 'status_code') else 500
     code = {
         400: "VALIDATION_INVALID_INPUT",
         404: "RESOURCE_NOT_FOUND",
         503: "SERVICE_UNAVAILABLE",
-    }.get(status_code, "ERROR")
-    return _error_envelope(status_code, code, str(exc.detail))
+    }.get(exc.status, "ERROR")
+    return _error_envelope(exc.status, code, str(exc.detail))
+
 
 @app.exception_handler(Exception)
 async def _unhandled_exception_handler(_req: Request, exc: Exception) -> JSONResponse:
     return _error_envelope(500, "INTERNAL_ERROR", f"Unexpected error: {exc}")
 
-print("\nRegistered Routes")
-for route in app.routes:
-    print(route.path, route.methods)
-print("----------------")
+
 # ---------------------------------------------------------------------------
 # dev entrypoint: `python -m pipeline.serve`
 # ---------------------------------------------------------------------------

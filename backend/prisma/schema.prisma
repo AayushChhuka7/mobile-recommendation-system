@@ -86,9 +86,6 @@ model Users {
   recommendationHistory RecommendationHistory[]
   wishlist              Wishlist[]
   comparisonHistory     ComparisonHistory[]
-  paymentHistory        PaymentHistory[]
-  searchHistory         SearchHistory[]
-  browsingHistory       BrowsingHistory[]
 
   @@index([roleId])
   @@map("users")
@@ -321,13 +318,6 @@ model UserPreference {
   preferredBrandId String? @map("preferred_brand_id") @db.Uuid
   preferredBrand   Brands? @relation(fields: [preferredBrandId], references: [brandId], onDelete: SetNull)
 
-  // Multiple preferred brand names accumulated from CSV imports or
-  // questionnaire iterations. Stored as a JSON array of unique strings
-  // (e.g. ["Apple", "Samsung", "Google"]). `preferredBrandId` above
-  // remains the FK-resolution for the primary brand; this list preserves
-  // the full set.
-  preferredBrands Json? @map("preferred_brands") @db.JsonB
-
   createdAt DateTime @default(now()) @map("created_date")
   updatedAt DateTime @updatedAt @map("updated_date")
 
@@ -440,85 +430,6 @@ model ComparisonHistory {
   @@map("comparison_history")
 }
 
-// ============================================================
-// Payment History (per-purchase records from CSV imports)
-// ============================================================
-
-// One row per purchase event from external data sources
-// (e.g. customer_dataset.csv). Not tied to the normalized phone
-// catalog by FK — phones referenced here may not exist in the
-// catalog. `phoneLabel` preserves the human-readable name as it
-// appeared in the source for audit purposes.
-model PaymentHistory {
-  paymentId         String    @id @default(uuid()) @map("payment_id") @db.Uuid
-  userId            String    @map("user_id") @db.Uuid
-  purchaseDate      DateTime? @map("purchase_date") @db.Date
-  purchaseAmountNpr Decimal?  @map("purchase_amount_npr") @db.Decimal(12, 2)
-  paymentMethod     String?   @map("payment_method") @db.VarChar(60)
-  warrantyOpted     String?   @map("warranty_opted") @db.VarChar(40)
-  exchangeHistory   Json?     @map("exchange_history") @db.JsonB
-  phoneLabel        String?   @map("phone_label") @db.VarChar(200)
-
-  createdAt DateTime @default(now()) @map("created_date")
-  updatedAt DateTime @updatedAt @map("updated_date")
-
-  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
-
-  @@index([userId, purchaseDate(sort: Desc)])
-  @@index([purchaseDate])
-  @@map("payment_history")
-}
-
-// ============================================================
-// Search History (per-search records from CSV imports)
-// ============================================================
-
-// One row per search event from external data sources. Not tied to the
-// catalog by FK — `searchQuery` is the raw CSV value, which can be a brand
-// name, a category tag, "Comparison", "New Arrivals", etc.
-model SearchHistory {
-  searchId     String    @id @default(uuid()) @map("search_id") @db.Uuid
-  userId       String    @map("user_id") @db.Uuid
-  searchQuery  String    @map("search_query") @db.VarChar(200)
-  searchedAt   DateTime? @map("searched_at") @db.Timestamp(6)
-  sourceLine   Int?      @map("source_line")
-
-  createdAt DateTime @default(now()) @map("created_date")
-  updatedAt DateTime @updatedAt @map("updated_date")
-
-  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
-
-  @@index([userId, searchedAt(sort: Desc)])
-  @@index([searchedAt])
-  @@map("search_history")
-}
-
-// ============================================================
-// Browsing History (per-viewed-item records from CSV imports)
-// ============================================================
-
-// One row per viewed item from external data sources. Intentionally NOT
-// linked to `Phones` by FK — the source contains fictional / future /
-// discontinued / tablet entries that don't exist in the catalog. The raw
-// label is preserved verbatim for downstream analytics.
-model BrowsingHistory {
-  browsingId  String    @id @default(uuid()) @map("browsing_id") @db.Uuid
-  userId      String    @map("user_id") @db.Uuid
-  phoneLabel  String    @map("phone_label") @db.VarChar(200)
-  brandName   String?   @map("brand_name") @db.VarChar(60)
-  viewedAt    DateTime? @map("viewed_at") @db.Timestamp(6)
-  sourceLine  Int?      @map("source_line")
-
-  createdAt DateTime @default(now()) @map("created_date")
-  updatedAt DateTime @updatedAt @map("updated_date")
-
-  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
-
-  @@index([userId, viewedAt(sort: Desc)])
-  @@index([viewedAt])
-  @@map("browsing_history")
-}
-
 model AdminStatsCache {
   statId               String   @id @default(uuid()) @map("stat_id") @db.Uuid
   computedDate         DateTime @default(now()) @map("computed_date")
@@ -548,7 +459,7 @@ model AdminStatsCache {
 
 // ============================================================
 // Notes:
-//
+// 
 // 1. This schema normalizes phone data into:
 //    - Brands: Master brand list
 //    - Phones: Each phone model (unique by brand + modelName)
@@ -568,12 +479,4 @@ model AdminStatsCache {
 //    - "Find phones with 5G and 8GB+ RAM": Join phones → specs (5G) and variants (RAM)
 //    - "Find phones under $800": Filter variants by price, get unique phones
 //    - "Best camera phones": Sort by cameraScore in specs
-//
-// 6. Customer CSV Import:
-//    - Users created with `${customer_id}@import.local` placeholder email
-//    - One PaymentHistory row per CSV purchase event
-//    - Wishlist rows created ONLY against existing Brands + Phones
-//      (CSV-driven wishlist items referencing unknown brands/phones are skipped)
-//    - UserPreference.preferredBrands preserves the full unique set of
-//      preferred brand names found across the customer's history
 // ============================================================

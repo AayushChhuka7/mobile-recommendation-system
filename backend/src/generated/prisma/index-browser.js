@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.9.0
- * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 Prisma.prismaVersion = {
-  client: "7.9.0",
-  engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -260,7 +260,6 @@ exports.Prisma.UserPreferenceScalarFieldEnum = {
   cameraPreference: 'cameraPreference',
   usageType: 'usageType',
   preferredBrandId: 'preferredBrandId',
-  preferredBrands: 'preferredBrands',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -324,40 +323,6 @@ exports.Prisma.ComparisonHistoryScalarFieldEnum = {
   phoneIdA: 'phoneIdA',
   phoneIdB: 'phoneIdB',
   comparedDate: 'comparedDate'
-};
-
-exports.Prisma.PaymentHistoryScalarFieldEnum = {
-  paymentId: 'paymentId',
-  userId: 'userId',
-  purchaseDate: 'purchaseDate',
-  purchaseAmountNpr: 'purchaseAmountNpr',
-  paymentMethod: 'paymentMethod',
-  warrantyOpted: 'warrantyOpted',
-  exchangeHistory: 'exchangeHistory',
-  phoneLabel: 'phoneLabel',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.SearchHistoryScalarFieldEnum = {
-  searchId: 'searchId',
-  userId: 'userId',
-  searchQuery: 'searchQuery',
-  searchedAt: 'searchedAt',
-  sourceLine: 'sourceLine',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.BrowsingHistoryScalarFieldEnum = {
-  browsingId: 'browsingId',
-  userId: 'userId',
-  phoneLabel: 'phoneLabel',
-  brandName: 'brandName',
-  viewedAt: 'viewedAt',
-  sourceLine: 'sourceLine',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AdminStatsCacheScalarFieldEnum = {
@@ -457,9 +422,6 @@ exports.Prisma.ModelName = {
   CustomerProfile: 'CustomerProfile',
   Wishlist: 'Wishlist',
   ComparisonHistory: 'ComparisonHistory',
-  PaymentHistory: 'PaymentHistory',
-  SearchHistory: 'SearchHistory',
-  BrowsingHistory: 'BrowsingHistory',
   AdminStatsCache: 'AdminStatsCache'
 };
 

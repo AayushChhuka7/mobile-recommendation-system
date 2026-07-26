@@ -408,23 +408,6 @@
   flex-shrink: 0;
 }
 
-.dash-compare-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 14px;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 8px;
-  white-space: nowrap;
-}
-
-.dash-compare-btn.active {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
 .dash-recommend-overlay {
   animation: dash-recommend-fade-in 0.18s ease-out forwards;
 }
@@ -1220,12 +1203,6 @@
 }
 
 .dashboard-page.dash-dark .btn-outline:hover {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
-.dashboard-page.dash-dark .dash-compare-btn.active {
   background: var(--primary-light);
   color: var(--primary);
   border-color: var(--primary);

@@ -24,6 +24,10 @@ import api from "./api";
  *     cheapestVariant: { ram, storage, price, storageType } | null,
  *     matchScore, why: string[], inDatabase
  *   }
+ *
+ * Step A note: a logged-in user may POST this with an empty body — the
+ * server falls back to the stored profile. Anonymous callers must
+ * still send `persona` + `budget.max`.
  */
 export async function getRecommendations({
   persona,
@@ -41,54 +45,69 @@ export async function getRecommendations({
   return res?.data?.data ?? [];
 }
 
+// --------------------------------------------------------------------
+// Step A — customer profile persistence (explicit save + load)
+// --------------------------------------------------------------------
+
 /**
- * Hit the backend ML-powered phone-vs-phone comparison endpoint.
+ * Persist the user's recommendation preferences so returning users
+ * don't re-fill the form. Accepts either the FE questionnaire shape
+ * (persona + budget + preferences) or the DB shape (usageType +
+ * cameraPreference + maxBudget); the backend normalises both.
  *
- * Backend contract (see backend/src/routes/recommendRoutes.mjs +
- * backend/src/controller/recommendController.mjs +
- * backend/src/services/recommendService.mjs +
- * ML Model/pipeline/model.py :: MobileRecommendationPipeline.compare_phones):
+ *   POST /api/profile/onboard
+ *   201 → { success: true, data: <saved profile>, message }
  *
- *   POST /api/recommend/compare-ml
- *   {
- *     modelNameA: string,   // exact Model_Name of phone A
- *     modelNameB: string,   // exact Model_Name of phone B
- *   }
- *
- *   200 → { success: true, data: <CompareMLResult>, message }
- *
- * The `data` payload shape:
- *   {
- *     Phone_A: string,                 // model name of A
- *     Price_A: number | null,
- *     Phone_B: string,                 // model name of B
- *     Price_B: number | null,
- *     Dimension_Comparison: {
- *       Gaming:        { A, B, Winner },   // per-dim score
- *       Camera:        { A, B, Winner },
- *       Battery:       { A, B, Winner },
- *       Display:       { A, B, Winner },
- *       Software:      { A, B, Winner },
- *       Storage:       { A, B, Winner },
- *       Connectivity:  { A, B, Winner },
- *       Security:      { A, B, Winner },
- *       Portability:   { A, B, Winner },
- *     },
- *     Overall_Winner: string,          // Phone_A | Phone_B | "Tie"
- *     SHAP_A: [{ feature, shap }],     // top-5 positive contributors to A's score
- *     SHAP_B: [{ feature, shap }],
- *   }
+ * Returns the saved profile object, or `null` on failure (network /
+ * auth). Callers should not block their main flow on this — it is a
+ * fire-and-forget UX improvement.
  */
-export async function postCompareMl({ modelNameA, modelNameB }) {
-  console.log("Calling endpoint:", "/recommend/compare-ml");
-  console.log("Full URL:", api.defaults.baseURL + "/recommend/compare-ml");
-  if (!modelNameA || !modelNameB) {
-    throw new Error("Both modelNameA and modelNameB are required");
+export async function saveProfile({
+  persona,
+  budget,
+  preferences,
+  usageType,
+  cameraPreference,
+  maxBudget,
+}) {
+  try {
+    const res = await api.post("/profile/onboard", {
+      persona,
+      budget,
+      preferences,
+      usageType,
+      cameraPreference,
+      maxBudget,
+    });
+    return res?.data?.data ?? null;
+  } catch (err) {
+    // Don't block the dashboard on save failure — log and move on.
+    // 401 means the user is not logged in (no need to spam the
+    // console); anything else is a real problem worth surfacing.
+    if (err.response?.status !== 401) {
+      console.warn("[saveProfile] failed:", err);
+    }
+    return null;
   }
-  const res = await api.post("/recommend/compare-ml", {
-    modelNameA,
-    modelNameB,
-  });
-  // Backend success envelope: { success, data, message? }
-  return res?.data?.data ?? null;
+}
+
+/**
+ * Load the saved profile (used to pre-fill the questionnaire on mount).
+ *
+ *   GET /api/profile/me
+ *   200 → { success: true, data: { preference, customerProfile, ... } | null }
+ *
+ * Returns `null` if no profile exists yet (FE should show the
+ * questionnaire) or on auth failure.
+ */
+export async function loadSavedProfile() {
+  try {
+    const res = await api.get("/profile/me");
+    return res?.data?.data ?? null;
+  } catch (err) {
+    if (err.response?.status !== 401) {
+      console.warn("[loadSavedProfile] failed:", err);
+    }
+    return null;
+  }
 }

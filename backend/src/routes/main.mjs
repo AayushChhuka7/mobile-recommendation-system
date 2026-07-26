@@ -6,6 +6,7 @@ import { phoneRoutes } from "./phoneRoutes.mjs";
 import { productRoutes } from "./productRoutes.mjs";
 import { isAuthenticate } from "../middleware/auth.mjs";
 import { recommendRoutes } from "./recommendRoutes.mjs";
+import { profileRoutes } from "./profileRoutes.mjs";
 
 export const router = Router();
 
@@ -20,3 +21,6 @@ router.use("/auth", authRoutes);
 router.use("/products", isAuthenticate, productRoutes);
 router.use("/phones", phoneRoutes);
 router.use("/recommend", recommendRoutes);
+// Step A — customer profile persistence. Authenticated routes (the
+// router itself enforces `isAuthenticate`).
+router.use("/profile", profileRoutes);
