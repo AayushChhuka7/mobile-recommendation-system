@@ -1,7 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { getRecommendations } from "../services/recommend";
+import {
+  getRecommendations,
+  saveProfile,
+  loadSavedProfile,
+} from "../services/recommend";
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
@@ -272,6 +276,47 @@ function Dashboard() {
     // every context update.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Step A — pre-fill the questionnaire from the saved profile so a
+  // returning user sees their previous persona / budget without having
+  // to re-fill the form. Best-effort: silently no-ops for anon or when
+  // the user has never onboarded (returns `null`).
+  useEffect(() => {
+    if (!user) return undefined;
+    let ignore = false;
+    async function prefillFromProfile() {
+      const saved = await loadSavedProfile();
+      if (ignore || !saved) return;
+
+      // Pull persona + budget from the saved rows and prime the form
+      // state. We only overwrite if the user hasn't already typed
+      // something in this session (form fields default to "").
+      const persona = saved.customerProfile?.recommendationPersona;
+      if (persona) {
+        const matched = CATEGORY_OPTIONS.find(
+          (o) => o.key === persona.toLowerCase(),
+        );
+        if (matched) {
+          setSelectedCategory(matched.key);
+          setWeights({ ...PERSONA_WEIGHT_PRESETS[matched.key] });
+          setWeightsTouched(false);
+        }
+      }
+
+      const maxBudget = saved.preference?.maxBudget;
+      if (maxBudget !== null && maxBudget !== undefined && !budgetMax) {
+        setBudgetMax(String(maxBudget));
+      }
+    }
+    prefillFromProfile();
+    return () => {
+      ignore = true;
+    };
+    // We intentionally only run this on mount. The `user` dependency
+    // is the gate; we don't want to overwrite in-progress edits on
+    // subsequent context updates.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
   const openRecommend = useCallback(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -463,6 +508,14 @@ function Dashboard() {
         topN: 6,
       });
       setRecs(results);
+
+      // Step A — persist the questionnaire answers so the user
+      // doesn't have to re-fill them next time. Best-effort: don't
+      // block the dashboard on save failure (handled inside
+      // `saveProfile`).
+      if (user) {
+        saveProfile({ persona, budget, preferences });
+      }
     } catch (err) {
       setRecsError(
         err.response?.data?.message ||
@@ -478,6 +531,7 @@ function Dashboard() {
     weights,
     weightsTouched,
     closeRecommend,
+    user,
   ]);
   const handleClearRecommendations = useCallback(() => {
     setRecs(null);

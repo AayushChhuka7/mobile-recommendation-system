@@ -1,6 +1,7 @@
 import { ML_BASE_URL } from "../config/ml.mjs";
 import { badRequest, internal } from "../utils/ApiError.mjs";
 import { prisma } from "../config/prisma.mjs";
+import * as profileService from "./profileService.mjs";
 
 const TIMEOUT_MS = 8000;
 
@@ -36,6 +37,61 @@ const mlFetch = async (path, options = {}) => {
 
 export const checkHealth = async () => {
   return mlFetch("/health");
+};
+
+/**
+ * Step A — `mergeWithStoredProfile`.
+ *
+ * For an authenticated user, if the request body is missing `persona`
+ * or `budget.max`, hydrate them from the user's stored profile so a
+ * returning user can hit POST /api/recommend/recommend with an empty
+ * body and still get sensible results.
+ *
+ * Anonymous callers (`!user`) get their body unchanged. If even a
+ * logged-in user submits a body that is missing both fields AND has no
+ * stored profile, the service throws a 400 with a hint to onboard.
+ *
+ * Returns the merged body. Does NOT mutate the caller's body.
+ */
+export const mergeWithStoredProfile = async (body, user) => {
+  const merged = { ...(body || {}) };
+
+  const hasPersona =
+    typeof merged.persona === "string" && merged.persona.length > 0;
+  const budgetMax =
+    merged.budget && typeof merged.budget.max === "number"
+      ? merged.budget.max
+      : null;
+  const hasBudget = budgetMax !== null;
+
+  if (hasPersona && hasBudget) return merged;
+  if (!user || !user.userId) {
+    // Anonymous caller without a complete body — keep existing 400
+    // behaviour (let `getRecommendations` validate and throw).
+    return merged;
+  }
+
+  const stored = await profileService.loadRecommendationInput(user.userId);
+  if (!stored) {
+    // Logged-in user with no saved profile. Surface a clearer error
+    // than the generic "persona is required".
+    throw badRequest(
+      "No stored profile found. Complete the questionnaire or pass persona + budget in the body.",
+      { reason: "no_stored_profile" },
+    );
+  }
+
+  if (!hasPersona && stored.persona) {
+    merged.persona = stored.persona;
+  }
+  if (!hasBudget && stored.budget && typeof stored.budget.max === "number") {
+    merged.budget = {
+      ...(merged.budget || {}),
+      min: stored.budget.min ?? 0,
+      max: stored.budget.max,
+    };
+  }
+  return merged;
 };
 
 export const getRecommendations = async (body) => {
