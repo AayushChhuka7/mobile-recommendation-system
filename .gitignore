@@ -49,3 +49,4 @@ tmp/
 prompt.txt
 
 ML Model/.venv
+ML Model/similarity_bundle.joblib
