@@ -1,6 +1,12 @@
 import { ML_BASE_URL } from "../config/ml.mjs";
 import { badRequest, internal } from "../utils/ApiError.mjs";
 import { prisma } from "../config/prisma.mjs";
+import * as profileService from "./profileService.mjs";
+import * as eventService from "./eventService.mjs";
+import {
+  fuseProfileForRequest,
+  DEFAULT_BETA,
+} from "./profileFusion.mjs";
 
 const TIMEOUT_MS = 8000;
 
@@ -38,12 +44,112 @@ export const checkHealth = async () => {
   return mlFetch("/health");
 };
 
+/**
+ * Step A — `mergeWithStoredProfile`.
+ *
+ * For an authenticated user, if the request body is missing `persona`
+ * or `budget.max`, hydrate them from the user's stored profile so a
+ * returning user can hit POST /api/recommend/recommend with an empty
+ * body and still get sensible results.
+ *
+ * Anonymous callers (`!user`) get their body unchanged. If even a
+ * logged-in user submits a body that is missing both fields AND has no
+ * stored profile, the service throws a 400 with a hint to onboard.
+ *
+ * Returns the merged body. Does NOT mutate the caller's body.
+ */
+export const mergeWithStoredProfile = async (body, user) => {
+  const merged = { ...(body || {}) };
+
+  const hasPersona =
+    typeof merged.persona === "string" && merged.persona.length > 0;
+  const budgetMax =
+    merged.budget && typeof merged.budget.max === "number"
+      ? merged.budget.max
+      : null;
+  const hasBudget = budgetMax !== null;
+
+  if (hasPersona && hasBudget) return merged;
+  if (!user || !user.userId) {
+    // Anonymous caller without a complete body — keep existing 400
+    // behaviour (let `getRecommendations` validate and throw).
+    return merged;
+  }
+
+  const stored = await profileService.loadRecommendationInput(user.userId);
+  if (!stored) {
+    // Logged-in user with no saved profile. Surface a clearer error
+    // than the generic "persona is required".
+    throw badRequest(
+      "No stored profile found. Complete the questionnaire or pass persona + budget in the body.",
+      { reason: "no_stored_profile" },
+    );
+  }
+
+  if (!hasPersona && stored.persona) {
+    merged.persona = stored.persona;
+  }
+  if (!hasBudget && stored.budget && typeof stored.budget.max === "number") {
+    merged.budget = {
+      ...(merged.budget || {}),
+      min: stored.budget.min ?? 0,
+      max: stored.budget.max,
+    };
+  }
+
+  // Step C — Profile Fusion hook. When the caller is authenticated
+  // AND a stored profile exists, attach their userId + persona so
+  // `getRecommendations` can fuse explicit + behaviour. We always
+  // use the *stored* persona as the fusion backbone — even when
+  // the FE supplies its own `persona` override in the body — so
+  // that long-term behaviour can nudge a Gamer user toward Gaming
+  // even when they're currently asking for Battery_Focused.
+  if (user.userId && stored.persona) {
+    merged.explicit_user = {
+      userId: user.userId,
+      persona: stored.persona,
+      sliders: merged.preferences ?? null,
+    };
+  }
+  return merged;
+};
+
 export const getRecommendations = async (body) => {
   const { persona, budget, preferences, topN } = body || {};
 
   if (!persona) throw badRequest("persona is required");
   if (!budget || typeof budget.max !== "number")
     throw badRequest("budget.max is required");
+
+  // ---- Step C — Profile Fusion (in-memory, per request) ----
+  //
+  // If the caller supplied explicit_user via mergeWithStoredProfile,
+  // we have a `(persona, sliders)` pair from the stored profile.
+  // We also have the user's live behaviour score map (Step B).
+  // Fuse both into a single 9-dim weight map (1-5 stars) and ship
+  // it as `fusion_weights` to the FastAPI service, which forces
+  // CUSTOM internally and uses the fused weights verbatim.
+  //
+  // The fusion is *opt-in* per request — when explicit_user is
+  // absent (anonymous caller) or behaviourScores is empty, we fall
+  // through to the existing persona + preferences path with zero
+  // changes. This keeps the anonymous demo working.
+  let fusionWeights = null;
+  let fusionStats = null;
+  const explicitUser = body.explicit_user || null;
+  if (explicitUser) {
+    const behaviorScores = await eventService.loadBehaviorScores(
+      explicitUser.userId,
+    );
+    const { customWeights, stats } = fuseProfileForRequest(
+      explicitUser.persona ?? persona,
+      explicitUser.sliders ?? preferences ?? null,
+      behaviorScores,
+      { beta: DEFAULT_BETA },
+    );
+    fusionWeights = customWeights;
+    fusionStats = stats;
+  }
 
   // 1. Get ML results
   const data = await mlFetch("/recommend", {
@@ -52,13 +158,17 @@ export const getRecommendations = async (body) => {
       persona,
       budget: { min: budget.min || 0, max: budget.max },
       preferences: preferences || {},
+      // Step C — fused weights. When present, the FastAPI layer
+      // switches the ranker into CUSTOM mode and uses these
+      // weights verbatim. When absent, the persona preset wins.
+      ...(fusionWeights ? { fusion_weights: fusionWeights } : {}),
       topN: topN || 6,
     }),
   });
 
   const mlResults = data.results || [];
 
-  if (mlResults.length === 0) return [];
+  if (mlResults.length === 0) return { items: [], fusion: fusionStats };
 
   // 2. Enrich with database data
   const enriched = await Promise.all(
@@ -102,7 +212,7 @@ export const getRecommendations = async (body) => {
     }),
   );
 
-  return enriched;
+  return { items: enriched, fusion: fusionStats };
 };
 
 // Format ML result + DB data into frontend-friendly shape

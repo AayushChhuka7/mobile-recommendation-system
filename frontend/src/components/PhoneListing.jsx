@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { useEventLogger } from "../hooks/useEventLogger.js";
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneListing.css";
@@ -39,6 +40,8 @@ function unwrapPhones(res) {
 function PhoneListing() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  // Step B — single hook, used for search/view/click events.
+  const log = useEventLogger();
 
   const [phones, setPhones] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -163,6 +166,23 @@ function PhoneListing() {
     }
   }, [searchMode, loadPhones, loadSearchResults]);
 
+  // Step B — fire a single `view` event whenever the rendered phone
+  // set changes. We send an array of positions in `payload` so the
+  // Step-F Profile Evolution Engine can spot "same N phones seen,
+  // none clicked" patterns; today's analyser just records the event
+  // against the user but ignores the per-phone detail.
+  useEffect(() => {
+    if (phones.length === 0) return;
+    log({
+      eventType: "view",
+      payload: { count: phones.length, page },
+    });
+    // We deliberately exclude `log` from deps — it is a stable ref
+    // from useEventLogger and re-running this effect on every parent
+    // render would over-fire.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phones, searchMode]);
+
   const handleSearch = (e) => {
     e.preventDefault();
     const term = searchInput.trim();
@@ -174,6 +194,10 @@ function PhoneListing() {
     setSearchMode(true);
     setPage(1);
     setShowFilters(false);
+    // Step B — log the search term. The backend stores `payload.q`
+    // and we forward it both as `q` and `query` for back-compat with
+    // future readers that expect one or the other.
+    log({ eventType: "search", payload: { q: term, query: term } });
   };
 
   const handleClearSearch = () => {
@@ -478,7 +502,11 @@ function PhoneListing() {
                   <div
                     key={p.id}
                     className="phone-card"
-                    onClick={() => navigate(`/phones/${p.id}`)}
+                    onClick={() => {
+                      // Step B — log click → opens detail page.
+                      log({ eventType: "click", phoneId: p.id });
+                      navigate(`/phones/${p.id}`);
+                    }}
                     style={{ cursor: "pointer" }}
                   >
                     <div className="phone-card-top">

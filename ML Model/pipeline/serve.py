@@ -1,8 +1,7 @@
 """FastAPI wrapper around `MobileRecommendationPipeline`.
 
 Run with: `uvicorn pipeline.serve:app --port 8002`
-<<<<<<< HEAD
-=======
+
 Endpoints:
     GET  /health                  liveness + model status
     POST /predict                 body: {phone_features} -> predicted AnTuTu + SHAP top-N
@@ -11,14 +10,7 @@ Endpoints:
     POST /recommend               body: UserPreferenceInput -> ranked list of phones
     POST /compare                 body: {model_name_a, model_name_b} -> per-dim winner
     GET  /explain/<model_name>    -> SHAP top-N for a phone in the pool
->>>>>>> 5690c62 (add ML part)
 
-Endpoints:
-    GET  /health         liveness + model status + candidate count
-    POST /predict        body: {features} → predicted AnTuTu + SHAP top-N
-    POST /score          body: {features} → composite score dict
-    POST /recommend      body: {persona, budget, preferences, topN}
-                         → ranked list of phones (Brand/Model/Price_EUR/Match_Score/Why)
 
 The model is loaded once at process start. The Node/Express backend at
 `backend/src/routes/recommendRoutes.mjs` calls these endpoints over HTTP.
@@ -207,6 +199,15 @@ class RecommendRequest(BaseModel):
     # Used as `custom_weights_stars` when persona=Custom; otherwise the
     # persona preset wins.
     preferences: Dict[str, int] = Field(default_factory=dict)
+    # Step C — Profile Fusion Engine output. Filled in by the Express
+    # layer when a logged-in user has both an explicit persona AND a
+    # non-empty behaviour score map. Shape: {Gaming: 4, Camera: 2, ...}
+    # (1-5 stars per ML dim). When provided AND non-empty, this takes
+    # precedence over the persona preset regardless of `persona` —
+    # i.e. fusion always uses Custom-style weights internally. When
+    # absent or empty, the persona preset / `preferences` flow is used
+    # unchanged, so Phase 1 callers see no behaviour at all.
+    fusion_weights: Dict[str, int] = Field(default_factory=dict)
     topN: int = Field(default=6, ge=1, le=50)
 
     @field_validator("persona")
@@ -223,6 +224,27 @@ class RecommendRequest(BaseModel):
             if not isinstance(val, int) or not (1 <= val <= 5):
                 raise ValueError(
                     f"preferences['{k}'] must be an integer in [1, 5]",
+                )
+        return v
+
+    @field_validator("fusion_weights")
+    @classmethod
+    def _fusion_weights_in_range(cls, v: Dict[str, int]) -> Dict[str, int]:
+        # Step C — same shape as `preferences` but emitted by the
+        # Fusion Engine and asserted to be a full 9-dim PascalCase
+        # map. We accept any PascalCase key that's a valid scoring
+        # dim, plus the lowercase aliases for the common four (the
+        # FE sends them lowercase in `preferences`).
+        allowed = set(_DIM_KEY_NORMALIZE.values()) | set(_DIM_KEY_NORMALIZE.keys())
+        for k, val in v.items():
+            if k not in allowed:
+                raise ValueError(
+                    f"fusion_weights['{k}'] is not a known dimension "
+                    f"(valid: {sorted(allowed)})",
+                )
+            if not isinstance(val, int) or not (1 <= val <= 5):
+                raise ValueError(
+                    f"fusion_weights['{k}'] must be an integer in [1, 5]",
                 )
         return v
 
@@ -387,7 +409,19 @@ def recommend(req: RecommendRequest) -> Dict[str, Any]:
     # Translate FE preferences (lowercase keys, partial) into the ML's
     # expected PascalCase 9-dim dict, padding missing dims with 3 (neutral).
     custom_weights_stars: Optional[Dict[str, int]] = None
-    if req.preferences:
+    if req.fusion_weights:
+        # Step C — Profile Fusion Engine output. The Express layer has
+        # already done the explicit-vs-behaviour math and produced a
+        # full 9-dim star map; we honour it as-is. To force the ranker
+        # to use these weights, we resolve the persona to CUSTOM (the
+        # ranker only consults `custom_weights_stars` when
+        # persona == Custom — see UserPreferenceInput.resolve_weights).
+        custom_weights_stars = {}
+        for raw_key, stars in req.fusion_weights.items():
+            norm = _DIM_KEY_NORMALIZE.get(raw_key, raw_key)
+            custom_weights_stars[norm] = stars
+        persona = PersonaType.CUSTOM
+    elif req.preferences:
         custom_weights_stars = {}
         for raw_key, stars in req.preferences.items():
             norm = _DIM_KEY_NORMALIZE.get(raw_key.lower())
