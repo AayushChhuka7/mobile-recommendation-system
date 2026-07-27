@@ -41,8 +41,13 @@ export async function getRecommendations({
     preferences,
     topN,
   });
-  // Backend success envelope: { success, data, message? }
-  return res?.data?.data ?? [];
+  // Backend envelope: { success, data, message?, meta? }
+  // Step C — `meta.fusion` carries the Profile Fusion Engine stats
+  // (β used, # behaviour tags considered) so the FE can show
+  // "your last 5 searches shaped this ranking" if it wants to.
+  const data = res?.data?.data ?? [];
+  const fusion = res?.data?.meta?.fusion ?? null;
+  return { data, fusion };
 }
 
 // --------------------------------------------------------------------

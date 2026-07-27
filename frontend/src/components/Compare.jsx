@@ -4,6 +4,7 @@ import api from "../services/api";
 import { getPhoneById } from "../services/phones";
 import { postCompareMl } from "../services/recommend";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { useEventLogger } from "../hooks/useEventLogger.js";
 import { PhoneDetailView } from "./PhoneDetail";
 import "./Dashboard.css";
 import "./Compare.css";
@@ -257,6 +258,8 @@ function PhoneFullDetailPanel({ phone, index, defaultOpen = false }) {
 function Compare() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  // Step B — fire `compare` events whenever a slot is filled.
+  const log = useEventLogger();
 
   const [phone1, setPhone1] = useState(null);
   const [phone2, setPhone2] = useState(null);
@@ -405,7 +408,11 @@ function Compare() {
             <PhoneAutocomplete
               label="Phone 1"
               selectedPhone={phone1}
-              onSelect={setPhone1}
+              onSelect={(p) => {
+                setPhone1(p);
+                // Step B — fire `compare` for whichever slot is filled.
+                if (p?.id) log({ eventType: "compare", phoneId: p.id });
+              }}
               placeholder="Search first phone..."
             />
             <div className="compare-vs-divider">
@@ -414,7 +421,10 @@ function Compare() {
             <PhoneAutocomplete
               label="Phone 2"
               selectedPhone={phone2}
-              onSelect={setPhone2}
+              onSelect={(p) => {
+                setPhone2(p);
+                if (p?.id) log({ eventType: "compare", phoneId: p.id });
+              }}
               placeholder="Search second phone..."
             />
           </div>

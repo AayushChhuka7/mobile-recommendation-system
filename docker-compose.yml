@@ -2,8 +2,8 @@
 # Mobile Recommendation System — local dev stack
 #
 # Boot order:
-#   postgres (healthy) -> db-init (one-shot: schema push, RBAC seed, phone
-#                         bulk CSV, customer bulk CSV)
+#   postgres (healthy) -> db-init (one-shot: prisma migrate deploy, RBAC
+#                         seed, phone bulk CSV, customer bulk CSV)
 #                     -> ml-service (healthy) + backend (waits on db-init)
 #                     -> frontend
 # ----------------------------------------------------------------------------
@@ -39,7 +39,9 @@ services:
       retries: 10
 
   # One-shot DB initializer:
-  #   1. prisma db push                          -> apply schema
+  #   1. prisma migrate deploy                   -> apply pending migrations
+  #                                                (schema is sourced from
+  #                                                backend/prisma/migrations/)
   #   2. npm run seed:rbac                       -> system roles + customer backfill
   #   3. node prisma/import-gsmarena-bulk.mjs    -> seed phones/brands/variants/specs
   #   4. npm run seed:customers                  -> seed users + customer activity
@@ -52,8 +54,14 @@ services:
     container_name: mobile-recommender-db-init
     # Override CMD. We pass the CSV paths explicitly so the scripts don't
     # need to know where the files live relative to themselves.
+    #
+    # `prisma migrate deploy` (not `prisma db push`) so the migrations
+    # directory under backend/prisma/migrations is the single source of
+    # truth for the DB schema. Every change goes through a checked-in
+    # migration.sql. `db push` would silently skip the migrations folder
+    # and bypass the new migration we just added for Step B.
     command: >
-      sh -c "npx prisma db push &&
+      sh -c "npx prisma migrate deploy &&
              npm run seed:rbac &&
              node ./prisma/import-gsmarena-bulk.mjs /seed/GSMArena_Cleaned_Dataset.csv &&
              npm run seed:customers -- /seed/customer_dataset.csv"

@@ -21,8 +21,18 @@ export const postRecommend = catchAsync(async (req, res) => {
     req.user,
   );
 
-  const results = await recommendService.getRecommendations(body);
-  return sendSuccess(res, results, {
-    message: `Found ${results.length} recommendations`,
+  // Step C — service returns { items, fusion } so we can surface
+  // fusion stats (β, # behaviour tags used) for debugging without
+  // polluting the per-phone response shape. The FE continues to see
+  // `data` as an array of phones; fusion stats ride along inside
+  // `meta.fusion`, which the standard envelope already supports for
+  // any non-paginated response.
+  const { items, fusion } = await recommendService.getRecommendations(body);
+  const meta = fusion ? { fusion } : undefined;
+  return res.status(200).json({
+    success: true,
+    data: items,
+    message: `Found ${items.length} recommendations`,
+    ...(meta ? { meta } : {}),
   });
 });

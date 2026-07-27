@@ -7,6 +7,7 @@ import { productRoutes } from "./productRoutes.mjs";
 import { isAuthenticate } from "../middleware/auth.mjs";
 import { recommendRoutes } from "./recommendRoutes.mjs";
 import { profileRoutes } from "./profileRoutes.mjs";
+import { eventRoutes } from "./eventRoutes.mjs";
 
 export const router = Router();
 
@@ -24,3 +25,7 @@ router.use("/recommend", recommendRoutes);
 // Step A — customer profile persistence. Authenticated routes (the
 // router itself enforces `isAuthenticate`).
 router.use("/profile", profileRoutes);
+// Step B — behaviour event log + rolled-up behaviour scores.
+// `eventRoutes` enforces `isAuthenticate` itself so anonymous
+// tracking stays out of scope.
+router.use("/events", eventRoutes);

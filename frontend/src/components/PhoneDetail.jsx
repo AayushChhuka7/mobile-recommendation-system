@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPhoneById } from "../services/phones";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { useEventLogger } from "../hooks/useEventLogger.js";
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneDetail.css";
@@ -144,6 +145,9 @@ function PhoneDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { logout } = useAuth();
+  // Step B — record a `view` event when a phone detail page loads.
+  // The hook's dedupe keeps back-button navigations from spamming.
+  const log = useEventLogger();
 
   const [phone, setPhone] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -165,6 +169,8 @@ function PhoneDetail() {
           return;
         }
         setPhone(data);
+        // Step B — fire-and-forget detail-page view event.
+        log({ eventType: "view", phoneId: id });
       } catch (err) {
         if (ignore) return;
         if (err?.response?.status === 404) {

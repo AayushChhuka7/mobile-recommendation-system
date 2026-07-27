@@ -260,6 +260,7 @@ exports.Prisma.UserPreferenceScalarFieldEnum = {
   cameraPreference: 'cameraPreference',
   usageType: 'usageType',
   preferredBrandId: 'preferredBrandId',
+  preferredBrands: 'preferredBrands',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -335,6 +336,56 @@ exports.Prisma.AdminStatsCacheScalarFieldEnum = {
   avgUserBudget: 'avgUserBudget',
   mostPopularPersona: 'mostPopularPersona',
   avgCompatibility: 'avgCompatibility'
+};
+
+exports.Prisma.PaymentHistoryScalarFieldEnum = {
+  paymentId: 'paymentId',
+  userId: 'userId',
+  purchaseDate: 'purchaseDate',
+  purchaseAmountNpr: 'purchaseAmountNpr',
+  paymentMethod: 'paymentMethod',
+  warrantyOpted: 'warrantyOpted',
+  exchangeHistory: 'exchangeHistory',
+  phoneLabel: 'phoneLabel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SearchHistoryScalarFieldEnum = {
+  searchId: 'searchId',
+  userId: 'userId',
+  searchQuery: 'searchQuery',
+  searchedAt: 'searchedAt',
+  sourceLine: 'sourceLine',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BrowsingHistoryScalarFieldEnum = {
+  browsingId: 'browsingId',
+  userId: 'userId',
+  phoneLabel: 'phoneLabel',
+  brandName: 'brandName',
+  viewedAt: 'viewedAt',
+  sourceLine: 'sourceLine',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EventScalarFieldEnum = {
+  eventId: 'eventId',
+  userId: 'userId',
+  eventType: 'eventType',
+  phoneId: 'phoneId',
+  payload: 'payload',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.BehaviorScoreScalarFieldEnum = {
+  userId: 'userId',
+  tag: 'tag',
+  score: 'score',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -422,7 +473,12 @@ exports.Prisma.ModelName = {
   CustomerProfile: 'CustomerProfile',
   Wishlist: 'Wishlist',
   ComparisonHistory: 'ComparisonHistory',
-  AdminStatsCache: 'AdminStatsCache'
+  AdminStatsCache: 'AdminStatsCache',
+  PaymentHistory: 'PaymentHistory',
+  SearchHistory: 'SearchHistory',
+  BrowsingHistory: 'BrowsingHistory',
+  Event: 'Event',
+  BehaviorScore: 'BehaviorScore'
 };
 
 /**

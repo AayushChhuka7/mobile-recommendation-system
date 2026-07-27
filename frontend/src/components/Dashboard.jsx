@@ -501,13 +501,17 @@ function Dashboard() {
     const preferences = weightsTouched ? { ...weights } : undefined;
 
     try {
-      const results = await getRecommendations({
+      // Step C — service now returns `{ data, fusion }` so the FE
+      // can optionally surface fusion stats. Existing code only
+      // cared about the phones array, so we destructure and pass
+      // through as before.
+      const { data } = await getRecommendations({
         persona,
         budget,
         preferences,
         topN: 6,
       });
-      setRecs(results);
+      setRecs(data);
 
       // Step A — persist the questionnaire answers so the user
       // doesn't have to re-fill them next time. Best-effort: don't

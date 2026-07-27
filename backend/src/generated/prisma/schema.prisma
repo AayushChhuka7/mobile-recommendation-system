@@ -87,6 +87,18 @@ model Users {
   wishlist              Wishlist[]
   comparisonHistory     ComparisonHistory[]
 
+  // Step A — CSV-imported customer history (payments, searches, browsing).
+  // Preserved verbatim from external data sources; not FK-linked to the
+  // normalized phone catalog because the source rows can reference
+  // fictional / future / discontinued phones.
+  paymentHistory  PaymentHistory[]
+  searchHistory   SearchHistory[]
+  browsingHistory BrowsingHistory[]
+
+  // Step B — behaviour event log + rolled-up per-tag behaviour scores.
+  events         Event[]
+  behaviorScores BehaviorScore[]
+
   @@index([roleId])
   @@map("users")
 }
@@ -318,6 +330,13 @@ model UserPreference {
   preferredBrandId String? @map("preferred_brand_id") @db.Uuid
   preferredBrand   Brands? @relation(fields: [preferredBrandId], references: [brandId], onDelete: SetNull)
 
+  // Multiple preferred brand names accumulated from CSV imports or
+  // questionnaire iterations. Stored as a JSON array of unique strings
+  // (e.g. ["Apple", "Samsung", "Google"]). `preferredBrandId` above
+  // remains the FK-resolution for the primary brand; this list preserves
+  // the full set.
+  preferredBrands Json? @map("preferred_brands") @db.JsonB
+
   createdAt DateTime @default(now()) @map("created_date")
   updatedAt DateTime @updatedAt @map("updated_date")
 
@@ -458,8 +477,128 @@ model AdminStatsCache {
 }
 
 // ============================================================
+// Step A — Customer CSV-Import History (Payment / Search / Browsing)
+// ============================================================
+//
+// One row per event from external data sources (e.g. customer_dataset.csv).
+// These tables are NOT FK-linked to the normalized phone catalog because the
+// source rows can reference fictional / future / discontinued phones that
+// don't exist in `Phones`. The raw label is preserved verbatim for audit and
+// downstream analytics. `Users` rows are created with a `${customer_id}@import.local`
+// placeholder email at import time.
+
+// One row per purchase event from external data sources.
+model PaymentHistory {
+  paymentId         String    @id @default(uuid()) @map("payment_id") @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+  purchaseDate      DateTime? @map("purchase_date") @db.Date
+  purchaseAmountNpr Decimal?  @map("purchase_amount_npr") @db.Decimal(12, 2)
+  paymentMethod     String?   @map("payment_method") @db.VarChar(60)
+  warrantyOpted     String?   @map("warranty_opted") @db.VarChar(40)
+  exchangeHistory   Json?     @map("exchange_history") @db.JsonB
+  phoneLabel        String?   @map("phone_label") @db.VarChar(200)
+
+  createdAt DateTime @default(now()) @map("created_date")
+  updatedAt DateTime @updatedAt @map("updated_date")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId, purchaseDate(sort: Desc)])
+  @@index([purchaseDate])
+  @@map("payment_history")
+}
+
+// One row per search event from external data sources.
+model SearchHistory {
+  searchId    String    @id @default(uuid()) @map("search_id") @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  searchQuery String    @map("search_query") @db.VarChar(200)
+  searchedAt  DateTime? @map("searched_at") @db.Timestamp(6)
+  sourceLine  Int?      @map("source_line")
+
+  createdAt DateTime @default(now()) @map("created_date")
+  updatedAt DateTime @updatedAt @map("updated_date")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId, searchedAt(sort: Desc)])
+  @@index([searchedAt])
+  @@map("search_history")
+}
+
+// One row per viewed item from external data sources.
+model BrowsingHistory {
+  browsingId String    @id @default(uuid()) @map("browsing_id") @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  phoneLabel String    @map("phone_label") @db.VarChar(200)
+  brandName  String?   @map("brand_name") @db.VarChar(60)
+  viewedAt   DateTime? @map("viewed_at") @db.Timestamp(6)
+  sourceLine Int?      @map("source_line")
+
+  createdAt DateTime @default(now()) @map("created_date")
+  updatedAt DateTime @updatedAt @map("updated_date")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId, viewedAt(sort: Desc)])
+  @@index([viewedAt])
+  @@map("browsing_history")
+}
+
+// ============================================================
+// Step B — Behaviour Event Log + Rolled-up Behaviour Scores
+// ============================================================
+//
+// Two models that sit alongside `RecommendationHistory` (which records
+// the *output* of recommendation requests) and the user-profile tables
+// (which record *explicit* answers). These record the *implicit signal*
+// from in-app interactions.
+//
+//   Event          — append-only log of every interaction
+//                    (search, view, click, compare, save, dismiss, ignore).
+//                    `payload` is JSON so we can carry free-form context
+//                    (search query, position in list, variant id, etc.).
+//
+//   BehaviorScore  — per-(user, tag) exponential moving average.
+//                    Written by `behaviorAnalyzer` from the Event log;
+//                    read by `searchHistoryScore` during ranking.
+//
+// `BehaviorScore` is a hot read path, so it is kept as a flat
+// (userId, tag) → score row. The Event log is the source of truth and
+// can be replayed to rebuild `BehaviorScore` if needed.
+
+model Event {
+  eventId   String   @id @default(uuid()) @map("event_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  eventType String   @map("event_type") @db.VarChar(40)
+  phoneId   String?  @map("phone_id") @db.Uuid
+  payload   Json?    @map("payload")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([eventType])
+  @@index([phoneId])
+  @@map("events")
+}
+
+model BehaviorScore {
+  userId    String   @map("user_id") @db.Uuid
+  tag       String   @db.VarChar(60)
+  score     Float
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([userId, tag])
+  @@index([userId])
+  @@map("behavior_scores")
+}
+
+// ============================================================
 // Notes:
-// 
+//
 // 1. This schema normalizes phone data into:
 //    - Brands: Master brand list
 //    - Phones: Each phone model (unique by brand + modelName)
@@ -479,4 +618,19 @@ model AdminStatsCache {
 //    - "Find phones with 5G and 8GB+ RAM": Join phones → specs (5G) and variants (RAM)
 //    - "Find phones under $800": Filter variants by price, get unique phones
 //    - "Best camera phones": Sort by cameraScore in specs
+//
+// 6. Customer CSV Import (Step A):
+//    - Users created with `${customer_id}@import.local` placeholder email
+//    - One PaymentHistory row per CSV purchase event
+//    - One SearchHistory row per CSV search event
+//    - One BrowsingHistory row per CSV viewed-item event
+//    - Wishlist rows created ONLY against existing Brands + Phones
+//      (CSV-driven wishlist items referencing unknown brands/phones are skipped)
+//    - UserPreference.preferredBrands preserves the full unique set of
+//      preferred brand names found across the customer's history
+//
+// 7. Behaviour Tracking (Step B):
+//    - Event is an append-only log of every in-app interaction
+//    - BehaviorScore is a rolled-up (userId, tag) → score EMA written
+//      by `behaviorAnalyzer` and read by `searchHistoryScore` during ranking
 // ============================================================
