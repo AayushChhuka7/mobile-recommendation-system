@@ -182,8 +182,8 @@ function Dashboard() {
     setWeightsTouched(false);
   }, []);
 
-  const [budgetMin, setBudgetMin] = useState("");
-  const [budgetMax, setBudgetMax] = useState("");
+  const [budgetMin, setBudgetMin] = useState("100");
+  const [budgetMax, setBudgetMax] = useState("1000");
 
   const [recs, setRecs] = useState(null);
   const [recsLoading, setRecsLoading] = useState(false);
@@ -987,12 +987,34 @@ function Dashboard() {
               </p>
             ) : (
               <div className="phone-grid">
-                {recs.map((r) => (
+                {recs.map((r) => {
+                  const isClickable = r.id && r.inDatabase !== false;
+                  const handleRecClick = () => {
+                    if (isClickable) navigate(`/phones/${r.id}`);
+                  };
+                  const handleRecKeyDown = (e) => {
+                    if (!isClickable) return;
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleRecClick();
+                    }
+                  };
+                  return (
                   <div
                     key={r.id || `${r.brand?.name}-${r.modelName}`}
                     className="phone-card rec-card"
+                    role={isClickable ? "button" : undefined}
+                    tabIndex={isClickable ? 0 : -1}
+                    aria-label={
+                      isClickable
+                        ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
+                        : undefined
+                    }
+                    onClick={handleRecClick}
+                    onKeyDown={handleRecKeyDown}
                     onMouseEnter={() => r.id && setHoveredCard(r.id)}
                     onMouseLeave={() => setHoveredCard(null)}
+                    style={{ cursor: isClickable ? "pointer" : "default" }}
                   >
                     <div className="phone-card-top">
                       <div className="phone-card-image">
@@ -1008,14 +1030,26 @@ function Dashboard() {
                         ) : (
                           <span className="phone-card-emoji">📱</span>
                         )}
-                        {typeof r.matchScore === "number" && (
-                          <span
-                            className="rec-match-badge"
-                            title="Match score from the recommender"
-                          >
-                            {Math.round(r.matchScore * 100)}% match
-                          </span>
-                        )}
+                        {typeof r.matchScore === "number" && (() => {
+                          // Backend already returns matchScore on a 0..100
+                          // scale (e.g. 70.7), so the previous
+                          // `r.matchScore * 100` printed "7070%". To stay
+                          // forward-compatible, treat any value <= 1 as a
+                          // 0..1 ratio and scale it up; otherwise use the
+                          // value directly.
+                          const pct =
+                            r.matchScore <= 1
+                              ? r.matchScore * 100
+                              : r.matchScore;
+                          return (
+                            <span
+                              className="rec-match-badge"
+                              title="Match score from the recommender"
+                            >
+                              {Math.round(pct)}% match
+                            </span>
+                          );
+                        })()}
                       </div>
                       <div className="phone-card-name">{r.modelName}</div>
                       <div className="phone-card-tagline">
@@ -1067,7 +1101,8 @@ function Dashboard() {
                       <div className="rec-not-in-db">Not in our catalog</div>
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </section>

@@ -1,0 +1,430 @@
+/* PhoneDetail page — reuses the same CSS variables as Dashboard.css
+   and PhoneListing.css so the page matches the existing chrome. */
+
+.phone-detail-page {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg);
+  padding-bottom: 64px;
+}
+
+/* Top bar with back button + brand mark */
+.phone-detail-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.phone-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.phone-detail-back:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.phone-detail-breadcrumb {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Hero: image + brand + name */
+.phone-detail-hero {
+  display: grid;
+  grid-template-columns: minmax(260px, 360px) 1fr;
+  gap: 32px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 32px auto 0;
+  padding: 0 24px;
+}
+
+.phone-detail-image {
+  width: 100%;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.phone-detail-image img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.phone-detail-image.no-image::after {
+  content: "📱";
+  font-size: 96px;
+  opacity: 0.6;
+}
+
+.phone-detail-hero-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.phone-detail-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.phone-detail-brand img {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid var(--border);
+}
+
+.phone-detail-model {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  word-break: break-word;
+}
+
+.phone-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.phone-detail-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.phone-detail-pill.muted {
+  background: #f3f4f6;
+  color: var(--text-muted);
+}
+
+.phone-detail-pill.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.phone-detail-pill.warn {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Pricing block */
+.phone-detail-pricing {
+  max-width: 1100px;
+  margin: 24px auto 0;
+  padding: 20px 24px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 16px;
+  box-shadow: var(--shadow-md);
+}
+
+.phone-detail-price-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.phone-detail-price-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.phone-detail-price-range {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Spec sections */
+.phone-detail-sections {
+  max-width: 1100px;
+  margin: 32px auto 0;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.phone-detail-section {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  box-shadow: var(--shadow-md);
+}
+
+.phone-detail-section h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 14px;
+}
+
+.phone-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+}
+
+.phone-detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.phone-detail-row-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.phone-detail-row-value {
+  font-size: 14px;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.phone-detail-row-value.boolean-yes {
+  color: #166534;
+  font-weight: 600;
+}
+
+.phone-detail-row-value.boolean-no {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+/* Variants list */
+.phone-detail-variants {
+  max-width: 1100px;
+  margin: 32px auto 0;
+  padding: 0 24px;
+}
+
+.phone-detail-variants h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 14px;
+}
+
+.phone-detail-variant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.phone-detail-variant {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--shadow-md);
+}
+
+.phone-detail-variant-spec {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.phone-detail-variant-storage {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.phone-detail-variant-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 6px;
+}
+
+.phone-detail-variant-pill {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+/* Status / fallback blocks */
+.phone-detail-empty,
+.phone-detail-error {
+  max-width: 480px;
+  margin: 80px auto;
+  text-align: center;
+  padding: 32px 24px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+
+.phone-detail-empty h1,
+.phone-detail-error h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+
+.phone-detail-empty p,
+.phone-detail-error p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 20px;
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+  .phone-detail-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .phone-detail-image {
+    height: 240px;
+  }
+
+  .phone-detail-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .phone-detail-model {
+    font-size: 24px;
+  }
+}
+
+/* Dark-mode overrides — only override the colors that change.
+   Scoped to any .dash-dark ancestor so the phone detail page (which
+   also carries .dash-dark when the user prefers dark mode) inherits
+   the same rules without duplicating the stylesheet. */
+.dash-dark .phone-detail-page,
+.phone-detail-page.dash-dark {
+  background: var(--bg);
+}
+
+.phone-detail-page.dash-dark {
+  /* Mirror Dashboard.css's dark variable block so all `var(--*)`
+     references in this stylesheet resolve to dark values when the
+     detail page itself is in dark mode (the dashboard's
+     `.dashboard-page.dash-dark` block doesn't apply here). */
+  --bg: #0f172a;
+  --white: #1e293b;
+  --border: #334155;
+  --border-dark: #475569;
+
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+
+  --primary: #60a5fa;
+  --primary-dark: #3b82f6;
+  --primary-light: rgba(96, 165, 250, 0.16);
+
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+.dash-dark .phone-detail-topbar,
+.dash-dark .phone-detail-section,
+.dash-dark .phone-detail-pricing,
+.dash-dark .phone-detail-variant,
+.dash-dark .phone-detail-empty,
+.dash-dark .phone-detail-error,
+.dash-dark .phone-detail-brand img {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.dash-dark .phone-detail-back {
+  background: transparent;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dash-dark .phone-detail-model,
+.dash-dark .phone-detail-price-value,
+.dash-dark .phone-detail-section h2,
+.dash-dark .phone-detail-variants h2,
+.dash-dark .phone-detail-row-value,
+.dash-dark .phone-detail-variant-spec,
+.dash-dark .phone-detail-variant-price {
+  color: #f3f4f6;
+}
+
+.dash-dark .phone-detail-row-label,
+.dash-dark .phone-detail-brand,
+.dash-dark .phone-detail-breadcrumb,
+.dash-dark .phone-detail-price-label,
+.dash-dark .phone-detail-price-range,
+.dash-dark .phone-detail-empty p,
+.dash-dark .phone-detail-error p,
+.dash-dark .phone-detail-variant-storage {
+  color: #9ca3af;
+}
+
+.dash-dark .phone-detail-image {
+  background: #111827;
+  border-color: #374151;
+}
