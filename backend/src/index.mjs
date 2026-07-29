@@ -44,7 +44,8 @@ app.use(
     resave: false,
     cookie: {
       secure: false,
-      maxAge: 1000 * 60 * 3,
+      maxAge: 1000 * 60 * 3*60,
+
     },
   }),
 );

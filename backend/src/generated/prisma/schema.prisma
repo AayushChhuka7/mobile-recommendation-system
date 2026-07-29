@@ -90,6 +90,18 @@ model Users {
   searchHistory         SearchHistory[]
   browsingHistory       BrowsingHistory[]
 
+<<<<<<< HEAD
+=======
+  // Step B — unified behaviour event log + per-tag behaviour score
+  events         Event[]
+  behaviorScores BehaviorScore[]
+
+  // Step D — per-candidate impression log for the new fused ranker.
+  // Feeds future customer-segmentation clustering (the popularity
+  // signal reserved at 0.05 weight in FUSION_WEIGHTS).
+  recommendationLogs RecommendationLog[]
+
+>>>>>>> proxy-dev
   @@index([roleId])
   @@map("users")
 }
@@ -169,6 +181,10 @@ model Phones {
 
   // Recommendation relations
   recommendationHistory RecommendationHistory[]
+<<<<<<< HEAD
+=======
+  recommendationLogs    RecommendationLog[]
+>>>>>>> proxy-dev
   wishlist              Wishlist[]
   comparedAsA           ComparisonHistory[]     @relation("ComparisonPhoneA")
   comparedAsB           ComparisonHistory[]     @relation("ComparisonPhoneB")
@@ -375,6 +391,32 @@ model RecommendationHistory {
   @@map("recommendation_history")
 }
 
+<<<<<<< HEAD
+=======
+// Step D — per-candidate impression log. One row per served candidate
+// (rank + finalScore + userId + phoneId). Feeds the future customer-
+// segmentation cluster that will reclaim the 0.05 popularity slot
+// currently held open in FUSION_WEIGHTS. Click-through tracking is
+// not on this table — `clicked` here is reserved for a future
+// analytics job; today it's seeded false and never written.
+model RecommendationLog {
+  logId      String   @id @default(uuid()) @map("log_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  phoneId    String   @map("phone_id") @db.Uuid
+  finalScore Float    @map("final_score")
+  rank       Int
+  shownAt    DateTime @default(now()) @map("shown_at")
+  clicked    Boolean  @default(false)
+
+  user  Users  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  phone Phones @relation(fields: [phoneId], references: [phoneId])
+
+  @@index([userId, shownAt(sort: Desc)])
+  @@index([phoneId])
+  @@map("recommendation_logs")
+}
+
+>>>>>>> proxy-dev
 model CustomerProfile {
   profileId String @id @default(uuid()) @map("profile_id") @db.Uuid
   userId    String @unique @map("user_id") @db.Uuid
@@ -547,6 +589,50 @@ model AdminStatsCache {
 }
 
 // ============================================================
+<<<<<<< HEAD
+=======
+// Step B — Unified Event Log + Per-Tag Behaviour Scores
+// ============================================================
+//
+// `Event` is the single source of truth for every user interaction. The
+// legacy Step A tables (SearchHistory / BrowsingHistory /
+// RecommendationHistory / ComparisonHistory) remain so the existing
+// admin UI keeps working — controllers write to BOTH (`bridge` pattern).
+//
+// `BehaviorScore` rolls per-tag deltas from every event into a single
+// exponentially-decayed score. Step C (Profile Fusion) and Step D
+// (Ranking) will read from this table.
+
+model Event {
+  eventId   String   @id @default(uuid()) @map("event_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  eventType String   @map("event_type") @db.VarChar(40) // search | view | compare | click | save | ignore | recommend
+  phoneId   String?  @map("phone_id") @db.Uuid
+  payload   Json?    @map("payload") // free-form context: {q:"ROG"} | {modelNameA,modelNameB} | {filters:{...}}
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([eventType])
+  @@map("events")
+}
+
+model BehaviorScore {
+  userId    String   @map("user_id") @db.Uuid
+  tag       String   @db.VarChar(60) // e.g. "gaming", "camera", "battery", "brand:Samsung", "tier:flagship"
+  score     Float    @default(0)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id([userId, tag])
+  @@index([userId])
+  @@map("behavior_scores")
+}
+
+// ============================================================
+>>>>>>> proxy-dev
 // Notes:
 //
 // 1. This schema normalizes phone data into:

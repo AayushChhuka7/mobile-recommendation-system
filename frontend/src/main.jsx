@@ -111,6 +111,23 @@ createRoot(document.getElementById("root")).render(
             }
           />
 
+<<<<<<< HEAD
+=======
+          {/* Admin pages — same ProtectedRoute gate as everything else.
+            * The role check (admin-only) lives inside the components via
+            * useAdminGuard, but React Router also needs to know these
+            * paths exist or the catch-all `<Navigate to="/login">` fires
+            * before App can dispatch on `pathname.startsWith`. */}
+          <Route
+            path="/admin/*"
+            element={
+              <ProtectedRoute>
+                <App />
+              </ProtectedRoute>
+            }
+          />
+
+>>>>>>> proxy-dev
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

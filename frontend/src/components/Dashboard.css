@@ -199,6 +199,24 @@
   cursor: not-allowed;
 }
 
+<<<<<<< HEAD
+=======
+/* Admin-only "Customer profiles" link in the profile dropdown.
+ * Sits between Change Password and Sign Out. Reuses the
+ * .change-password-btn structure with a primary tint so admins
+ * can spot it. */
+.admin-link-btn {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.admin-link-btn:hover {
+  background: var(--primary);
+  color: var(--white);
+}
+
+>>>>>>> proxy-dev
 .signout-btn {
   display: flex;
   align-items: center;
@@ -1292,6 +1310,28 @@
   letter-spacing: 0.02em;
 }
 
+<<<<<<< HEAD
+=======
+/* Step D — "Boosted by your activity" badge. Stack under the match-score
+   badge on phones whose search-history sub-score crossed the neutral
+   threshold (> 0.6). Same pill shape; subtle accent so it reads as a
+   hint, not a primary CTA. */
+.rec-boosted-badge {
+  position: absolute;
+  top: 38px;
+  right: 8px;
+  background: rgba(79, 70, 229, 0.12);
+  color: #4f46e5;
+  border: 1px solid rgba(79, 70, 229, 0.3);
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+>>>>>>> proxy-dev
 .phone-card-image {
   position: relative;
 }

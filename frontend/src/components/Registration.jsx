@@ -27,7 +27,19 @@ const REGISTER_ROLE_OPTIONS = [...SELF_ASSIGNABLE_ROLES, "Admin"];
 function Registration({ onLogin }) {
   const navigate = useNavigate();
   const location = useLocation();
+<<<<<<< HEAD
   const step = location.pathname.endsWith("/otp") ? 2 : 1;
+=======
+  // Issue 2 — registration is now a 3-step flow:
+  //   /register              → step 1 (basic info)
+  //   /register/preferences  → step 2 (onboarding)
+  //   /register/otp          → step 3 (OTP)
+  const step = location.pathname.endsWith("/otp")
+    ? 3
+    : location.pathname.endsWith("/preferences")
+      ? 2
+      : 1;
+>>>>>>> proxy-dev
 
   const [registerData, setRegisterData] = useState({
     username: "",
@@ -41,6 +53,21 @@ function Registration({ onLogin }) {
   const [serverError, setServerError] = useState("");
   const [registerLoading, setRegisterLoading] = useState(false);
 
+<<<<<<< HEAD
+=======
+  // Issue 2 — onboarding answers. Held in component state across the
+  // step-1 → step-2 navigation. Submitted alongside the basic-info
+  // fields in the single POST /auth/register call from step 2.
+  const [prefData, setPrefData] = useState({
+    persona: "allrounder",
+    budgetMin: 0,
+    budgetMax: 1500,
+    preferredBrands: [],
+  });
+  const [prefErrors, setPrefErrors] = useState({});
+  const [brands, setBrands] = useState([]);
+
+>>>>>>> proxy-dev
   const [otp, setOtp] = useState(EMPTY_OTP);
   const [otpError, setOtpError] = useState("");
   const [otpLoading, setOtpLoading] = useState(false);
@@ -54,10 +81,42 @@ function Registration({ onLogin }) {
     return () => clearTimeout(timer);
   }, [resendCooldown]);
   useEffect(() => {
+<<<<<<< HEAD
     if (step === 2 && !registerData.email) {
       navigate("/register", { replace: true });
     }
   }, [step]);
+=======
+    // Only the OTP step requires registerData.email to be present;
+    // the new /register/preferences step is allowed even when the
+    // email hasn't been entered yet — it'll just bounce back to
+    // step 1 when the user clicks "Create account".
+    if (step === 3 && !registerData.email) {
+      navigate("/register", { replace: true });
+    }
+  }, [step, registerData.email, navigate]);
+
+  // Issue 2 — load the brand list on mount so the preferences step's
+  // multi-select can render. Same source as PhoneListing.jsx uses
+  // (`GET /api/phones/filters` → `data.brands`).
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      try {
+        const res = await api.get("/phones/filters");
+        const list = res?.data?.data?.brands;
+        if (!ignore && Array.isArray(list)) setBrands(list);
+      } catch (err) {
+        if (!ignore) {
+          console.warn("Failed to load brand list for onboarding:", err?.message || err);
+        }
+      }
+    })();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+>>>>>>> proxy-dev
 
   const validateRegister = useCallback(() => {
     const e = {};
@@ -115,7 +174,11 @@ function Registration({ onLogin }) {
   }, []);
 
   const handleRegisterNext = useCallback(
+<<<<<<< HEAD
     async (e) => {
+=======
+    (e) => {
+>>>>>>> proxy-dev
       e?.preventDefault();
       setServerError("");
       setRegisterErrors({});
@@ -123,6 +186,7 @@ function Registration({ onLogin }) {
       setRegisterErrors(validationErrors);
       if (Object.keys(validationErrors).length) return;
 
+<<<<<<< HEAD
       setRegisterLoading(true);
       try {
         await api.post("/auth/register", {
@@ -134,6 +198,65 @@ function Registration({ onLogin }) {
           roleName: registerRole,
         });
 
+=======
+      // Issue 2 — Step 1 no longer calls /auth/register. We hold
+      // basic-info in component state and forward to the new
+      // /register/preferences step where the user picks persona /
+      // budget / brands. The combined payload is submitted in the
+      // single POST /auth/register call from step 2.
+      navigate("/register/preferences");
+    },
+    [validateRegister, navigate],
+  );
+
+  // Build the basic-info body used by both step-2 submit paths.
+  const buildRegisterBody = useCallback(
+    () => ({
+      name: registerData.username,
+      email: registerData.email,
+      password: registerData.password,
+      confirmPassword: registerData.confirmPassword,
+      phoneNo: registerData.phone,
+      roleName: registerRole,
+    }),
+    [registerData, registerRole],
+  );
+
+  // Client-side validation for the onboarding step. Returns an error
+  // map keyed on FE field names; empty map = pass.
+  const validatePreferences = useCallback(() => {
+    const errs = {};
+    const min = Number(prefData.budgetMin);
+    const max = Number(prefData.budgetMax);
+    if (!Number.isFinite(min) || min < 0) errs.budgetMin = "Enter a non-negative number";
+    if (!Number.isFinite(max) || max <= 0) errs.budgetMax = "Enter a positive number";
+    if (Number.isFinite(min) && Number.isFinite(max) && max <= min)
+      errs.budgetMax = "Max budget must be greater than min";
+    if (!["gamer", "camera", "battery", "allrounder"].includes(prefData.persona))
+      errs.persona = "Pick a usage type";
+    return errs;
+  }, [prefData]);
+
+  // Issue 2 — submit the single POST /auth/register call with both
+  // the basic-info fields and the onboarding answers. The BE
+  // upserts UserPreference + CustomerProfile in the same transaction
+  // that creates the Users row + Otp row.
+  const submitRegisterWithPrefs = useCallback(
+    async (includePrefs) => {
+      const body = buildRegisterBody();
+      if (includePrefs) {
+        body.persona = prefData.persona;
+        body.budgetMin = Number(prefData.budgetMin);
+        body.budgetMax = Number(prefData.budgetMax);
+        if (Array.isArray(prefData.preferredBrands) && prefData.preferredBrands.length > 0) {
+          body.preferredBrands = prefData.preferredBrands;
+        }
+      }
+
+      setRegisterLoading(true);
+      try {
+        await api.post("/auth/register", body);
+>>>>>>> proxy-dev
         setResendCooldown(RESEND_COOLDOWN_SECONDS);
         navigate("/register/otp");
       } catch (error) {
@@ -143,7 +266,23 @@ function Registration({ onLogin }) {
           data?.details,
         );
         if (Object.keys(fieldErrors).length) {
+<<<<<<< HEAD
           setRegisterErrors(fieldErrors);
+=======
+          // Field-level errors on the basic-info fields belong on
+          // step 1; route the user back there so they can fix it.
+          const basicFields = ["username", "email", "password", "confirmPassword", "phone"];
+          const hit = basicFields.find((k) => fieldErrors[k]);
+          if (hit) {
+            setRegisterErrors(fieldErrors);
+            setServerError(
+              bannerMessage || data?.message || "Please review your basic info.",
+            );
+            navigate("/register");
+            return;
+          }
+          setPrefErrors(fieldErrors);
+>>>>>>> proxy-dev
         }
         setServerError(
           bannerMessage || data?.message || "Registration failed. Please try again.",
@@ -152,6 +291,7 @@ function Registration({ onLogin }) {
         setRegisterLoading(false);
       }
     },
+<<<<<<< HEAD
     [
       registerData,
       registerRole,
@@ -161,6 +301,30 @@ function Registration({ onLogin }) {
     ],
   );
 
+=======
+    [buildRegisterBody, prefData, mapServerFieldErrors, navigate],
+  );
+
+  const handlePrefSubmit = useCallback(
+    async (e) => {
+      e?.preventDefault();
+      setServerError("");
+      setPrefErrors({});
+      const errs = validatePreferences();
+      setPrefErrors(errs);
+      if (Object.keys(errs).length) return;
+      await submitRegisterWithPrefs(true);
+    },
+    [validatePreferences, submitRegisterWithPrefs],
+  );
+
+  const handlePrefSkip = useCallback(async () => {
+    setServerError("");
+    setPrefErrors({});
+    await submitRegisterWithPrefs(false);
+  }, [submitRegisterWithPrefs]);
+
+>>>>>>> proxy-dev
   const handleOtpChange = useCallback((index, value) => {
     if (!/^\d?$/.test(value)) return;
     setOtp((prev) => {
@@ -191,6 +355,10 @@ function Registration({ onLogin }) {
   const completeRegistration = useCallback(() => {
     onLogin({
       id: registerData.email,
+<<<<<<< HEAD
+=======
+      userId: registerData.email,
+>>>>>>> proxy-dev
       name: registerData.username,
       email: registerData.email,
       phoneNo: registerData.phone,
@@ -269,10 +437,25 @@ function Registration({ onLogin }) {
     }
   }, [registerData.email]);
 
+<<<<<<< HEAD
+=======
+  // Issue 2 — going back from the OTP step lands on the preferences step
+  // (the new step between basic-info and OTP) so the user can adjust
+  // their onboarding answers without re-entering basic-info.
+>>>>>>> proxy-dev
   const handleOtpBack = useCallback(() => {
     setOtp(EMPTY_OTP);
     setOtpError("");
     setOtpResult(null);
+<<<<<<< HEAD
+=======
+    navigate("/register/preferences");
+  }, [navigate]);
+
+  const handlePrefBack = useCallback(() => {
+    setPrefErrors({});
+    setServerError("");
+>>>>>>> proxy-dev
     navigate("/register");
   }, [navigate]);
 
@@ -287,6 +470,30 @@ function Registration({ onLogin }) {
     setServerError("");
   }, []);
 
+<<<<<<< HEAD
+=======
+  const updatePref = useCallback((key, value) => {
+    setPrefData((prev) => ({ ...prev, [key]: value }));
+    setPrefErrors((prev) => {
+      if (!prev[key]) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+    setServerError("");
+  }, []);
+
+  const toggleBrand = useCallback((brandName) => {
+    setPrefData((prev) => {
+      const set = new Set(prev.preferredBrands || []);
+      if (set.has(brandName)) set.delete(brandName);
+      else set.add(brandName);
+      return { ...prev, preferredBrands: Array.from(set) };
+    });
+    setServerError("");
+  }, []);
+
+>>>>>>> proxy-dev
   return (
     <div className="auth-page">
       <Toast
@@ -311,6 +518,15 @@ function Registration({ onLogin }) {
               Create an account to get started
             </div>
 
+<<<<<<< HEAD
+=======
+            <div className="step-indicator">
+              <div className="step-dot active"></div>
+              <div className="step-dot"></div>
+              <div className="step-dot"></div>
+            </div>
+
+>>>>>>> proxy-dev
             {serverError && (
               <div
                 className="server-error"
@@ -405,7 +621,14 @@ function Registration({ onLogin }) {
               className="btn btn-primary w-full"
               disabled={registerLoading}
             >
+<<<<<<< HEAD
               {registerLoading ? "Submitting..." : "Register"}
+=======
+              {/* Issue 2 — Step 1 no longer registers. It validates and
+                  navigates to the new /register/preferences step where
+                  the actual POST /auth/register happens. */}
+              {registerLoading ? "Submitting..." : "Continue"}
+>>>>>>> proxy-dev
             </button>
 
             <div className="auth-footer">
@@ -415,6 +638,169 @@ function Registration({ onLogin }) {
               </span>
             </div>
           </form>
+<<<<<<< HEAD
+=======
+        ) : step === 2 ? (
+          // Issue 2 — onboarding step. Filled before the OTP is sent;
+          // the basic-info fields are still in component state and will
+          // be sent in the same POST /auth/register from this step.
+          <form onSubmit={handlePrefSubmit}>
+            <button
+              type="button"
+              className="back-btn"
+              onClick={handlePrefBack}
+              aria-label="Back to registration form"
+            >
+              <ChevronLeftIcon />
+            </button>
+
+            <div className="auth-title">Tell us what you need</div>
+            <div className="auth-subtitle">
+              A few quick picks so we can rank the catalog for you. You can
+              change these anytime.
+            </div>
+
+            <div className="step-indicator">
+              <div className="step-dot active"></div>
+              <div className="step-dot active"></div>
+              <div className="step-dot"></div>
+            </div>
+
+            {serverError && (
+              <div
+                className="server-error"
+                role="alert"
+                style={{
+                  background: "#fef2f2",
+                  color: "#dc2626",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  marginBottom: "16px",
+                  fontSize: "14px",
+                }}
+              >
+                {serverError}
+              </div>
+            )}
+
+            <div className="input-group">
+              <label className="input-label">What will you mainly use it for?</label>
+              <div className="onboarding-personas">
+                {[
+                  { key: "gamer", label: "Gaming" },
+                  { key: "camera", label: "Camera" },
+                  { key: "battery", label: "Battery" },
+                  { key: "allrounder", label: "All-round" },
+                ].map((opt) => (
+                  <label
+                    key={opt.key}
+                    className={`persona-chip ${prefData.persona === opt.key ? "active" : ""}`}
+                  >
+                    <input
+                      type="radio"
+                      name="persona"
+                      value={opt.key}
+                      checked={prefData.persona === opt.key}
+                      onChange={(e) => updatePref("persona", e.target.value)}
+                    />
+                    <span>{opt.label}</span>
+                  </label>
+                ))}
+              </div>
+              {prefErrors.persona && (
+                <div className="field-error">{prefErrors.persona}</div>
+              )}
+            </div>
+
+            <div className="input-group">
+              <label className="input-label">Budget range (EUR)</label>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "12px",
+                }}
+              >
+                <TextField
+                  label="Min"
+                  type="number"
+                  inputMode="numeric"
+                  name="budgetMin"
+                  placeholder="0"
+                  value={prefData.budgetMin}
+                  onChange={(e) => updatePref("budgetMin", e.target.value)}
+                  error={prefErrors.budgetMin}
+                />
+                <TextField
+                  label="Max"
+                  type="number"
+                  inputMode="numeric"
+                  name="budgetMax"
+                  placeholder="1500"
+                  value={prefData.budgetMax}
+                  onChange={(e) => updatePref("budgetMax", e.target.value)}
+                  error={prefErrors.budgetMax}
+                />
+              </div>
+            </div>
+
+            <div className="input-group">
+              <label className="input-label">
+                Preferred brands (optional)
+              </label>
+              {brands.length === 0 ? (
+                <p
+                  className="auth-subtitle"
+                  style={{ fontSize: "13px", marginBottom: "8px" }}
+                >
+                  Loading brand list…
+                </p>
+              ) : (
+                <div className="onboarding-brands">
+                  {brands.map((b) => {
+                    const selected =
+                      prefData.preferredBrands.includes(b.name);
+                    return (
+                      <button
+                        key={b.id}
+                        type="button"
+                        className={`brand-chip ${selected ? "active" : ""}`}
+                        onClick={() => toggleBrand(b.name)}
+                      >
+                        {b.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={registerLoading}
+            >
+              {registerLoading ? "Creating account…" : "Create account"}
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-outline w-full"
+              style={{ marginTop: "8px" }}
+              onClick={handlePrefSkip}
+              disabled={registerLoading}
+            >
+              Skip for now
+            </button>
+
+            <div className="auth-footer">
+              Back to{" "}
+              <span className="auth-link" onClick={() => navigate("/login")}>
+                Sign in
+              </span>
+            </div>
+          </form>
+>>>>>>> proxy-dev
         ) : (
           <form onSubmit={handleOtpVerify}>
             <button
@@ -435,6 +821,10 @@ function Registration({ onLogin }) {
             <div className="step-indicator">
               <div className="step-dot active"></div>
               <div className="step-dot active"></div>
+<<<<<<< HEAD
+=======
+              <div className="step-dot active"></div>
+>>>>>>> proxy-dev
             </div>
 
             <OtpInputRow

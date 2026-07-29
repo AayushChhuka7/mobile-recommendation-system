@@ -144,7 +144,11 @@ export declare type BaseDMMF = {
 declare type BatchArgs = {
     queries: BatchQuery[];
     transaction?: {
+<<<<<<< HEAD
         isolationLevel?: IsolationLevel;
+=======
+        isolationLevel?: IsolationLevel_2;
+>>>>>>> proxy-dev
     };
 };
 
@@ -172,7 +176,11 @@ declare type BatchQueryOptionsCbArgs = {
 declare type BatchResponse = MultiBatchResponse | CompactedBatchResponse;
 
 declare type BatchTransactionOptions = {
+<<<<<<< HEAD
     isolationLevel?: Transaction.IsolationLevel;
+=======
+    isolationLevel?: Transaction_2.IsolationLevel;
+>>>>>>> proxy-dev
     maxWait?: number;
     timeout?: number;
 };
@@ -761,9 +769,15 @@ declare interface Engine<InteractiveTransactionPayload = unknown> {
     version(forceRun?: boolean): Promise<string> | string;
     request<T>(query: JsonQuery, options: RequestOptions<InteractiveTransactionPayload>): Promise<QueryEngineResultData<T>>;
     requestBatch<T>(queries: JsonQuery[], options: RequestBatchOptions<InteractiveTransactionPayload>): Promise<BatchQueryEngineResult<T>[]>;
+<<<<<<< HEAD
     transaction(action: 'start', headers: Transaction.TransactionHeaders, options: Transaction.Options): Promise<Transaction.InteractiveTransactionInfo<unknown>>;
     transaction(action: 'commit', headers: Transaction.TransactionHeaders, info: Transaction.InteractiveTransactionInfo<unknown>): Promise<void>;
     transaction(action: 'rollback', headers: Transaction.TransactionHeaders, info: Transaction.InteractiveTransactionInfo<unknown>): Promise<void>;
+=======
+    transaction(action: 'start', headers: Transaction_2.TransactionHeaders, options: Transaction_2.Options): Promise<Transaction_2.InteractiveTransactionInfo<unknown>>;
+    transaction(action: 'commit', headers: Transaction_2.TransactionHeaders, info: Transaction_2.InteractiveTransactionInfo<unknown>): Promise<void>;
+    transaction(action: 'rollback', headers: Transaction_2.TransactionHeaders, info: Transaction_2.InteractiveTransactionInfo<unknown>): Promise<void>;
+>>>>>>> proxy-dev
 }
 
 declare interface EngineConfig {
@@ -775,7 +789,11 @@ declare interface EngineConfig {
     previewFeatures?: string[];
     activeProvider?: string;
     logEmitter: LogEmitter;
+<<<<<<< HEAD
     transactionOptions: Transaction.Options;
+=======
+    transactionOptions: Transaction_2.Options;
+>>>>>>> proxy-dev
     /**
      * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-pg`.
      */
@@ -1487,7 +1505,11 @@ declare type InteractiveTransactionInfo<Payload = unknown> = {
     payload: Payload;
 };
 
+<<<<<<< HEAD
 declare type InteractiveTransactionOptions<Payload> = Transaction.InteractiveTransactionInfo<Payload>;
+=======
+declare type InteractiveTransactionOptions<Payload> = Transaction_2.InteractiveTransactionInfo<Payload>;
+>>>>>>> proxy-dev
 
 export declare type InternalArgs<R = {
     [K in string]: {
@@ -1557,9 +1579,15 @@ export { isJsonNull }
 
 export { isObjectEnumValue }
 
+<<<<<<< HEAD
 declare type IsolationLevel = 'ReadUncommitted' | 'ReadCommitted' | 'RepeatableRead' | 'Snapshot' | 'Serializable';
 
 declare type IsolationLevel_2 = 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SNAPSHOT' | 'SERIALIZABLE';
+=======
+declare type IsolationLevel = 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SNAPSHOT' | 'SERIALIZABLE';
+
+declare type IsolationLevel_2 = 'ReadUncommitted' | 'ReadCommitted' | 'RepeatableRead' | 'Snapshot' | 'Serializable';
+>>>>>>> proxy-dev
 
 declare function isSkip(value: unknown): value is Skip;
 
@@ -1613,7 +1641,11 @@ export declare interface JsonArray extends Array<JsonValue> {
 export declare type JsonBatchQuery = {
     batch: JsonQuery[];
     transaction?: {
+<<<<<<< HEAD
         isolationLevel?: IsolationLevel;
+=======
+        isolationLevel?: IsolationLevel_2;
+>>>>>>> proxy-dev
     };
 };
 
@@ -1930,7 +1962,11 @@ declare type Options = {
     /** Timeout for the transaction body */
     timeout?: number;
     /** Transaction isolation level */
+<<<<<<< HEAD
     isolationLevel?: IsolationLevel;
+=======
+    isolationLevel?: IsolationLevel_2;
+>>>>>>> proxy-dev
     /**
      * Used for nested interactive transactions. When provided, the engine may
      * re-use an existing open transaction instead of opening a new one.
@@ -2004,12 +2040,38 @@ declare type PrimaryKey = ReadonlyDeep_2<{
     fields: string[];
 }>;
 
+<<<<<<< HEAD
 /**
  * Options common to all variants of `PrismaClientOptions`, regardless of
  * whether you connect to your database through a driver adapter or through
  * Prisma Accelerate.
  */
 declare interface PrismaClientBaseOptions {
+=======
+export { PrismaClientInitializationError }
+
+export { PrismaClientKnownRequestError }
+
+/**
+ * Since Prisma 7, a PrismaClient needs either an adapter or an accelerateUrl.
+ * The two options are mutually exclusive.
+ */
+declare type PrismaClientMutuallyExclusiveOptions = {
+    /**
+     * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-pg`.
+     */
+    adapter: SqlDriverAdapterFactory;
+    accelerateUrl?: never;
+} | {
+    /**
+     * Prisma Accelerate URL allowing the client to connect through Accelerate instead of a direct database.
+     */
+    accelerateUrl: string;
+    adapter?: never;
+};
+
+export declare type PrismaClientOptions = PrismaClientMutuallyExclusiveOptions & {
+>>>>>>> proxy-dev
     /**
      * @default "colorless"
      */
@@ -2019,7 +2081,11 @@ declare interface PrismaClientBaseOptions {
      * maxWait ?= 2000
      * timeout ?= 5000
      */
+<<<<<<< HEAD
     transactionOptions?: Transaction.Options;
+=======
+    transactionOptions?: Transaction_2.Options;
+>>>>>>> proxy-dev
     /**
      * @example
      * \`\`\`
@@ -2077,6 +2143,7 @@ declare interface PrismaClientBaseOptions {
         /** This can be used for testing purposes */
         configOverride?: (config: GetPrismaClientConfig) => GetPrismaClientConfig;
     };
+<<<<<<< HEAD
 }
 
 export { PrismaClientInitializationError }
@@ -2142,6 +2209,9 @@ declare interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions
     adapter: SqlDriverAdapterFactory;
     accelerateUrl?: never;
 }
+=======
+};
+>>>>>>> proxy-dev
 
 export { PrismaClientRustPanicError }
 
@@ -2195,7 +2265,11 @@ declare interface PrismaPromise_2<TResult, TSpec extends PrismaOperationSpec<unk
 declare type PrismaPromiseBatchTransaction = {
     kind: 'batch';
     id: number;
+<<<<<<< HEAD
     isolationLevel?: IsolationLevel;
+=======
+    isolationLevel?: IsolationLevel_2;
+>>>>>>> proxy-dev
     maxWait?: number;
     timeout?: number;
     index: number;
@@ -3122,7 +3196,11 @@ declare interface SqlDriverAdapter extends SqlQueryable {
     /**
      * Start new transaction.
      */
+<<<<<<< HEAD
     startTransaction(isolationLevel?: IsolationLevel_2): Promise<Transaction_2>;
+=======
+    startTransaction(isolationLevel?: IsolationLevel): Promise<Transaction>;
+>>>>>>> proxy-dev
     /**
      * Optional method that returns extra connection info
      */
@@ -3225,6 +3303,7 @@ declare interface TracingHelper {
     runInChildSpan<R>(nameOrOptions: string | ExtendedSpanOptions, callback: SpanCallback<R>): R;
 }
 
+<<<<<<< HEAD
 declare namespace Transaction {
     export {
         IsolationLevel,
@@ -3235,6 +3314,9 @@ declare namespace Transaction {
 }
 
 declare interface Transaction_2 extends AdapterInfo, SqlQueryable {
+=======
+declare interface Transaction extends AdapterInfo, SqlQueryable {
+>>>>>>> proxy-dev
     /**
      * Transaction options.
      */
@@ -3261,6 +3343,18 @@ declare interface Transaction_2 extends AdapterInfo, SqlQueryable {
     releaseSavepoint?(name: string): Promise<void>;
 }
 
+<<<<<<< HEAD
+=======
+declare namespace Transaction_2 {
+    export {
+        IsolationLevel_2 as IsolationLevel,
+        Options,
+        InteractiveTransactionInfo,
+        TransactionHeaders
+    }
+}
+
+>>>>>>> proxy-dev
 declare type TransactionHeaders = {
     traceparent?: string;
 };

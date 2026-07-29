@@ -42,6 +42,41 @@ export async function getRecommendations({
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * Auto-recommend — fired by the Dashboard on mount.
+ *
+ * Backend contract (see `backend/src/controller/recommendController.mjs::
+ * getAutoRecommend` and `backend/src/services/recommendService.mjs::
+ * getAutoRecommendations`):
+ *
+ *   GET /api/recommend/auto
+ *
+ *   200 → { success: true, data: { results: Recommendation[], defaultedAt }, message }
+ *
+ *   - `results`     same per-candidate shape as `POST /recommend`.
+ *   - `defaultedAt` { persona: bool, budget: bool } — true if the BE
+ *     fell back to defaults (no stored persona / no stored budget).
+ *     The FE may use this to render a "Cold-start picks" hint, but is
+ *     not required to.
+ *
+ * Reuses the same fusion pipeline as the click path. No body, no
+ * preferences, no persona — the BE reads persona + budget from the
+ * stored profile.
+ */
+export async function getAutoRecommendations() {
+  const res = await api.get("/recommend/auto");
+  return {
+    results: res?.data?.data?.results ?? [],
+    defaultedAt: res?.data?.data?.defaultedAt ?? {
+      persona: false,
+      budget: false,
+    },
+  };
+}
+
+/**
+>>>>>>> proxy-dev
  * Hit the backend ML-powered phone-vs-phone comparison endpoint.
  *
  * Backend contract (see backend/src/routes/recommendRoutes.mjs +

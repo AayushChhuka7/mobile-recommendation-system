@@ -1,7 +1,18 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+<<<<<<< HEAD
 import { getRecommendations } from "../services/recommend";
+=======
+import { getAutoRecommendations, getRecommendations } from "../services/recommend";
+import {
+  getMyFilterPreset,
+  getMyPreferences,
+  getMyProfileBundle,
+  saveMyFilterPreset,
+  saveMyPreferences,
+} from "../services/profile";
+>>>>>>> proxy-dev
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
@@ -101,6 +112,30 @@ const EMPTY_FILTERS = {
   hasOis: false,
 };
 
+<<<<<<< HEAD
+=======
+// Resolve a persisted persona string back to the FE's PERSONA_WEIGHT_PRESETS
+// key. The backend may store either a category ("gamer", "camera", ...)
+// or "Custom" (when the user moved the sliders). Anything we don't
+// recognise is treated as "allrounder" (the safe default).
+const personaToCategory = (persona) => {
+  if (
+    persona === "gamer" ||
+    persona === "camera" ||
+    persona === "battery" ||
+    persona === "allrounder"
+  ) {
+    return persona;
+  }
+  return "allrounder";
+};
+
+// Filter/sort auto-save currently fires only on explicit user actions
+// (Apply button, sort dropdown change) — no debounce needed. A debounce
+// helper can be reintroduced here if a future continuous-input source
+// (e.g. live price slider) gets wired to auto-save.
+
+>>>>>>> proxy-dev
 function buildPhonesQuery(filters, sort, extra = {}) {
   const params = { limit: 6, sort, ...extra };
   if (filters.brand) params.brand = filters.brand;
@@ -241,6 +276,72 @@ function Dashboard() {
     };
   }, []);
 
+<<<<<<< HEAD
+=======
+  // Hydrate saved preferences + filter preset on mount. The whole
+  // payload is fetched with one round-trip so we don't bounce between
+  // /me/preferences and /me/filter-preset. If anything fails, the local
+  // state defaults (which already match `EMPTY_FILTERS` and
+  // `PERSONA_WEIGHT_PRESETS.gamer`) take over.
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    let ignore = false;
+    async function hydrate() {
+      try {
+        const [bundle] = await Promise.all([getMyProfileBundle()]);
+        if (ignore || !bundle || hydratedRef.current) return;
+
+        // 1. Restore the recommend modal state — persona + weights +
+        //    budget. If `recommendationPersona` is missing (fresh user)
+        //    keep the default `gamer` selection already in state.
+        const persona =
+          bundle.customerProfile?.recommendationPersona || null;
+        if (persona) {
+          const cat = personaToCategory(persona);
+          setSelectedCategory(cat);
+          setWeights({ ...PERSONA_WEIGHT_PRESETS[cat] });
+          setWeightsTouched(persona === "Custom");
+        }
+
+        const maxBudget =
+          typeof bundle.preference?.maxBudget === "number"
+            ? bundle.preference.maxBudget
+            : null;
+        if (maxBudget !== null) setBudgetMax(String(maxBudget));
+
+        // 2. Restore filters + sort from the saved preset. The
+        //    backend stores it under `preferredBrands` with a
+        //    `__kind: "filter-preset"` discriminator.
+        const preset = await getMyFilterPreset();
+        if (ignore) return;
+        if (preset && preset.filters && typeof preset.filters === "object") {
+          // Defensive: only pick keys present in EMPTY_FILTERS so a
+          // stale key in storage can't break the filter UI.
+          const merged = { ...EMPTY_FILTERS };
+          for (const k of Object.keys(EMPTY_FILTERS)) {
+            if (k in preset.filters) merged[k] = preset.filters[k];
+          }
+          setFilters(merged);
+          setPendingFilters(merged);
+        }
+        if (preset && typeof preset.sort === "string" && preset.sort.length > 0) {
+          setSort(preset.sort);
+        }
+
+        hydratedRef.current = true;
+      } catch (err) {
+        // Hydration is best-effort — silent fallback to defaults is
+        // fine. Log only in dev.
+        console.warn("Profile hydration skipped:", err?.message || err);
+      }
+    }
+    hydrate();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+>>>>>>> proxy-dev
   // Profile fields (name, phoneNo) are hydrated by AuthProvider's
   // session-validation effect on app boot, so by the time the
   // dashboard mounts the auth context already has fresh data.
@@ -323,6 +424,69 @@ function Dashboard() {
     };
   }, [searchTerm, filters, sort, page, navigate, logout]);
 
+<<<<<<< HEAD
+=======
+  // Auto-recommend — fire once on Dashboard mount so the user sees
+  // personalised picks without clicking anything. Reuses the existing
+  // `recs / recsLoading / recsError` state so the spinner + error UI
+  // + clear button all keep working unchanged.
+  //
+  // Skip conditions:
+  //   - no logged-in user (defensive; the route is auth-guarded but we
+  //     also don't want this to run during a /login redirect).
+  //   - recs already populated (preserve the user's picks across route
+  //     re-mounts within the same session; the explicit "Clear" button
+  //     resets state and the next mount will re-fetch).
+  //
+  // The BE reuses the same fusion pipeline as the click path — see
+  // `backend/src/services/recommendService.mjs::getAutoRecommendations`.
+  useEffect(() => {
+    // Accept either field name — login returns `id`, /users/me
+    // returns `userId`. Either is enough to prove we're
+    // authenticated; the BE identifies the caller by cookie anyway.
+    const uid = user?.userId || user?.id;
+    if (!user || !uid) return;
+    if (recs !== null) return;
+
+    let ignore = false;
+    setRecsLoading(true);
+    setRecsError("");
+
+    (async () => {
+      try {
+        const { results, defaultedAt } = await getAutoRecommendations();
+        if (ignore) return;
+        setRecs(results);
+        // Tag the persona in the recs header. If both defaulted, surface
+        // an explicit "auto" persona label so the user understands the
+        // system cold-started.
+        setRecsPersona(
+          defaultedAt.persona && defaultedAt.budget
+            ? "auto (cold start)"
+            : "auto",
+        );
+      } catch (err) {
+        if (ignore) return;
+        // Soft-fail. An auto-recommend failure should never block the
+        // listing or steer the user away — the explicit "Recommend Me"
+        // button is still wired up.
+        console.warn("[auto-recommend] failed:", err?.message || err);
+        setRecsError(
+          err?.response?.data?.message ||
+            "Couldn't auto-load recommendations. Use Recommend Me to retry.",
+        );
+      } finally {
+        if (!ignore) setRecsLoading(false);
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.userId, user?.id]);
+
+>>>>>>> proxy-dev
   const handleSignOut = useCallback(async () => {
     try {
       await api.post("/auth/logout");
@@ -479,9 +643,30 @@ function Dashboard() {
         persona,
         budget,
         preferences,
+<<<<<<< HEAD
         topN: 6,
       });
       setRecs(results);
+=======
+        // Issue 1 — render the full ranked catalog (up to 200) instead
+        // of the historical 6-picks slice. Same fusion pipeline; the BE
+        // returns phones in descending `matchScore` order.
+        topN: 200,
+      });
+      setRecs(results);
+
+      // Auto-save the persona + weights + budget that produced this
+      // recommendation. Fire-and-forget — a save failure must never
+      // disturb the rec result the user just received.
+      saveMyPreferences({
+        persona,
+        budgetMin: Number.isFinite(min) && min >= 0 ? min : "",
+        budgetMax: max,
+        weights: weightsTouched ? { ...weights } : undefined,
+      }).catch((err) => {
+        console.warn("Preferences save failed:", err?.message || err);
+      });
+>>>>>>> proxy-dev
     } catch (err) {
       setRecsError(
         err.response?.data?.message ||
@@ -529,6 +714,17 @@ function Dashboard() {
     setFilters(pendingFilters);
     setShowFilters(false);
     setPage(1);
+<<<<<<< HEAD
+=======
+    // Auto-save the filter + current sort. Wrapped in a try so a save
+    // failure can never abort the apply flow.
+    saveMyFilterPreset({
+      filters: pendingFilters,
+      sort,
+    }).catch((err) => {
+      console.warn("Filter preset save failed:", err?.message || err);
+    });
+>>>>>>> proxy-dev
   };
 
   const handleClearFilters = () => {
@@ -539,6 +735,17 @@ function Dashboard() {
   const handleSortChange = (nextSort) => {
     setSort(nextSort);
     setPage(1);
+<<<<<<< HEAD
+=======
+    // Auto-save the new sort alongside the current filters so a reload
+    // restores both.
+    saveMyFilterPreset({
+      filters,
+      sort: nextSort,
+    }).catch((err) => {
+      console.warn("Filter preset save failed:", err?.message || err);
+    });
+>>>>>>> proxy-dev
   };
 
   const displayName = user?.name || user?.username || "there";
@@ -682,6 +889,25 @@ function Dashboard() {
                     <LockIcon />
                     Change password
                   </button>
+<<<<<<< HEAD
+=======
+                  {user?.role === "Admin" && (
+                    <>
+                      <button
+                        type="button"
+                        className="change-password-btn admin-link-btn"
+                        onClick={() => {
+                          setProfileOpen(false);
+                          navigate("/admin/customer-profiles");
+                        }}
+                      >
+                        <SlidersIcon />
+                        Customer profiles
+                      </button>
+                      <div className="profile-divider" />
+                    </>
+                  )}
+>>>>>>> proxy-dev
                   <button
                     type="button"
                     className="signout-btn"
@@ -998,8 +1224,13 @@ function Dashboard() {
             <div className="dash-recs-header">
               <h2>
                 {recsPersona
+<<<<<<< HEAD
                   ? `Recommended for you · ${recsPersona}`
                   : "Recommended for you"}
+=======
+                  ? `All phones ranked for you · ${recsPersona}`
+                  : "All phones ranked for you"}
+>>>>>>> proxy-dev
               </h2>
               <button
                 type="button"
@@ -1045,6 +1276,17 @@ function Dashboard() {
                             {Math.round(r.matchScore * 100)}% match
                           </span>
                         )}
+<<<<<<< HEAD
+=======
+                        {r.matchComponents?.search_history > 0.6 && (
+                          <span
+                            className="rec-boosted-badge"
+                            title="Ranked higher because of your recent searches & views"
+                          >
+                            Boosted by your activity
+                          </span>
+                        )}
+>>>>>>> proxy-dev
                       </div>
                       <div className="phone-card-name">{r.modelName}</div>
                       <div className="phone-card-tagline">

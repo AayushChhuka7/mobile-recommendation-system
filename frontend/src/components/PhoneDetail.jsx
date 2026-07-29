@@ -2,6 +2,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPhoneById } from "../services/phones";
 import { useAuth } from "../hooks/useAuth.jsx";
+<<<<<<< HEAD
+=======
+import { useEventLogger } from "../hooks/useEventLogger.jsx";
+>>>>>>> proxy-dev
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneDetail.css";
@@ -144,6 +148,15 @@ function PhoneDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { logout } = useAuth();
+<<<<<<< HEAD
+=======
+  // Step B — log a "view" event once when the detail page mounts so
+  // the per-tag BehaviourScore accumulates. The hook swallows errors,
+  // and we only fire when `id` is a plausible UUID (string with some
+  // length) so we don't pollute the table with garbage from a typo'd
+  // URL.
+  const logEvent = useEventLogger();
+>>>>>>> proxy-dev
 
   const [phone, setPhone] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -189,6 +202,18 @@ function PhoneDetail() {
     };
   }, [id, reloadKey, navigate, logout]);
 
+<<<<<<< HEAD
+=======
+  // Step B — fire one "view" event per detail-page mount. We only fire
+  // for UUID-shaped `id` so a stray edit doesn't push junk into the
+  // Event table. The hook swallows errors so this is purely additive.
+  useEffect(() => {
+    if (!id) return;
+    if (typeof id !== "string" || id.length < 32) return;
+    logEvent("view", { phoneId: id });
+  }, [id, logEvent]);
+
+>>>>>>> proxy-dev
   const handleBack = useCallback(() => {
     if (window.history.length > 1) {
       navigate(-1);
