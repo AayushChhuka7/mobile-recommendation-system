@@ -30,8 +30,14 @@ function App() {
       : userData.user
         ? userData.user
         : userData;
+    // The login endpoint returns `{ id, email }` but downstream code
+    // (Dashboard auto-recommend, useAuth hydration) expects `userId`.
+    // Normalise to both names so a fresh user has `userId` populated
+    // the moment they land on the dashboard.
     const unwrapped = {
       ...record,
+      ...(record.userId ? {} : record.id ? { userId: record.id } : {}),
+      ...(record.id ? { id: record.id } : {}),
       ...(record.role ? { role: record.role } : {}),
     };
     login(unwrapped);

@@ -2,4 +2,4 @@ __pycache__/
 *.pyc
 *.pyo
 ./pipeline/__pycache__/
-/similarity_bundle.joblib
+similarity_bundle.joblib
