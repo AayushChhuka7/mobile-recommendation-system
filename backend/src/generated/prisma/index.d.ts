@@ -69,6 +69,11 @@ export type UserPreference = $Result.DefaultSelection<Prisma.$UserPreferencePayl
  */
 export type RecommendationHistory = $Result.DefaultSelection<Prisma.$RecommendationHistoryPayload>
 /**
+ * Model RecommendationLog
+ * 
+ */
+export type RecommendationLog = $Result.DefaultSelection<Prisma.$RecommendationLogPayload>
+/**
  * Model CustomerProfile
  * 
  */
@@ -103,6 +108,16 @@ export type BrowsingHistory = $Result.DefaultSelection<Prisma.$BrowsingHistoryPa
  * 
  */
 export type AdminStatsCache = $Result.DefaultSelection<Prisma.$AdminStatsCachePayload>
+/**
+ * Model Event
+ * 
+ */
+export type Event = $Result.DefaultSelection<Prisma.$EventPayload>
+/**
+ * Model BehaviorScore
+ * 
+ */
+export type BehaviorScore = $Result.DefaultSelection<Prisma.$BehaviorScorePayload>
 
 /**
  * Enums
@@ -232,7 +247,7 @@ export class PrismaClient<
    * Read more in our [docs](https://pris.ly/d/client).
    */
 
-  constructor(optionsArg ?: Prisma.PrismaClientConstructorArgs<ClientOptions>);
+  constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
   $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): PrismaClient;
 
   /**
@@ -424,6 +439,16 @@ export class PrismaClient<
   get recommendationHistory(): Prisma.RecommendationHistoryDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.recommendationLog`: Exposes CRUD operations for the **RecommendationLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RecommendationLogs
+    * const recommendationLogs = await prisma.recommendationLog.findMany()
+    * ```
+    */
+  get recommendationLog(): Prisma.RecommendationLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.customerProfile`: Exposes CRUD operations for the **CustomerProfile** model.
     * Example usage:
     * ```ts
@@ -492,6 +517,26 @@ export class PrismaClient<
     * ```
     */
   get adminStatsCache(): Prisma.AdminStatsCacheDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.event`: Exposes CRUD operations for the **Event** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Events
+    * const events = await prisma.event.findMany()
+    * ```
+    */
+  get event(): Prisma.EventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.behaviorScore`: Exposes CRUD operations for the **BehaviorScore** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BehaviorScores
+    * const behaviorScores = await prisma.behaviorScore.findMany()
+    * ```
+    */
+  get behaviorScore(): Prisma.BehaviorScoreDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -542,8 +587,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.9.0
-   * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
+   * Prisma Client JS version: 7.8.0
+   * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
    */
   export type PrismaVersion = {
     client: string
@@ -678,19 +723,6 @@ export namespace Prisma {
   };
 
   /**
-   * Resolved type of the argument passed to the `PrismaClient` constructor.
-   *
-   * When called without a narrower options type (the common case), this resolves
-   * to `PrismaClientOptions` directly, which produces a clear TypeScript error
-   * message (`not assignable to parameter of type 'PrismaClientOptions'`) when
-   * the argument is missing or incomplete. When the user supplies a narrower
-   * options type (e.g. via a literal), it falls back to `Subset` to keep
-   * filtering out unknown properties.
-   */
-  export type PrismaClientConstructorArgs<Options extends PrismaClientOptions> =
-    [PrismaClientOptions] extends [Options] ? PrismaClientOptions : Subset<Options, PrismaClientOptions>;
-
-  /**
    * SelectSubset
    * @desc From `T` pick properties that exist in `U`. Simple version of Intersection.
    * Additionally, it validates, if both select and include are present. If the case, it errors.
@@ -722,7 +754,7 @@ export namespace Prisma {
   type XOR<T, U> =
     T extends object ?
     U extends object ?
-      ((Without<T, U> & U) | (Without<U, T> & T)) & object
+      (Without<T, U> & U) | (Without<U, T> & T)
     : U : T
 
 
@@ -950,13 +982,16 @@ export namespace Prisma {
     UserProfile: 'UserProfile',
     UserPreference: 'UserPreference',
     RecommendationHistory: 'RecommendationHistory',
+    RecommendationLog: 'RecommendationLog',
     CustomerProfile: 'CustomerProfile',
     Wishlist: 'Wishlist',
     ComparisonHistory: 'ComparisonHistory',
     PaymentHistory: 'PaymentHistory',
     SearchHistory: 'SearchHistory',
     BrowsingHistory: 'BrowsingHistory',
-    AdminStatsCache: 'AdminStatsCache'
+    AdminStatsCache: 'AdminStatsCache',
+    Event: 'Event',
+    BehaviorScore: 'BehaviorScore'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -972,7 +1007,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "customerProfile" | "wishlist" | "comparisonHistory" | "paymentHistory" | "searchHistory" | "browsingHistory" | "adminStatsCache"
+      modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "recommendationLog" | "customerProfile" | "wishlist" | "comparisonHistory" | "paymentHistory" | "searchHistory" | "browsingHistory" | "adminStatsCache" | "event" | "behaviorScore"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1790,6 +1825,80 @@ export namespace Prisma {
           }
         }
       }
+      RecommendationLog: {
+        payload: Prisma.$RecommendationLogPayload<ExtArgs>
+        fields: Prisma.RecommendationLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RecommendationLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RecommendationLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload>
+          }
+          findFirst: {
+            args: Prisma.RecommendationLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RecommendationLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload>
+          }
+          findMany: {
+            args: Prisma.RecommendationLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload>[]
+          }
+          create: {
+            args: Prisma.RecommendationLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload>
+          }
+          createMany: {
+            args: Prisma.RecommendationLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RecommendationLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload>[]
+          }
+          delete: {
+            args: Prisma.RecommendationLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload>
+          }
+          update: {
+            args: Prisma.RecommendationLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.RecommendationLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RecommendationLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RecommendationLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.RecommendationLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationLogPayload>
+          }
+          aggregate: {
+            args: Prisma.RecommendationLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRecommendationLog>
+          }
+          groupBy: {
+            args: Prisma.RecommendationLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RecommendationLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RecommendationLogCountArgs<ExtArgs>
+            result: $Utils.Optional<RecommendationLogCountAggregateOutputType> | number
+          }
+        }
+      }
       CustomerProfile: {
         payload: Prisma.$CustomerProfilePayload<ExtArgs>
         fields: Prisma.CustomerProfileFieldRefs
@@ -2308,6 +2417,154 @@ export namespace Prisma {
           }
         }
       }
+      Event: {
+        payload: Prisma.$EventPayload<ExtArgs>
+        fields: Prisma.EventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          findFirst: {
+            args: Prisma.EventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          findMany: {
+            args: Prisma.EventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>[]
+          }
+          create: {
+            args: Prisma.EventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          createMany: {
+            args: Prisma.EventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>[]
+          }
+          delete: {
+            args: Prisma.EventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          update: {
+            args: Prisma.EventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          deleteMany: {
+            args: Prisma.EventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>[]
+          }
+          upsert: {
+            args: Prisma.EventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EventPayload>
+          }
+          aggregate: {
+            args: Prisma.EventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEvent>
+          }
+          groupBy: {
+            args: Prisma.EventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EventCountArgs<ExtArgs>
+            result: $Utils.Optional<EventCountAggregateOutputType> | number
+          }
+        }
+      }
+      BehaviorScore: {
+        payload: Prisma.$BehaviorScorePayload<ExtArgs>
+        fields: Prisma.BehaviorScoreFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.BehaviorScoreFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.BehaviorScoreFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload>
+          }
+          findFirst: {
+            args: Prisma.BehaviorScoreFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.BehaviorScoreFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload>
+          }
+          findMany: {
+            args: Prisma.BehaviorScoreFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload>[]
+          }
+          create: {
+            args: Prisma.BehaviorScoreCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload>
+          }
+          createMany: {
+            args: Prisma.BehaviorScoreCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.BehaviorScoreCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload>[]
+          }
+          delete: {
+            args: Prisma.BehaviorScoreDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload>
+          }
+          update: {
+            args: Prisma.BehaviorScoreUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload>
+          }
+          deleteMany: {
+            args: Prisma.BehaviorScoreDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.BehaviorScoreUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.BehaviorScoreUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload>[]
+          }
+          upsert: {
+            args: Prisma.BehaviorScoreUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$BehaviorScorePayload>
+          }
+          aggregate: {
+            args: Prisma.BehaviorScoreAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateBehaviorScore>
+          }
+          groupBy: {
+            args: Prisma.BehaviorScoreGroupByArgs<ExtArgs>
+            result: $Utils.Optional<BehaviorScoreGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.BehaviorScoreCountArgs<ExtArgs>
+            result: $Utils.Optional<BehaviorScoreCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2376,26 +2633,11 @@ export namespace Prisma {
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
     /**
-     * A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by `@prisma/adapter-pg`, `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
-     * 
-     * A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use `accelerateUrl` instead).
-     * 
-     * Learn more: https://pris.ly/d/driver-adapters
-     * 
-     * @example
-     * ```ts
-     * import { PrismaPg } from '@prisma/adapter-pg'
-     * import { PrismaClient } from './generated/prisma/client'
-     * 
-     * const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
-     * const prisma = new PrismaClient({ adapter })
-     * ```
+     * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
      */
     adapter?: runtime.SqlDriverAdapterFactory
     /**
-     * The Prisma Accelerate connection URL. Use this option to connect to your database through Prisma Accelerate instead of using a driver adapter to connect directly.
-     * 
-     * Learn more: https://pris.ly/d/accelerate
+     * Prisma Accelerate URL allowing the client to connect through Accelerate instead of a direct database.
      */
     accelerateUrl?: string
     /**
@@ -2442,6 +2684,7 @@ export namespace Prisma {
     userProfile?: UserProfileOmit
     userPreference?: UserPreferenceOmit
     recommendationHistory?: RecommendationHistoryOmit
+    recommendationLog?: RecommendationLogOmit
     customerProfile?: CustomerProfileOmit
     wishlist?: WishlistOmit
     comparisonHistory?: ComparisonHistoryOmit
@@ -2449,6 +2692,8 @@ export namespace Prisma {
     searchHistory?: SearchHistoryOmit
     browsingHistory?: BrowsingHistoryOmit
     adminStatsCache?: AdminStatsCacheOmit
+    event?: EventOmit
+    behaviorScore?: BehaviorScoreOmit
   }
 
   /* Types for Logging */
@@ -2567,6 +2812,9 @@ export namespace Prisma {
     paymentHistory: number
     searchHistory: number
     browsingHistory: number
+    events: number
+    behaviorScores: number
+    recommendationLogs: number
   }
 
   export type UsersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2577,6 +2825,9 @@ export namespace Prisma {
     paymentHistory?: boolean | UsersCountOutputTypeCountPaymentHistoryArgs
     searchHistory?: boolean | UsersCountOutputTypeCountSearchHistoryArgs
     browsingHistory?: boolean | UsersCountOutputTypeCountBrowsingHistoryArgs
+    events?: boolean | UsersCountOutputTypeCountEventsArgs
+    behaviorScores?: boolean | UsersCountOutputTypeCountBehaviorScoresArgs
+    recommendationLogs?: boolean | UsersCountOutputTypeCountRecommendationLogsArgs
   }
 
   // Custom InputTypes
@@ -2639,6 +2890,27 @@ export namespace Prisma {
     where?: BrowsingHistoryWhereInput
   }
 
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountBehaviorScoresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BehaviorScoreWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountRecommendationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecommendationLogWhereInput
+  }
+
 
   /**
    * Count Type BrandsCountOutputType
@@ -2687,6 +2959,7 @@ export namespace Prisma {
   export type PhonesCountOutputType = {
     variants: number
     recommendationHistory: number
+    recommendationLogs: number
     wishlist: number
     comparedAsA: number
     comparedAsB: number
@@ -2698,6 +2971,7 @@ export namespace Prisma {
   export type PhonesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     variants?: boolean | PhonesCountOutputTypeCountVariantsArgs
     recommendationHistory?: boolean | PhonesCountOutputTypeCountRecommendationHistoryArgs
+    recommendationLogs?: boolean | PhonesCountOutputTypeCountRecommendationLogsArgs
     wishlist?: boolean | PhonesCountOutputTypeCountWishlistArgs
     comparedAsA?: boolean | PhonesCountOutputTypeCountComparedAsAArgs
     comparedAsB?: boolean | PhonesCountOutputTypeCountComparedAsBArgs
@@ -2729,6 +3003,13 @@ export namespace Prisma {
    */
   export type PhonesCountOutputTypeCountRecommendationHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RecommendationHistoryWhereInput
+  }
+
+  /**
+   * PhonesCountOutputType without action
+   */
+  export type PhonesCountOutputTypeCountRecommendationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecommendationLogWhereInput
   }
 
   /**
@@ -4013,6 +4294,9 @@ export namespace Prisma {
     paymentHistory?: boolean | Users$paymentHistoryArgs<ExtArgs>
     searchHistory?: boolean | Users$searchHistoryArgs<ExtArgs>
     browsingHistory?: boolean | Users$browsingHistoryArgs<ExtArgs>
+    events?: boolean | Users$eventsArgs<ExtArgs>
+    behaviorScores?: boolean | Users$behaviorScoresArgs<ExtArgs>
+    recommendationLogs?: boolean | Users$recommendationLogsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
 
@@ -4064,6 +4348,9 @@ export namespace Prisma {
     paymentHistory?: boolean | Users$paymentHistoryArgs<ExtArgs>
     searchHistory?: boolean | Users$searchHistoryArgs<ExtArgs>
     browsingHistory?: boolean | Users$browsingHistoryArgs<ExtArgs>
+    events?: boolean | Users$eventsArgs<ExtArgs>
+    behaviorScores?: boolean | Users$behaviorScoresArgs<ExtArgs>
+    recommendationLogs?: boolean | Users$recommendationLogsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UsersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4087,6 +4374,9 @@ export namespace Prisma {
       paymentHistory: Prisma.$PaymentHistoryPayload<ExtArgs>[]
       searchHistory: Prisma.$SearchHistoryPayload<ExtArgs>[]
       browsingHistory: Prisma.$BrowsingHistoryPayload<ExtArgs>[]
+      events: Prisma.$EventPayload<ExtArgs>[]
+      behaviorScores: Prisma.$BehaviorScorePayload<ExtArgs>[]
+      recommendationLogs: Prisma.$RecommendationLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       name: string
@@ -4502,6 +4792,9 @@ export namespace Prisma {
     paymentHistory<T extends Users$paymentHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Users$paymentHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     searchHistory<T extends Users$searchHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Users$searchHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SearchHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     browsingHistory<T extends Users$browsingHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Users$browsingHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BrowsingHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    events<T extends Users$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Users$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    behaviorScores<T extends Users$behaviorScoresArgs<ExtArgs> = {}>(args?: Subset<T, Users$behaviorScoresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    recommendationLogs<T extends Users$recommendationLogsArgs<ExtArgs> = {}>(args?: Subset<T, Users$recommendationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5181,6 +5474,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: BrowsingHistoryScalarFieldEnum | BrowsingHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * Users.events
+   */
+  export type Users$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    where?: EventWhereInput
+    orderBy?: EventOrderByWithRelationInput | EventOrderByWithRelationInput[]
+    cursor?: EventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
+  }
+
+  /**
+   * Users.behaviorScores
+   */
+  export type Users$behaviorScoresArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+    where?: BehaviorScoreWhereInput
+    orderBy?: BehaviorScoreOrderByWithRelationInput | BehaviorScoreOrderByWithRelationInput[]
+    cursor?: BehaviorScoreWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BehaviorScoreScalarFieldEnum | BehaviorScoreScalarFieldEnum[]
+  }
+
+  /**
+   * Users.recommendationLogs
+   */
+  export type Users$recommendationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    where?: RecommendationLogWhereInput
+    orderBy?: RecommendationLogOrderByWithRelationInput | RecommendationLogOrderByWithRelationInput[]
+    cursor?: RecommendationLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RecommendationLogScalarFieldEnum | RecommendationLogScalarFieldEnum[]
   }
 
   /**
@@ -8660,6 +9025,7 @@ export namespace Prisma {
     variants?: boolean | Phones$variantsArgs<ExtArgs>
     specs?: boolean | Phones$specsArgs<ExtArgs>
     recommendationHistory?: boolean | Phones$recommendationHistoryArgs<ExtArgs>
+    recommendationLogs?: boolean | Phones$recommendationLogsArgs<ExtArgs>
     wishlist?: boolean | Phones$wishlistArgs<ExtArgs>
     comparedAsA?: boolean | Phones$comparedAsAArgs<ExtArgs>
     comparedAsB?: boolean | Phones$comparedAsBArgs<ExtArgs>
@@ -8725,6 +9091,7 @@ export namespace Prisma {
     variants?: boolean | Phones$variantsArgs<ExtArgs>
     specs?: boolean | Phones$specsArgs<ExtArgs>
     recommendationHistory?: boolean | Phones$recommendationHistoryArgs<ExtArgs>
+    recommendationLogs?: boolean | Phones$recommendationLogsArgs<ExtArgs>
     wishlist?: boolean | Phones$wishlistArgs<ExtArgs>
     comparedAsA?: boolean | Phones$comparedAsAArgs<ExtArgs>
     comparedAsB?: boolean | Phones$comparedAsBArgs<ExtArgs>
@@ -8747,6 +9114,7 @@ export namespace Prisma {
       variants: Prisma.$PhoneVariantsPayload<ExtArgs>[]
       specs: Prisma.$PhoneSpecsPayload<ExtArgs> | null
       recommendationHistory: Prisma.$RecommendationHistoryPayload<ExtArgs>[]
+      recommendationLogs: Prisma.$RecommendationLogPayload<ExtArgs>[]
       wishlist: Prisma.$WishlistPayload<ExtArgs>[]
       comparedAsA: Prisma.$ComparisonHistoryPayload<ExtArgs>[]
       comparedAsB: Prisma.$ComparisonHistoryPayload<ExtArgs>[]
@@ -9166,6 +9534,7 @@ export namespace Prisma {
     variants<T extends Phones$variantsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$variantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     specs<T extends Phones$specsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$specsArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     recommendationHistory<T extends Phones$recommendationHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Phones$recommendationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    recommendationLogs<T extends Phones$recommendationLogsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$recommendationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     wishlist<T extends Phones$wishlistArgs<ExtArgs> = {}>(args?: Subset<T, Phones$wishlistArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WishlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     comparedAsA<T extends Phones$comparedAsAArgs<ExtArgs> = {}>(args?: Subset<T, Phones$comparedAsAArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComparisonHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     comparedAsB<T extends Phones$comparedAsBArgs<ExtArgs> = {}>(args?: Subset<T, Phones$comparedAsBArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComparisonHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9679,6 +10048,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RecommendationHistoryScalarFieldEnum | RecommendationHistoryScalarFieldEnum[]
+  }
+
+  /**
+   * Phones.recommendationLogs
+   */
+  export type Phones$recommendationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    where?: RecommendationLogWhereInput
+    orderBy?: RecommendationLogOrderByWithRelationInput | RecommendationLogOrderByWithRelationInput[]
+    cursor?: RecommendationLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RecommendationLogScalarFieldEnum | RecommendationLogScalarFieldEnum[]
   }
 
   /**
@@ -16293,6 +16686,1141 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: RecommendationHistoryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RecommendationLog
+   */
+
+  export type AggregateRecommendationLog = {
+    _count: RecommendationLogCountAggregateOutputType | null
+    _avg: RecommendationLogAvgAggregateOutputType | null
+    _sum: RecommendationLogSumAggregateOutputType | null
+    _min: RecommendationLogMinAggregateOutputType | null
+    _max: RecommendationLogMaxAggregateOutputType | null
+  }
+
+  export type RecommendationLogAvgAggregateOutputType = {
+    finalScore: number | null
+    rank: number | null
+  }
+
+  export type RecommendationLogSumAggregateOutputType = {
+    finalScore: number | null
+    rank: number | null
+  }
+
+  export type RecommendationLogMinAggregateOutputType = {
+    logId: string | null
+    userId: string | null
+    phoneId: string | null
+    finalScore: number | null
+    rank: number | null
+    shownAt: Date | null
+    clicked: boolean | null
+  }
+
+  export type RecommendationLogMaxAggregateOutputType = {
+    logId: string | null
+    userId: string | null
+    phoneId: string | null
+    finalScore: number | null
+    rank: number | null
+    shownAt: Date | null
+    clicked: boolean | null
+  }
+
+  export type RecommendationLogCountAggregateOutputType = {
+    logId: number
+    userId: number
+    phoneId: number
+    finalScore: number
+    rank: number
+    shownAt: number
+    clicked: number
+    _all: number
+  }
+
+
+  export type RecommendationLogAvgAggregateInputType = {
+    finalScore?: true
+    rank?: true
+  }
+
+  export type RecommendationLogSumAggregateInputType = {
+    finalScore?: true
+    rank?: true
+  }
+
+  export type RecommendationLogMinAggregateInputType = {
+    logId?: true
+    userId?: true
+    phoneId?: true
+    finalScore?: true
+    rank?: true
+    shownAt?: true
+    clicked?: true
+  }
+
+  export type RecommendationLogMaxAggregateInputType = {
+    logId?: true
+    userId?: true
+    phoneId?: true
+    finalScore?: true
+    rank?: true
+    shownAt?: true
+    clicked?: true
+  }
+
+  export type RecommendationLogCountAggregateInputType = {
+    logId?: true
+    userId?: true
+    phoneId?: true
+    finalScore?: true
+    rank?: true
+    shownAt?: true
+    clicked?: true
+    _all?: true
+  }
+
+  export type RecommendationLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RecommendationLog to aggregate.
+     */
+    where?: RecommendationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecommendationLogs to fetch.
+     */
+    orderBy?: RecommendationLogOrderByWithRelationInput | RecommendationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RecommendationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecommendationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecommendationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RecommendationLogs
+    **/
+    _count?: true | RecommendationLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RecommendationLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RecommendationLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RecommendationLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RecommendationLogMaxAggregateInputType
+  }
+
+  export type GetRecommendationLogAggregateType<T extends RecommendationLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateRecommendationLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRecommendationLog[P]>
+      : GetScalarType<T[P], AggregateRecommendationLog[P]>
+  }
+
+
+
+
+  export type RecommendationLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecommendationLogWhereInput
+    orderBy?: RecommendationLogOrderByWithAggregationInput | RecommendationLogOrderByWithAggregationInput[]
+    by: RecommendationLogScalarFieldEnum[] | RecommendationLogScalarFieldEnum
+    having?: RecommendationLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RecommendationLogCountAggregateInputType | true
+    _avg?: RecommendationLogAvgAggregateInputType
+    _sum?: RecommendationLogSumAggregateInputType
+    _min?: RecommendationLogMinAggregateInputType
+    _max?: RecommendationLogMaxAggregateInputType
+  }
+
+  export type RecommendationLogGroupByOutputType = {
+    logId: string
+    userId: string
+    phoneId: string
+    finalScore: number
+    rank: number
+    shownAt: Date
+    clicked: boolean
+    _count: RecommendationLogCountAggregateOutputType | null
+    _avg: RecommendationLogAvgAggregateOutputType | null
+    _sum: RecommendationLogSumAggregateOutputType | null
+    _min: RecommendationLogMinAggregateOutputType | null
+    _max: RecommendationLogMaxAggregateOutputType | null
+  }
+
+  type GetRecommendationLogGroupByPayload<T extends RecommendationLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RecommendationLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RecommendationLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RecommendationLogGroupByOutputType[P]>
+            : GetScalarType<T[P], RecommendationLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RecommendationLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    logId?: boolean
+    userId?: boolean
+    phoneId?: boolean
+    finalScore?: boolean
+    rank?: boolean
+    shownAt?: boolean
+    clicked?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recommendationLog"]>
+
+  export type RecommendationLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    logId?: boolean
+    userId?: boolean
+    phoneId?: boolean
+    finalScore?: boolean
+    rank?: boolean
+    shownAt?: boolean
+    clicked?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recommendationLog"]>
+
+  export type RecommendationLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    logId?: boolean
+    userId?: boolean
+    phoneId?: boolean
+    finalScore?: boolean
+    rank?: boolean
+    shownAt?: boolean
+    clicked?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recommendationLog"]>
+
+  export type RecommendationLogSelectScalar = {
+    logId?: boolean
+    userId?: boolean
+    phoneId?: boolean
+    finalScore?: boolean
+    rank?: boolean
+    shownAt?: boolean
+    clicked?: boolean
+  }
+
+  export type RecommendationLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"logId" | "userId" | "phoneId" | "finalScore" | "rank" | "shownAt" | "clicked", ExtArgs["result"]["recommendationLog"]>
+  export type RecommendationLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+  export type RecommendationLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+  export type RecommendationLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+
+  export type $RecommendationLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RecommendationLog"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+      phone: Prisma.$PhonesPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      logId: string
+      userId: string
+      phoneId: string
+      finalScore: number
+      rank: number
+      shownAt: Date
+      clicked: boolean
+    }, ExtArgs["result"]["recommendationLog"]>
+    composites: {}
+  }
+
+  type RecommendationLogGetPayload<S extends boolean | null | undefined | RecommendationLogDefaultArgs> = $Result.GetResult<Prisma.$RecommendationLogPayload, S>
+
+  type RecommendationLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RecommendationLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RecommendationLogCountAggregateInputType | true
+    }
+
+  export interface RecommendationLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RecommendationLog'], meta: { name: 'RecommendationLog' } }
+    /**
+     * Find zero or one RecommendationLog that matches the filter.
+     * @param {RecommendationLogFindUniqueArgs} args - Arguments to find a RecommendationLog
+     * @example
+     * // Get one RecommendationLog
+     * const recommendationLog = await prisma.recommendationLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RecommendationLogFindUniqueArgs>(args: SelectSubset<T, RecommendationLogFindUniqueArgs<ExtArgs>>): Prisma__RecommendationLogClient<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RecommendationLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RecommendationLogFindUniqueOrThrowArgs} args - Arguments to find a RecommendationLog
+     * @example
+     * // Get one RecommendationLog
+     * const recommendationLog = await prisma.recommendationLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RecommendationLogFindUniqueOrThrowArgs>(args: SelectSubset<T, RecommendationLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RecommendationLogClient<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RecommendationLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationLogFindFirstArgs} args - Arguments to find a RecommendationLog
+     * @example
+     * // Get one RecommendationLog
+     * const recommendationLog = await prisma.recommendationLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RecommendationLogFindFirstArgs>(args?: SelectSubset<T, RecommendationLogFindFirstArgs<ExtArgs>>): Prisma__RecommendationLogClient<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RecommendationLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationLogFindFirstOrThrowArgs} args - Arguments to find a RecommendationLog
+     * @example
+     * // Get one RecommendationLog
+     * const recommendationLog = await prisma.recommendationLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RecommendationLogFindFirstOrThrowArgs>(args?: SelectSubset<T, RecommendationLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__RecommendationLogClient<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RecommendationLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RecommendationLogs
+     * const recommendationLogs = await prisma.recommendationLog.findMany()
+     * 
+     * // Get first 10 RecommendationLogs
+     * const recommendationLogs = await prisma.recommendationLog.findMany({ take: 10 })
+     * 
+     * // Only select the `logId`
+     * const recommendationLogWithLogIdOnly = await prisma.recommendationLog.findMany({ select: { logId: true } })
+     * 
+     */
+    findMany<T extends RecommendationLogFindManyArgs>(args?: SelectSubset<T, RecommendationLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RecommendationLog.
+     * @param {RecommendationLogCreateArgs} args - Arguments to create a RecommendationLog.
+     * @example
+     * // Create one RecommendationLog
+     * const RecommendationLog = await prisma.recommendationLog.create({
+     *   data: {
+     *     // ... data to create a RecommendationLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends RecommendationLogCreateArgs>(args: SelectSubset<T, RecommendationLogCreateArgs<ExtArgs>>): Prisma__RecommendationLogClient<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RecommendationLogs.
+     * @param {RecommendationLogCreateManyArgs} args - Arguments to create many RecommendationLogs.
+     * @example
+     * // Create many RecommendationLogs
+     * const recommendationLog = await prisma.recommendationLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RecommendationLogCreateManyArgs>(args?: SelectSubset<T, RecommendationLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RecommendationLogs and returns the data saved in the database.
+     * @param {RecommendationLogCreateManyAndReturnArgs} args - Arguments to create many RecommendationLogs.
+     * @example
+     * // Create many RecommendationLogs
+     * const recommendationLog = await prisma.recommendationLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RecommendationLogs and only return the `logId`
+     * const recommendationLogWithLogIdOnly = await prisma.recommendationLog.createManyAndReturn({
+     *   select: { logId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RecommendationLogCreateManyAndReturnArgs>(args?: SelectSubset<T, RecommendationLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RecommendationLog.
+     * @param {RecommendationLogDeleteArgs} args - Arguments to delete one RecommendationLog.
+     * @example
+     * // Delete one RecommendationLog
+     * const RecommendationLog = await prisma.recommendationLog.delete({
+     *   where: {
+     *     // ... filter to delete one RecommendationLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RecommendationLogDeleteArgs>(args: SelectSubset<T, RecommendationLogDeleteArgs<ExtArgs>>): Prisma__RecommendationLogClient<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RecommendationLog.
+     * @param {RecommendationLogUpdateArgs} args - Arguments to update one RecommendationLog.
+     * @example
+     * // Update one RecommendationLog
+     * const recommendationLog = await prisma.recommendationLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RecommendationLogUpdateArgs>(args: SelectSubset<T, RecommendationLogUpdateArgs<ExtArgs>>): Prisma__RecommendationLogClient<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RecommendationLogs.
+     * @param {RecommendationLogDeleteManyArgs} args - Arguments to filter RecommendationLogs to delete.
+     * @example
+     * // Delete a few RecommendationLogs
+     * const { count } = await prisma.recommendationLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RecommendationLogDeleteManyArgs>(args?: SelectSubset<T, RecommendationLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RecommendationLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RecommendationLogs
+     * const recommendationLog = await prisma.recommendationLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RecommendationLogUpdateManyArgs>(args: SelectSubset<T, RecommendationLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RecommendationLogs and returns the data updated in the database.
+     * @param {RecommendationLogUpdateManyAndReturnArgs} args - Arguments to update many RecommendationLogs.
+     * @example
+     * // Update many RecommendationLogs
+     * const recommendationLog = await prisma.recommendationLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RecommendationLogs and only return the `logId`
+     * const recommendationLogWithLogIdOnly = await prisma.recommendationLog.updateManyAndReturn({
+     *   select: { logId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RecommendationLogUpdateManyAndReturnArgs>(args: SelectSubset<T, RecommendationLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RecommendationLog.
+     * @param {RecommendationLogUpsertArgs} args - Arguments to update or create a RecommendationLog.
+     * @example
+     * // Update or create a RecommendationLog
+     * const recommendationLog = await prisma.recommendationLog.upsert({
+     *   create: {
+     *     // ... data to create a RecommendationLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RecommendationLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RecommendationLogUpsertArgs>(args: SelectSubset<T, RecommendationLogUpsertArgs<ExtArgs>>): Prisma__RecommendationLogClient<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RecommendationLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationLogCountArgs} args - Arguments to filter RecommendationLogs to count.
+     * @example
+     * // Count the number of RecommendationLogs
+     * const count = await prisma.recommendationLog.count({
+     *   where: {
+     *     // ... the filter for the RecommendationLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends RecommendationLogCountArgs>(
+      args?: Subset<T, RecommendationLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RecommendationLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RecommendationLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RecommendationLogAggregateArgs>(args: Subset<T, RecommendationLogAggregateArgs>): Prisma.PrismaPromise<GetRecommendationLogAggregateType<T>>
+
+    /**
+     * Group by RecommendationLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RecommendationLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RecommendationLogGroupByArgs['orderBy'] }
+        : { orderBy?: RecommendationLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RecommendationLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRecommendationLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RecommendationLog model
+   */
+  readonly fields: RecommendationLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RecommendationLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RecommendationLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    phone<T extends PhonesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PhonesDefaultArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RecommendationLog model
+   */
+  interface RecommendationLogFieldRefs {
+    readonly logId: FieldRef<"RecommendationLog", 'String'>
+    readonly userId: FieldRef<"RecommendationLog", 'String'>
+    readonly phoneId: FieldRef<"RecommendationLog", 'String'>
+    readonly finalScore: FieldRef<"RecommendationLog", 'Float'>
+    readonly rank: FieldRef<"RecommendationLog", 'Int'>
+    readonly shownAt: FieldRef<"RecommendationLog", 'DateTime'>
+    readonly clicked: FieldRef<"RecommendationLog", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RecommendationLog findUnique
+   */
+  export type RecommendationLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which RecommendationLog to fetch.
+     */
+    where: RecommendationLogWhereUniqueInput
+  }
+
+  /**
+   * RecommendationLog findUniqueOrThrow
+   */
+  export type RecommendationLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which RecommendationLog to fetch.
+     */
+    where: RecommendationLogWhereUniqueInput
+  }
+
+  /**
+   * RecommendationLog findFirst
+   */
+  export type RecommendationLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which RecommendationLog to fetch.
+     */
+    where?: RecommendationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecommendationLogs to fetch.
+     */
+    orderBy?: RecommendationLogOrderByWithRelationInput | RecommendationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RecommendationLogs.
+     */
+    cursor?: RecommendationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecommendationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecommendationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RecommendationLogs.
+     */
+    distinct?: RecommendationLogScalarFieldEnum | RecommendationLogScalarFieldEnum[]
+  }
+
+  /**
+   * RecommendationLog findFirstOrThrow
+   */
+  export type RecommendationLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which RecommendationLog to fetch.
+     */
+    where?: RecommendationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecommendationLogs to fetch.
+     */
+    orderBy?: RecommendationLogOrderByWithRelationInput | RecommendationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RecommendationLogs.
+     */
+    cursor?: RecommendationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecommendationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecommendationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RecommendationLogs.
+     */
+    distinct?: RecommendationLogScalarFieldEnum | RecommendationLogScalarFieldEnum[]
+  }
+
+  /**
+   * RecommendationLog findMany
+   */
+  export type RecommendationLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which RecommendationLogs to fetch.
+     */
+    where?: RecommendationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecommendationLogs to fetch.
+     */
+    orderBy?: RecommendationLogOrderByWithRelationInput | RecommendationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RecommendationLogs.
+     */
+    cursor?: RecommendationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecommendationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecommendationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RecommendationLogs.
+     */
+    distinct?: RecommendationLogScalarFieldEnum | RecommendationLogScalarFieldEnum[]
+  }
+
+  /**
+   * RecommendationLog create
+   */
+  export type RecommendationLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RecommendationLog.
+     */
+    data: XOR<RecommendationLogCreateInput, RecommendationLogUncheckedCreateInput>
+  }
+
+  /**
+   * RecommendationLog createMany
+   */
+  export type RecommendationLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RecommendationLogs.
+     */
+    data: RecommendationLogCreateManyInput | RecommendationLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RecommendationLog createManyAndReturn
+   */
+  export type RecommendationLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many RecommendationLogs.
+     */
+    data: RecommendationLogCreateManyInput | RecommendationLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RecommendationLog update
+   */
+  export type RecommendationLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RecommendationLog.
+     */
+    data: XOR<RecommendationLogUpdateInput, RecommendationLogUncheckedUpdateInput>
+    /**
+     * Choose, which RecommendationLog to update.
+     */
+    where: RecommendationLogWhereUniqueInput
+  }
+
+  /**
+   * RecommendationLog updateMany
+   */
+  export type RecommendationLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RecommendationLogs.
+     */
+    data: XOR<RecommendationLogUpdateManyMutationInput, RecommendationLogUncheckedUpdateManyInput>
+    /**
+     * Filter which RecommendationLogs to update
+     */
+    where?: RecommendationLogWhereInput
+    /**
+     * Limit how many RecommendationLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RecommendationLog updateManyAndReturn
+   */
+  export type RecommendationLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * The data used to update RecommendationLogs.
+     */
+    data: XOR<RecommendationLogUpdateManyMutationInput, RecommendationLogUncheckedUpdateManyInput>
+    /**
+     * Filter which RecommendationLogs to update
+     */
+    where?: RecommendationLogWhereInput
+    /**
+     * Limit how many RecommendationLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RecommendationLog upsert
+   */
+  export type RecommendationLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RecommendationLog to update in case it exists.
+     */
+    where: RecommendationLogWhereUniqueInput
+    /**
+     * In case the RecommendationLog found by the `where` argument doesn't exist, create a new RecommendationLog with this data.
+     */
+    create: XOR<RecommendationLogCreateInput, RecommendationLogUncheckedCreateInput>
+    /**
+     * In case the RecommendationLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RecommendationLogUpdateInput, RecommendationLogUncheckedUpdateInput>
+  }
+
+  /**
+   * RecommendationLog delete
+   */
+  export type RecommendationLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter which RecommendationLog to delete.
+     */
+    where: RecommendationLogWhereUniqueInput
+  }
+
+  /**
+   * RecommendationLog deleteMany
+   */
+  export type RecommendationLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RecommendationLogs to delete
+     */
+    where?: RecommendationLogWhereInput
+    /**
+     * Limit how many RecommendationLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RecommendationLog without action
+   */
+  export type RecommendationLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationLog
+     */
+    select?: RecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationLog
+     */
+    omit?: RecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationLogInclude<ExtArgs> | null
   }
 
 
@@ -24439,6 +25967,2162 @@ export namespace Prisma {
 
 
   /**
+   * Model Event
+   */
+
+  export type AggregateEvent = {
+    _count: EventCountAggregateOutputType | null
+    _min: EventMinAggregateOutputType | null
+    _max: EventMaxAggregateOutputType | null
+  }
+
+  export type EventMinAggregateOutputType = {
+    eventId: string | null
+    userId: string | null
+    eventType: string | null
+    phoneId: string | null
+    createdAt: Date | null
+  }
+
+  export type EventMaxAggregateOutputType = {
+    eventId: string | null
+    userId: string | null
+    eventType: string | null
+    phoneId: string | null
+    createdAt: Date | null
+  }
+
+  export type EventCountAggregateOutputType = {
+    eventId: number
+    userId: number
+    eventType: number
+    phoneId: number
+    payload: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type EventMinAggregateInputType = {
+    eventId?: true
+    userId?: true
+    eventType?: true
+    phoneId?: true
+    createdAt?: true
+  }
+
+  export type EventMaxAggregateInputType = {
+    eventId?: true
+    userId?: true
+    eventType?: true
+    phoneId?: true
+    createdAt?: true
+  }
+
+  export type EventCountAggregateInputType = {
+    eventId?: true
+    userId?: true
+    eventType?: true
+    phoneId?: true
+    payload?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type EventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Event to aggregate.
+     */
+    where?: EventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Events to fetch.
+     */
+    orderBy?: EventOrderByWithRelationInput | EventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Events.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Events
+    **/
+    _count?: true | EventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EventMaxAggregateInputType
+  }
+
+  export type GetEventAggregateType<T extends EventAggregateArgs> = {
+        [P in keyof T & keyof AggregateEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEvent[P]>
+      : GetScalarType<T[P], AggregateEvent[P]>
+  }
+
+
+
+
+  export type EventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EventWhereInput
+    orderBy?: EventOrderByWithAggregationInput | EventOrderByWithAggregationInput[]
+    by: EventScalarFieldEnum[] | EventScalarFieldEnum
+    having?: EventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EventCountAggregateInputType | true
+    _min?: EventMinAggregateInputType
+    _max?: EventMaxAggregateInputType
+  }
+
+  export type EventGroupByOutputType = {
+    eventId: string
+    userId: string
+    eventType: string
+    phoneId: string | null
+    payload: JsonValue | null
+    createdAt: Date
+    _count: EventCountAggregateOutputType | null
+    _min: EventMinAggregateOutputType | null
+    _max: EventMaxAggregateOutputType | null
+  }
+
+  type GetEventGroupByPayload<T extends EventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EventGroupByOutputType[P]>
+            : GetScalarType<T[P], EventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    eventId?: boolean
+    userId?: boolean
+    eventType?: boolean
+    phoneId?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["event"]>
+
+  export type EventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    eventId?: boolean
+    userId?: boolean
+    eventType?: boolean
+    phoneId?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["event"]>
+
+  export type EventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    eventId?: boolean
+    userId?: boolean
+    eventType?: boolean
+    phoneId?: boolean
+    payload?: boolean
+    createdAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["event"]>
+
+  export type EventSelectScalar = {
+    eventId?: boolean
+    userId?: boolean
+    eventType?: boolean
+    phoneId?: boolean
+    payload?: boolean
+    createdAt?: boolean
+  }
+
+  export type EventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"eventId" | "userId" | "eventType" | "phoneId" | "payload" | "createdAt", ExtArgs["result"]["event"]>
+  export type EventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type EventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type EventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+
+  export type $EventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Event"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      eventId: string
+      userId: string
+      eventType: string
+      phoneId: string | null
+      payload: Prisma.JsonValue | null
+      createdAt: Date
+    }, ExtArgs["result"]["event"]>
+    composites: {}
+  }
+
+  type EventGetPayload<S extends boolean | null | undefined | EventDefaultArgs> = $Result.GetResult<Prisma.$EventPayload, S>
+
+  type EventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EventCountAggregateInputType | true
+    }
+
+  export interface EventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Event'], meta: { name: 'Event' } }
+    /**
+     * Find zero or one Event that matches the filter.
+     * @param {EventFindUniqueArgs} args - Arguments to find a Event
+     * @example
+     * // Get one Event
+     * const event = await prisma.event.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EventFindUniqueArgs>(args: SelectSubset<T, EventFindUniqueArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Event that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EventFindUniqueOrThrowArgs} args - Arguments to find a Event
+     * @example
+     * // Get one Event
+     * const event = await prisma.event.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EventFindUniqueOrThrowArgs>(args: SelectSubset<T, EventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Event that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventFindFirstArgs} args - Arguments to find a Event
+     * @example
+     * // Get one Event
+     * const event = await prisma.event.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EventFindFirstArgs>(args?: SelectSubset<T, EventFindFirstArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Event that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventFindFirstOrThrowArgs} args - Arguments to find a Event
+     * @example
+     * // Get one Event
+     * const event = await prisma.event.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EventFindFirstOrThrowArgs>(args?: SelectSubset<T, EventFindFirstOrThrowArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Events that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Events
+     * const events = await prisma.event.findMany()
+     * 
+     * // Get first 10 Events
+     * const events = await prisma.event.findMany({ take: 10 })
+     * 
+     * // Only select the `eventId`
+     * const eventWithEventIdOnly = await prisma.event.findMany({ select: { eventId: true } })
+     * 
+     */
+    findMany<T extends EventFindManyArgs>(args?: SelectSubset<T, EventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Event.
+     * @param {EventCreateArgs} args - Arguments to create a Event.
+     * @example
+     * // Create one Event
+     * const Event = await prisma.event.create({
+     *   data: {
+     *     // ... data to create a Event
+     *   }
+     * })
+     * 
+     */
+    create<T extends EventCreateArgs>(args: SelectSubset<T, EventCreateArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Events.
+     * @param {EventCreateManyArgs} args - Arguments to create many Events.
+     * @example
+     * // Create many Events
+     * const event = await prisma.event.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EventCreateManyArgs>(args?: SelectSubset<T, EventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Events and returns the data saved in the database.
+     * @param {EventCreateManyAndReturnArgs} args - Arguments to create many Events.
+     * @example
+     * // Create many Events
+     * const event = await prisma.event.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Events and only return the `eventId`
+     * const eventWithEventIdOnly = await prisma.event.createManyAndReturn({
+     *   select: { eventId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EventCreateManyAndReturnArgs>(args?: SelectSubset<T, EventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Event.
+     * @param {EventDeleteArgs} args - Arguments to delete one Event.
+     * @example
+     * // Delete one Event
+     * const Event = await prisma.event.delete({
+     *   where: {
+     *     // ... filter to delete one Event
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EventDeleteArgs>(args: SelectSubset<T, EventDeleteArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Event.
+     * @param {EventUpdateArgs} args - Arguments to update one Event.
+     * @example
+     * // Update one Event
+     * const event = await prisma.event.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EventUpdateArgs>(args: SelectSubset<T, EventUpdateArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Events.
+     * @param {EventDeleteManyArgs} args - Arguments to filter Events to delete.
+     * @example
+     * // Delete a few Events
+     * const { count } = await prisma.event.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EventDeleteManyArgs>(args?: SelectSubset<T, EventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Events.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Events
+     * const event = await prisma.event.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EventUpdateManyArgs>(args: SelectSubset<T, EventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Events and returns the data updated in the database.
+     * @param {EventUpdateManyAndReturnArgs} args - Arguments to update many Events.
+     * @example
+     * // Update many Events
+     * const event = await prisma.event.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Events and only return the `eventId`
+     * const eventWithEventIdOnly = await prisma.event.updateManyAndReturn({
+     *   select: { eventId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EventUpdateManyAndReturnArgs>(args: SelectSubset<T, EventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Event.
+     * @param {EventUpsertArgs} args - Arguments to update or create a Event.
+     * @example
+     * // Update or create a Event
+     * const event = await prisma.event.upsert({
+     *   create: {
+     *     // ... data to create a Event
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Event we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EventUpsertArgs>(args: SelectSubset<T, EventUpsertArgs<ExtArgs>>): Prisma__EventClient<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Events.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventCountArgs} args - Arguments to filter Events to count.
+     * @example
+     * // Count the number of Events
+     * const count = await prisma.event.count({
+     *   where: {
+     *     // ... the filter for the Events we want to count
+     *   }
+     * })
+    **/
+    count<T extends EventCountArgs>(
+      args?: Subset<T, EventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Event.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EventAggregateArgs>(args: Subset<T, EventAggregateArgs>): Prisma.PrismaPromise<GetEventAggregateType<T>>
+
+    /**
+     * Group by Event.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EventGroupByArgs['orderBy'] }
+        : { orderBy?: EventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Event model
+   */
+  readonly fields: EventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Event.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Event model
+   */
+  interface EventFieldRefs {
+    readonly eventId: FieldRef<"Event", 'String'>
+    readonly userId: FieldRef<"Event", 'String'>
+    readonly eventType: FieldRef<"Event", 'String'>
+    readonly phoneId: FieldRef<"Event", 'String'>
+    readonly payload: FieldRef<"Event", 'Json'>
+    readonly createdAt: FieldRef<"Event", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Event findUnique
+   */
+  export type EventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    /**
+     * Filter, which Event to fetch.
+     */
+    where: EventWhereUniqueInput
+  }
+
+  /**
+   * Event findUniqueOrThrow
+   */
+  export type EventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    /**
+     * Filter, which Event to fetch.
+     */
+    where: EventWhereUniqueInput
+  }
+
+  /**
+   * Event findFirst
+   */
+  export type EventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    /**
+     * Filter, which Event to fetch.
+     */
+    where?: EventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Events to fetch.
+     */
+    orderBy?: EventOrderByWithRelationInput | EventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Events.
+     */
+    cursor?: EventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Events.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Events.
+     */
+    distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
+  }
+
+  /**
+   * Event findFirstOrThrow
+   */
+  export type EventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    /**
+     * Filter, which Event to fetch.
+     */
+    where?: EventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Events to fetch.
+     */
+    orderBy?: EventOrderByWithRelationInput | EventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Events.
+     */
+    cursor?: EventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Events.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Events.
+     */
+    distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
+  }
+
+  /**
+   * Event findMany
+   */
+  export type EventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    /**
+     * Filter, which Events to fetch.
+     */
+    where?: EventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Events to fetch.
+     */
+    orderBy?: EventOrderByWithRelationInput | EventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Events.
+     */
+    cursor?: EventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Events.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Events.
+     */
+    distinct?: EventScalarFieldEnum | EventScalarFieldEnum[]
+  }
+
+  /**
+   * Event create
+   */
+  export type EventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Event.
+     */
+    data: XOR<EventCreateInput, EventUncheckedCreateInput>
+  }
+
+  /**
+   * Event createMany
+   */
+  export type EventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Events.
+     */
+    data: EventCreateManyInput | EventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Event createManyAndReturn
+   */
+  export type EventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * The data used to create many Events.
+     */
+    data: EventCreateManyInput | EventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Event update
+   */
+  export type EventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Event.
+     */
+    data: XOR<EventUpdateInput, EventUncheckedUpdateInput>
+    /**
+     * Choose, which Event to update.
+     */
+    where: EventWhereUniqueInput
+  }
+
+  /**
+   * Event updateMany
+   */
+  export type EventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Events.
+     */
+    data: XOR<EventUpdateManyMutationInput, EventUncheckedUpdateManyInput>
+    /**
+     * Filter which Events to update
+     */
+    where?: EventWhereInput
+    /**
+     * Limit how many Events to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Event updateManyAndReturn
+   */
+  export type EventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * The data used to update Events.
+     */
+    data: XOR<EventUpdateManyMutationInput, EventUncheckedUpdateManyInput>
+    /**
+     * Filter which Events to update
+     */
+    where?: EventWhereInput
+    /**
+     * Limit how many Events to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Event upsert
+   */
+  export type EventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Event to update in case it exists.
+     */
+    where: EventWhereUniqueInput
+    /**
+     * In case the Event found by the `where` argument doesn't exist, create a new Event with this data.
+     */
+    create: XOR<EventCreateInput, EventUncheckedCreateInput>
+    /**
+     * In case the Event was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EventUpdateInput, EventUncheckedUpdateInput>
+  }
+
+  /**
+   * Event delete
+   */
+  export type EventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+    /**
+     * Filter which Event to delete.
+     */
+    where: EventWhereUniqueInput
+  }
+
+  /**
+   * Event deleteMany
+   */
+  export type EventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Events to delete
+     */
+    where?: EventWhereInput
+    /**
+     * Limit how many Events to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Event without action
+   */
+  export type EventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Event
+     */
+    select?: EventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Event
+     */
+    omit?: EventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EventInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model BehaviorScore
+   */
+
+  export type AggregateBehaviorScore = {
+    _count: BehaviorScoreCountAggregateOutputType | null
+    _avg: BehaviorScoreAvgAggregateOutputType | null
+    _sum: BehaviorScoreSumAggregateOutputType | null
+    _min: BehaviorScoreMinAggregateOutputType | null
+    _max: BehaviorScoreMaxAggregateOutputType | null
+  }
+
+  export type BehaviorScoreAvgAggregateOutputType = {
+    score: number | null
+  }
+
+  export type BehaviorScoreSumAggregateOutputType = {
+    score: number | null
+  }
+
+  export type BehaviorScoreMinAggregateOutputType = {
+    userId: string | null
+    tag: string | null
+    score: number | null
+    updatedAt: Date | null
+  }
+
+  export type BehaviorScoreMaxAggregateOutputType = {
+    userId: string | null
+    tag: string | null
+    score: number | null
+    updatedAt: Date | null
+  }
+
+  export type BehaviorScoreCountAggregateOutputType = {
+    userId: number
+    tag: number
+    score: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type BehaviorScoreAvgAggregateInputType = {
+    score?: true
+  }
+
+  export type BehaviorScoreSumAggregateInputType = {
+    score?: true
+  }
+
+  export type BehaviorScoreMinAggregateInputType = {
+    userId?: true
+    tag?: true
+    score?: true
+    updatedAt?: true
+  }
+
+  export type BehaviorScoreMaxAggregateInputType = {
+    userId?: true
+    tag?: true
+    score?: true
+    updatedAt?: true
+  }
+
+  export type BehaviorScoreCountAggregateInputType = {
+    userId?: true
+    tag?: true
+    score?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type BehaviorScoreAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BehaviorScore to aggregate.
+     */
+    where?: BehaviorScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BehaviorScores to fetch.
+     */
+    orderBy?: BehaviorScoreOrderByWithRelationInput | BehaviorScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: BehaviorScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BehaviorScores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BehaviorScores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned BehaviorScores
+    **/
+    _count?: true | BehaviorScoreCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: BehaviorScoreAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: BehaviorScoreSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: BehaviorScoreMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: BehaviorScoreMaxAggregateInputType
+  }
+
+  export type GetBehaviorScoreAggregateType<T extends BehaviorScoreAggregateArgs> = {
+        [P in keyof T & keyof AggregateBehaviorScore]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateBehaviorScore[P]>
+      : GetScalarType<T[P], AggregateBehaviorScore[P]>
+  }
+
+
+
+
+  export type BehaviorScoreGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BehaviorScoreWhereInput
+    orderBy?: BehaviorScoreOrderByWithAggregationInput | BehaviorScoreOrderByWithAggregationInput[]
+    by: BehaviorScoreScalarFieldEnum[] | BehaviorScoreScalarFieldEnum
+    having?: BehaviorScoreScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: BehaviorScoreCountAggregateInputType | true
+    _avg?: BehaviorScoreAvgAggregateInputType
+    _sum?: BehaviorScoreSumAggregateInputType
+    _min?: BehaviorScoreMinAggregateInputType
+    _max?: BehaviorScoreMaxAggregateInputType
+  }
+
+  export type BehaviorScoreGroupByOutputType = {
+    userId: string
+    tag: string
+    score: number
+    updatedAt: Date
+    _count: BehaviorScoreCountAggregateOutputType | null
+    _avg: BehaviorScoreAvgAggregateOutputType | null
+    _sum: BehaviorScoreSumAggregateOutputType | null
+    _min: BehaviorScoreMinAggregateOutputType | null
+    _max: BehaviorScoreMaxAggregateOutputType | null
+  }
+
+  type GetBehaviorScoreGroupByPayload<T extends BehaviorScoreGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<BehaviorScoreGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof BehaviorScoreGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], BehaviorScoreGroupByOutputType[P]>
+            : GetScalarType<T[P], BehaviorScoreGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type BehaviorScoreSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    tag?: boolean
+    score?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["behaviorScore"]>
+
+  export type BehaviorScoreSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    tag?: boolean
+    score?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["behaviorScore"]>
+
+  export type BehaviorScoreSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    userId?: boolean
+    tag?: boolean
+    score?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["behaviorScore"]>
+
+  export type BehaviorScoreSelectScalar = {
+    userId?: boolean
+    tag?: boolean
+    score?: boolean
+    updatedAt?: boolean
+  }
+
+  export type BehaviorScoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "tag" | "score" | "updatedAt", ExtArgs["result"]["behaviorScore"]>
+  export type BehaviorScoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type BehaviorScoreIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type BehaviorScoreIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+
+  export type $BehaviorScorePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "BehaviorScore"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      userId: string
+      tag: string
+      score: number
+      updatedAt: Date
+    }, ExtArgs["result"]["behaviorScore"]>
+    composites: {}
+  }
+
+  type BehaviorScoreGetPayload<S extends boolean | null | undefined | BehaviorScoreDefaultArgs> = $Result.GetResult<Prisma.$BehaviorScorePayload, S>
+
+  type BehaviorScoreCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<BehaviorScoreFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: BehaviorScoreCountAggregateInputType | true
+    }
+
+  export interface BehaviorScoreDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BehaviorScore'], meta: { name: 'BehaviorScore' } }
+    /**
+     * Find zero or one BehaviorScore that matches the filter.
+     * @param {BehaviorScoreFindUniqueArgs} args - Arguments to find a BehaviorScore
+     * @example
+     * // Get one BehaviorScore
+     * const behaviorScore = await prisma.behaviorScore.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BehaviorScoreFindUniqueArgs>(args: SelectSubset<T, BehaviorScoreFindUniqueArgs<ExtArgs>>): Prisma__BehaviorScoreClient<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one BehaviorScore that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BehaviorScoreFindUniqueOrThrowArgs} args - Arguments to find a BehaviorScore
+     * @example
+     * // Get one BehaviorScore
+     * const behaviorScore = await prisma.behaviorScore.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BehaviorScoreFindUniqueOrThrowArgs>(args: SelectSubset<T, BehaviorScoreFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BehaviorScoreClient<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BehaviorScore that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BehaviorScoreFindFirstArgs} args - Arguments to find a BehaviorScore
+     * @example
+     * // Get one BehaviorScore
+     * const behaviorScore = await prisma.behaviorScore.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BehaviorScoreFindFirstArgs>(args?: SelectSubset<T, BehaviorScoreFindFirstArgs<ExtArgs>>): Prisma__BehaviorScoreClient<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first BehaviorScore that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BehaviorScoreFindFirstOrThrowArgs} args - Arguments to find a BehaviorScore
+     * @example
+     * // Get one BehaviorScore
+     * const behaviorScore = await prisma.behaviorScore.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BehaviorScoreFindFirstOrThrowArgs>(args?: SelectSubset<T, BehaviorScoreFindFirstOrThrowArgs<ExtArgs>>): Prisma__BehaviorScoreClient<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more BehaviorScores that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BehaviorScoreFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BehaviorScores
+     * const behaviorScores = await prisma.behaviorScore.findMany()
+     * 
+     * // Get first 10 BehaviorScores
+     * const behaviorScores = await prisma.behaviorScore.findMany({ take: 10 })
+     * 
+     * // Only select the `userId`
+     * const behaviorScoreWithUserIdOnly = await prisma.behaviorScore.findMany({ select: { userId: true } })
+     * 
+     */
+    findMany<T extends BehaviorScoreFindManyArgs>(args?: SelectSubset<T, BehaviorScoreFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a BehaviorScore.
+     * @param {BehaviorScoreCreateArgs} args - Arguments to create a BehaviorScore.
+     * @example
+     * // Create one BehaviorScore
+     * const BehaviorScore = await prisma.behaviorScore.create({
+     *   data: {
+     *     // ... data to create a BehaviorScore
+     *   }
+     * })
+     * 
+     */
+    create<T extends BehaviorScoreCreateArgs>(args: SelectSubset<T, BehaviorScoreCreateArgs<ExtArgs>>): Prisma__BehaviorScoreClient<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many BehaviorScores.
+     * @param {BehaviorScoreCreateManyArgs} args - Arguments to create many BehaviorScores.
+     * @example
+     * // Create many BehaviorScores
+     * const behaviorScore = await prisma.behaviorScore.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends BehaviorScoreCreateManyArgs>(args?: SelectSubset<T, BehaviorScoreCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many BehaviorScores and returns the data saved in the database.
+     * @param {BehaviorScoreCreateManyAndReturnArgs} args - Arguments to create many BehaviorScores.
+     * @example
+     * // Create many BehaviorScores
+     * const behaviorScore = await prisma.behaviorScore.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many BehaviorScores and only return the `userId`
+     * const behaviorScoreWithUserIdOnly = await prisma.behaviorScore.createManyAndReturn({
+     *   select: { userId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends BehaviorScoreCreateManyAndReturnArgs>(args?: SelectSubset<T, BehaviorScoreCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a BehaviorScore.
+     * @param {BehaviorScoreDeleteArgs} args - Arguments to delete one BehaviorScore.
+     * @example
+     * // Delete one BehaviorScore
+     * const BehaviorScore = await prisma.behaviorScore.delete({
+     *   where: {
+     *     // ... filter to delete one BehaviorScore
+     *   }
+     * })
+     * 
+     */
+    delete<T extends BehaviorScoreDeleteArgs>(args: SelectSubset<T, BehaviorScoreDeleteArgs<ExtArgs>>): Prisma__BehaviorScoreClient<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one BehaviorScore.
+     * @param {BehaviorScoreUpdateArgs} args - Arguments to update one BehaviorScore.
+     * @example
+     * // Update one BehaviorScore
+     * const behaviorScore = await prisma.behaviorScore.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends BehaviorScoreUpdateArgs>(args: SelectSubset<T, BehaviorScoreUpdateArgs<ExtArgs>>): Prisma__BehaviorScoreClient<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more BehaviorScores.
+     * @param {BehaviorScoreDeleteManyArgs} args - Arguments to filter BehaviorScores to delete.
+     * @example
+     * // Delete a few BehaviorScores
+     * const { count } = await prisma.behaviorScore.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends BehaviorScoreDeleteManyArgs>(args?: SelectSubset<T, BehaviorScoreDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BehaviorScores.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BehaviorScoreUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BehaviorScores
+     * const behaviorScore = await prisma.behaviorScore.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends BehaviorScoreUpdateManyArgs>(args: SelectSubset<T, BehaviorScoreUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more BehaviorScores and returns the data updated in the database.
+     * @param {BehaviorScoreUpdateManyAndReturnArgs} args - Arguments to update many BehaviorScores.
+     * @example
+     * // Update many BehaviorScores
+     * const behaviorScore = await prisma.behaviorScore.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more BehaviorScores and only return the `userId`
+     * const behaviorScoreWithUserIdOnly = await prisma.behaviorScore.updateManyAndReturn({
+     *   select: { userId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends BehaviorScoreUpdateManyAndReturnArgs>(args: SelectSubset<T, BehaviorScoreUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one BehaviorScore.
+     * @param {BehaviorScoreUpsertArgs} args - Arguments to update or create a BehaviorScore.
+     * @example
+     * // Update or create a BehaviorScore
+     * const behaviorScore = await prisma.behaviorScore.upsert({
+     *   create: {
+     *     // ... data to create a BehaviorScore
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BehaviorScore we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BehaviorScoreUpsertArgs>(args: SelectSubset<T, BehaviorScoreUpsertArgs<ExtArgs>>): Prisma__BehaviorScoreClient<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of BehaviorScores.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BehaviorScoreCountArgs} args - Arguments to filter BehaviorScores to count.
+     * @example
+     * // Count the number of BehaviorScores
+     * const count = await prisma.behaviorScore.count({
+     *   where: {
+     *     // ... the filter for the BehaviorScores we want to count
+     *   }
+     * })
+    **/
+    count<T extends BehaviorScoreCountArgs>(
+      args?: Subset<T, BehaviorScoreCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], BehaviorScoreCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a BehaviorScore.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BehaviorScoreAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BehaviorScoreAggregateArgs>(args: Subset<T, BehaviorScoreAggregateArgs>): Prisma.PrismaPromise<GetBehaviorScoreAggregateType<T>>
+
+    /**
+     * Group by BehaviorScore.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BehaviorScoreGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends BehaviorScoreGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: BehaviorScoreGroupByArgs['orderBy'] }
+        : { orderBy?: BehaviorScoreGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, BehaviorScoreGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBehaviorScoreGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the BehaviorScore model
+   */
+  readonly fields: BehaviorScoreFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for BehaviorScore.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__BehaviorScoreClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the BehaviorScore model
+   */
+  interface BehaviorScoreFieldRefs {
+    readonly userId: FieldRef<"BehaviorScore", 'String'>
+    readonly tag: FieldRef<"BehaviorScore", 'String'>
+    readonly score: FieldRef<"BehaviorScore", 'Float'>
+    readonly updatedAt: FieldRef<"BehaviorScore", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * BehaviorScore findUnique
+   */
+  export type BehaviorScoreFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+    /**
+     * Filter, which BehaviorScore to fetch.
+     */
+    where: BehaviorScoreWhereUniqueInput
+  }
+
+  /**
+   * BehaviorScore findUniqueOrThrow
+   */
+  export type BehaviorScoreFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+    /**
+     * Filter, which BehaviorScore to fetch.
+     */
+    where: BehaviorScoreWhereUniqueInput
+  }
+
+  /**
+   * BehaviorScore findFirst
+   */
+  export type BehaviorScoreFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+    /**
+     * Filter, which BehaviorScore to fetch.
+     */
+    where?: BehaviorScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BehaviorScores to fetch.
+     */
+    orderBy?: BehaviorScoreOrderByWithRelationInput | BehaviorScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BehaviorScores.
+     */
+    cursor?: BehaviorScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BehaviorScores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BehaviorScores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BehaviorScores.
+     */
+    distinct?: BehaviorScoreScalarFieldEnum | BehaviorScoreScalarFieldEnum[]
+  }
+
+  /**
+   * BehaviorScore findFirstOrThrow
+   */
+  export type BehaviorScoreFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+    /**
+     * Filter, which BehaviorScore to fetch.
+     */
+    where?: BehaviorScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BehaviorScores to fetch.
+     */
+    orderBy?: BehaviorScoreOrderByWithRelationInput | BehaviorScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for BehaviorScores.
+     */
+    cursor?: BehaviorScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BehaviorScores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BehaviorScores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BehaviorScores.
+     */
+    distinct?: BehaviorScoreScalarFieldEnum | BehaviorScoreScalarFieldEnum[]
+  }
+
+  /**
+   * BehaviorScore findMany
+   */
+  export type BehaviorScoreFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+    /**
+     * Filter, which BehaviorScores to fetch.
+     */
+    where?: BehaviorScoreWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of BehaviorScores to fetch.
+     */
+    orderBy?: BehaviorScoreOrderByWithRelationInput | BehaviorScoreOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing BehaviorScores.
+     */
+    cursor?: BehaviorScoreWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` BehaviorScores from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` BehaviorScores.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of BehaviorScores.
+     */
+    distinct?: BehaviorScoreScalarFieldEnum | BehaviorScoreScalarFieldEnum[]
+  }
+
+  /**
+   * BehaviorScore create
+   */
+  export type BehaviorScoreCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+    /**
+     * The data needed to create a BehaviorScore.
+     */
+    data: XOR<BehaviorScoreCreateInput, BehaviorScoreUncheckedCreateInput>
+  }
+
+  /**
+   * BehaviorScore createMany
+   */
+  export type BehaviorScoreCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BehaviorScores.
+     */
+    data: BehaviorScoreCreateManyInput | BehaviorScoreCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * BehaviorScore createManyAndReturn
+   */
+  export type BehaviorScoreCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * The data used to create many BehaviorScores.
+     */
+    data: BehaviorScoreCreateManyInput | BehaviorScoreCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BehaviorScore update
+   */
+  export type BehaviorScoreUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+    /**
+     * The data needed to update a BehaviorScore.
+     */
+    data: XOR<BehaviorScoreUpdateInput, BehaviorScoreUncheckedUpdateInput>
+    /**
+     * Choose, which BehaviorScore to update.
+     */
+    where: BehaviorScoreWhereUniqueInput
+  }
+
+  /**
+   * BehaviorScore updateMany
+   */
+  export type BehaviorScoreUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BehaviorScores.
+     */
+    data: XOR<BehaviorScoreUpdateManyMutationInput, BehaviorScoreUncheckedUpdateManyInput>
+    /**
+     * Filter which BehaviorScores to update
+     */
+    where?: BehaviorScoreWhereInput
+    /**
+     * Limit how many BehaviorScores to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * BehaviorScore updateManyAndReturn
+   */
+  export type BehaviorScoreUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * The data used to update BehaviorScores.
+     */
+    data: XOR<BehaviorScoreUpdateManyMutationInput, BehaviorScoreUncheckedUpdateManyInput>
+    /**
+     * Filter which BehaviorScores to update
+     */
+    where?: BehaviorScoreWhereInput
+    /**
+     * Limit how many BehaviorScores to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * BehaviorScore upsert
+   */
+  export type BehaviorScoreUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+    /**
+     * The filter to search for the BehaviorScore to update in case it exists.
+     */
+    where: BehaviorScoreWhereUniqueInput
+    /**
+     * In case the BehaviorScore found by the `where` argument doesn't exist, create a new BehaviorScore with this data.
+     */
+    create: XOR<BehaviorScoreCreateInput, BehaviorScoreUncheckedCreateInput>
+    /**
+     * In case the BehaviorScore was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<BehaviorScoreUpdateInput, BehaviorScoreUncheckedUpdateInput>
+  }
+
+  /**
+   * BehaviorScore delete
+   */
+  export type BehaviorScoreDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+    /**
+     * Filter which BehaviorScore to delete.
+     */
+    where: BehaviorScoreWhereUniqueInput
+  }
+
+  /**
+   * BehaviorScore deleteMany
+   */
+  export type BehaviorScoreDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which BehaviorScores to delete
+     */
+    where?: BehaviorScoreWhereInput
+    /**
+     * Limit how many BehaviorScores to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * BehaviorScore without action
+   */
+  export type BehaviorScoreDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BehaviorScore
+     */
+    select?: BehaviorScoreSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BehaviorScore
+     */
+    omit?: BehaviorScoreOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BehaviorScoreInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -24651,6 +28335,19 @@ export namespace Prisma {
   export type RecommendationHistoryScalarFieldEnum = (typeof RecommendationHistoryScalarFieldEnum)[keyof typeof RecommendationHistoryScalarFieldEnum]
 
 
+  export const RecommendationLogScalarFieldEnum: {
+    logId: 'logId',
+    userId: 'userId',
+    phoneId: 'phoneId',
+    finalScore: 'finalScore',
+    rank: 'rank',
+    shownAt: 'shownAt',
+    clicked: 'clicked'
+  };
+
+  export type RecommendationLogScalarFieldEnum = (typeof RecommendationLogScalarFieldEnum)[keyof typeof RecommendationLogScalarFieldEnum]
+
+
   export const CustomerProfileScalarFieldEnum: {
     profileId: 'profileId',
     userId: 'userId',
@@ -24756,6 +28453,28 @@ export namespace Prisma {
   };
 
   export type AdminStatsCacheScalarFieldEnum = (typeof AdminStatsCacheScalarFieldEnum)[keyof typeof AdminStatsCacheScalarFieldEnum]
+
+
+  export const EventScalarFieldEnum: {
+    eventId: 'eventId',
+    userId: 'userId',
+    eventType: 'eventType',
+    phoneId: 'phoneId',
+    payload: 'payload',
+    createdAt: 'createdAt'
+  };
+
+  export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+  export const BehaviorScoreScalarFieldEnum: {
+    userId: 'userId',
+    tag: 'tag',
+    score: 'score',
+    updatedAt: 'updatedAt'
+  };
+
+  export type BehaviorScoreScalarFieldEnum = (typeof BehaviorScoreScalarFieldEnum)[keyof typeof BehaviorScoreScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -24931,6 +28650,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
    * Reference to a field of type 'BudgetSegment'
    */
   export type EnumBudgetSegmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BudgetSegment'>
@@ -24969,20 +28702,6 @@ export namespace Prisma {
    * Reference to a field of type 'SegmentConfidence[]'
    */
   export type ListEnumSegmentConfidenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SegmentConfidence[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -25052,6 +28771,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryListRelationFilter
     searchHistory?: SearchHistoryListRelationFilter
     browsingHistory?: BrowsingHistoryListRelationFilter
+    events?: EventListRelationFilter
+    behaviorScores?: BehaviorScoreListRelationFilter
+    recommendationLogs?: RecommendationLogListRelationFilter
   }
 
   export type UsersOrderByWithRelationInput = {
@@ -25074,6 +28796,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryOrderByRelationAggregateInput
     searchHistory?: SearchHistoryOrderByRelationAggregateInput
     browsingHistory?: BrowsingHistoryOrderByRelationAggregateInput
+    events?: EventOrderByRelationAggregateInput
+    behaviorScores?: BehaviorScoreOrderByRelationAggregateInput
+    recommendationLogs?: RecommendationLogOrderByRelationAggregateInput
   }
 
   export type UsersWhereUniqueInput = Prisma.AtLeast<{
@@ -25099,6 +28824,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryListRelationFilter
     searchHistory?: SearchHistoryListRelationFilter
     browsingHistory?: BrowsingHistoryListRelationFilter
+    events?: EventListRelationFilter
+    behaviorScores?: BehaviorScoreListRelationFilter
+    recommendationLogs?: RecommendationLogListRelationFilter
   }, "userId" | "email" | "phoneNo">
 
   export type UsersOrderByWithAggregationInput = {
@@ -25325,6 +29053,7 @@ export namespace Prisma {
     variants?: PhoneVariantsListRelationFilter
     specs?: XOR<PhoneSpecsNullableScalarRelationFilter, PhoneSpecsWhereInput> | null
     recommendationHistory?: RecommendationHistoryListRelationFilter
+    recommendationLogs?: RecommendationLogListRelationFilter
     wishlist?: WishlistListRelationFilter
     comparedAsA?: ComparisonHistoryListRelationFilter
     comparedAsB?: ComparisonHistoryListRelationFilter
@@ -25351,6 +29080,7 @@ export namespace Prisma {
     variants?: PhoneVariantsOrderByRelationAggregateInput
     specs?: PhoneSpecsOrderByWithRelationInput
     recommendationHistory?: RecommendationHistoryOrderByRelationAggregateInput
+    recommendationLogs?: RecommendationLogOrderByRelationAggregateInput
     wishlist?: WishlistOrderByRelationAggregateInput
     comparedAsA?: ComparisonHistoryOrderByRelationAggregateInput
     comparedAsB?: ComparisonHistoryOrderByRelationAggregateInput
@@ -25381,6 +29111,7 @@ export namespace Prisma {
     variants?: PhoneVariantsListRelationFilter
     specs?: XOR<PhoneSpecsNullableScalarRelationFilter, PhoneSpecsWhereInput> | null
     recommendationHistory?: RecommendationHistoryListRelationFilter
+    recommendationLogs?: RecommendationLogListRelationFilter
     wishlist?: WishlistListRelationFilter
     comparedAsA?: ComparisonHistoryListRelationFilter
     comparedAsB?: ComparisonHistoryListRelationFilter
@@ -26061,6 +29792,76 @@ export namespace Prisma {
     purchased?: BoolWithAggregatesFilter<"RecommendationHistory"> | boolean
   }
 
+  export type RecommendationLogWhereInput = {
+    AND?: RecommendationLogWhereInput | RecommendationLogWhereInput[]
+    OR?: RecommendationLogWhereInput[]
+    NOT?: RecommendationLogWhereInput | RecommendationLogWhereInput[]
+    logId?: UuidFilter<"RecommendationLog"> | string
+    userId?: UuidFilter<"RecommendationLog"> | string
+    phoneId?: UuidFilter<"RecommendationLog"> | string
+    finalScore?: FloatFilter<"RecommendationLog"> | number
+    rank?: IntFilter<"RecommendationLog"> | number
+    shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
+    clicked?: BoolFilter<"RecommendationLog"> | boolean
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+    phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
+  }
+
+  export type RecommendationLogOrderByWithRelationInput = {
+    logId?: SortOrder
+    userId?: SortOrder
+    phoneId?: SortOrder
+    finalScore?: SortOrder
+    rank?: SortOrder
+    shownAt?: SortOrder
+    clicked?: SortOrder
+    user?: UsersOrderByWithRelationInput
+    phone?: PhonesOrderByWithRelationInput
+  }
+
+  export type RecommendationLogWhereUniqueInput = Prisma.AtLeast<{
+    logId?: string
+    AND?: RecommendationLogWhereInput | RecommendationLogWhereInput[]
+    OR?: RecommendationLogWhereInput[]
+    NOT?: RecommendationLogWhereInput | RecommendationLogWhereInput[]
+    userId?: UuidFilter<"RecommendationLog"> | string
+    phoneId?: UuidFilter<"RecommendationLog"> | string
+    finalScore?: FloatFilter<"RecommendationLog"> | number
+    rank?: IntFilter<"RecommendationLog"> | number
+    shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
+    clicked?: BoolFilter<"RecommendationLog"> | boolean
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+    phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
+  }, "logId">
+
+  export type RecommendationLogOrderByWithAggregationInput = {
+    logId?: SortOrder
+    userId?: SortOrder
+    phoneId?: SortOrder
+    finalScore?: SortOrder
+    rank?: SortOrder
+    shownAt?: SortOrder
+    clicked?: SortOrder
+    _count?: RecommendationLogCountOrderByAggregateInput
+    _avg?: RecommendationLogAvgOrderByAggregateInput
+    _max?: RecommendationLogMaxOrderByAggregateInput
+    _min?: RecommendationLogMinOrderByAggregateInput
+    _sum?: RecommendationLogSumOrderByAggregateInput
+  }
+
+  export type RecommendationLogScalarWhereWithAggregatesInput = {
+    AND?: RecommendationLogScalarWhereWithAggregatesInput | RecommendationLogScalarWhereWithAggregatesInput[]
+    OR?: RecommendationLogScalarWhereWithAggregatesInput[]
+    NOT?: RecommendationLogScalarWhereWithAggregatesInput | RecommendationLogScalarWhereWithAggregatesInput[]
+    logId?: UuidWithAggregatesFilter<"RecommendationLog"> | string
+    userId?: UuidWithAggregatesFilter<"RecommendationLog"> | string
+    phoneId?: UuidWithAggregatesFilter<"RecommendationLog"> | string
+    finalScore?: FloatWithAggregatesFilter<"RecommendationLog"> | number
+    rank?: IntWithAggregatesFilter<"RecommendationLog"> | number
+    shownAt?: DateTimeWithAggregatesFilter<"RecommendationLog"> | Date | string
+    clicked?: BoolWithAggregatesFilter<"RecommendationLog"> | boolean
+  }
+
   export type CustomerProfileWhereInput = {
     AND?: CustomerProfileWhereInput | CustomerProfileWhereInput[]
     OR?: CustomerProfileWhereInput[]
@@ -26622,6 +30423,119 @@ export namespace Prisma {
     avgCompatibility?: DecimalNullableWithAggregatesFilter<"AdminStatsCache"> | Decimal | DecimalJsLike | number | string | null
   }
 
+  export type EventWhereInput = {
+    AND?: EventWhereInput | EventWhereInput[]
+    OR?: EventWhereInput[]
+    NOT?: EventWhereInput | EventWhereInput[]
+    eventId?: UuidFilter<"Event"> | string
+    userId?: UuidFilter<"Event"> | string
+    eventType?: StringFilter<"Event"> | string
+    phoneId?: UuidNullableFilter<"Event"> | string | null
+    payload?: JsonNullableFilter<"Event">
+    createdAt?: DateTimeFilter<"Event"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }
+
+  export type EventOrderByWithRelationInput = {
+    eventId?: SortOrder
+    userId?: SortOrder
+    eventType?: SortOrder
+    phoneId?: SortOrderInput | SortOrder
+    payload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    user?: UsersOrderByWithRelationInput
+  }
+
+  export type EventWhereUniqueInput = Prisma.AtLeast<{
+    eventId?: string
+    AND?: EventWhereInput | EventWhereInput[]
+    OR?: EventWhereInput[]
+    NOT?: EventWhereInput | EventWhereInput[]
+    userId?: UuidFilter<"Event"> | string
+    eventType?: StringFilter<"Event"> | string
+    phoneId?: UuidNullableFilter<"Event"> | string | null
+    payload?: JsonNullableFilter<"Event">
+    createdAt?: DateTimeFilter<"Event"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }, "eventId">
+
+  export type EventOrderByWithAggregationInput = {
+    eventId?: SortOrder
+    userId?: SortOrder
+    eventType?: SortOrder
+    phoneId?: SortOrderInput | SortOrder
+    payload?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: EventCountOrderByAggregateInput
+    _max?: EventMaxOrderByAggregateInput
+    _min?: EventMinOrderByAggregateInput
+  }
+
+  export type EventScalarWhereWithAggregatesInput = {
+    AND?: EventScalarWhereWithAggregatesInput | EventScalarWhereWithAggregatesInput[]
+    OR?: EventScalarWhereWithAggregatesInput[]
+    NOT?: EventScalarWhereWithAggregatesInput | EventScalarWhereWithAggregatesInput[]
+    eventId?: UuidWithAggregatesFilter<"Event"> | string
+    userId?: UuidWithAggregatesFilter<"Event"> | string
+    eventType?: StringWithAggregatesFilter<"Event"> | string
+    phoneId?: UuidNullableWithAggregatesFilter<"Event"> | string | null
+    payload?: JsonNullableWithAggregatesFilter<"Event">
+    createdAt?: DateTimeWithAggregatesFilter<"Event"> | Date | string
+  }
+
+  export type BehaviorScoreWhereInput = {
+    AND?: BehaviorScoreWhereInput | BehaviorScoreWhereInput[]
+    OR?: BehaviorScoreWhereInput[]
+    NOT?: BehaviorScoreWhereInput | BehaviorScoreWhereInput[]
+    userId?: UuidFilter<"BehaviorScore"> | string
+    tag?: StringFilter<"BehaviorScore"> | string
+    score?: FloatFilter<"BehaviorScore"> | number
+    updatedAt?: DateTimeFilter<"BehaviorScore"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }
+
+  export type BehaviorScoreOrderByWithRelationInput = {
+    userId?: SortOrder
+    tag?: SortOrder
+    score?: SortOrder
+    updatedAt?: SortOrder
+    user?: UsersOrderByWithRelationInput
+  }
+
+  export type BehaviorScoreWhereUniqueInput = Prisma.AtLeast<{
+    userId_tag?: BehaviorScoreUserIdTagCompoundUniqueInput
+    AND?: BehaviorScoreWhereInput | BehaviorScoreWhereInput[]
+    OR?: BehaviorScoreWhereInput[]
+    NOT?: BehaviorScoreWhereInput | BehaviorScoreWhereInput[]
+    userId?: UuidFilter<"BehaviorScore"> | string
+    tag?: StringFilter<"BehaviorScore"> | string
+    score?: FloatFilter<"BehaviorScore"> | number
+    updatedAt?: DateTimeFilter<"BehaviorScore"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }, "userId_tag">
+
+  export type BehaviorScoreOrderByWithAggregationInput = {
+    userId?: SortOrder
+    tag?: SortOrder
+    score?: SortOrder
+    updatedAt?: SortOrder
+    _count?: BehaviorScoreCountOrderByAggregateInput
+    _avg?: BehaviorScoreAvgOrderByAggregateInput
+    _max?: BehaviorScoreMaxOrderByAggregateInput
+    _min?: BehaviorScoreMinOrderByAggregateInput
+    _sum?: BehaviorScoreSumOrderByAggregateInput
+  }
+
+  export type BehaviorScoreScalarWhereWithAggregatesInput = {
+    AND?: BehaviorScoreScalarWhereWithAggregatesInput | BehaviorScoreScalarWhereWithAggregatesInput[]
+    OR?: BehaviorScoreScalarWhereWithAggregatesInput[]
+    NOT?: BehaviorScoreScalarWhereWithAggregatesInput | BehaviorScoreScalarWhereWithAggregatesInput[]
+    userId?: UuidWithAggregatesFilter<"BehaviorScore"> | string
+    tag?: StringWithAggregatesFilter<"BehaviorScore"> | string
+    score?: FloatWithAggregatesFilter<"BehaviorScore"> | number
+    updatedAt?: DateTimeWithAggregatesFilter<"BehaviorScore"> | Date | string
+  }
+
   export type RolesCreateInput = {
     roleId?: string
     roleName: string
@@ -26680,6 +30594,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateInput = {
@@ -26701,6 +30618,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersUpdateInput = {
@@ -26722,6 +30642,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateInput = {
@@ -26743,6 +30666,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateManyInput = {
@@ -26983,6 +30909,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -27008,6 +30935,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -27033,6 +30961,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -27058,6 +30987,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -27862,6 +31792,74 @@ export namespace Prisma {
     purchased?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type RecommendationLogCreateInput = {
+    logId?: string
+    finalScore: number
+    rank: number
+    shownAt?: Date | string
+    clicked?: boolean
+    user: UsersCreateNestedOneWithoutRecommendationLogsInput
+    phone: PhonesCreateNestedOneWithoutRecommendationLogsInput
+  }
+
+  export type RecommendationLogUncheckedCreateInput = {
+    logId?: string
+    userId: string
+    phoneId: string
+    finalScore: number
+    rank: number
+    shownAt?: Date | string
+    clicked?: boolean
+  }
+
+  export type RecommendationLogUpdateInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    finalScore?: FloatFieldUpdateOperationsInput | number
+    rank?: IntFieldUpdateOperationsInput | number
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicked?: BoolFieldUpdateOperationsInput | boolean
+    user?: UsersUpdateOneRequiredWithoutRecommendationLogsNestedInput
+    phone?: PhonesUpdateOneRequiredWithoutRecommendationLogsNestedInput
+  }
+
+  export type RecommendationLogUncheckedUpdateInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    finalScore?: FloatFieldUpdateOperationsInput | number
+    rank?: IntFieldUpdateOperationsInput | number
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicked?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type RecommendationLogCreateManyInput = {
+    logId?: string
+    userId: string
+    phoneId: string
+    finalScore: number
+    rank: number
+    shownAt?: Date | string
+    clicked?: boolean
+  }
+
+  export type RecommendationLogUpdateManyMutationInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    finalScore?: FloatFieldUpdateOperationsInput | number
+    rank?: IntFieldUpdateOperationsInput | number
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicked?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type RecommendationLogUncheckedUpdateManyInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    finalScore?: FloatFieldUpdateOperationsInput | number
+    rank?: IntFieldUpdateOperationsInput | number
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicked?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type CustomerProfileCreateInput = {
     profileId?: string
     budgetSegment?: $Enums.BudgetSegment | null
@@ -28452,6 +32450,116 @@ export namespace Prisma {
     avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
+  export type EventCreateInput = {
+    eventId?: string
+    eventType: string
+    phoneId?: string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    user: UsersCreateNestedOneWithoutEventsInput
+  }
+
+  export type EventUncheckedCreateInput = {
+    eventId?: string
+    userId: string
+    eventType: string
+    phoneId?: string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type EventUpdateInput = {
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutEventsNestedInput
+  }
+
+  export type EventUncheckedUpdateInput = {
+    eventId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventCreateManyInput = {
+    eventId?: string
+    userId: string
+    eventType: string
+    phoneId?: string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type EventUpdateManyMutationInput = {
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventUncheckedUpdateManyInput = {
+    eventId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BehaviorScoreCreateInput = {
+    tag: string
+    score?: number
+    updatedAt?: Date | string
+    user: UsersCreateNestedOneWithoutBehaviorScoresInput
+  }
+
+  export type BehaviorScoreUncheckedCreateInput = {
+    userId: string
+    tag: string
+    score?: number
+    updatedAt?: Date | string
+  }
+
+  export type BehaviorScoreUpdateInput = {
+    tag?: StringFieldUpdateOperationsInput | string
+    score?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutBehaviorScoresNestedInput
+  }
+
+  export type BehaviorScoreUncheckedUpdateInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    tag?: StringFieldUpdateOperationsInput | string
+    score?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BehaviorScoreCreateManyInput = {
+    userId: string
+    tag: string
+    score?: number
+    updatedAt?: Date | string
+  }
+
+  export type BehaviorScoreUpdateManyMutationInput = {
+    tag?: StringFieldUpdateOperationsInput | string
+    score?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BehaviorScoreUncheckedUpdateManyInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    tag?: StringFieldUpdateOperationsInput | string
+    score?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -28631,6 +32739,24 @@ export namespace Prisma {
     none?: BrowsingHistoryWhereInput
   }
 
+  export type EventListRelationFilter = {
+    every?: EventWhereInput
+    some?: EventWhereInput
+    none?: EventWhereInput
+  }
+
+  export type BehaviorScoreListRelationFilter = {
+    every?: BehaviorScoreWhereInput
+    some?: BehaviorScoreWhereInput
+    none?: BehaviorScoreWhereInput
+  }
+
+  export type RecommendationLogListRelationFilter = {
+    every?: RecommendationLogWhereInput
+    some?: RecommendationLogWhereInput
+    none?: RecommendationLogWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -28661,6 +32787,18 @@ export namespace Prisma {
   }
 
   export type BrowsingHistoryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type BehaviorScoreOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RecommendationLogOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -29656,6 +33794,73 @@ export namespace Prisma {
     overallCompatibility?: SortOrder
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type RecommendationLogCountOrderByAggregateInput = {
+    logId?: SortOrder
+    userId?: SortOrder
+    phoneId?: SortOrder
+    finalScore?: SortOrder
+    rank?: SortOrder
+    shownAt?: SortOrder
+    clicked?: SortOrder
+  }
+
+  export type RecommendationLogAvgOrderByAggregateInput = {
+    finalScore?: SortOrder
+    rank?: SortOrder
+  }
+
+  export type RecommendationLogMaxOrderByAggregateInput = {
+    logId?: SortOrder
+    userId?: SortOrder
+    phoneId?: SortOrder
+    finalScore?: SortOrder
+    rank?: SortOrder
+    shownAt?: SortOrder
+    clicked?: SortOrder
+  }
+
+  export type RecommendationLogMinOrderByAggregateInput = {
+    logId?: SortOrder
+    userId?: SortOrder
+    phoneId?: SortOrder
+    finalScore?: SortOrder
+    rank?: SortOrder
+    shownAt?: SortOrder
+    clicked?: SortOrder
+  }
+
+  export type RecommendationLogSumOrderByAggregateInput = {
+    finalScore?: SortOrder
+    rank?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type EnumBudgetSegmentNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.BudgetSegment | EnumBudgetSegmentFieldRefInput<$PrismaModel> | null
     in?: $Enums.BudgetSegment[] | ListEnumBudgetSegmentFieldRefInput<$PrismaModel> | null
@@ -30054,6 +34259,65 @@ export namespace Prisma {
     avgCompatibility?: SortOrder
   }
 
+  export type EventCountOrderByAggregateInput = {
+    eventId?: SortOrder
+    userId?: SortOrder
+    eventType?: SortOrder
+    phoneId?: SortOrder
+    payload?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EventMaxOrderByAggregateInput = {
+    eventId?: SortOrder
+    userId?: SortOrder
+    eventType?: SortOrder
+    phoneId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EventMinOrderByAggregateInput = {
+    eventId?: SortOrder
+    userId?: SortOrder
+    eventType?: SortOrder
+    phoneId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type BehaviorScoreUserIdTagCompoundUniqueInput = {
+    userId: string
+    tag: string
+  }
+
+  export type BehaviorScoreCountOrderByAggregateInput = {
+    userId?: SortOrder
+    tag?: SortOrder
+    score?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BehaviorScoreAvgOrderByAggregateInput = {
+    score?: SortOrder
+  }
+
+  export type BehaviorScoreMaxOrderByAggregateInput = {
+    userId?: SortOrder
+    tag?: SortOrder
+    score?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BehaviorScoreMinOrderByAggregateInput = {
+    userId?: SortOrder
+    tag?: SortOrder
+    score?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BehaviorScoreSumOrderByAggregateInput = {
+    score?: SortOrder
+  }
+
   export type UsersCreateNestedManyWithoutRoleInput = {
     create?: XOR<UsersCreateWithoutRoleInput, UsersUncheckedCreateWithoutRoleInput> | UsersCreateWithoutRoleInput[] | UsersUncheckedCreateWithoutRoleInput[]
     connectOrCreate?: UsersCreateOrConnectWithoutRoleInput | UsersCreateOrConnectWithoutRoleInput[]
@@ -30173,6 +34437,27 @@ export namespace Prisma {
     connect?: BrowsingHistoryWhereUniqueInput | BrowsingHistoryWhereUniqueInput[]
   }
 
+  export type EventCreateNestedManyWithoutUserInput = {
+    create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
+    createMany?: EventCreateManyUserInputEnvelope
+    connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+  }
+
+  export type BehaviorScoreCreateNestedManyWithoutUserInput = {
+    create?: XOR<BehaviorScoreCreateWithoutUserInput, BehaviorScoreUncheckedCreateWithoutUserInput> | BehaviorScoreCreateWithoutUserInput[] | BehaviorScoreUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: BehaviorScoreCreateOrConnectWithoutUserInput | BehaviorScoreCreateOrConnectWithoutUserInput[]
+    createMany?: BehaviorScoreCreateManyUserInputEnvelope
+    connect?: BehaviorScoreWhereUniqueInput | BehaviorScoreWhereUniqueInput[]
+  }
+
+  export type RecommendationLogCreateNestedManyWithoutUserInput = {
+    create?: XOR<RecommendationLogCreateWithoutUserInput, RecommendationLogUncheckedCreateWithoutUserInput> | RecommendationLogCreateWithoutUserInput[] | RecommendationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecommendationLogCreateOrConnectWithoutUserInput | RecommendationLogCreateOrConnectWithoutUserInput[]
+    createMany?: RecommendationLogCreateManyUserInputEnvelope
+    connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+  }
+
   export type OtpUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OtpCreateWithoutUserInput, OtpUncheckedCreateWithoutUserInput> | OtpCreateWithoutUserInput[] | OtpUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OtpCreateOrConnectWithoutUserInput | OtpCreateOrConnectWithoutUserInput[]
@@ -30238,6 +34523,27 @@ export namespace Prisma {
     connectOrCreate?: BrowsingHistoryCreateOrConnectWithoutUserInput | BrowsingHistoryCreateOrConnectWithoutUserInput[]
     createMany?: BrowsingHistoryCreateManyUserInputEnvelope
     connect?: BrowsingHistoryWhereUniqueInput | BrowsingHistoryWhereUniqueInput[]
+  }
+
+  export type EventUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
+    createMany?: EventCreateManyUserInputEnvelope
+    connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+  }
+
+  export type BehaviorScoreUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<BehaviorScoreCreateWithoutUserInput, BehaviorScoreUncheckedCreateWithoutUserInput> | BehaviorScoreCreateWithoutUserInput[] | BehaviorScoreUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: BehaviorScoreCreateOrConnectWithoutUserInput | BehaviorScoreCreateOrConnectWithoutUserInput[]
+    createMany?: BehaviorScoreCreateManyUserInputEnvelope
+    connect?: BehaviorScoreWhereUniqueInput | BehaviorScoreWhereUniqueInput[]
+  }
+
+  export type RecommendationLogUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<RecommendationLogCreateWithoutUserInput, RecommendationLogUncheckedCreateWithoutUserInput> | RecommendationLogCreateWithoutUserInput[] | RecommendationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecommendationLogCreateOrConnectWithoutUserInput | RecommendationLogCreateOrConnectWithoutUserInput[]
+    createMany?: RecommendationLogCreateManyUserInputEnvelope
+    connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -30386,6 +34692,48 @@ export namespace Prisma {
     deleteMany?: BrowsingHistoryScalarWhereInput | BrowsingHistoryScalarWhereInput[]
   }
 
+  export type EventUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
+    upsert?: EventUpsertWithWhereUniqueWithoutUserInput | EventUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EventCreateManyUserInputEnvelope
+    set?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    disconnect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    delete?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    update?: EventUpdateWithWhereUniqueWithoutUserInput | EventUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EventUpdateManyWithWhereWithoutUserInput | EventUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
+  }
+
+  export type BehaviorScoreUpdateManyWithoutUserNestedInput = {
+    create?: XOR<BehaviorScoreCreateWithoutUserInput, BehaviorScoreUncheckedCreateWithoutUserInput> | BehaviorScoreCreateWithoutUserInput[] | BehaviorScoreUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: BehaviorScoreCreateOrConnectWithoutUserInput | BehaviorScoreCreateOrConnectWithoutUserInput[]
+    upsert?: BehaviorScoreUpsertWithWhereUniqueWithoutUserInput | BehaviorScoreUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: BehaviorScoreCreateManyUserInputEnvelope
+    set?: BehaviorScoreWhereUniqueInput | BehaviorScoreWhereUniqueInput[]
+    disconnect?: BehaviorScoreWhereUniqueInput | BehaviorScoreWhereUniqueInput[]
+    delete?: BehaviorScoreWhereUniqueInput | BehaviorScoreWhereUniqueInput[]
+    connect?: BehaviorScoreWhereUniqueInput | BehaviorScoreWhereUniqueInput[]
+    update?: BehaviorScoreUpdateWithWhereUniqueWithoutUserInput | BehaviorScoreUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: BehaviorScoreUpdateManyWithWhereWithoutUserInput | BehaviorScoreUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: BehaviorScoreScalarWhereInput | BehaviorScoreScalarWhereInput[]
+  }
+
+  export type RecommendationLogUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RecommendationLogCreateWithoutUserInput, RecommendationLogUncheckedCreateWithoutUserInput> | RecommendationLogCreateWithoutUserInput[] | RecommendationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecommendationLogCreateOrConnectWithoutUserInput | RecommendationLogCreateOrConnectWithoutUserInput[]
+    upsert?: RecommendationLogUpsertWithWhereUniqueWithoutUserInput | RecommendationLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RecommendationLogCreateManyUserInputEnvelope
+    set?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    disconnect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    delete?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    update?: RecommendationLogUpdateWithWhereUniqueWithoutUserInput | RecommendationLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RecommendationLogUpdateManyWithWhereWithoutUserInput | RecommendationLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
+  }
+
   export type OtpUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OtpCreateWithoutUserInput, OtpUncheckedCreateWithoutUserInput> | OtpCreateWithoutUserInput[] | OtpUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OtpCreateOrConnectWithoutUserInput | OtpCreateOrConnectWithoutUserInput[]
@@ -30512,6 +34860,48 @@ export namespace Prisma {
     update?: BrowsingHistoryUpdateWithWhereUniqueWithoutUserInput | BrowsingHistoryUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: BrowsingHistoryUpdateManyWithWhereWithoutUserInput | BrowsingHistoryUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: BrowsingHistoryScalarWhereInput | BrowsingHistoryScalarWhereInput[]
+  }
+
+  export type EventUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
+    upsert?: EventUpsertWithWhereUniqueWithoutUserInput | EventUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: EventCreateManyUserInputEnvelope
+    set?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    disconnect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    delete?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    connect?: EventWhereUniqueInput | EventWhereUniqueInput[]
+    update?: EventUpdateWithWhereUniqueWithoutUserInput | EventUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: EventUpdateManyWithWhereWithoutUserInput | EventUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: EventScalarWhereInput | EventScalarWhereInput[]
+  }
+
+  export type BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<BehaviorScoreCreateWithoutUserInput, BehaviorScoreUncheckedCreateWithoutUserInput> | BehaviorScoreCreateWithoutUserInput[] | BehaviorScoreUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: BehaviorScoreCreateOrConnectWithoutUserInput | BehaviorScoreCreateOrConnectWithoutUserInput[]
+    upsert?: BehaviorScoreUpsertWithWhereUniqueWithoutUserInput | BehaviorScoreUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: BehaviorScoreCreateManyUserInputEnvelope
+    set?: BehaviorScoreWhereUniqueInput | BehaviorScoreWhereUniqueInput[]
+    disconnect?: BehaviorScoreWhereUniqueInput | BehaviorScoreWhereUniqueInput[]
+    delete?: BehaviorScoreWhereUniqueInput | BehaviorScoreWhereUniqueInput[]
+    connect?: BehaviorScoreWhereUniqueInput | BehaviorScoreWhereUniqueInput[]
+    update?: BehaviorScoreUpdateWithWhereUniqueWithoutUserInput | BehaviorScoreUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: BehaviorScoreUpdateManyWithWhereWithoutUserInput | BehaviorScoreUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: BehaviorScoreScalarWhereInput | BehaviorScoreScalarWhereInput[]
+  }
+
+  export type RecommendationLogUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RecommendationLogCreateWithoutUserInput, RecommendationLogUncheckedCreateWithoutUserInput> | RecommendationLogCreateWithoutUserInput[] | RecommendationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecommendationLogCreateOrConnectWithoutUserInput | RecommendationLogCreateOrConnectWithoutUserInput[]
+    upsert?: RecommendationLogUpsertWithWhereUniqueWithoutUserInput | RecommendationLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RecommendationLogCreateManyUserInputEnvelope
+    set?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    disconnect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    delete?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    update?: RecommendationLogUpdateWithWhereUniqueWithoutUserInput | RecommendationLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RecommendationLogUpdateManyWithWhereWithoutUserInput | RecommendationLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
   }
 
   export type UsersCreateNestedOneWithoutOtpsInput = {
@@ -30646,6 +35036,13 @@ export namespace Prisma {
     connect?: RecommendationHistoryWhereUniqueInput | RecommendationHistoryWhereUniqueInput[]
   }
 
+  export type RecommendationLogCreateNestedManyWithoutPhoneInput = {
+    create?: XOR<RecommendationLogCreateWithoutPhoneInput, RecommendationLogUncheckedCreateWithoutPhoneInput> | RecommendationLogCreateWithoutPhoneInput[] | RecommendationLogUncheckedCreateWithoutPhoneInput[]
+    connectOrCreate?: RecommendationLogCreateOrConnectWithoutPhoneInput | RecommendationLogCreateOrConnectWithoutPhoneInput[]
+    createMany?: RecommendationLogCreateManyPhoneInputEnvelope
+    connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+  }
+
   export type WishlistCreateNestedManyWithoutPhoneInput = {
     create?: XOR<WishlistCreateWithoutPhoneInput, WishlistUncheckedCreateWithoutPhoneInput> | WishlistCreateWithoutPhoneInput[] | WishlistUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: WishlistCreateOrConnectWithoutPhoneInput | WishlistCreateOrConnectWithoutPhoneInput[]
@@ -30706,6 +35103,13 @@ export namespace Prisma {
     connectOrCreate?: RecommendationHistoryCreateOrConnectWithoutPhoneInput | RecommendationHistoryCreateOrConnectWithoutPhoneInput[]
     createMany?: RecommendationHistoryCreateManyPhoneInputEnvelope
     connect?: RecommendationHistoryWhereUniqueInput | RecommendationHistoryWhereUniqueInput[]
+  }
+
+  export type RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput = {
+    create?: XOR<RecommendationLogCreateWithoutPhoneInput, RecommendationLogUncheckedCreateWithoutPhoneInput> | RecommendationLogCreateWithoutPhoneInput[] | RecommendationLogUncheckedCreateWithoutPhoneInput[]
+    connectOrCreate?: RecommendationLogCreateOrConnectWithoutPhoneInput | RecommendationLogCreateOrConnectWithoutPhoneInput[]
+    createMany?: RecommendationLogCreateManyPhoneInputEnvelope
+    connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
   }
 
   export type WishlistUncheckedCreateNestedManyWithoutPhoneInput = {
@@ -30806,6 +35210,20 @@ export namespace Prisma {
     update?: RecommendationHistoryUpdateWithWhereUniqueWithoutPhoneInput | RecommendationHistoryUpdateWithWhereUniqueWithoutPhoneInput[]
     updateMany?: RecommendationHistoryUpdateManyWithWhereWithoutPhoneInput | RecommendationHistoryUpdateManyWithWhereWithoutPhoneInput[]
     deleteMany?: RecommendationHistoryScalarWhereInput | RecommendationHistoryScalarWhereInput[]
+  }
+
+  export type RecommendationLogUpdateManyWithoutPhoneNestedInput = {
+    create?: XOR<RecommendationLogCreateWithoutPhoneInput, RecommendationLogUncheckedCreateWithoutPhoneInput> | RecommendationLogCreateWithoutPhoneInput[] | RecommendationLogUncheckedCreateWithoutPhoneInput[]
+    connectOrCreate?: RecommendationLogCreateOrConnectWithoutPhoneInput | RecommendationLogCreateOrConnectWithoutPhoneInput[]
+    upsert?: RecommendationLogUpsertWithWhereUniqueWithoutPhoneInput | RecommendationLogUpsertWithWhereUniqueWithoutPhoneInput[]
+    createMany?: RecommendationLogCreateManyPhoneInputEnvelope
+    set?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    disconnect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    delete?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    update?: RecommendationLogUpdateWithWhereUniqueWithoutPhoneInput | RecommendationLogUpdateWithWhereUniqueWithoutPhoneInput[]
+    updateMany?: RecommendationLogUpdateManyWithWhereWithoutPhoneInput | RecommendationLogUpdateManyWithWhereWithoutPhoneInput[]
+    deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
   }
 
   export type WishlistUpdateManyWithoutPhoneNestedInput = {
@@ -30928,6 +35346,20 @@ export namespace Prisma {
     update?: RecommendationHistoryUpdateWithWhereUniqueWithoutPhoneInput | RecommendationHistoryUpdateWithWhereUniqueWithoutPhoneInput[]
     updateMany?: RecommendationHistoryUpdateManyWithWhereWithoutPhoneInput | RecommendationHistoryUpdateManyWithWhereWithoutPhoneInput[]
     deleteMany?: RecommendationHistoryScalarWhereInput | RecommendationHistoryScalarWhereInput[]
+  }
+
+  export type RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput = {
+    create?: XOR<RecommendationLogCreateWithoutPhoneInput, RecommendationLogUncheckedCreateWithoutPhoneInput> | RecommendationLogCreateWithoutPhoneInput[] | RecommendationLogUncheckedCreateWithoutPhoneInput[]
+    connectOrCreate?: RecommendationLogCreateOrConnectWithoutPhoneInput | RecommendationLogCreateOrConnectWithoutPhoneInput[]
+    upsert?: RecommendationLogUpsertWithWhereUniqueWithoutPhoneInput | RecommendationLogUpsertWithWhereUniqueWithoutPhoneInput[]
+    createMany?: RecommendationLogCreateManyPhoneInputEnvelope
+    set?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    disconnect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    delete?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+    update?: RecommendationLogUpdateWithWhereUniqueWithoutPhoneInput | RecommendationLogUpdateWithWhereUniqueWithoutPhoneInput[]
+    updateMany?: RecommendationLogUpdateManyWithWhereWithoutPhoneInput | RecommendationLogUpdateManyWithWhereWithoutPhoneInput[]
+    deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
   }
 
   export type WishlistUncheckedUpdateManyWithoutPhoneNestedInput = {
@@ -31150,6 +35582,42 @@ export namespace Prisma {
     update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutRecommendationHistoryInput, PhonesUpdateWithoutRecommendationHistoryInput>, PhonesUncheckedUpdateWithoutRecommendationHistoryInput>
   }
 
+  export type UsersCreateNestedOneWithoutRecommendationLogsInput = {
+    create?: XOR<UsersCreateWithoutRecommendationLogsInput, UsersUncheckedCreateWithoutRecommendationLogsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutRecommendationLogsInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type PhonesCreateNestedOneWithoutRecommendationLogsInput = {
+    create?: XOR<PhonesCreateWithoutRecommendationLogsInput, PhonesUncheckedCreateWithoutRecommendationLogsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutRecommendationLogsInput
+    connect?: PhonesWhereUniqueInput
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UsersUpdateOneRequiredWithoutRecommendationLogsNestedInput = {
+    create?: XOR<UsersCreateWithoutRecommendationLogsInput, UsersUncheckedCreateWithoutRecommendationLogsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutRecommendationLogsInput
+    upsert?: UsersUpsertWithoutRecommendationLogsInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutRecommendationLogsInput, UsersUpdateWithoutRecommendationLogsInput>, UsersUncheckedUpdateWithoutRecommendationLogsInput>
+  }
+
+  export type PhonesUpdateOneRequiredWithoutRecommendationLogsNestedInput = {
+    create?: XOR<PhonesCreateWithoutRecommendationLogsInput, PhonesUncheckedCreateWithoutRecommendationLogsInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutRecommendationLogsInput
+    upsert?: PhonesUpsertWithoutRecommendationLogsInput
+    connect?: PhonesWhereUniqueInput
+    update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutRecommendationLogsInput, PhonesUpdateWithoutRecommendationLogsInput>, PhonesUncheckedUpdateWithoutRecommendationLogsInput>
+  }
+
   export type UsersCreateNestedOneWithoutCustomerProfileInput = {
     create?: XOR<UsersCreateWithoutCustomerProfileInput, UsersUncheckedCreateWithoutCustomerProfileInput>
     connectOrCreate?: UsersCreateOrConnectWithoutCustomerProfileInput
@@ -31338,6 +35806,34 @@ export namespace Prisma {
     delete?: PhonesWhereInput | boolean
     connect?: PhonesWhereUniqueInput
     update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutMostViewedInStatsInput, PhonesUpdateWithoutMostViewedInStatsInput>, PhonesUncheckedUpdateWithoutMostViewedInStatsInput>
+  }
+
+  export type UsersCreateNestedOneWithoutEventsInput = {
+    create?: XOR<UsersCreateWithoutEventsInput, UsersUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutEventsInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type UsersUpdateOneRequiredWithoutEventsNestedInput = {
+    create?: XOR<UsersCreateWithoutEventsInput, UsersUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutEventsInput
+    upsert?: UsersUpsertWithoutEventsInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutEventsInput, UsersUpdateWithoutEventsInput>, UsersUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type UsersCreateNestedOneWithoutBehaviorScoresInput = {
+    create?: XOR<UsersCreateWithoutBehaviorScoresInput, UsersUncheckedCreateWithoutBehaviorScoresInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutBehaviorScoresInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type UsersUpdateOneRequiredWithoutBehaviorScoresNestedInput = {
+    create?: XOR<UsersCreateWithoutBehaviorScoresInput, UsersUncheckedCreateWithoutBehaviorScoresInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutBehaviorScoresInput
+    upsert?: UsersUpsertWithoutBehaviorScoresInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutBehaviorScoresInput, UsersUpdateWithoutBehaviorScoresInput>, UsersUncheckedUpdateWithoutBehaviorScoresInput>
   }
 
   export type NestedUuidFilter<$PrismaModel = never> = {
@@ -31755,6 +36251,22 @@ export namespace Prisma {
     _max?: NestedEnumUsageTypeFilter<$PrismaModel>
   }
 
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type NestedEnumBudgetSegmentNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.BudgetSegment | EnumBudgetSegmentFieldRefInput<$PrismaModel> | null
     in?: $Enums.BudgetSegment[] | ListEnumBudgetSegmentFieldRefInput<$PrismaModel> | null
@@ -31841,6 +36353,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutRoleInput = {
@@ -31861,6 +36376,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutRoleInput = {
@@ -32241,6 +36759,82 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type EventCreateWithoutUserInput = {
+    eventId?: string
+    eventType: string
+    phoneId?: string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type EventUncheckedCreateWithoutUserInput = {
+    eventId?: string
+    eventType: string
+    phoneId?: string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type EventCreateOrConnectWithoutUserInput = {
+    where: EventWhereUniqueInput
+    create: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput>
+  }
+
+  export type EventCreateManyUserInputEnvelope = {
+    data: EventCreateManyUserInput | EventCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BehaviorScoreCreateWithoutUserInput = {
+    tag: string
+    score?: number
+    updatedAt?: Date | string
+  }
+
+  export type BehaviorScoreUncheckedCreateWithoutUserInput = {
+    tag: string
+    score?: number
+    updatedAt?: Date | string
+  }
+
+  export type BehaviorScoreCreateOrConnectWithoutUserInput = {
+    where: BehaviorScoreWhereUniqueInput
+    create: XOR<BehaviorScoreCreateWithoutUserInput, BehaviorScoreUncheckedCreateWithoutUserInput>
+  }
+
+  export type BehaviorScoreCreateManyUserInputEnvelope = {
+    data: BehaviorScoreCreateManyUserInput | BehaviorScoreCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RecommendationLogCreateWithoutUserInput = {
+    logId?: string
+    finalScore: number
+    rank: number
+    shownAt?: Date | string
+    clicked?: boolean
+    phone: PhonesCreateNestedOneWithoutRecommendationLogsInput
+  }
+
+  export type RecommendationLogUncheckedCreateWithoutUserInput = {
+    logId?: string
+    phoneId: string
+    finalScore: number
+    rank: number
+    shownAt?: Date | string
+    clicked?: boolean
+  }
+
+  export type RecommendationLogCreateOrConnectWithoutUserInput = {
+    where: RecommendationLogWhereUniqueInput
+    create: XOR<RecommendationLogCreateWithoutUserInput, RecommendationLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type RecommendationLogCreateManyUserInputEnvelope = {
+    data: RecommendationLogCreateManyUserInput | RecommendationLogCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type RolesUpsertWithoutUsersInput = {
     update: XOR<RolesUpdateWithoutUsersInput, RolesUncheckedUpdateWithoutUsersInput>
     create: XOR<RolesCreateWithoutUsersInput, RolesUncheckedCreateWithoutUsersInput>
@@ -32600,6 +37194,89 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"BrowsingHistory"> | Date | string
   }
 
+  export type EventUpsertWithWhereUniqueWithoutUserInput = {
+    where: EventWhereUniqueInput
+    update: XOR<EventUpdateWithoutUserInput, EventUncheckedUpdateWithoutUserInput>
+    create: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput>
+  }
+
+  export type EventUpdateWithWhereUniqueWithoutUserInput = {
+    where: EventWhereUniqueInput
+    data: XOR<EventUpdateWithoutUserInput, EventUncheckedUpdateWithoutUserInput>
+  }
+
+  export type EventUpdateManyWithWhereWithoutUserInput = {
+    where: EventScalarWhereInput
+    data: XOR<EventUpdateManyMutationInput, EventUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type EventScalarWhereInput = {
+    AND?: EventScalarWhereInput | EventScalarWhereInput[]
+    OR?: EventScalarWhereInput[]
+    NOT?: EventScalarWhereInput | EventScalarWhereInput[]
+    eventId?: UuidFilter<"Event"> | string
+    userId?: UuidFilter<"Event"> | string
+    eventType?: StringFilter<"Event"> | string
+    phoneId?: UuidNullableFilter<"Event"> | string | null
+    payload?: JsonNullableFilter<"Event">
+    createdAt?: DateTimeFilter<"Event"> | Date | string
+  }
+
+  export type BehaviorScoreUpsertWithWhereUniqueWithoutUserInput = {
+    where: BehaviorScoreWhereUniqueInput
+    update: XOR<BehaviorScoreUpdateWithoutUserInput, BehaviorScoreUncheckedUpdateWithoutUserInput>
+    create: XOR<BehaviorScoreCreateWithoutUserInput, BehaviorScoreUncheckedCreateWithoutUserInput>
+  }
+
+  export type BehaviorScoreUpdateWithWhereUniqueWithoutUserInput = {
+    where: BehaviorScoreWhereUniqueInput
+    data: XOR<BehaviorScoreUpdateWithoutUserInput, BehaviorScoreUncheckedUpdateWithoutUserInput>
+  }
+
+  export type BehaviorScoreUpdateManyWithWhereWithoutUserInput = {
+    where: BehaviorScoreScalarWhereInput
+    data: XOR<BehaviorScoreUpdateManyMutationInput, BehaviorScoreUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type BehaviorScoreScalarWhereInput = {
+    AND?: BehaviorScoreScalarWhereInput | BehaviorScoreScalarWhereInput[]
+    OR?: BehaviorScoreScalarWhereInput[]
+    NOT?: BehaviorScoreScalarWhereInput | BehaviorScoreScalarWhereInput[]
+    userId?: UuidFilter<"BehaviorScore"> | string
+    tag?: StringFilter<"BehaviorScore"> | string
+    score?: FloatFilter<"BehaviorScore"> | number
+    updatedAt?: DateTimeFilter<"BehaviorScore"> | Date | string
+  }
+
+  export type RecommendationLogUpsertWithWhereUniqueWithoutUserInput = {
+    where: RecommendationLogWhereUniqueInput
+    update: XOR<RecommendationLogUpdateWithoutUserInput, RecommendationLogUncheckedUpdateWithoutUserInput>
+    create: XOR<RecommendationLogCreateWithoutUserInput, RecommendationLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type RecommendationLogUpdateWithWhereUniqueWithoutUserInput = {
+    where: RecommendationLogWhereUniqueInput
+    data: XOR<RecommendationLogUpdateWithoutUserInput, RecommendationLogUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RecommendationLogUpdateManyWithWhereWithoutUserInput = {
+    where: RecommendationLogScalarWhereInput
+    data: XOR<RecommendationLogUpdateManyMutationInput, RecommendationLogUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type RecommendationLogScalarWhereInput = {
+    AND?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
+    OR?: RecommendationLogScalarWhereInput[]
+    NOT?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
+    logId?: UuidFilter<"RecommendationLog"> | string
+    userId?: UuidFilter<"RecommendationLog"> | string
+    phoneId?: UuidFilter<"RecommendationLog"> | string
+    finalScore?: FloatFilter<"RecommendationLog"> | number
+    rank?: IntFilter<"RecommendationLog"> | number
+    shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
+    clicked?: BoolFilter<"RecommendationLog"> | boolean
+  }
+
   export type UsersCreateWithoutOtpsInput = {
     name: string
     userId?: string
@@ -32618,6 +37295,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutOtpsInput = {
@@ -32638,6 +37318,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutOtpsInput = {
@@ -32674,6 +37357,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutOtpsInput = {
@@ -32694,6 +37380,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesCreateWithoutBrandInput = {
@@ -32712,6 +37401,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -32736,6 +37426,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -33063,6 +37754,34 @@ export namespace Prisma {
 
   export type RecommendationHistoryCreateManyPhoneInputEnvelope = {
     data: RecommendationHistoryCreateManyPhoneInput | RecommendationHistoryCreateManyPhoneInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RecommendationLogCreateWithoutPhoneInput = {
+    logId?: string
+    finalScore: number
+    rank: number
+    shownAt?: Date | string
+    clicked?: boolean
+    user: UsersCreateNestedOneWithoutRecommendationLogsInput
+  }
+
+  export type RecommendationLogUncheckedCreateWithoutPhoneInput = {
+    logId?: string
+    userId: string
+    finalScore: number
+    rank: number
+    shownAt?: Date | string
+    clicked?: boolean
+  }
+
+  export type RecommendationLogCreateOrConnectWithoutPhoneInput = {
+    where: RecommendationLogWhereUniqueInput
+    create: XOR<RecommendationLogCreateWithoutPhoneInput, RecommendationLogUncheckedCreateWithoutPhoneInput>
+  }
+
+  export type RecommendationLogCreateManyPhoneInputEnvelope = {
+    data: RecommendationLogCreateManyPhoneInput | RecommendationLogCreateManyPhoneInput[]
     skipDuplicates?: boolean
   }
 
@@ -33422,6 +38141,22 @@ export namespace Prisma {
     data: XOR<RecommendationHistoryUpdateManyMutationInput, RecommendationHistoryUncheckedUpdateManyWithoutPhoneInput>
   }
 
+  export type RecommendationLogUpsertWithWhereUniqueWithoutPhoneInput = {
+    where: RecommendationLogWhereUniqueInput
+    update: XOR<RecommendationLogUpdateWithoutPhoneInput, RecommendationLogUncheckedUpdateWithoutPhoneInput>
+    create: XOR<RecommendationLogCreateWithoutPhoneInput, RecommendationLogUncheckedCreateWithoutPhoneInput>
+  }
+
+  export type RecommendationLogUpdateWithWhereUniqueWithoutPhoneInput = {
+    where: RecommendationLogWhereUniqueInput
+    data: XOR<RecommendationLogUpdateWithoutPhoneInput, RecommendationLogUncheckedUpdateWithoutPhoneInput>
+  }
+
+  export type RecommendationLogUpdateManyWithWhereWithoutPhoneInput = {
+    where: RecommendationLogScalarWhereInput
+    data: XOR<RecommendationLogUpdateManyMutationInput, RecommendationLogUncheckedUpdateManyWithoutPhoneInput>
+  }
+
   export type WishlistUpsertWithWhereUniqueWithoutPhoneInput = {
     where: WishlistWhereUniqueInput
     update: XOR<WishlistUpdateWithoutPhoneInput, WishlistUncheckedUpdateWithoutPhoneInput>
@@ -33549,6 +38284,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -33573,6 +38309,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -33613,6 +38350,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -33637,6 +38375,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -33661,6 +38400,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -33685,6 +38425,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -33725,6 +38466,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -33749,6 +38491,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -33775,6 +38518,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutProfileInput = {
@@ -33795,6 +38541,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutProfileInput = {
@@ -33831,6 +38580,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutProfileInput = {
@@ -33851,6 +38603,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type BrandsCreateWithoutUserPreferencesInput = {
@@ -33898,6 +38653,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutPreferenceInput = {
@@ -33918,6 +38676,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutPreferenceInput = {
@@ -33987,6 +38748,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutPreferenceInput = {
@@ -34007,6 +38771,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutRecommendationHistoryInput = {
@@ -34027,6 +38794,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutRecommendationHistoryInput = {
@@ -34047,6 +38817,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutRecommendationHistoryInput = {
@@ -34070,6 +38843,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -34094,6 +38868,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -34136,6 +38911,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutRecommendationHistoryInput = {
@@ -34156,6 +38934,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesUpsertWithoutRecommendationHistoryInput = {
@@ -34185,6 +38966,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -34209,6 +38991,231 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type UsersCreateWithoutRecommendationLogsInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    role?: RolesCreateNestedOneWithoutUsersInput
+    otps?: OtpCreateNestedManyWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutRecommendationLogsInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    roleId?: string | null
+    otps?: OtpUncheckedCreateNestedManyWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutRecommendationLogsInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutRecommendationLogsInput, UsersUncheckedCreateWithoutRecommendationLogsInput>
+  }
+
+  export type PhonesCreateWithoutRecommendationLogsInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesUncheckedCreateWithoutRecommendationLogsInput = {
+    phoneId?: string
+    brandId: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesCreateOrConnectWithoutRecommendationLogsInput = {
+    where: PhonesWhereUniqueInput
+    create: XOR<PhonesCreateWithoutRecommendationLogsInput, PhonesUncheckedCreateWithoutRecommendationLogsInput>
+  }
+
+  export type UsersUpsertWithoutRecommendationLogsInput = {
+    update: XOR<UsersUpdateWithoutRecommendationLogsInput, UsersUncheckedUpdateWithoutRecommendationLogsInput>
+    create: XOR<UsersCreateWithoutRecommendationLogsInput, UsersUncheckedCreateWithoutRecommendationLogsInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutRecommendationLogsInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutRecommendationLogsInput, UsersUncheckedUpdateWithoutRecommendationLogsInput>
+  }
+
+  export type UsersUpdateWithoutRecommendationLogsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    role?: RolesUpdateOneWithoutUsersNestedInput
+    otps?: OtpUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutRecommendationLogsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    otps?: OtpUncheckedUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type PhonesUpsertWithoutRecommendationLogsInput = {
+    update: XOR<PhonesUpdateWithoutRecommendationLogsInput, PhonesUncheckedUpdateWithoutRecommendationLogsInput>
+    create: XOR<PhonesCreateWithoutRecommendationLogsInput, PhonesUncheckedCreateWithoutRecommendationLogsInput>
+    where?: PhonesWhereInput
+  }
+
+  export type PhonesUpdateToOneWithWhereWithoutRecommendationLogsInput = {
+    where?: PhonesWhereInput
+    data: XOR<PhonesUpdateWithoutRecommendationLogsInput, PhonesUncheckedUpdateWithoutRecommendationLogsInput>
+  }
+
+  export type PhonesUpdateWithoutRecommendationLogsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUncheckedUpdateWithoutRecommendationLogsInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -34235,6 +39242,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutCustomerProfileInput = {
@@ -34255,6 +39265,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutCustomerProfileInput = {
@@ -34291,6 +39304,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutCustomerProfileInput = {
@@ -34311,6 +39327,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutWishlistInput = {
@@ -34331,6 +39350,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutWishlistInput = {
@@ -34351,6 +39373,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutWishlistInput = {
@@ -34375,6 +39400,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
     mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -34399,6 +39425,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -34440,6 +39467,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutWishlistInput = {
@@ -34460,6 +39490,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesUpsertWithoutWishlistInput = {
@@ -34490,6 +39523,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
     mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -34514,6 +39548,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -34539,6 +39574,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutComparisonHistoryInput = {
@@ -34559,6 +39597,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutComparisonHistoryInput = {
@@ -34583,6 +39624,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
     mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -34607,6 +39649,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -34636,6 +39679,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -34660,6 +39704,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -34701,6 +39746,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutComparisonHistoryInput = {
@@ -34721,6 +39769,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesUpsertWithoutComparedAsAInput = {
@@ -34751,6 +39802,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
     mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -34775,6 +39827,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -34810,6 +39863,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -34834,6 +39888,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -34859,6 +39914,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutPaymentHistoryInput = {
@@ -34879,6 +39937,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutPaymentHistoryInput = {
@@ -34915,6 +39976,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutPaymentHistoryInput = {
@@ -34935,6 +39999,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutSearchHistoryInput = {
@@ -34955,6 +40022,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutSearchHistoryInput = {
@@ -34975,6 +40045,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutSearchHistoryInput = {
@@ -35011,6 +40084,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutSearchHistoryInput = {
@@ -35031,6 +40107,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutBrowsingHistoryInput = {
@@ -35051,6 +40130,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutBrowsingHistoryInput = {
@@ -35071,6 +40153,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutBrowsingHistoryInput = {
@@ -35107,6 +40192,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutBrowsingHistoryInput = {
@@ -35127,6 +40215,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesCreateWithoutMostRecommendedInStatsInput = {
@@ -35146,6 +40237,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -35170,6 +40262,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -35199,6 +40292,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -35223,6 +40317,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -35252,6 +40347,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -35276,6 +40372,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -35316,6 +40413,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -35340,6 +40438,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -35375,6 +40474,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -35399,6 +40499,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -35434,6 +40535,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -35458,11 +40560,228 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
     mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+  }
+
+  export type UsersCreateWithoutEventsInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    role?: RolesCreateNestedOneWithoutUsersInput
+    otps?: OtpCreateNestedManyWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutEventsInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    roleId?: string | null
+    otps?: OtpUncheckedCreateNestedManyWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutEventsInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutEventsInput, UsersUncheckedCreateWithoutEventsInput>
+  }
+
+  export type UsersUpsertWithoutEventsInput = {
+    update: XOR<UsersUpdateWithoutEventsInput, UsersUncheckedUpdateWithoutEventsInput>
+    create: XOR<UsersCreateWithoutEventsInput, UsersUncheckedCreateWithoutEventsInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutEventsInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutEventsInput, UsersUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type UsersUpdateWithoutEventsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    role?: RolesUpdateOneWithoutUsersNestedInput
+    otps?: OtpUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutEventsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    otps?: OtpUncheckedUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersCreateWithoutBehaviorScoresInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    role?: RolesCreateNestedOneWithoutUsersInput
+    otps?: OtpCreateNestedManyWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutBehaviorScoresInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    roleId?: string | null
+    otps?: OtpUncheckedCreateNestedManyWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutBehaviorScoresInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutBehaviorScoresInput, UsersUncheckedCreateWithoutBehaviorScoresInput>
+  }
+
+  export type UsersUpsertWithoutBehaviorScoresInput = {
+    update: XOR<UsersUpdateWithoutBehaviorScoresInput, UsersUncheckedUpdateWithoutBehaviorScoresInput>
+    create: XOR<UsersCreateWithoutBehaviorScoresInput, UsersUncheckedCreateWithoutBehaviorScoresInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutBehaviorScoresInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutBehaviorScoresInput, UsersUncheckedUpdateWithoutBehaviorScoresInput>
+  }
+
+  export type UsersUpdateWithoutBehaviorScoresInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    role?: RolesUpdateOneWithoutUsersNestedInput
+    otps?: OtpUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutBehaviorScoresInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    otps?: OtpUncheckedUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateManyRoleInput = {
@@ -35493,6 +40812,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutRoleInput = {
@@ -35513,6 +40835,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateManyWithoutRoleInput = {
@@ -35596,6 +40921,29 @@ export namespace Prisma {
     sourceLine?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type EventCreateManyUserInput = {
+    eventId?: string
+    eventType: string
+    phoneId?: string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type BehaviorScoreCreateManyUserInput = {
+    tag: string
+    score?: number
+    updatedAt?: Date | string
+  }
+
+  export type RecommendationLogCreateManyUserInput = {
+    logId?: string
+    phoneId: string
+    finalScore: number
+    rank: number
+    shownAt?: Date | string
+    clicked?: boolean
   }
 
   export type OtpUpdateWithoutUserInput = {
@@ -35817,6 +41165,75 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EventUpdateWithoutUserInput = {
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventUncheckedUpdateWithoutUserInput = {
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EventUncheckedUpdateManyWithoutUserInput = {
+    eventId?: StringFieldUpdateOperationsInput | string
+    eventType?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BehaviorScoreUpdateWithoutUserInput = {
+    tag?: StringFieldUpdateOperationsInput | string
+    score?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BehaviorScoreUncheckedUpdateWithoutUserInput = {
+    tag?: StringFieldUpdateOperationsInput | string
+    score?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BehaviorScoreUncheckedUpdateManyWithoutUserInput = {
+    tag?: StringFieldUpdateOperationsInput | string
+    score?: FloatFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecommendationLogUpdateWithoutUserInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    finalScore?: FloatFieldUpdateOperationsInput | number
+    rank?: IntFieldUpdateOperationsInput | number
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicked?: BoolFieldUpdateOperationsInput | boolean
+    phone?: PhonesUpdateOneRequiredWithoutRecommendationLogsNestedInput
+  }
+
+  export type RecommendationLogUncheckedUpdateWithoutUserInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    finalScore?: FloatFieldUpdateOperationsInput | number
+    rank?: IntFieldUpdateOperationsInput | number
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicked?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type RecommendationLogUncheckedUpdateManyWithoutUserInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    finalScore?: FloatFieldUpdateOperationsInput | number
+    rank?: IntFieldUpdateOperationsInput | number
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicked?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type PhonesCreateManyBrandInput = {
     phoneId?: string
     modelName: string
@@ -35859,6 +41276,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -35883,6 +41301,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -35969,6 +41388,15 @@ export namespace Prisma {
     compared?: boolean
     saved?: boolean
     purchased?: boolean
+  }
+
+  export type RecommendationLogCreateManyPhoneInput = {
+    logId?: string
+    userId: string
+    finalScore: number
+    rank: number
+    shownAt?: Date | string
+    clicked?: boolean
   }
 
   export type WishlistCreateManyPhoneInput = {
@@ -36118,6 +41546,33 @@ export namespace Prisma {
     compared?: BoolFieldUpdateOperationsInput | boolean
     saved?: BoolFieldUpdateOperationsInput | boolean
     purchased?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type RecommendationLogUpdateWithoutPhoneInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    finalScore?: FloatFieldUpdateOperationsInput | number
+    rank?: IntFieldUpdateOperationsInput | number
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicked?: BoolFieldUpdateOperationsInput | boolean
+    user?: UsersUpdateOneRequiredWithoutRecommendationLogsNestedInput
+  }
+
+  export type RecommendationLogUncheckedUpdateWithoutPhoneInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    finalScore?: FloatFieldUpdateOperationsInput | number
+    rank?: IntFieldUpdateOperationsInput | number
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicked?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type RecommendationLogUncheckedUpdateManyWithoutPhoneInput = {
+    logId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    finalScore?: FloatFieldUpdateOperationsInput | number
+    rank?: IntFieldUpdateOperationsInput | number
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicked?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type WishlistUpdateWithoutPhoneInput = {
