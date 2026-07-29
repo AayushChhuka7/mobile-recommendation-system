@@ -307,6 +307,7 @@ function Registration({ onLogin }) {
   const completeRegistration = useCallback(() => {
     onLogin({
       id: registerData.email,
+      userId: registerData.email,
       name: registerData.username,
       email: registerData.email,
       phoneNo: registerData.phone,

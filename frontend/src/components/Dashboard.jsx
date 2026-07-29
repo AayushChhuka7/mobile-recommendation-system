@@ -429,7 +429,11 @@ function Dashboard() {
   // The BE reuses the same fusion pipeline as the click path — see
   // `backend/src/services/recommendService.mjs::getAutoRecommendations`.
   useEffect(() => {
-    if (!user || !user.userId) return;
+    // Accept either field name — login returns `id`, /users/me
+    // returns `userId`. Either is enough to prove we're
+    // authenticated; the BE identifies the caller by cookie anyway.
+    const uid = user?.userId || user?.id;
+    if (!user || !uid) return;
     if (recs !== null) return;
 
     let ignore = false;
@@ -468,7 +472,7 @@ function Dashboard() {
       ignore = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.userId]);
+  }, [user?.userId, user?.id]);
 
   const handleSignOut = useCallback(async () => {
     try {
