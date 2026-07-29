@@ -1,0 +1,39 @@
+%% 01 — Current System Architecture
+%% See project_review/02_architecture_review.md for the line-by-line review.
+
+flowchart TB
+    subgraph Client
+        UI[React/Vite SPA<br/>port 5173]
+    end
+
+    subgraph Backend
+        EXP[Express + Prisma<br/>port 4000]
+        ML[ml.mjs config]
+    end
+
+    subgraph MLService
+        FA[FastAPI<br/>port 8002]
+        XGB[(XGBoost booster<br/>artifact)]
+        SCORE[(Scoring snapshot<br/>quantiles)]
+        CATS[(Category dtypes<br/>frozen)]
+        CSV[(After_EDA CSV<br/>candidates)]
+    end
+
+    subgraph Database
+        PG[(PostgreSQL 16<br/>port 5432)]
+    end
+
+    UI -->|HTTPS /api/*| EXP
+    EXP -->|Prisma driver| PG
+    EXP -->|fetch 8s timeout| FA
+    FA --> XGB
+    FA --> SCORE
+    FA --> CATS
+    FA --> CSV
+    FA -->|JSON results| EXP
+    EXP -->|JSON enriched| UI
+
+    style XGB fill:#fef3c7
+    style SCORE fill:#fef3c7
+    style CATS fill:#fef3c7
+    style CSV fill:#dbeafe

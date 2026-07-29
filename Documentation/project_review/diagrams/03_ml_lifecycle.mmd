@@ -1,0 +1,26 @@
+%% 03 — ML Lifecycle (Train → Register → Serve → Monitor → Retrain)
+%% See project_review/05_mlops_production_readiness.md.
+
+flowchart LR
+    A[EDA + Cleaning<br/>After_EDA.csv] --> B[Feature Engineering<br/>120 features]
+    B --> C[Train XGBoost<br/>5-fold CV]
+    C --> D{Acceptance<br/>R² ≥ 0.80<br/>MAPE ≤ 15%}
+    D -->|no| E[Iterate: tune<br/>drop leakage<br/>add features]
+    E --> B
+    D -->|yes| F[SHAP Explain<br/>TreeExplainer]
+    F --> G[Register Model<br/>MLflow + Model Card]
+    G --> H[Serve via FastAPI<br/>load on cold start]
+    H --> I[Log Predictions<br/>rec_log table]
+    I --> J[Drift Monitor<br/>Evidently weekly]
+    J --> K{Drift<br/>PSI > 0.2?}
+    K -->|no| H
+    K -->|yes| L[Alert + Retrain<br/>trigger pipeline]
+    L --> B
+    I --> M[Feedback Loop<br/>click / wishlist / buy]
+    M --> N[LTR Training Set<br/>join rec_log + feedback]
+    N --> C
+
+    style G fill:#dbeafe
+    style J fill:#dbeafe
+    style L fill:#fef3c7
+    style N fill:#dbeafe

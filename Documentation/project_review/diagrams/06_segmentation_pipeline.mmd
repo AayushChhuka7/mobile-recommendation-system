@@ -1,0 +1,35 @@
+%% 06 — Segmentation Pipeline (Current vs Proposed)
+%% See project_review/09_segmentation_improvements.md.
+
+flowchart TB
+    subgraph Current[Current: K-Means k=3]
+        A1[After_EDA.csv<br/>~5000 rows] --> A2[StandardScaler]
+        A2 --> A3[K-Means k=3<br/>silhouette 0.133]
+        A3 --> A4[Labels:<br/>Premium / Luxury / Budget<br/>mis-named vs means]
+    end
+
+    subgraph ProposedA[Proposed A: GMM]
+        B1[scaled features] --> B2[GMM k=3..6<br/>BIC selection]
+        B2 --> B3[soft clusters<br/>probability per row]
+    end
+
+    subgraph ProposedB[Proposed B: RFM]
+        C1[customer × purchase] --> C2[R: days since last<br/>F: orders per year<br/>M: avg spend NPR]
+        C2 --> C3[K-Means on RFM<br/>5 segments<br/>Champion / Loyal / At-risk]
+    end
+
+    subgraph ProposedC[Proposed C: HDBSCAN]
+        D1[density features] --> D2[HDBSCAN<br/>min_cluster_size=50]
+        D2 --> D3[niches + noise flag]
+    end
+
+    subgraph ProposedD[Proposed D: LTV-decile]
+        E1[predicted LTV] --> E2[decile bin]
+        E2 --> E3[Top 10% / Mid / Bottom]
+    end
+
+    style Current fill:#fee2e2
+    style ProposedA fill:#d1fae5
+    style ProposedB fill:#d1fae5
+    style ProposedC fill:#d1fae5
+    style ProposedD fill:#d1fae5
