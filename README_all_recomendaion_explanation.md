@@ -122,6 +122,7 @@ All six sub-scores are **min-max normalised to 0–1** before weighting. The fiv
 | # | New piece | Why it matters | Effort |
 |---|---|---|---|
 | A | **Customer Profile persistence** (explicit + implicit) | Returning users shouldn't re-fill the form | 1 day |
+
 | B | **Behaviour event log + Search History Score** | Recommendations adapt to real usage | 1–2 days |
 | C | **Profile Fusion Engine** (in-memory, per request) | Same-session behaviour nudges today's recs immediately — no DB writes | ½ day |
 | D | **Final Ranking fusion formula** | Combines 6 sub-scores into one number | ½ day |

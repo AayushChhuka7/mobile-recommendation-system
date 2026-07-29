@@ -186,6 +186,17 @@ def recommend(
                 "Price_EUR": round(float(phone["Price_EUR"]), 2),
                 "Match_Score": float(phone["Match_Score"]),
                 "Why": reasons[:4],
+                # Step D — sub-scores for backend fusion ranker.
+                # `Overall_Score` + `Value_Score` are the two single-number
+                # signals the BE folds into compatibility / value;
+                # `SubScores` exposes every per-dim score so the BE could
+                # in future run a richer persona-aware sub-fusion.
+                "Overall_Score": round(float(phone["Overall_Score"]), 2),
+                "Value_Score": round(float(phone["Value_Score"]), 2),
+                "SubScores": {
+                    dim: round(float(phone[score_cols_map_[dim]]), 2)
+                    for dim in SCORE_DIMENSIONS
+                },
             }
         )
     return results, None
