@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { useEventLogger } from "../hooks/useEventLogger.jsx";
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneListing.css";
@@ -39,6 +40,10 @@ function unwrapPhones(res) {
 function PhoneListing() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  // Step B — fire-and-forget hook for behaviour events. Used for
+  // search submit, filter apply, and phone-card click. The hook
+  // swallows errors so it can never break a user-facing interaction.
+  const logEvent = useEventLogger();
 
   const [phones, setPhones] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -174,6 +179,11 @@ function PhoneListing() {
     setSearchMode(true);
     setPage(1);
     setShowFilters(false);
+    // Step B — record the search signal so the per-tag BehaviourScore
+    // sees gaming/chipset/brand interest over time.
+    logEvent("search", {
+      payload: { q: term, mode: "query" },
+    });
   };
 
   const handleClearSearch = () => {
@@ -186,6 +196,25 @@ function PhoneListing() {
   const handleApplyFilters = () => {
     setShowFilters(false);
     setPage(1);
+    // Step B — a filter-only "I'm looking for X" signal. The BE
+    // filter logger already records the SearchHistory row server-side;
+    // we just mirror it into the unified event log here so the FE
+    // hook is the single source-of-truth for these signals.
+    logEvent("search", {
+      payload: {
+        mode: "filters",
+        filters: {
+          brand: selectedBrand || null,
+          minPrice: minPrice || null,
+          maxPrice: maxPrice || null,
+          minRam: minRam || null,
+          minBattery: minBattery || null,
+          has5G: !!has5G,
+          hasNfc: !!hasNfc,
+        },
+        sort,
+      },
+    });
   };
 
   const handleClearFilters = () => {
@@ -478,7 +507,12 @@ function PhoneListing() {
                   <div
                     key={p.id}
                     className="phone-card"
-                    onClick={() => navigate(`/phones/${p.id}`)}
+                    onClick={() => {
+                      // Step B — log the click signal before navigation
+                      // so the BehaviorScore sees the brand/category bump.
+                      logEvent("click", { phoneId: p.id });
+                      navigate(`/phones/${p.id}`);
+                    }}
                     style={{ cursor: "pointer" }}
                   >
                     <div className="phone-card-top">

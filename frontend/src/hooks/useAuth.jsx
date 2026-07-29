@@ -72,13 +72,19 @@ export function AuthProvider({ children }) {
         const profile = res?.data?.data;
         if (profile) {
           // Merge fresh server fields onto whatever localStorage had.
-          // (e.g. login only returns id+email; /users/me adds name/phone.)
+          // (e.g. login only returns id+email; /users/me adds name/phone
+          // and now also `role` — required by the admin FE guard.)
           const next = {
             ...stored,
             id: profile.userId ?? stored.id,
             name: profile.name ?? stored.name,
             email: profile.email ?? stored.email,
             phoneNo: profile.phoneNo ?? stored.phoneNo,
+            // `role` is intentionally allowed to be null/cleared — if
+            // the backend returns no role (e.g. a future role-less
+            // user type) we want localStorage to reflect that and not
+            // keep a stale role from a previous login.
+            role: profile.role ?? null,
           };
           localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(next));
           setStoredUser(next);
@@ -112,6 +118,33 @@ export function AuthProvider({ children }) {
     // setState after localStorage so listeners that read from storage
     // in the same tick see the new value.
     setStoredUser(userData);
+    // After login: hydrate fields that the login response doesn't
+    // include (name, phoneNo, role). The boot effect only runs once at
+    // AuthProvider mount, so a fresh login goes through here instead.
+    // Fire and forget — a refresh failure must not bounce the user
+    // out (the cookie-based session is still good for the API calls
+    // we're about to make).
+    (async () => {
+      try {
+        const userId = userData && (userData.userId || userData.id);
+        if (!userId) return;
+        const res = await api.get("/users/me");
+        const profile = res?.data?.data;
+        if (!profile) return;
+        setStoredUser((prev) => {
+          const next = {
+            ...(prev || {}),
+            name: profile.name ?? prev?.name,
+            phoneNo: profile.phoneNo ?? prev?.phoneNo,
+            role: profile.role ?? null,
+          };
+          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(next));
+          return next;
+        });
+      } catch (err) {
+        console.warn("Post-login profile refresh failed:", err?.message || err);
+      }
+    })();
   }, []);
 
   // Merge a partial update into the existing stored user. Used to fill in

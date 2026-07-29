@@ -114,17 +114,43 @@ export const revokeRole = async (userId) => {
 // source of truth.
 
 // Whitelist of roles a user can self-assign at registration.
-// `Admin` is admin-only.
-const ASSIGNABLE_ROLES = ["Customer", "Salesman"];
+//
+// Production-safe default: Admin is admin-only and cannot be self-
+// assigned through the public registration endpoint. An attacker
+// hitting a deployed instance cannot escalate to Admin on their own.
+//
+// Development escape hatch: set `DEV_ALLOW_ADMIN_SELF_REGISTER=true`
+// in `backend/.env`. When that flag is on, "Admin" is also accepted at
+// registration. This makes local end-to-end testing (RBAC checks,
+// admin-only routes, /api/users listing) possible without standing up
+// a separate admin-promotion script. **Never enable this flag in any
+// deployed environment.** The flag defaults to off and reads on every
+// request, so flipping it back to off takes effect immediately (after
+// restarting the backend to refresh module-level state).
+const PRODUCTION_ASSIGNABLE_ROLES = ["Customer", "Salesman"];
+const DEV_EXTRA_ASSIGNABLE_ROLES = ["Admin"];
+
+const isDevAdminBypassEnabled = () => {
+  const flag = process.env.DEV_ALLOW_ADMIN_SELF_REGISTER;
+  if (typeof flag !== "string") return false;
+  return flag.toLowerCase() === "true" || flag === "1";
+};
+
+const getAssignableRolesList = () => {
+  if (isDevAdminBypassEnabled()) {
+    return [...PRODUCTION_ASSIGNABLE_ROLES, ...DEV_EXTRA_ASSIGNABLE_ROLES];
+  }
+  return [...PRODUCTION_ASSIGNABLE_ROLES];
+};
 
 export const getAssignableRoles = () => {
   // Return a fresh array so callers can't mutate the source.
-  return [...ASSIGNABLE_ROLES];
+  return getAssignableRolesList();
 };
 
 export const isAssignableRole = (roleName) => {
   if (typeof roleName !== "string" || roleName.length === 0) return false;
-  return ASSIGNABLE_ROLES.includes(roleName);
+  return getAssignableRolesList().includes(roleName);
 };
 
 export const assertUserRoleMatches = async (userId, roleName) => {
