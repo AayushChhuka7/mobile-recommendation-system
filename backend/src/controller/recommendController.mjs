@@ -2,13 +2,10 @@ import { sendSuccess } from "../utils/ApiResponse.mjs";
 import { catchAsync } from "../utils/catchAsync.mjs";
 import { badRequest } from "../utils/ApiError.mjs";
 import * as recommendService from "../services/recommendService.mjs";
-<<<<<<< HEAD
-=======
 import {
   safeRecordCompareEvent,
   safeRecordRecommendationEvent,
 } from "../services/profileService.mjs";
->>>>>>> proxy-dev
 
 export const getHealth = catchAsync(async (_req, res) => {
   const data = await recommendService.checkHealth();
@@ -18,9 +15,6 @@ export const getHealth = catchAsync(async (_req, res) => {
 export const postRecommend = catchAsync(async (req, res) => {
   if (!req.body || typeof req.body !== "object")
     throw badRequest("Request body is required");
-<<<<<<< HEAD
-  const results = await recommendService.getRecommendations(req.body);
-=======
   // Step C — pass the caller's userId so profileFusion can read
   // BehaviorScore rows and combine them with the FE-supplied (or
   // stored) explicit preferences. Behaviour nudges are per-request
@@ -39,7 +33,6 @@ export const postRecommend = catchAsync(async (req, res) => {
     });
   }
 
->>>>>>> proxy-dev
   return sendSuccess(res, results, {
     message: `Found ${results.length} recommendations`,
   });
@@ -53,10 +46,6 @@ export const postCompareML = catchAsync(async (req, res) => {
     req.body.modelNameA,
     req.body.modelNameB,
   );
-<<<<<<< HEAD
-  return sendSuccess(res, result, { message: "ML comparison complete" });
-});
-=======
 
   // Implicit signal: log the compare event into ComparisonHistory and
   // bump the customer's totals. Fire-and-forget so analytics never
@@ -107,4 +96,3 @@ export const getAutoRecommend = catchAsync(async (req, res) => {
     message: `Auto-recommend complete (${results.length} picks)`,
   });
 });
->>>>>>> proxy-dev
