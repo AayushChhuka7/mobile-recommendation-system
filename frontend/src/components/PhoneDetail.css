@@ -356,6 +356,7 @@
   }
 }
 
+<<<<<<< HEAD
 /* Dark-mode overrides — only override the colors that change.
    Scoped to any .dash-dark ancestor so the phone detail page (which
    also carries .dash-dark when the user prefers dark mode) inherits
@@ -393,16 +394,34 @@
 .dash-dark .phone-detail-empty,
 .dash-dark .phone-detail-error,
 .dash-dark .phone-detail-brand img {
+=======
+/* Dark-mode overrides — only override the colors that change. */
+.dashboard-page.dash-dark .phone-detail-page {
+  background: var(--bg);
+}
+
+.dashboard-page.dash-dark .phone-detail-topbar,
+.dashboard-page.dash-dark .phone-detail-section,
+.dashboard-page.dash-dark .phone-detail-pricing,
+.dashboard-page.dash-dark .phone-detail-variant,
+.dashboard-page.dash-dark .phone-detail-empty,
+.dashboard-page.dash-dark .phone-detail-error {
+>>>>>>> development
   background: #1f2937;
   border-color: #374151;
 }
 
+<<<<<<< HEAD
 .dash-dark .phone-detail-back {
+=======
+.dashboard-page.dash-dark .phone-detail-back {
+>>>>>>> development
   background: transparent;
   border-color: #374151;
   color: #e5e7eb;
 }
 
+<<<<<<< HEAD
 .dash-dark .phone-detail-model,
 .dash-dark .phone-detail-price-value,
 .dash-dark .phone-detail-section h2,
@@ -425,6 +444,30 @@
 }
 
 .dash-dark .phone-detail-image {
+=======
+.dashboard-page.dash-dark .phone-detail-model,
+.dashboard-page.dash-dark .phone-detail-price-value,
+.dashboard-page.dash-dark .phone-detail-section h2,
+.dashboard-page.dash-dark .phone-detail-variants h2,
+.dashboard-page.dash-dark .phone-detail-row-value,
+.dashboard-page.dash-dark .phone-detail-variant-spec,
+.dashboard-page.dash-dark .phone-detail-variant-price {
+  color: #f3f4f6;
+}
+
+.dashboard-page.dash-dark .phone-detail-row-label,
+.dashboard-page.dash-dark .phone-detail-brand,
+.dashboard-page.dash-dark .phone-detail-breadcrumb,
+.dashboard-page.dash-dark .phone-detail-price-label,
+.dashboard-page.dash-dark .phone-detail-price-range,
+.dashboard-page.dash-dark .phone-detail-empty p,
+.dashboard-page.dash-dark .phone-detail-error p,
+.dashboard-page.dash-dark .phone-detail-variant-storage {
+  color: #9ca3af;
+}
+
+.dashboard-page.dash-dark .phone-detail-image {
+>>>>>>> development
   background: #111827;
   border-color: #374151;
 }

@@ -49,3 +49,28 @@ tmp/
 prompt.txt
 
 ML Model/.venv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+ML Model/similarity_bundle.joblib
+
+
+# ── ML model artifacts ──────────────────────────────────────────────────────
+# joblib files are generated artifacts from training/serving scripts in
+# `ML Model/`. They are large, binary, and reproducible from the source
+# notebooks + datasets, so we never commit them. Trainers re-run on every push.
+*.joblib
+**/*.joblib
+# Pickled sklearn objects (same reasoning as .joblib)
+*.pkl
+**/*.pkl
+!ML Model/.venv/**/*.pkl
+!ML Model/.venv/**/*.joblib

@@ -5,14 +5,41 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider, useAuth } from "./hooks/useAuth.jsx";
 
+function SplashScreen() {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "var(--bg, #0b0d12)",
+        color: "var(--text, #e5e7eb)",
+        fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+        fontSize: 14,
+        opacity: 0.75,
+      }}
+      role="status"
+      aria-live="polite"
+    >
+      Loading…
+    </div>
+  );
+}
+
 function ProtectedRoute({ children }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  // Wait for the boot-time session check before deciding. Otherwise
+  // a stale localStorage user would render the dashboard for a frame
+  // and then bounce when the 401 from /users/me comes back.
+  if (loading) return <SplashScreen />;
   if (!user) return <Navigate to="/login" replace />;
   return children;
 }
 
 function PublicOnlyRoute({ children }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  if (loading) return <SplashScreen />;
   if (user) return <Navigate to="/dashboard" replace />;
   return children;
 }
@@ -58,7 +85,39 @@ createRoot(document.getElementById("root")).render(
             }
           />
           <Route
+            path="/phones/:id/*"
+            element={
+              <ProtectedRoute>
+                <App />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/phones/*"
+            element={
+              <ProtectedRoute>
+                <App />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/compare/*" // ← Add /*
+            element={
+              <ProtectedRoute>
+                <App />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin pages — same ProtectedRoute gate as everything else.
+            * The role check (admin-only) lives inside the components via
+            * useAdminGuard, but React Router also needs to know these
+            * paths exist or the catch-all `<Navigate to="/login">` fires
+            * before App can dispatch on `pathname.startsWith`. */}
+          <Route
+            path="/admin/*"
             element={
               <ProtectedRoute>
                 <App />

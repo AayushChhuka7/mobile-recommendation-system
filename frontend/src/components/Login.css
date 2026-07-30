@@ -601,6 +601,93 @@ select.input-field {
   color: #fff;
 }
 
+/* Issue 2 — onboarding step. The persona radio + brand multi-select
+   both render as small pill chips. Reuse .usage-chip for persona choice
+   (selected = active) and add a brand-chip variant for the multi-select. */
+.onboarding-personas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.onboarding-personas .persona-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-dark);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate-dark);
+  background: var(--white);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.onboarding-personas .persona-chip:hover {
+  border-color: var(--primary);
+}
+
+.onboarding-personas .persona-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.onboarding-personas .persona-chip input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.onboarding-brands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.brand-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-dark);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--slate-dark);
+  background: var(--white);
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.brand-chip:hover {
+  border-color: var(--primary);
+}
+
+.brand-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.field-error {
+  font-size: 12px;
+  color: #dc2626;
+  margin-top: 4px;
+}
+
 .otp-container {
   margin: 24px 0;
 }

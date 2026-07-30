@@ -1,7 +1,14 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { getRecommendations } from "../services/recommend";
+import { getAutoRecommendations, getRecommendations } from "../services/recommend";
+import {
+  getMyFilterPreset,
+  getMyPreferences,
+  getMyProfileBundle,
+  saveMyFilterPreset,
+  saveMyPreferences,
+} from "../services/profile";
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
@@ -27,6 +34,7 @@ import {
   PASSWORD_RULES,
   PASSWORD_MIN_LENGTH,
 } from "./AuthShared";
+import ComparePanel from "./ComparePanel.jsx";
 
 // function ThemeIcon() {
 //   return (
@@ -100,6 +108,27 @@ const EMPTY_FILTERS = {
   hasOis: false,
 };
 
+// Resolve a persisted persona string back to the FE's PERSONA_WEIGHT_PRESETS
+// key. The backend may store either a category ("gamer", "camera", ...)
+// or "Custom" (when the user moved the sliders). Anything we don't
+// recognise is treated as "allrounder" (the safe default).
+const personaToCategory = (persona) => {
+  if (
+    persona === "gamer" ||
+    persona === "camera" ||
+    persona === "battery" ||
+    persona === "allrounder"
+  ) {
+    return persona;
+  }
+  return "allrounder";
+};
+
+// Filter/sort auto-save currently fires only on explicit user actions
+// (Apply button, sort dropdown change) — no debounce needed. A debounce
+// helper can be reintroduced here if a future continuous-input source
+// (e.g. live price slider) gets wired to auto-save.
+
 function buildPhonesQuery(filters, sort, extra = {}) {
   const params = { limit: 6, sort, ...extra };
   if (filters.brand) params.brand = filters.brand;
@@ -136,7 +165,7 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout, setUser } = useAuth();
+  const { user, logout } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -145,6 +174,8 @@ function Dashboard() {
   const closeAnimMs = 180;
 
   const closeTimerRef = useRef(null);
+
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
 
   const [changePwPhase, setChangePwPhase] = useState("closed");
   const changePwCloseTimerRef = useRef(null);
@@ -238,40 +269,73 @@ function Dashboard() {
     };
   }, []);
 
-  // Hydrate the stored user with full profile fields. Login only returns
-  // { id, email }, but the dashboard needs name/phoneNo. Pull them from
-  // the existing GET /users/me endpoint and merge into the auth context
-  // (which persists to localStorage, so the values survive reloads).
+  // Hydrate saved preferences + filter preset on mount. The whole
+  // payload is fetched with one round-trip so we don't bounce between
+  // /me/preferences and /me/filter-preset. If anything fails, the local
+  // state defaults (which already match `EMPTY_FILTERS` and
+  // `PERSONA_WEIGHT_PRESETS.gamer`) take over.
+  const hydratedRef = useRef(false);
   useEffect(() => {
     let ignore = false;
-    async function loadProfile() {
+    async function hydrate() {
       try {
-        const res = await api.get("/users/me");
-        const profile = res?.data?.data;
-        if (ignore || !profile) return;
-        setUser({
-          id: profile.userId ?? user?.id,
-          name: profile.name ?? user?.name,
-          email: profile.email ?? user?.email,
-          phoneNo: profile.phoneNo ?? user?.phoneNo,
-        });
-      } catch (err) {
-        // 401 is handled by the phones loader below; we don't want to
-        // double-handle it here. Just log and continue.
-        if (err.response?.status !== 401) {
-          console.error("Failed to load user profile:", err);
+        const [bundle] = await Promise.all([getMyProfileBundle()]);
+        if (ignore || !bundle || hydratedRef.current) return;
+
+        // 1. Restore the recommend modal state — persona + weights +
+        //    budget. If `recommendationPersona` is missing (fresh user)
+        //    keep the default `gamer` selection already in state.
+        const persona =
+          bundle.customerProfile?.recommendationPersona || null;
+        if (persona) {
+          const cat = personaToCategory(persona);
+          setSelectedCategory(cat);
+          setWeights({ ...PERSONA_WEIGHT_PRESETS[cat] });
+          setWeightsTouched(persona === "Custom");
         }
+
+        const maxBudget =
+          typeof bundle.preference?.maxBudget === "number"
+            ? bundle.preference.maxBudget
+            : null;
+        if (maxBudget !== null) setBudgetMax(String(maxBudget));
+
+        // 2. Restore filters + sort from the saved preset. The
+        //    backend stores it under `preferredBrands` with a
+        //    `__kind: "filter-preset"` discriminator.
+        const preset = await getMyFilterPreset();
+        if (ignore) return;
+        if (preset && preset.filters && typeof preset.filters === "object") {
+          // Defensive: only pick keys present in EMPTY_FILTERS so a
+          // stale key in storage can't break the filter UI.
+          const merged = { ...EMPTY_FILTERS };
+          for (const k of Object.keys(EMPTY_FILTERS)) {
+            if (k in preset.filters) merged[k] = preset.filters[k];
+          }
+          setFilters(merged);
+          setPendingFilters(merged);
+        }
+        if (preset && typeof preset.sort === "string" && preset.sort.length > 0) {
+          setSort(preset.sort);
+        }
+
+        hydratedRef.current = true;
+      } catch (err) {
+        // Hydration is best-effort — silent fallback to defaults is
+        // fine. Log only in dev.
+        console.warn("Profile hydration skipped:", err?.message || err);
       }
     }
-    loadProfile();
+    hydrate();
     return () => {
       ignore = true;
     };
-    // We intentionally only run this on mount. The `user` reads inside
-    // are just fallbacks for the merge; we don't want to refetch on
-    // every context update.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Profile fields (name, phoneNo) are hydrated by AuthProvider's
+  // session-validation effect on app boot, so by the time the
+  // dashboard mounts the auth context already has fresh data.
+  // No on-mount fetch needed here.
   const openRecommend = useCallback(() => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -350,6 +414,66 @@ function Dashboard() {
     };
   }, [searchTerm, filters, sort, page, navigate, logout]);
 
+  // Auto-recommend — fire once on Dashboard mount so the user sees
+  // personalised picks without clicking anything. Reuses the existing
+  // `recs / recsLoading / recsError` state so the spinner + error UI
+  // + clear button all keep working unchanged.
+  //
+  // Skip conditions:
+  //   - no logged-in user (defensive; the route is auth-guarded but we
+  //     also don't want this to run during a /login redirect).
+  //   - recs already populated (preserve the user's picks across route
+  //     re-mounts within the same session; the explicit "Clear" button
+  //     resets state and the next mount will re-fetch).
+  //
+  // The BE reuses the same fusion pipeline as the click path — see
+  // `backend/src/services/recommendService.mjs::getAutoRecommendations`.
+  useEffect(() => {
+    // Accept either field name — login returns `id`, /users/me
+    // returns `userId`. Either is enough to prove we're
+    // authenticated; the BE identifies the caller by cookie anyway.
+    const uid = user?.userId || user?.id;
+    if (!user || !uid) return;
+    if (recs !== null) return;
+
+    let ignore = false;
+    setRecsLoading(true);
+    setRecsError("");
+
+    (async () => {
+      try {
+        const { results, defaultedAt } = await getAutoRecommendations();
+        if (ignore) return;
+        setRecs(results);
+        // Tag the persona in the recs header. If both defaulted, surface
+        // an explicit "auto" persona label so the user understands the
+        // system cold-started.
+        setRecsPersona(
+          defaultedAt.persona && defaultedAt.budget
+            ? "auto (cold start)"
+            : "auto",
+        );
+      } catch (err) {
+        if (ignore) return;
+        // Soft-fail. An auto-recommend failure should never block the
+        // listing or steer the user away — the explicit "Recommend Me"
+        // button is still wired up.
+        console.warn("[auto-recommend] failed:", err?.message || err);
+        setRecsError(
+          err?.response?.data?.message ||
+            "Couldn't auto-load recommendations. Use Recommend Me to retry.",
+        );
+      } finally {
+        if (!ignore) setRecsLoading(false);
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.userId, user?.id]);
+
   const handleSignOut = useCallback(async () => {
     try {
       await api.post("/auth/logout");
@@ -404,8 +528,30 @@ function Dashboard() {
     return errs;
   }, [currentPassword, newPassword, confirmPassword]);
 
+  // Map backend `details` array (express-validator) onto the FE's
+  // per-field error map, falling back to a banner for unknown fields.
+  const mapChangePwFieldErrors = useCallback((details) => {
+    const fieldErrors = {};
+    let bannerMessage = "";
+    if (!Array.isArray(details)) return { fieldErrors, bannerMessage };
+
+    for (const entry of details) {
+      const serverKey = entry?.path || entry?.field;
+      const msg = entry?.msg || entry?.message;
+      if (!msg) continue;
+
+      if (serverKey === "currentPassword") fieldErrors.currentPassword = msg;
+      else if (serverKey === "password") fieldErrors.newPassword = msg;
+      else if (serverKey === "confirmPassword")
+        fieldErrors.confirmPassword = msg;
+      else
+        bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
+    }
+    return { fieldErrors, bannerMessage };
+  }, []);
+
   const handleChangePwSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e?.preventDefault();
       const errs = validateChangePw();
       setChangePwErrors(errs);
@@ -415,12 +561,35 @@ function Dashboard() {
       }
 
       setIsChangePwSubmitting(true);
-      console.log(
-        "[Change Password] submit (UI only — backend wiring pending):",
-        { currentPassword, newPassword, confirmPassword },
-      );
-      setIsChangePwSubmitting(false);
-      closeChangePassword();
+      setChangePwSubmitError("");
+      try {
+        await api.patch("/users/me/password", {
+          currentPassword,
+          password: newPassword,
+          confirmPassword,
+        });
+        closeChangePassword();
+      } catch (err) {
+        const data = err?.response?.data;
+        if (err?.response?.status === 401) {
+          // AUTH_INVALID_CREDENTIALS — surface on the currentPassword field.
+          setChangePwErrors((prev) => ({
+            ...prev,
+            currentPassword: data?.message || "Current password is incorrect",
+          }));
+        } else {
+          const { fieldErrors, bannerMessage } =
+            mapChangePwFieldErrors(data?.details);
+          if (Object.keys(fieldErrors).length) {
+            setChangePwErrors((prev) => ({ ...prev, ...fieldErrors }));
+          }
+          setChangePwSubmitError(
+            bannerMessage || data?.message || "Couldn't change password. Please try again.",
+          );
+        }
+      } finally {
+        setIsChangePwSubmitting(false);
+      }
     },
     [
       validateChangePw,
@@ -428,6 +597,7 @@ function Dashboard() {
       newPassword,
       confirmPassword,
       closeChangePassword,
+      mapChangePwFieldErrors,
     ],
   );
 
@@ -460,9 +630,24 @@ function Dashboard() {
         persona,
         budget,
         preferences,
-        topN: 6,
+        // Issue 1 — render the full ranked catalog (up to 200) instead
+        // of the historical 6-picks slice. Same fusion pipeline; the BE
+        // returns phones in descending `matchScore` order.
+        topN: 200,
       });
       setRecs(results);
+
+      // Auto-save the persona + weights + budget that produced this
+      // recommendation. Fire-and-forget — a save failure must never
+      // disturb the rec result the user just received.
+      saveMyPreferences({
+        persona,
+        budgetMin: Number.isFinite(min) && min >= 0 ? min : "",
+        budgetMax: max,
+        weights: weightsTouched ? { ...weights } : undefined,
+      }).catch((err) => {
+        console.warn("Preferences save failed:", err?.message || err);
+      });
     } catch (err) {
       setRecsError(
         err.response?.data?.message ||
@@ -510,6 +695,14 @@ function Dashboard() {
     setFilters(pendingFilters);
     setShowFilters(false);
     setPage(1);
+    // Auto-save the filter + current sort. Wrapped in a try so a save
+    // failure can never abort the apply flow.
+    saveMyFilterPreset({
+      filters: pendingFilters,
+      sort,
+    }).catch((err) => {
+      console.warn("Filter preset save failed:", err?.message || err);
+    });
   };
 
   const handleClearFilters = () => {
@@ -520,6 +713,14 @@ function Dashboard() {
   const handleSortChange = (nextSort) => {
     setSort(nextSort);
     setPage(1);
+    // Auto-save the new sort alongside the current filters so a reload
+    // restores both.
+    saveMyFilterPreset({
+      filters,
+      sort: nextSort,
+    }).catch((err) => {
+      console.warn("Filter preset save failed:", err?.message || err);
+    });
   };
 
   const displayName = user?.name || user?.username || "there";
@@ -548,6 +749,16 @@ function Dashboard() {
         </div>
 
         <div className="dash-header-actions">
+          <button
+            type="button"
+            className={`btn btn-outline dash-compare-btn ${isCompareOpen ? "active" : ""}`}
+            onClick={() => setIsCompareOpen((o) => !o)}
+            aria-expanded={isCompareOpen}
+            aria-controls="dash-compare-panel"
+            title="Compare two phones side by side"
+          >
+            <span>Compare</span>
+          </button>
           <button
             type="button"
             className="btn btn-primary dash-recommend-btn"
@@ -653,6 +864,22 @@ function Dashboard() {
                     <LockIcon />
                     Change password
                   </button>
+                  {user?.role === "Admin" && (
+                    <>
+                      <button
+                        type="button"
+                        className="change-password-btn admin-link-btn"
+                        onClick={() => {
+                          setProfileOpen(false);
+                          navigate("/admin/customer-profiles");
+                        }}
+                      >
+                        <SlidersIcon />
+                        Customer profiles
+                      </button>
+                      <div className="profile-divider" />
+                    </>
+                  )}
                   <button
                     type="button"
                     className="signout-btn"
@@ -969,8 +1196,8 @@ function Dashboard() {
             <div className="dash-recs-header">
               <h2>
                 {recsPersona
-                  ? `Recommended for you · ${recsPersona}`
-                  : "Recommended for you"}
+                  ? `All phones ranked for you · ${recsPersona}`
+                  : "All phones ranked for you"}
               </h2>
               <button
                 type="button"
@@ -1030,6 +1257,7 @@ function Dashboard() {
                         ) : (
                           <span className="phone-card-emoji">📱</span>
                         )}
+<<<<<<< HEAD
                         {typeof r.matchScore === "number" && (() => {
                           // Backend already returns matchScore on a 0..100
                           // scale (e.g. 70.7), so the previous
@@ -1050,6 +1278,24 @@ function Dashboard() {
                             </span>
                           );
                         })()}
+=======
+                        {typeof r.matchScore === "number" && (
+                          <span
+                            className="rec-match-badge"
+                            title="Match score from the recommender"
+                          >
+                            {Math.round(r.matchScore * 100)}% match
+                          </span>
+                        )}
+                        {r.matchComponents?.search_history > 0.6 && (
+                          <span
+                            className="rec-boosted-badge"
+                            title="Ranked higher because of your recent searches & views"
+                          >
+                            Boosted by your activity
+                          </span>
+                        )}
+>>>>>>> development
                       </div>
                       <div className="phone-card-name">{r.modelName}</div>
                       <div className="phone-card-tagline">
@@ -1122,6 +1368,8 @@ function Dashboard() {
                 className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
                 onMouseEnter={() => setHoveredCard(p.id)}
                 onMouseLeave={() => setHoveredCard(null)}
+                onClick={() => p.id && navigate(`/phones/${p.id}`)}
+                style={{ cursor: "pointer" }}
               >
                 <div className="phone-card-top">
                   <div className="phone-card-image">
@@ -1475,6 +1723,11 @@ function Dashboard() {
           </div>
         </div>
       )}
+
+      <ComparePanel
+        open={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+      />
     </div>
   );
 }

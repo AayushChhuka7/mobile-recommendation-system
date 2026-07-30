@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
+=======
+>>>>>>> development
 import api from "../services/api";
 import { postCompareMl } from "../services/recommend";
 import { CloseIcon, SearchIcon, CameraIcon, BatteryIcon, CpuIcon, TagIcon } from "./AuthShared";
@@ -217,7 +220,10 @@ function getWinner(val1, val2, higherIsBetter = true) {
 
 // ---- Main Compare Panel Component ----
 function ComparePanel({ open, onClose }) {
+<<<<<<< HEAD
   const navigate = useNavigate();
+=======
+>>>>>>> development
   const [phone1, setPhone1] = useState(null);
   const [phone2, setPhone2] = useState(null);
   const [compareResult, setCompareResult] = useState(null);
@@ -387,12 +393,18 @@ function ComparePanel({ open, onClose }) {
                 const phoneKey = idx === 0 ? "phone1" : "phone2";
                 const isOverallWinner = overallWinnerKey === phoneKey;
                 return (
+<<<<<<< HEAD
                   <button
                     key={phone.id}
                     type="button"
                     className={`cmp-result-card ${isOverallWinner ? "winner" : ""}`}
                     onClick={() => phone?.id && navigate(`/phones/${phone.id}`)}
                     aria-label={`Open ${phone.modelName} specifications`}
+=======
+                  <div
+                    key={phone.id}
+                    className={`cmp-result-card ${isOverallWinner ? "winner" : ""}`}
+>>>>>>> development
                   >
                     {isOverallWinner && !isOverallTie && (
                       <span className="cmp-overall-badge">🏆 ML Pick</span>
@@ -439,7 +451,11 @@ function ComparePanel({ open, onClose }) {
                         </div>
                       )}
                     </div>
+<<<<<<< HEAD
                   </button>
+=======
+                  </div>
+>>>>>>> development
                 );
               })}
             </div>

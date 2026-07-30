@@ -114,6 +114,7 @@
   min-width: 0;
 }
 
+<<<<<<< HEAD
 .compare-ml-headline-card {
   cursor: pointer;
   border-radius: 8px;
@@ -130,6 +131,8 @@
   transform: translateY(-1px);
 }
 
+=======
+>>>>>>> development
 .compare-ml-headline-side:nth-child(3) {
   align-items: flex-end;
   text-align: right;

@@ -2,6 +2,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPhoneById } from "../services/phones";
 import { useAuth } from "../hooks/useAuth.jsx";
+<<<<<<< HEAD
+=======
+import { useEventLogger } from "../hooks/useEventLogger.jsx";
+>>>>>>> development
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneDetail.css";
@@ -144,6 +148,15 @@ function PhoneDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { logout } = useAuth();
+<<<<<<< HEAD
+=======
+  // Step B — log a "view" event once when the detail page mounts so
+  // the per-tag BehaviourScore accumulates. The hook swallows errors,
+  // and we only fire when `id` is a plausible UUID (string with some
+  // length) so we don't pollute the table with garbage from a typo'd
+  // URL.
+  const logEvent = useEventLogger();
+>>>>>>> development
 
   const [phone, setPhone] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -189,6 +202,18 @@ function PhoneDetail() {
     };
   }, [id, reloadKey, navigate, logout]);
 
+<<<<<<< HEAD
+=======
+  // Step B — fire one "view" event per detail-page mount. We only fire
+  // for UUID-shaped `id` so a stray edit doesn't push junk into the
+  // Event table. The hook swallows errors so this is purely additive.
+  useEffect(() => {
+    if (!id) return;
+    if (typeof id !== "string" || id.length < 32) return;
+    logEvent("view", { phoneId: id });
+  }, [id, logEvent]);
+
+>>>>>>> development
   const handleBack = useCallback(() => {
     if (window.history.length > 1) {
       navigate(-1);
@@ -197,6 +222,7 @@ function PhoneDetail() {
     }
   }, [navigate]);
 
+<<<<<<< HEAD
   // Mirror the dashboard's dark-mode preference so the detail page
   // also honors `localStorage("dashboardDarkMode")` set elsewhere.
   const DARK_MODE_KEY = "dashboardDarkMode";
@@ -216,11 +242,17 @@ function PhoneDetail() {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
+=======
+>>>>>>> development
   // ---- Loading / error states ----
 
   if (loading) {
     return (
+<<<<<<< HEAD
       <div className={`phone-detail-page ${isDarkMode ? "dash-dark" : ""}`}>
+=======
+      <div className="phone-detail-page">
+>>>>>>> development
         <TopBar onBack={handleBack} />
         <p className="dash-status" style={{ marginTop: 40, textAlign: "center" }}>
           Loading phone…
@@ -231,7 +263,11 @@ function PhoneDetail() {
 
   if (error === "not-found") {
     return (
+<<<<<<< HEAD
       <div className={`phone-detail-page ${isDarkMode ? "dash-dark" : ""}`}>
+=======
+      <div className="phone-detail-page">
+>>>>>>> development
         <TopBar onBack={handleBack} />
         <div className="phone-detail-empty">
           <h1>Phone not found</h1>
@@ -253,7 +289,11 @@ function PhoneDetail() {
 
   if (error === "generic") {
     return (
+<<<<<<< HEAD
       <div className={`phone-detail-page ${isDarkMode ? "dash-dark" : ""}`}>
+=======
+      <div className="phone-detail-page">
+>>>>>>> development
         <TopBar onBack={handleBack} />
         <div className="phone-detail-error">
           <h1>Couldn't load this phone</h1>
@@ -273,7 +313,11 @@ function PhoneDetail() {
   if (!phone) return null;
 
   return (
+<<<<<<< HEAD
     <div className={`phone-detail-page ${isDarkMode ? "dash-dark" : ""}`}>
+=======
+    <div className="phone-detail-page">
+>>>>>>> development
       <TopBar onBack={handleBack} />
       <PhoneDetailView phone={phone} />
     </div>

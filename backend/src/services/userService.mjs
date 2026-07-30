@@ -19,7 +19,21 @@ import { notFound, accountDeactivated } from "../utils/ApiError.mjs";
 //   - findUserByEmail   → returns null on miss (Passport expects this)
 
 export const findAllUsers = async () => {
-  return prisma.users.findMany();
+  // Explicit `select` so the bcrypt hash and any other future sensitive
+  // column never leaks to the browser. The role is a relation to Roles;
+  // selecting `roleName` returns `{ roleName: "Admin" }` which the FE
+  // can flatten if it wants.
+  return prisma.users.findMany({
+    select: {
+      userId: true,
+      name: true,
+      email: true,
+      phoneNo: true,
+      isActive: true,
+      isVerified: true,
+      role: { select: { roleName: true } },
+    },
+  });
 };
 
 export const findUserById = async (id) => {

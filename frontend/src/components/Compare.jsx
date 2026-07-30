@@ -7,12 +7,7 @@ import { useAuth } from "../hooks/useAuth.jsx";
 import { PhoneDetailView } from "./PhoneDetail";
 import "./Dashboard.css";
 import "./Compare.css";
-import {
-  UserIcon,
-  CloseIcon,
-  LogoutIcon,
-  ChevronDownIcon,
-} from "./AuthShared";
+import { UserIcon, CloseIcon, LogoutIcon, ChevronDownIcon } from "./AuthShared";
 
 // ---- Debounce helper ----
 function useDebounce(callback, delay) {
@@ -443,10 +438,7 @@ function Compare() {
         </div>
 
         {/* ML comparison results */}
-        <section
-          className="compare-ml-area"
-          aria-label="ML comparison results"
-        >
+        <section className="compare-ml-area" aria-label="ML comparison results">
           <div className="compare-section-label">
             <span className="compare-ml-badge">AI</span>
             <span>ML-powered comparison</span>
@@ -481,19 +473,7 @@ function Compare() {
           {hasResult && !isLoading && (
             <div className="compare-ml-results">
               <div className="compare-ml-headline">
-                <div
-                  className="compare-ml-headline-side compare-ml-headline-card"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => phone1?.id && navigate(`/phones/${phone1.id}`)}
-                  onKeyDown={(e) => {
-                    if ((e.key === "Enter" || e.key === " ") && phone1?.id) {
-                      e.preventDefault();
-                      navigate(`/phones/${phone1.id}`);
-                    }
-                  }}
-                  aria-label={`Open ${compareResult.Phone_A} specifications`}
-                >
+                <div className="compare-ml-headline-side">
                   <span className="compare-ml-side-name">
                     {compareResult.Phone_A}
                   </span>
@@ -502,19 +482,7 @@ function Compare() {
                   </span>
                 </div>
                 <div className="compare-ml-headline-vs">VS</div>
-                <div
-                  className="compare-ml-headline-side compare-ml-headline-card"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => phone2?.id && navigate(`/phones/${phone2.id}`)}
-                  onKeyDown={(e) => {
-                    if ((e.key === "Enter" || e.key === " ") && phone2?.id) {
-                      e.preventDefault();
-                      navigate(`/phones/${phone2.id}`);
-                    }
-                  }}
-                  aria-label={`Open ${compareResult.Phone_B} specifications`}
-                >
+                <div className="compare-ml-headline-side">
                   <span className="compare-ml-side-name">
                     {compareResult.Phone_B}
                   </span>
@@ -543,7 +511,10 @@ function Compare() {
                   <>
                     <span className="winner-badge muted">🤝 Even</span>
                     <strong>Overall tie</strong>
-                    <span> — both phones win the same number of dimensions.</span>
+                    <span>
+                      {" "}
+                      — both phones win the same number of dimensions.
+                    </span>
                   </>
                 )}
               </div>
