@@ -34,6 +34,7 @@ import {
   PASSWORD_HINT,
   PASSWORD_RULES,
   PASSWORD_MIN_LENGTH,
+  EditIcon,
 } from "./AuthShared";
 import ComparePanel from "./ComparePanel.jsx";
 import { eurFromNpr, formatPriceNpr } from "../utils/formatPrice.js";
@@ -167,7 +168,7 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, setUser } = useAuth();
 
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setSearchOpen] = useState(false);
@@ -187,6 +188,17 @@ function Dashboard() {
   const [changePwErrors, setChangePwErrors] = useState({});
   const [changePwSubmitError, setChangePwSubmitError] = useState("");
   const [isChangePwSubmitting, setIsChangePwSubmitting] = useState(false);
+
+  // Edit-profile modal state — mirrors `changePwPhase` so the same
+  // open/closing animation + CSS classes can be reused.
+  const [editProfilePhase, setEditProfilePhase] = useState("closed");
+  const editProfileCloseTimerRef = useRef(null);
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editProfileErrors, setEditProfileErrors] = useState({});
+  const [editProfileSubmitError, setEditProfileSubmitError] = useState("");
+  const [isEditProfileSubmitting, setIsEditProfileSubmitting] =
+    useState(false);
 
   const DARK_MODE_KEY = "dashboardDarkMode";
   const [isDarkMode, setIsDarkMode] = useState(
@@ -338,6 +350,8 @@ function Dashboard() {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
       if (changePwCloseTimerRef.current)
         clearTimeout(changePwCloseTimerRef.current);
+      if (editProfileCloseTimerRef.current)
+        clearTimeout(editProfileCloseTimerRef.current);
     };
   }, []);
   useEffect(() => {
@@ -492,6 +506,102 @@ function Dashboard() {
       resetChangePwForm();
     }, closeAnimMs);
   }, [resetChangePwForm]);
+
+  // ---- Edit profile (username / phone) handlers ----
+  // Mirrors the change-password flow: phase machine drives the modal
+  // open/close animation, validation runs on submit, and the BE
+  // response is mirrored into AuthContext via setUser() so the
+  // dropdown value updates immediately without a refresh.
+  const openEditProfile = useCallback(() => {
+    if (editProfileCloseTimerRef.current) {
+      clearTimeout(editProfileCloseTimerRef.current);
+      editProfileCloseTimerRef.current = null;
+    }
+    setEditName(user?.name || "");
+    setEditPhone(user?.phoneNo || user?.phone || "");
+    setEditProfileErrors({});
+    setEditProfileSubmitError("");
+    setEditProfilePhase("open");
+    setProfileOpen(false);
+  }, [user]);
+
+  const resetEditProfileForm = useCallback(() => {
+    setEditName("");
+    setEditPhone("");
+    setEditProfileErrors({});
+    setEditProfileSubmitError("");
+    setIsEditProfileSubmitting(false);
+  }, []);
+
+  const closeEditProfile = useCallback(() => {
+    setEditProfilePhase("closing");
+    if (editProfileCloseTimerRef.current)
+      clearTimeout(editProfileCloseTimerRef.current);
+    editProfileCloseTimerRef.current = setTimeout(() => {
+      setEditProfilePhase("closed");
+      editProfileCloseTimerRef.current = null;
+      resetEditProfileForm();
+    }, closeAnimMs);
+  }, [resetEditProfileForm]);
+
+  const validateEditProfile = useCallback(() => {
+    const errs = {};
+    if (!editName || !editName.trim()) errs.name = "Username is required";
+    else if (editName.trim().length > 80)
+      errs.name = "Username is too long (max 80 characters)";
+    if (editPhone && editPhone.trim() && editPhone.trim().length < 6)
+      errs.phoneNo = "Phone number looks too short";
+    return errs;
+  }, [editName, editPhone]);
+
+  const handleEditProfileSubmit = useCallback(
+    async (e) => {
+      e?.preventDefault();
+      const errs = validateEditProfile();
+      setEditProfileErrors(errs);
+      if (Object.keys(errs).length) {
+        setEditProfileSubmitError("");
+        return;
+      }
+      setIsEditProfileSubmitting(true);
+      setEditProfileSubmitError("");
+      try {
+        // PATCH /users/me — sibling of the password patch endpoint.
+        // The BE persists `name` / `phoneNo` to the user row.
+        const res = await api.patch("/users/me", {
+          name: editName.trim(),
+          phoneNo: editPhone.trim(),
+        });
+        // Mirror the saved values back into AuthContext so the
+        // dropdown re-renders with the new display name + phone
+        // without a full page reload.
+        const saved =
+          res?.data?.data && typeof res.data.data === "object"
+            ? res.data.data
+            : { name: editName.trim(), phoneNo: editPhone.trim() };
+        setUser({
+          name: saved.name ?? editName.trim(),
+          phoneNo: saved.phoneNo ?? editPhone.trim(),
+        });
+        closeEditProfile();
+      } catch (err) {
+        const data = err?.response?.data;
+        setEditProfileSubmitError(
+          data?.message || "Couldn't update profile. Please try again.",
+        );
+      } finally {
+        setIsEditProfileSubmitting(false);
+      }
+    },
+    [
+      validateEditProfile,
+      editName,
+      editPhone,
+      closeEditProfile,
+      setUser,
+    ],
+  );
+
   const validateChangePw = useCallback(() => {
     const errs = {};
     if (!currentPassword) errs.currentPassword = "Current password is required";
@@ -793,6 +903,15 @@ function Dashboard() {
                     <span className="profile-field-value">
                       {displayName || "—"}
                     </span>
+                    <button
+                      type="button"
+                      className="profile-field-edit"
+                      onClick={openEditProfile}
+                      aria-label="Edit username and phone"
+                      title="Edit username & phone"
+                    >
+                      <EditIcon />
+                    </button>
                   </li>
                   <li className="profile-field">
                     <span className="profile-field-icon" aria-hidden="true">
@@ -807,6 +926,15 @@ function Dashboard() {
                     </span>
                     <span className="profile-field-label">Phone</span>
                     <span className="profile-field-value">{phone || "—"}</span>
+                    <button
+                      type="button"
+                      className="profile-field-edit"
+                      onClick={openEditProfile}
+                      aria-label="Edit username and phone"
+                      title="Edit username & phone"
+                    >
+                      <EditIcon />
+                    </button>
                   </li>
                 </ul>
                 <div className="profile-divider" />
@@ -1687,6 +1815,113 @@ function Dashboard() {
                 disabled={isChangePwSubmitting}
               >
                 {isChangePwSubmitting ? "Saving..." : "Submit"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {editProfilePhase !== "closed" && (
+        <div
+          className={`search-overlay dash-edit-profile-overlay ${editProfilePhase === "closing" ? "closing" : ""}`}
+          onClick={closeEditProfile}
+        >
+          <div
+            className={`search-modal dash-edit-profile-modal ${editProfilePhase === "closing" ? "closing" : ""}`}
+            role="dialog"
+            aria-label="Edit profile"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="search-modal-header">
+              <div>
+                <div className="auth-title" style={{ marginBottom: 4 }}>
+                  Edit profile
+                </div>
+                <div className="auth-subtitle" style={{ marginBottom: 0 }}>
+                  Update your username and phone number.
+                </div>
+              </div>
+              <button
+                type="button"
+                className="icon-btn"
+                aria-label="Close edit profile"
+                onClick={closeEditProfile}
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <form
+              className="dash-edit-profile-body"
+              onSubmit={handleEditProfileSubmit}
+              noValidate
+            >
+              <label className="form-field-label" htmlFor="edit-profile-name">
+                Username
+              </label>
+              <input
+                id="edit-profile-name"
+                type="text"
+                className="form-input"
+                autoComplete="username"
+                placeholder="Your name"
+                value={editName}
+                onChange={(e) => {
+                  setEditName(e.target.value);
+                  if (editProfileErrors.name)
+                    setEditProfileErrors((prev) => ({ ...prev, name: "" }));
+                }}
+                aria-invalid={!!editProfileErrors.name}
+              />
+              {editProfileErrors.name && (
+                <div className="form-field-error" role="alert">
+                  {editProfileErrors.name}
+                </div>
+              )}
+
+              <label
+                className="form-field-label"
+                htmlFor="edit-profile-phone"
+                style={{ marginTop: 12 }}
+              >
+                Phone
+              </label>
+              <input
+                id="edit-profile-phone"
+                type="tel"
+                className="form-input"
+                autoComplete="tel"
+                placeholder="+977-..."
+                value={editPhone}
+                onChange={(e) => {
+                  setEditPhone(e.target.value);
+                  if (editProfileErrors.phoneNo)
+                    setEditProfileErrors((prev) => ({
+                      ...prev,
+                      phoneNo: "",
+                    }));
+                }}
+                aria-invalid={!!editProfileErrors.phoneNo}
+              />
+              {editProfileErrors.phoneNo && (
+                <div className="form-field-error" role="alert">
+                  {editProfileErrors.phoneNo}
+                </div>
+              )}
+
+              {editProfileSubmitError && (
+                <div className="form-submit-error" role="alert">
+                  {editProfileSubmitError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="btn btn-primary w-full"
+                disabled={isEditProfileSubmitting}
+                style={{ marginTop: 16 }}
+              >
+                {isEditProfileSubmitting ? "Saving..." : "Save changes"}
               </button>
             </form>
           </div>

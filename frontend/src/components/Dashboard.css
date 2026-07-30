@@ -133,7 +133,7 @@
 
 .profile-field {
   display: grid;
-  grid-template-columns: 18px auto 1fr;
+  grid-template-columns: 18px auto 1fr auto;
   align-items: center;
   gap: 8px;
   font-size: 13px;
@@ -161,6 +161,40 @@
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 0;
+}
+
+/* Pencil button that opens the edit-profile modal. Stays muted by
+   default and only lights up on hover so the dropdown doesn't feel
+   noisy. Same icon-btn circle as the close button. */
+.profile-field-edit {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--slate-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+
+.profile-field-edit:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.profile-field-edit:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.dashboard-page.dash-dark .profile-field-edit:hover {
+  background: rgba(96, 165, 250, 0.15);
+  color: var(--primary);
 }
 
 .profile-actions {
@@ -481,6 +515,75 @@
   display: flex;
   flex-direction: column;
   margin-top: 20px;
+}
+
+/* Edit profile modal — same look as the change-password modal but
+   uses plain text/tel inputs instead of the shared PasswordField. */
+.dash-edit-profile-body {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.form-field-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--slate-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--white);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.form-input::placeholder {
+  color: var(--slate-light);
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  outline: none;
+}
+
+.form-input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.form-field-error {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--danger);
+}
+
+.form-submit-error {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--danger);
+  background: var(--danger-light);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.dashboard-page.dash-dark .form-input {
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.dashboard-page.dash-dark .form-field-label {
+  color: var(--text-muted);
 }
 
 @keyframes dash-recommend-fade-in {
