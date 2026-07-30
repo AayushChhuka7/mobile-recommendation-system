@@ -261,9 +261,11 @@ export async function extractTagsForEvent(eventType, phoneId, payload) {
 // the Event + tag rows exist together or none of them do.
 //
 // Returns:
-//   { eventId, tagsUpdated: string[] }
+//   { eventId, tagsUpdated: string[], skipped?: 'duplicate' }
 //
 // Throws on DB error; callers wrap in try/catch (fire-and-forget).
+//
+// Dedup window: phoneId-bearing "click" / "view" /
 export async function recordEvent(userId, eventType, opts = {}) {
   if (!userId) throw new Error("recordEvent requires a userId");
   if (typeof eventType !== "string" || !eventType) {
@@ -273,6 +275,20 @@ export async function recordEvent(userId, eventType, opts = {}) {
   const phoneId = typeof opts.phoneId === "string" ? opts.phoneId : null;
   const payload =
     opts.payload && typeof opts.payload === "object" ? opts.payload : null;
+
+  // PhoneId-bearing "click" / "view" / "compare" events dedup within a
+  // short window. The user's brief: "if i clicked a phone that is in
+  // recent 10 then don't update score and track or shows in profile."
+  // — we treat a same-(userId, eventType, phoneId) event within
+  // EVENT_DEDUP_WINDOW_MS as a duplicate and skip both the Event row
+  // and the BehaviorScore bump. Search / recommend / save / ignore are
+  // intentional distinct actions and pass through.
+  if (phoneId && EVENT_DEDUPABLE_EVENTS.has(eventType)) {
+    const dup = await isDuplicateEvent(userId, eventType, phoneId);
+    if (dup) {
+      return { eventId: null, tagsUpdated: [], skipped: "duplicate" };
+    }
+  }
 
   // First pass: derive tags so we can return them in the response. This
   // costs an extra read per call but it's < 1 ms with the cache above.
@@ -308,6 +324,50 @@ export async function recordEvent(userId, eventType, opts = {}) {
 
     return { eventId: created.eventId, tagsUpdated };
   });
+}
+
+// ---- Dedup support ---------------------------------------------------------
+//
+// The dedup window is short (30 s) and the index is
+// (user_id, event_type, phone_id, created_at DESC) — actually we read
+// the same (user_id, event_type, phone_id) combo and add a createdAt
+// filter for the window. The phone_id part of the existing
+// Event.index is `(phoneId)` only, so the dedup lookup filters in
+// user/event/phone in the WHERE clause but reads the latest one via
+// ORDER BY createdAt DESC. With the volume of events per user this is
+// cheap enough; we can add a covering index later if it shows up in
+// slow-query logs.
+const EVENT_DEDUPABLE_EVENTS = new Set(["click", "view", "compare"]);
+const EVENT_DEDUP_WINDOW_MS = 30 * 1000;
+
+async function isDuplicateEvent(userId, eventType, phoneId) {
+  if (!userId || !eventType || !phoneId) return false;
+  const cutoff = new Date(Date.now() - EVENT_DEDUP_WINDOW_MS);
+  try {
+    const prior = await prisma.event.findFirst({
+      where: {
+        userId,
+        eventType,
+        phoneId,
+        createdAt: { gte: cutoff },
+      },
+      orderBy: { createdAt: "desc" },
+      select: { eventId: true },
+    });
+    return Boolean(prior);
+  } catch (err) {
+    // On a read failure we err toward *not* dedup'd so the event still
+    // records. The worst case is one extra row, not lost data.
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "[behaviorAnalyzer] isDuplicateEvent read failed:",
+        err?.message || err,
+      );
+    } else {
+      console.warn("[behaviorAnalyzer] isDuplicateEvent read failed:", err);
+    }
+    return false;
+  }
 }
 
 // Re-export the lookup helper so tests can invalidate the cache.

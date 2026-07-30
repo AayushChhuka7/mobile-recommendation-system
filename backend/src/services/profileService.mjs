@@ -25,6 +25,7 @@
 
 import { prisma } from "../config/prisma.mjs";
 import { recordEvent as recordBehaviorEvent } from "./behaviorAnalyzer.mjs";
+import { safeAggregateAfterRecommendation } from "./profileAggregator.mjs";
 
 // ---------------------------------------------------------------------------
 // Domain mappings — FE persona/weight payload → DB enums/counters
@@ -167,61 +168,127 @@ const buildFilterPreset = (payload) => {
 export const getProfileBundle = async (userId) => {
   const userIdWhere = userId;
 
-  const [preference, customerProfile, lastRecommendations, lastSearches, lastBrowses, user] =
-    await Promise.all([
-      prisma.userPreference.findUnique({
-        where: { userId: userIdWhere },
-      }),
-      prisma.customerProfile.findUnique({
-        where: { userId: userIdWhere },
-      }),
-      prisma.recommendationHistory.findMany({
-        where: { userId: userIdWhere },
-        orderBy: { searchDate: "desc" },
-        take: 5,
-        select: {
-          historyId: true,
-          phoneId: true,
-          personaSnapshot: true,
-          filtersJson: true,
-          overallCompatibility: true,
-          searchDate: true,
-        },
-      }),
-      prisma.searchHistory.findMany({
-        where: { userId: userIdWhere },
-        orderBy: { searchedAt: "desc" },
-        take: 20,
-        select: {
-          searchId: true,
-          searchQuery: true,
-          searchedAt: true,
-        },
-      }),
-      prisma.browsingHistory.findMany({
-        where: { userId: userIdWhere },
-        orderBy: { viewedAt: "desc" },
-        take: 20,
-        select: {
-          browsingId: true,
-          phoneLabel: true,
-          brandName: true,
-          viewedAt: true,
-        },
-      }),
-      prisma.users.findUnique({
-        where: { userId: userIdWhere },
-        select: {
-          userId: true,
-          name: true,
-          email: true,
-          phoneNo: true,
-          isActive: true,
-          isVerified: true,
-          role: { select: { roleId: true, roleName: true } },
-        },
-      }),
-    ]);
+  const [
+    preference,
+    customerProfile,
+    lastCall,
+    lastSearches,
+    lastBrowses,
+    lastComparisons,
+    user,
+  ] = await Promise.all([
+    prisma.userPreference.findUnique({
+      where: { userId: userIdWhere },
+    }),
+    prisma.customerProfile.findUnique({
+      where: { userId: userIdWhere },
+    }),
+    // Most-recent per-call snapshot — already carries the top-3 phones
+    // resolved to { phoneId, modelName, brand, rank, score }. This is
+    // a single row, so the join cost is one PK lookup.
+    prisma.recommendationCall.findFirst({
+      where: { userId: userIdWhere },
+      orderBy: { servedAt: "desc" },
+    }),
+    // Last 5 searches — the bundle used to be sliced at 20, but the
+    // admin panel only renders 5 so we tighten the read here.
+    prisma.searchHistory.findMany({
+      where: { userId: userIdWhere },
+      orderBy: { searchedAt: "desc" },
+      take: 5,
+      select: {
+        searchId: true,
+        searchQuery: true,
+        searchedAt: true,
+      },
+    }),
+    // Last 10 unique browses. The insert-time dedup in
+    // `safeRecordBrowseEvent` already keeps the rolling window at 10
+    // unique phones, but we read a wider slice and apply a last-mile
+    // dedup so legacy rows (pre-dedup duplicates) can't slip through.
+    prisma.browsingHistory.findMany({
+      where: { userId: userIdWhere },
+      orderBy: { viewedAt: "desc" },
+      take: BROWSE_HISTORY_PAST_WINDOW,
+      select: {
+        browsingId: true,
+        phoneLabel: true,
+        phoneId: true,
+        brandName: true,
+        viewedAt: true,
+      },
+    }),
+    // Last 5 comparisons. The two phoneIds in each row get resolved to
+    // { phoneId, modelName, brand } below so the admin panel can render
+    // "Brand Model vs Brand Model".
+    prisma.comparisonHistory.findMany({
+      where: { userId: userIdWhere },
+      orderBy: { comparedDate: "desc" },
+      take: 5,
+      select: {
+        comparisonId: true,
+        comparedDate: true,
+        phoneIdA: true,
+        phoneIdB: true,
+      },
+    }),
+    prisma.users.findUnique({
+      where: { userId: userIdWhere },
+      select: {
+        userId: true,
+        name: true,
+        email: true,
+        phoneNo: true,
+        isActive: true,
+        isVerified: true,
+        role: { select: { roleId: true, roleName: true } },
+      },
+    }),
+  ]);
+
+  // Resolve phoneIds for the comparisons list in one query so we
+  // don't N+1 each row.
+  const comparisonPhoneIds = Array.from(
+    new Set(
+      lastComparisons
+        .flatMap((c) => [c.phoneIdA, c.phoneIdB])
+        .filter(Boolean),
+    ),
+  );
+  const phoneLookup =
+    comparisonPhoneIds.length > 0
+      ? await prisma.phones.findMany({
+          where: { phoneId: { in: comparisonPhoneIds } },
+          select: {
+            phoneId: true,
+            modelName: true,
+            brand: { select: { name: true } },
+          },
+        })
+      : [];
+  const phoneMap = new Map(
+    phoneLookup.map((p) => [p.phoneId, p]),
+  );
+
+  // Shape the per-call recommendation snapshot. The `topResults` JSON
+  // column already carries the resolved `modelName` + `brand` per entry;
+  // we don't need to re-join Phones here.
+  const lastRecommendation = lastCall
+    ? {
+        persona: lastCall.persona || null,
+        budget: lastCall.budget || null,
+        servedAt: lastCall.servedAt,
+        topResults: Array.isArray(lastCall.topResults)
+          ? lastCall.topResults.map((r) => ({
+              phoneId: r.phoneId || null,
+              modelName: r.modelName || null,
+              brand: r.brand || null,
+              rank: Number.isFinite(Number(r.rank)) ? Number(r.rank) : null,
+              score: Number.isFinite(Number(r.score)) ? Number(r.score) : null,
+            }))
+          : [],
+      }
+    : null;
 
   return {
     user: user
@@ -255,6 +322,13 @@ export const getProfileBundle = async (userId) => {
           avgBudget: customerProfile.avgBudget
             ? Number(customerProfile.avgBudget.toString())
             : null,
+          // preferredRamGb / preferredStorageGb are populated by the
+          // profile aggregator (backend/src/workers/profileAggregatorWorker)
+          // from the user's last 25 recommendation rows. We expose
+          // them as plain integers so the FE can render "8 GB" / "128
+          // GB" without further processing.
+          preferredRamGb: customerProfile.preferredRamGb ?? null,
+          preferredStorageGb: customerProfile.preferredStorageGb ?? null,
           searchCount: customerProfile.searchCount,
           totalRecommendations: customerProfile.totalRecommendations,
           totalComparisons: customerProfile.totalComparisons,
@@ -262,29 +336,51 @@ export const getProfileBundle = async (userId) => {
           lastUpdated: customerProfile.lastUpdated,
         }
       : null,
-    lastRecommendation: {
-      persona:
-        lastRecommendations.find((r) => r.personaSnapshot)?.personaSnapshot ||
-        null,
-      budget: null, // populated on next release once we extract from filtersJson
-      servedAt: lastRecommendations[0]?.searchDate || null,
-      topResults: lastRecommendations.map((r) => ({
-        phoneId: r.phoneId,
-        overallCompatibility: r.overallCompatibility
-          ? Number(r.overallCompatibility.toString())
-          : null,
-        searchDate: r.searchDate,
-      })),
-    },
+    lastRecommendation,
     lastSearches: lastSearches.map((s) => ({
       searchQuery: s.searchQuery,
       searchedAt: s.searchedAt,
     })),
-    lastBrowses: lastBrowses.map((b) => ({
-      phoneLabel: b.phoneLabel,
-      brandName: b.brandName,
-      viewedAt: b.viewedAt,
-    })),
+    lastBrowses: (() => {
+      // Final-mile dedup: key on phoneId when present, fall back to
+      // lower-cased phoneLabel. The list is already sorted viewedAt
+      // DESC, so the first occurrence is the most recent — preserve
+      // the most-recent timestamp too.
+      const seen = new Set();
+      const out = [];
+      for (const b of lastBrowses) {
+        const key =
+          (b.phoneId && b.phoneId) ||
+          (b.phoneLabel && b.phoneLabel.toLowerCase()) ||
+          b.browsingId;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push({
+          phoneLabel: b.phoneLabel,
+          brandName: b.brandName,
+          viewedAt: b.viewedAt,
+        });
+        if (out.length === BROWSE_HISTORY_LIMIT) break;
+      }
+      return out;
+    })(),
+    lastComparisons: lastComparisons.map((c) => {
+      const a = phoneMap.get(c.phoneIdA);
+      const b = phoneMap.get(c.phoneIdB);
+      return {
+        comparedDate: c.comparedDate,
+        phoneA: {
+          phoneId: c.phoneIdA,
+          modelName: a?.modelName || null,
+          brand: a?.brand?.name || null,
+        },
+        phoneB: {
+          phoneId: c.phoneIdB,
+          modelName: b?.modelName || null,
+          brand: b?.brand?.name || null,
+        },
+      };
+    }),
   };
 };
 
@@ -537,27 +633,171 @@ export const safeRecordSearchEvent = async (userId, { searchQuery = null, filter
   });
 };
 
+// How many unique phones we keep in BrowsingHistory per user. The
+// latest 10 phones the user touched is the only "long-tail" signal we
+// surface — anything older is never displayed and never feeds scoring,
+// so we trim it as a rolling cap. We read slightly more (PAST_WINDOW)
+// so a duplicate check can see the full rolling window.
+const BROWSE_HISTORY_LIMIT = 10;
+const BROWSE_HISTORY_PAST_WINDOW = 30;
+
+// Decide whether a new (userId, phoneLabel / phoneId) browse event is
+// a duplicate of one already in the user's rolling window. We dedup on
+// `phoneLabel` when both this and the most recent row have a non-empty
+// label, and fall back to `phoneId` when the label is missing (the
+// legacy "Brand · Model" label is the human-readable fingerprint the
+// admin sees, so that's the right key for the dedup).
+//
+// Returns true if the resulting row would re-track a phoneId already
+// in the last `BROWSE_HISTORY_LIMIT` unique phones — the caller uses
+// that to skip both the BrowsingHistory insert AND the Step B
+// BehaviorScore bump.
+async function isDuplicateBrowse(userId, phoneLabel, phoneId) {
+  if (!userId) return true;
+  const lookupLabel =
+    typeof phoneLabel === "string" && phoneLabel.trim().length > 0
+      ? phoneLabel.trim().toLowerCase()
+      : null;
+  const lookupId =
+    typeof phoneId === "string" && phoneId.length > 0 ? phoneId : null;
+
+  // No usable key at all (no label + no phoneId) — let the row through
+  // so we don't accidentally drop a real event. The legacy callers
+  // always supply a phoneLabel, so this is just defence-in-depth.
+  if (!lookupLabel && !lookupId) return false;
+
+  try {
+    const recent = await prisma.browsingHistory.findMany({
+      where: { userId },
+      orderBy: { viewedAt: "desc" },
+      take: BROWSE_HISTORY_PAST_WINDOW,
+      select: { phoneLabel: true, phoneId: true },
+    });
+    if (!recent || recent.length === 0) return false;
+    for (const row of recent) {
+      if (lookupId && row.phoneId && row.phoneId === lookupId) return true;
+      if (
+        lookupLabel &&
+        row.phoneLabel &&
+        row.phoneLabel.toLowerCase() === lookupLabel
+      ) {
+        return true;
+      }
+    }
+    return false;
+  } catch (err) {
+    // On a read failure we err toward *not* dedup'd so the event still
+    // records. The worst case is one extra row, not lost data.
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "[profile] isDuplicateBrowse read failed:",
+        err?.message || err,
+      );
+    } else {
+      console.warn("[profile] isDuplicateBrowse read failed:", err);
+    }
+    return false;
+  }
+}
+
+// After a successful insert, prune the user's BrowsingHistory back to
+// the last `BROWSE_HISTORY_LIMIT` *unique* phones. We dedup by the same
+// key (phoneLabel first, phoneId as fallback) so a row that somehow
+// slipped through the insert-time check still gets the rolling cap.
+async function pruneBrowsingHistoryToLimit(userId) {
+  if (!userId) return;
+  try {
+    const rows = await prisma.browsingHistory.findMany({
+      where: { userId },
+      orderBy: { viewedAt: "desc" },
+      take: BROWSE_HISTORY_PAST_WINDOW * 2,
+      select: { browsingId: true, phoneLabel: true, phoneId: true, viewedAt: true },
+    });
+    if (!rows || rows.length <= BROWSE_HISTORY_LIMIT) return;
+
+    const seen = new Set();
+    const survivors = [];
+    for (const row of rows) {
+      const key =
+        (row.phoneLabel && row.phoneLabel.toLowerCase()) ||
+        row.phoneId ||
+        row.browsingId;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      survivors.push(row.browsingId);
+      if (survivors.length === BROWSE_HISTORY_LIMIT) break;
+    }
+
+    // Anything we didn't keep is prune-eligible. Keep all rows we
+    // walked past (which include the 10 unique), delete the rest.
+    const keepIds = new Set(survivors);
+    const purgeIds = rows
+      .filter((r) => !keepIds.has(r.browsingId))
+      .map((r) => r.browsingId);
+
+    if (purgeIds.length > 0) {
+      await prisma.browsingHistory.deleteMany({
+        where: { browsingId: { in: purgeIds } },
+      });
+    }
+  } catch (err) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "[profile] pruneBrowsingHistoryToLimit failed:",
+        err?.message || err,
+      );
+    } else {
+      console.warn("[profile] pruneBrowsingHistoryToLimit failed:", err);
+    }
+  }
+}
+
 // Record a "viewed a phone detail page" event. `BrowsingHistory` stores
 // the human-readable label only — no FK to Phones by design (the schema
 // comment preserves that intent). Skip if the label is missing.
+//
+// Dedup contract (per the user's brief): "if i clicked a phone that is
+// in recent 10 then don't update score and track or shows in profile."
+// We treat the last 10 unique phones as a rolling window. A new browse
+// for any phone already in that window is dropped — no
+// BrowsingHistory row, no Step B BehaviorScore bump. New unique phones
+// pass through, then the table is pruned so the rolling window stays
+// at exactly 10 unique entries.
 export const safeRecordBrowseEvent = async (
   userId,
   { phoneLabel, brandName, phoneId },
 ) => {
   if (!userId) return;
   if (typeof phoneLabel !== "string" || phoneLabel.trim().length === 0) return;
+  const cleanLabel = phoneLabel.trim().slice(0, 200);
+  const cleanBrand =
+    typeof brandName === "string" && brandName.trim().length > 0
+      ? brandName.trim().slice(0, 60)
+      : null;
+  const cleanPhoneId = typeof phoneId === "string" ? phoneId : null;
+
+  // 1. Dedup gate — checked before both the BrowsingHistory insert and
+  //    the BehaviorScore bump so a re-click of an already-tracked phone
+  //    is a true no-op.
+  const isDup = await isDuplicateBrowse(userId, cleanLabel, cleanPhoneId);
+  if (isDup) {
+    return; // explicitly skip — neither row nor score update
+  }
+
   try {
     await prisma.browsingHistory.create({
       data: {
         userId,
-        phoneLabel: phoneLabel.slice(0, 200),
-        brandName:
-          typeof brandName === "string" && brandName.trim().length > 0
-            ? brandName.trim().slice(0, 60)
-            : null,
+        phoneLabel: cleanLabel,
+        brandName: cleanBrand,
+        phoneId: cleanPhoneId,
         viewedAt: new Date(),
       },
     });
+    // Trim the rolling window after a successful insert so the table
+    // never grows beyond 10 unique phones. Best-effort: a pruning
+    // failure doesn't unwind the insert.
+    await pruneBrowsingHistoryToLimit(userId);
   } catch (err) {
     if (process.env.NODE_ENV === "production") {
       console.warn("[profile] recordBrowseEvent failed:", err?.message || err);
@@ -567,17 +807,16 @@ export const safeRecordBrowseEvent = async (
   }
 
   // Step B — also write the view into the unified event log so the brand
-  // / tier BehaviorScores accumulate. `phoneId` is optional (callers that
-  // don't have it pass nothing); the analyzer falls back to no phoneId
+  // / tier BehaviorScores accumulate. We only reach here when the
+  // browse wasn't a duplicate, so the score bump is consistent with the
+  // new BrowsingHistory row. `phoneId` is optional (callers that don't
+  // have it pass nothing); the analyzer falls back to no phoneId
   // metadata lookup and skips the phone-derived tags.
   await safeRecordBehaviorEvent(userId, "view", {
-    phoneId: typeof phoneId === "string" ? phoneId : null,
+    phoneId: cleanPhoneId,
     payload: {
-      phoneLabel: phoneLabel.slice(0, 200),
-      brandName:
-        typeof brandName === "string" && brandName.trim().length > 0
-          ? brandName.trim().slice(0, 60)
-          : null,
+      phoneLabel: cleanLabel,
+      brandName: cleanBrand,
     },
   });
 };
@@ -658,6 +897,11 @@ export const safeRecordRecommendationEvent = async (
       count: results.length,
     },
   });
+
+  // Re-derive techTier / preferredRamGb / preferredStorageGb from the
+  // user's last 25 recommendation rows. Fire-and-forget; the
+  // aggregator self-throttles and is cheap when there is nothing to do.
+  await safeAggregateAfterRecommendation(userId);
 };
 
 // Record a compare-ML event. Same FK constraint as RecommendationHistory:
@@ -814,6 +1058,65 @@ export const safeRecordRecommendationLog = async (userId, rowOrRows) => {
       );
     } else {
       console.error("[profile] recordRecommendationLog failed:", err);
+    }
+  }
+};
+
+// ---------------------------------------------------------------------------
+// RecommendationCall — one row per *recommendation call* (not per phone)
+//
+// Stores the per-call top-3 phones (resolved to `Brand · Model` already)
+// so the admin "Last recommendation → Top results" panel can render
+// human-readable names without fanning out the per-phone
+// RecommendationHistory table. The JSON `topResults` shape is:
+//   [{ phoneId, modelName, brand, rank, score }]
+//
+// Only the top 3 by match score are kept — the rest is intentionally
+// discarded, this is a "what did the user last see" snapshot, not an
+// analytics log. RecommendationHistory / RecommendationLog remain the
+// per-phone truth.
+//
+// Fire-and-forget: a write failure must never break the recommendation
+// response the user already received.
+// ---------------------------------------------------------------------------
+
+const TOP_RESULTS_LIMIT = 3;
+
+export const safeRecordRecommendationCall = async (
+  userId,
+  { persona, budget, results },
+) => {
+  if (!userId || !Array.isArray(results) || results.length === 0) return;
+  try {
+    const topResults = results
+      .slice()
+      .sort((a, b) => (Number(b.matchScore) || 0) - (Number(a.matchScore) || 0))
+      .slice(0, TOP_RESULTS_LIMIT)
+      .map((r, i) => ({
+        phoneId: r.id || null,
+        modelName: r.modelName || null,
+        brand: r.brand && r.brand.name ? r.brand.name : null,
+        rank: i + 1,
+        score: Number.isFinite(Number(r.matchScore)) ? Number(r.matchScore) : null,
+      }));
+
+    await prisma.recommendationCall.create({
+      data: {
+        userId,
+        persona: typeof persona === "string" ? persona.slice(0, 60) : null,
+        budget: budget && typeof budget === "object" ? budget : undefined,
+        topResults,
+        servedAt: new Date(),
+      },
+    });
+  } catch (err) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "[profile] recordRecommendationCall failed:",
+        err?.message || err,
+      );
+    } else {
+      console.error("[profile] recordRecommendationCall failed:", err);
     }
   }
 };

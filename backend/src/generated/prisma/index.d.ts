@@ -74,6 +74,11 @@ export type RecommendationHistory = $Result.DefaultSelection<Prisma.$Recommendat
  */
 export type RecommendationLog = $Result.DefaultSelection<Prisma.$RecommendationLogPayload>
 /**
+ * Model RecommendationCall
+ * 
+ */
+export type RecommendationCall = $Result.DefaultSelection<Prisma.$RecommendationCallPayload>
+/**
  * Model CustomerProfile
  * 
  */
@@ -447,6 +452,16 @@ export class PrismaClient<
     * ```
     */
   get recommendationLog(): Prisma.RecommendationLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.recommendationCall`: Exposes CRUD operations for the **RecommendationCall** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RecommendationCalls
+    * const recommendationCalls = await prisma.recommendationCall.findMany()
+    * ```
+    */
+  get recommendationCall(): Prisma.RecommendationCallDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.customerProfile`: Exposes CRUD operations for the **CustomerProfile** model.
@@ -983,6 +998,7 @@ export namespace Prisma {
     UserPreference: 'UserPreference',
     RecommendationHistory: 'RecommendationHistory',
     RecommendationLog: 'RecommendationLog',
+    RecommendationCall: 'RecommendationCall',
     CustomerProfile: 'CustomerProfile',
     Wishlist: 'Wishlist',
     ComparisonHistory: 'ComparisonHistory',
@@ -1007,7 +1023,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "recommendationLog" | "customerProfile" | "wishlist" | "comparisonHistory" | "paymentHistory" | "searchHistory" | "browsingHistory" | "adminStatsCache" | "event" | "behaviorScore"
+      modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "recommendationLog" | "recommendationCall" | "customerProfile" | "wishlist" | "comparisonHistory" | "paymentHistory" | "searchHistory" | "browsingHistory" | "adminStatsCache" | "event" | "behaviorScore"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1899,6 +1915,80 @@ export namespace Prisma {
           }
         }
       }
+      RecommendationCall: {
+        payload: Prisma.$RecommendationCallPayload<ExtArgs>
+        fields: Prisma.RecommendationCallFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RecommendationCallFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RecommendationCallFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload>
+          }
+          findFirst: {
+            args: Prisma.RecommendationCallFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RecommendationCallFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload>
+          }
+          findMany: {
+            args: Prisma.RecommendationCallFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload>[]
+          }
+          create: {
+            args: Prisma.RecommendationCallCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload>
+          }
+          createMany: {
+            args: Prisma.RecommendationCallCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RecommendationCallCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload>[]
+          }
+          delete: {
+            args: Prisma.RecommendationCallDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload>
+          }
+          update: {
+            args: Prisma.RecommendationCallUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload>
+          }
+          deleteMany: {
+            args: Prisma.RecommendationCallDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RecommendationCallUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RecommendationCallUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload>[]
+          }
+          upsert: {
+            args: Prisma.RecommendationCallUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecommendationCallPayload>
+          }
+          aggregate: {
+            args: Prisma.RecommendationCallAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRecommendationCall>
+          }
+          groupBy: {
+            args: Prisma.RecommendationCallGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RecommendationCallGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RecommendationCallCountArgs<ExtArgs>
+            result: $Utils.Optional<RecommendationCallCountAggregateOutputType> | number
+          }
+        }
+      }
       CustomerProfile: {
         payload: Prisma.$CustomerProfilePayload<ExtArgs>
         fields: Prisma.CustomerProfileFieldRefs
@@ -2685,6 +2775,7 @@ export namespace Prisma {
     userPreference?: UserPreferenceOmit
     recommendationHistory?: RecommendationHistoryOmit
     recommendationLog?: RecommendationLogOmit
+    recommendationCall?: RecommendationCallOmit
     customerProfile?: CustomerProfileOmit
     wishlist?: WishlistOmit
     comparisonHistory?: ComparisonHistoryOmit
@@ -2815,6 +2906,7 @@ export namespace Prisma {
     events: number
     behaviorScores: number
     recommendationLogs: number
+    recommendationCalls: number
   }
 
   export type UsersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2828,6 +2920,7 @@ export namespace Prisma {
     events?: boolean | UsersCountOutputTypeCountEventsArgs
     behaviorScores?: boolean | UsersCountOutputTypeCountBehaviorScoresArgs
     recommendationLogs?: boolean | UsersCountOutputTypeCountRecommendationLogsArgs
+    recommendationCalls?: boolean | UsersCountOutputTypeCountRecommendationCallsArgs
   }
 
   // Custom InputTypes
@@ -2909,6 +3002,13 @@ export namespace Prisma {
    */
   export type UsersCountOutputTypeCountRecommendationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RecommendationLogWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountRecommendationCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecommendationCallWhereInput
   }
 
 
@@ -4297,6 +4397,7 @@ export namespace Prisma {
     events?: boolean | Users$eventsArgs<ExtArgs>
     behaviorScores?: boolean | Users$behaviorScoresArgs<ExtArgs>
     recommendationLogs?: boolean | Users$recommendationLogsArgs<ExtArgs>
+    recommendationCalls?: boolean | Users$recommendationCallsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
 
@@ -4351,6 +4452,7 @@ export namespace Prisma {
     events?: boolean | Users$eventsArgs<ExtArgs>
     behaviorScores?: boolean | Users$behaviorScoresArgs<ExtArgs>
     recommendationLogs?: boolean | Users$recommendationLogsArgs<ExtArgs>
+    recommendationCalls?: boolean | Users$recommendationCallsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UsersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4377,6 +4479,7 @@ export namespace Prisma {
       events: Prisma.$EventPayload<ExtArgs>[]
       behaviorScores: Prisma.$BehaviorScorePayload<ExtArgs>[]
       recommendationLogs: Prisma.$RecommendationLogPayload<ExtArgs>[]
+      recommendationCalls: Prisma.$RecommendationCallPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       name: string
@@ -4795,6 +4898,7 @@ export namespace Prisma {
     events<T extends Users$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Users$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     behaviorScores<T extends Users$behaviorScoresArgs<ExtArgs> = {}>(args?: Subset<T, Users$behaviorScoresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     recommendationLogs<T extends Users$recommendationLogsArgs<ExtArgs> = {}>(args?: Subset<T, Users$recommendationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    recommendationCalls<T extends Users$recommendationCallsArgs<ExtArgs> = {}>(args?: Subset<T, Users$recommendationCallsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5546,6 +5650,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RecommendationLogScalarFieldEnum | RecommendationLogScalarFieldEnum[]
+  }
+
+  /**
+   * Users.recommendationCalls
+   */
+  export type Users$recommendationCallsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+    where?: RecommendationCallWhereInput
+    orderBy?: RecommendationCallOrderByWithRelationInput | RecommendationCallOrderByWithRelationInput[]
+    cursor?: RecommendationCallWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RecommendationCallScalarFieldEnum | RecommendationCallScalarFieldEnum[]
   }
 
   /**
@@ -17825,6 +17953,1074 @@ export namespace Prisma {
 
 
   /**
+   * Model RecommendationCall
+   */
+
+  export type AggregateRecommendationCall = {
+    _count: RecommendationCallCountAggregateOutputType | null
+    _min: RecommendationCallMinAggregateOutputType | null
+    _max: RecommendationCallMaxAggregateOutputType | null
+  }
+
+  export type RecommendationCallMinAggregateOutputType = {
+    callId: string | null
+    userId: string | null
+    persona: string | null
+    servedAt: Date | null
+  }
+
+  export type RecommendationCallMaxAggregateOutputType = {
+    callId: string | null
+    userId: string | null
+    persona: string | null
+    servedAt: Date | null
+  }
+
+  export type RecommendationCallCountAggregateOutputType = {
+    callId: number
+    userId: number
+    persona: number
+    budget: number
+    topResults: number
+    servedAt: number
+    _all: number
+  }
+
+
+  export type RecommendationCallMinAggregateInputType = {
+    callId?: true
+    userId?: true
+    persona?: true
+    servedAt?: true
+  }
+
+  export type RecommendationCallMaxAggregateInputType = {
+    callId?: true
+    userId?: true
+    persona?: true
+    servedAt?: true
+  }
+
+  export type RecommendationCallCountAggregateInputType = {
+    callId?: true
+    userId?: true
+    persona?: true
+    budget?: true
+    topResults?: true
+    servedAt?: true
+    _all?: true
+  }
+
+  export type RecommendationCallAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RecommendationCall to aggregate.
+     */
+    where?: RecommendationCallWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecommendationCalls to fetch.
+     */
+    orderBy?: RecommendationCallOrderByWithRelationInput | RecommendationCallOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RecommendationCallWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecommendationCalls from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecommendationCalls.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RecommendationCalls
+    **/
+    _count?: true | RecommendationCallCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RecommendationCallMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RecommendationCallMaxAggregateInputType
+  }
+
+  export type GetRecommendationCallAggregateType<T extends RecommendationCallAggregateArgs> = {
+        [P in keyof T & keyof AggregateRecommendationCall]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRecommendationCall[P]>
+      : GetScalarType<T[P], AggregateRecommendationCall[P]>
+  }
+
+
+
+
+  export type RecommendationCallGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecommendationCallWhereInput
+    orderBy?: RecommendationCallOrderByWithAggregationInput | RecommendationCallOrderByWithAggregationInput[]
+    by: RecommendationCallScalarFieldEnum[] | RecommendationCallScalarFieldEnum
+    having?: RecommendationCallScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RecommendationCallCountAggregateInputType | true
+    _min?: RecommendationCallMinAggregateInputType
+    _max?: RecommendationCallMaxAggregateInputType
+  }
+
+  export type RecommendationCallGroupByOutputType = {
+    callId: string
+    userId: string
+    persona: string | null
+    budget: JsonValue | null
+    topResults: JsonValue | null
+    servedAt: Date
+    _count: RecommendationCallCountAggregateOutputType | null
+    _min: RecommendationCallMinAggregateOutputType | null
+    _max: RecommendationCallMaxAggregateOutputType | null
+  }
+
+  type GetRecommendationCallGroupByPayload<T extends RecommendationCallGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RecommendationCallGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RecommendationCallGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RecommendationCallGroupByOutputType[P]>
+            : GetScalarType<T[P], RecommendationCallGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RecommendationCallSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    callId?: boolean
+    userId?: boolean
+    persona?: boolean
+    budget?: boolean
+    topResults?: boolean
+    servedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recommendationCall"]>
+
+  export type RecommendationCallSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    callId?: boolean
+    userId?: boolean
+    persona?: boolean
+    budget?: boolean
+    topResults?: boolean
+    servedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recommendationCall"]>
+
+  export type RecommendationCallSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    callId?: boolean
+    userId?: boolean
+    persona?: boolean
+    budget?: boolean
+    topResults?: boolean
+    servedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recommendationCall"]>
+
+  export type RecommendationCallSelectScalar = {
+    callId?: boolean
+    userId?: boolean
+    persona?: boolean
+    budget?: boolean
+    topResults?: boolean
+    servedAt?: boolean
+  }
+
+  export type RecommendationCallOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"callId" | "userId" | "persona" | "budget" | "topResults" | "servedAt", ExtArgs["result"]["recommendationCall"]>
+  export type RecommendationCallInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type RecommendationCallIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type RecommendationCallIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+
+  export type $RecommendationCallPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RecommendationCall"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      callId: string
+      userId: string
+      persona: string | null
+      budget: Prisma.JsonValue | null
+      topResults: Prisma.JsonValue | null
+      servedAt: Date
+    }, ExtArgs["result"]["recommendationCall"]>
+    composites: {}
+  }
+
+  type RecommendationCallGetPayload<S extends boolean | null | undefined | RecommendationCallDefaultArgs> = $Result.GetResult<Prisma.$RecommendationCallPayload, S>
+
+  type RecommendationCallCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RecommendationCallFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RecommendationCallCountAggregateInputType | true
+    }
+
+  export interface RecommendationCallDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RecommendationCall'], meta: { name: 'RecommendationCall' } }
+    /**
+     * Find zero or one RecommendationCall that matches the filter.
+     * @param {RecommendationCallFindUniqueArgs} args - Arguments to find a RecommendationCall
+     * @example
+     * // Get one RecommendationCall
+     * const recommendationCall = await prisma.recommendationCall.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RecommendationCallFindUniqueArgs>(args: SelectSubset<T, RecommendationCallFindUniqueArgs<ExtArgs>>): Prisma__RecommendationCallClient<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RecommendationCall that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RecommendationCallFindUniqueOrThrowArgs} args - Arguments to find a RecommendationCall
+     * @example
+     * // Get one RecommendationCall
+     * const recommendationCall = await prisma.recommendationCall.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RecommendationCallFindUniqueOrThrowArgs>(args: SelectSubset<T, RecommendationCallFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RecommendationCallClient<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RecommendationCall that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationCallFindFirstArgs} args - Arguments to find a RecommendationCall
+     * @example
+     * // Get one RecommendationCall
+     * const recommendationCall = await prisma.recommendationCall.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RecommendationCallFindFirstArgs>(args?: SelectSubset<T, RecommendationCallFindFirstArgs<ExtArgs>>): Prisma__RecommendationCallClient<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RecommendationCall that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationCallFindFirstOrThrowArgs} args - Arguments to find a RecommendationCall
+     * @example
+     * // Get one RecommendationCall
+     * const recommendationCall = await prisma.recommendationCall.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RecommendationCallFindFirstOrThrowArgs>(args?: SelectSubset<T, RecommendationCallFindFirstOrThrowArgs<ExtArgs>>): Prisma__RecommendationCallClient<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RecommendationCalls that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationCallFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RecommendationCalls
+     * const recommendationCalls = await prisma.recommendationCall.findMany()
+     * 
+     * // Get first 10 RecommendationCalls
+     * const recommendationCalls = await prisma.recommendationCall.findMany({ take: 10 })
+     * 
+     * // Only select the `callId`
+     * const recommendationCallWithCallIdOnly = await prisma.recommendationCall.findMany({ select: { callId: true } })
+     * 
+     */
+    findMany<T extends RecommendationCallFindManyArgs>(args?: SelectSubset<T, RecommendationCallFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RecommendationCall.
+     * @param {RecommendationCallCreateArgs} args - Arguments to create a RecommendationCall.
+     * @example
+     * // Create one RecommendationCall
+     * const RecommendationCall = await prisma.recommendationCall.create({
+     *   data: {
+     *     // ... data to create a RecommendationCall
+     *   }
+     * })
+     * 
+     */
+    create<T extends RecommendationCallCreateArgs>(args: SelectSubset<T, RecommendationCallCreateArgs<ExtArgs>>): Prisma__RecommendationCallClient<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RecommendationCalls.
+     * @param {RecommendationCallCreateManyArgs} args - Arguments to create many RecommendationCalls.
+     * @example
+     * // Create many RecommendationCalls
+     * const recommendationCall = await prisma.recommendationCall.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RecommendationCallCreateManyArgs>(args?: SelectSubset<T, RecommendationCallCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RecommendationCalls and returns the data saved in the database.
+     * @param {RecommendationCallCreateManyAndReturnArgs} args - Arguments to create many RecommendationCalls.
+     * @example
+     * // Create many RecommendationCalls
+     * const recommendationCall = await prisma.recommendationCall.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RecommendationCalls and only return the `callId`
+     * const recommendationCallWithCallIdOnly = await prisma.recommendationCall.createManyAndReturn({
+     *   select: { callId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RecommendationCallCreateManyAndReturnArgs>(args?: SelectSubset<T, RecommendationCallCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RecommendationCall.
+     * @param {RecommendationCallDeleteArgs} args - Arguments to delete one RecommendationCall.
+     * @example
+     * // Delete one RecommendationCall
+     * const RecommendationCall = await prisma.recommendationCall.delete({
+     *   where: {
+     *     // ... filter to delete one RecommendationCall
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RecommendationCallDeleteArgs>(args: SelectSubset<T, RecommendationCallDeleteArgs<ExtArgs>>): Prisma__RecommendationCallClient<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RecommendationCall.
+     * @param {RecommendationCallUpdateArgs} args - Arguments to update one RecommendationCall.
+     * @example
+     * // Update one RecommendationCall
+     * const recommendationCall = await prisma.recommendationCall.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RecommendationCallUpdateArgs>(args: SelectSubset<T, RecommendationCallUpdateArgs<ExtArgs>>): Prisma__RecommendationCallClient<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RecommendationCalls.
+     * @param {RecommendationCallDeleteManyArgs} args - Arguments to filter RecommendationCalls to delete.
+     * @example
+     * // Delete a few RecommendationCalls
+     * const { count } = await prisma.recommendationCall.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RecommendationCallDeleteManyArgs>(args?: SelectSubset<T, RecommendationCallDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RecommendationCalls.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationCallUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RecommendationCalls
+     * const recommendationCall = await prisma.recommendationCall.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RecommendationCallUpdateManyArgs>(args: SelectSubset<T, RecommendationCallUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RecommendationCalls and returns the data updated in the database.
+     * @param {RecommendationCallUpdateManyAndReturnArgs} args - Arguments to update many RecommendationCalls.
+     * @example
+     * // Update many RecommendationCalls
+     * const recommendationCall = await prisma.recommendationCall.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RecommendationCalls and only return the `callId`
+     * const recommendationCallWithCallIdOnly = await prisma.recommendationCall.updateManyAndReturn({
+     *   select: { callId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RecommendationCallUpdateManyAndReturnArgs>(args: SelectSubset<T, RecommendationCallUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RecommendationCall.
+     * @param {RecommendationCallUpsertArgs} args - Arguments to update or create a RecommendationCall.
+     * @example
+     * // Update or create a RecommendationCall
+     * const recommendationCall = await prisma.recommendationCall.upsert({
+     *   create: {
+     *     // ... data to create a RecommendationCall
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RecommendationCall we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RecommendationCallUpsertArgs>(args: SelectSubset<T, RecommendationCallUpsertArgs<ExtArgs>>): Prisma__RecommendationCallClient<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RecommendationCalls.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationCallCountArgs} args - Arguments to filter RecommendationCalls to count.
+     * @example
+     * // Count the number of RecommendationCalls
+     * const count = await prisma.recommendationCall.count({
+     *   where: {
+     *     // ... the filter for the RecommendationCalls we want to count
+     *   }
+     * })
+    **/
+    count<T extends RecommendationCallCountArgs>(
+      args?: Subset<T, RecommendationCallCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RecommendationCallCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RecommendationCall.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationCallAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RecommendationCallAggregateArgs>(args: Subset<T, RecommendationCallAggregateArgs>): Prisma.PrismaPromise<GetRecommendationCallAggregateType<T>>
+
+    /**
+     * Group by RecommendationCall.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecommendationCallGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RecommendationCallGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RecommendationCallGroupByArgs['orderBy'] }
+        : { orderBy?: RecommendationCallGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RecommendationCallGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRecommendationCallGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RecommendationCall model
+   */
+  readonly fields: RecommendationCallFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RecommendationCall.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RecommendationCallClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RecommendationCall model
+   */
+  interface RecommendationCallFieldRefs {
+    readonly callId: FieldRef<"RecommendationCall", 'String'>
+    readonly userId: FieldRef<"RecommendationCall", 'String'>
+    readonly persona: FieldRef<"RecommendationCall", 'String'>
+    readonly budget: FieldRef<"RecommendationCall", 'Json'>
+    readonly topResults: FieldRef<"RecommendationCall", 'Json'>
+    readonly servedAt: FieldRef<"RecommendationCall", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RecommendationCall findUnique
+   */
+  export type RecommendationCallFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+    /**
+     * Filter, which RecommendationCall to fetch.
+     */
+    where: RecommendationCallWhereUniqueInput
+  }
+
+  /**
+   * RecommendationCall findUniqueOrThrow
+   */
+  export type RecommendationCallFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+    /**
+     * Filter, which RecommendationCall to fetch.
+     */
+    where: RecommendationCallWhereUniqueInput
+  }
+
+  /**
+   * RecommendationCall findFirst
+   */
+  export type RecommendationCallFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+    /**
+     * Filter, which RecommendationCall to fetch.
+     */
+    where?: RecommendationCallWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecommendationCalls to fetch.
+     */
+    orderBy?: RecommendationCallOrderByWithRelationInput | RecommendationCallOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RecommendationCalls.
+     */
+    cursor?: RecommendationCallWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecommendationCalls from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecommendationCalls.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RecommendationCalls.
+     */
+    distinct?: RecommendationCallScalarFieldEnum | RecommendationCallScalarFieldEnum[]
+  }
+
+  /**
+   * RecommendationCall findFirstOrThrow
+   */
+  export type RecommendationCallFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+    /**
+     * Filter, which RecommendationCall to fetch.
+     */
+    where?: RecommendationCallWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecommendationCalls to fetch.
+     */
+    orderBy?: RecommendationCallOrderByWithRelationInput | RecommendationCallOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RecommendationCalls.
+     */
+    cursor?: RecommendationCallWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecommendationCalls from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecommendationCalls.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RecommendationCalls.
+     */
+    distinct?: RecommendationCallScalarFieldEnum | RecommendationCallScalarFieldEnum[]
+  }
+
+  /**
+   * RecommendationCall findMany
+   */
+  export type RecommendationCallFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+    /**
+     * Filter, which RecommendationCalls to fetch.
+     */
+    where?: RecommendationCallWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecommendationCalls to fetch.
+     */
+    orderBy?: RecommendationCallOrderByWithRelationInput | RecommendationCallOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RecommendationCalls.
+     */
+    cursor?: RecommendationCallWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecommendationCalls from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecommendationCalls.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RecommendationCalls.
+     */
+    distinct?: RecommendationCallScalarFieldEnum | RecommendationCallScalarFieldEnum[]
+  }
+
+  /**
+   * RecommendationCall create
+   */
+  export type RecommendationCallCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RecommendationCall.
+     */
+    data: XOR<RecommendationCallCreateInput, RecommendationCallUncheckedCreateInput>
+  }
+
+  /**
+   * RecommendationCall createMany
+   */
+  export type RecommendationCallCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RecommendationCalls.
+     */
+    data: RecommendationCallCreateManyInput | RecommendationCallCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RecommendationCall createManyAndReturn
+   */
+  export type RecommendationCallCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * The data used to create many RecommendationCalls.
+     */
+    data: RecommendationCallCreateManyInput | RecommendationCallCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RecommendationCall update
+   */
+  export type RecommendationCallUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RecommendationCall.
+     */
+    data: XOR<RecommendationCallUpdateInput, RecommendationCallUncheckedUpdateInput>
+    /**
+     * Choose, which RecommendationCall to update.
+     */
+    where: RecommendationCallWhereUniqueInput
+  }
+
+  /**
+   * RecommendationCall updateMany
+   */
+  export type RecommendationCallUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RecommendationCalls.
+     */
+    data: XOR<RecommendationCallUpdateManyMutationInput, RecommendationCallUncheckedUpdateManyInput>
+    /**
+     * Filter which RecommendationCalls to update
+     */
+    where?: RecommendationCallWhereInput
+    /**
+     * Limit how many RecommendationCalls to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RecommendationCall updateManyAndReturn
+   */
+  export type RecommendationCallUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * The data used to update RecommendationCalls.
+     */
+    data: XOR<RecommendationCallUpdateManyMutationInput, RecommendationCallUncheckedUpdateManyInput>
+    /**
+     * Filter which RecommendationCalls to update
+     */
+    where?: RecommendationCallWhereInput
+    /**
+     * Limit how many RecommendationCalls to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RecommendationCall upsert
+   */
+  export type RecommendationCallUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RecommendationCall to update in case it exists.
+     */
+    where: RecommendationCallWhereUniqueInput
+    /**
+     * In case the RecommendationCall found by the `where` argument doesn't exist, create a new RecommendationCall with this data.
+     */
+    create: XOR<RecommendationCallCreateInput, RecommendationCallUncheckedCreateInput>
+    /**
+     * In case the RecommendationCall was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RecommendationCallUpdateInput, RecommendationCallUncheckedUpdateInput>
+  }
+
+  /**
+   * RecommendationCall delete
+   */
+  export type RecommendationCallDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+    /**
+     * Filter which RecommendationCall to delete.
+     */
+    where: RecommendationCallWhereUniqueInput
+  }
+
+  /**
+   * RecommendationCall deleteMany
+   */
+  export type RecommendationCallDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RecommendationCalls to delete
+     */
+    where?: RecommendationCallWhereInput
+    /**
+     * Limit how many RecommendationCalls to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RecommendationCall without action
+   */
+  export type RecommendationCallDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecommendationCall
+     */
+    select?: RecommendationCallSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecommendationCall
+     */
+    omit?: RecommendationCallOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecommendationCallInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model CustomerProfile
    */
 
@@ -17889,6 +19085,7 @@ export namespace Prisma {
     totalComparisons: number | null
     totalWishlist: number | null
     lastUpdated: Date | null
+    lastAggregatedAt: Date | null
   }
 
   export type CustomerProfileMaxAggregateOutputType = {
@@ -17914,6 +19111,7 @@ export namespace Prisma {
     totalComparisons: number | null
     totalWishlist: number | null
     lastUpdated: Date | null
+    lastAggregatedAt: Date | null
   }
 
   export type CustomerProfileCountAggregateOutputType = {
@@ -17939,6 +19137,7 @@ export namespace Prisma {
     totalComparisons: number
     totalWishlist: number
     lastUpdated: number
+    lastAggregatedAt: number
     _all: number
   }
 
@@ -17996,6 +19195,7 @@ export namespace Prisma {
     totalComparisons?: true
     totalWishlist?: true
     lastUpdated?: true
+    lastAggregatedAt?: true
   }
 
   export type CustomerProfileMaxAggregateInputType = {
@@ -18021,6 +19221,7 @@ export namespace Prisma {
     totalComparisons?: true
     totalWishlist?: true
     lastUpdated?: true
+    lastAggregatedAt?: true
   }
 
   export type CustomerProfileCountAggregateInputType = {
@@ -18046,6 +19247,7 @@ export namespace Prisma {
     totalComparisons?: true
     totalWishlist?: true
     lastUpdated?: true
+    lastAggregatedAt?: true
     _all?: true
   }
 
@@ -18158,6 +19360,7 @@ export namespace Prisma {
     totalComparisons: number
     totalWishlist: number
     lastUpdated: Date
+    lastAggregatedAt: Date | null
     _count: CustomerProfileCountAggregateOutputType | null
     _avg: CustomerProfileAvgAggregateOutputType | null
     _sum: CustomerProfileSumAggregateOutputType | null
@@ -18202,6 +19405,7 @@ export namespace Prisma {
     totalComparisons?: boolean
     totalWishlist?: boolean
     lastUpdated?: boolean
+    lastAggregatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customerProfile"]>
 
@@ -18228,6 +19432,7 @@ export namespace Prisma {
     totalComparisons?: boolean
     totalWishlist?: boolean
     lastUpdated?: boolean
+    lastAggregatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customerProfile"]>
 
@@ -18254,6 +19459,7 @@ export namespace Prisma {
     totalComparisons?: boolean
     totalWishlist?: boolean
     lastUpdated?: boolean
+    lastAggregatedAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customerProfile"]>
 
@@ -18280,9 +19486,10 @@ export namespace Prisma {
     totalComparisons?: boolean
     totalWishlist?: boolean
     lastUpdated?: boolean
+    lastAggregatedAt?: boolean
   }
 
-  export type CustomerProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"profileId" | "userId" | "budgetSegment" | "techTier" | "cameraPreference" | "softwareSegment" | "favoriteBrand" | "preferredRamGb" | "preferredStorageGb" | "recommendationPersona" | "avgPerformanceMatch" | "avgCameraMatch" | "avgFrontCameraMatch" | "avgBudget" | "avgBatteryMatch" | "avgDisplayMatch" | "segmentConfidence" | "searchCount" | "totalRecommendations" | "totalComparisons" | "totalWishlist" | "lastUpdated", ExtArgs["result"]["customerProfile"]>
+  export type CustomerProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"profileId" | "userId" | "budgetSegment" | "techTier" | "cameraPreference" | "softwareSegment" | "favoriteBrand" | "preferredRamGb" | "preferredStorageGb" | "recommendationPersona" | "avgPerformanceMatch" | "avgCameraMatch" | "avgFrontCameraMatch" | "avgBudget" | "avgBatteryMatch" | "avgDisplayMatch" | "segmentConfidence" | "searchCount" | "totalRecommendations" | "totalComparisons" | "totalWishlist" | "lastUpdated" | "lastAggregatedAt", ExtArgs["result"]["customerProfile"]>
   export type CustomerProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
@@ -18321,6 +19528,7 @@ export namespace Prisma {
       totalComparisons: number
       totalWishlist: number
       lastUpdated: Date
+      lastAggregatedAt: Date | null
     }, ExtArgs["result"]["customerProfile"]>
     composites: {}
   }
@@ -18767,6 +19975,7 @@ export namespace Prisma {
     readonly totalComparisons: FieldRef<"CustomerProfile", 'Int'>
     readonly totalWishlist: FieldRef<"CustomerProfile", 'Int'>
     readonly lastUpdated: FieldRef<"CustomerProfile", 'DateTime'>
+    readonly lastAggregatedAt: FieldRef<"CustomerProfile", 'DateTime'>
   }
     
 
@@ -23628,6 +24837,7 @@ export namespace Prisma {
     browsingId: string | null
     userId: string | null
     phoneLabel: string | null
+    phoneId: string | null
     brandName: string | null
     viewedAt: Date | null
     sourceLine: number | null
@@ -23639,6 +24849,7 @@ export namespace Prisma {
     browsingId: string | null
     userId: string | null
     phoneLabel: string | null
+    phoneId: string | null
     brandName: string | null
     viewedAt: Date | null
     sourceLine: number | null
@@ -23650,6 +24861,7 @@ export namespace Prisma {
     browsingId: number
     userId: number
     phoneLabel: number
+    phoneId: number
     brandName: number
     viewedAt: number
     sourceLine: number
@@ -23671,6 +24883,7 @@ export namespace Prisma {
     browsingId?: true
     userId?: true
     phoneLabel?: true
+    phoneId?: true
     brandName?: true
     viewedAt?: true
     sourceLine?: true
@@ -23682,6 +24895,7 @@ export namespace Prisma {
     browsingId?: true
     userId?: true
     phoneLabel?: true
+    phoneId?: true
     brandName?: true
     viewedAt?: true
     sourceLine?: true
@@ -23693,6 +24907,7 @@ export namespace Prisma {
     browsingId?: true
     userId?: true
     phoneLabel?: true
+    phoneId?: true
     brandName?: true
     viewedAt?: true
     sourceLine?: true
@@ -23791,6 +25006,7 @@ export namespace Prisma {
     browsingId: string
     userId: string
     phoneLabel: string
+    phoneId: string | null
     brandName: string | null
     viewedAt: Date | null
     sourceLine: number | null
@@ -23821,6 +25037,7 @@ export namespace Prisma {
     browsingId?: boolean
     userId?: boolean
     phoneLabel?: boolean
+    phoneId?: boolean
     brandName?: boolean
     viewedAt?: boolean
     sourceLine?: boolean
@@ -23833,6 +25050,7 @@ export namespace Prisma {
     browsingId?: boolean
     userId?: boolean
     phoneLabel?: boolean
+    phoneId?: boolean
     brandName?: boolean
     viewedAt?: boolean
     sourceLine?: boolean
@@ -23845,6 +25063,7 @@ export namespace Prisma {
     browsingId?: boolean
     userId?: boolean
     phoneLabel?: boolean
+    phoneId?: boolean
     brandName?: boolean
     viewedAt?: boolean
     sourceLine?: boolean
@@ -23857,6 +25076,7 @@ export namespace Prisma {
     browsingId?: boolean
     userId?: boolean
     phoneLabel?: boolean
+    phoneId?: boolean
     brandName?: boolean
     viewedAt?: boolean
     sourceLine?: boolean
@@ -23864,7 +25084,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BrowsingHistoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"browsingId" | "userId" | "phoneLabel" | "brandName" | "viewedAt" | "sourceLine" | "createdAt" | "updatedAt", ExtArgs["result"]["browsingHistory"]>
+  export type BrowsingHistoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"browsingId" | "userId" | "phoneLabel" | "phoneId" | "brandName" | "viewedAt" | "sourceLine" | "createdAt" | "updatedAt", ExtArgs["result"]["browsingHistory"]>
   export type BrowsingHistoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
@@ -23884,6 +25104,7 @@ export namespace Prisma {
       browsingId: string
       userId: string
       phoneLabel: string
+      phoneId: string | null
       brandName: string | null
       viewedAt: Date | null
       sourceLine: number | null
@@ -24316,6 +25537,7 @@ export namespace Prisma {
     readonly browsingId: FieldRef<"BrowsingHistory", 'String'>
     readonly userId: FieldRef<"BrowsingHistory", 'String'>
     readonly phoneLabel: FieldRef<"BrowsingHistory", 'String'>
+    readonly phoneId: FieldRef<"BrowsingHistory", 'String'>
     readonly brandName: FieldRef<"BrowsingHistory", 'String'>
     readonly viewedAt: FieldRef<"BrowsingHistory", 'DateTime'>
     readonly sourceLine: FieldRef<"BrowsingHistory", 'Int'>
@@ -28348,6 +29570,18 @@ export namespace Prisma {
   export type RecommendationLogScalarFieldEnum = (typeof RecommendationLogScalarFieldEnum)[keyof typeof RecommendationLogScalarFieldEnum]
 
 
+  export const RecommendationCallScalarFieldEnum: {
+    callId: 'callId',
+    userId: 'userId',
+    persona: 'persona',
+    budget: 'budget',
+    topResults: 'topResults',
+    servedAt: 'servedAt'
+  };
+
+  export type RecommendationCallScalarFieldEnum = (typeof RecommendationCallScalarFieldEnum)[keyof typeof RecommendationCallScalarFieldEnum]
+
+
   export const CustomerProfileScalarFieldEnum: {
     profileId: 'profileId',
     userId: 'userId',
@@ -28370,7 +29604,8 @@ export namespace Prisma {
     totalRecommendations: 'totalRecommendations',
     totalComparisons: 'totalComparisons',
     totalWishlist: 'totalWishlist',
-    lastUpdated: 'lastUpdated'
+    lastUpdated: 'lastUpdated',
+    lastAggregatedAt: 'lastAggregatedAt'
   };
 
   export type CustomerProfileScalarFieldEnum = (typeof CustomerProfileScalarFieldEnum)[keyof typeof CustomerProfileScalarFieldEnum]
@@ -28430,6 +29665,7 @@ export namespace Prisma {
     browsingId: 'browsingId',
     userId: 'userId',
     phoneLabel: 'phoneLabel',
+    phoneId: 'phoneId',
     brandName: 'brandName',
     viewedAt: 'viewedAt',
     sourceLine: 'sourceLine',
@@ -28774,6 +30010,7 @@ export namespace Prisma {
     events?: EventListRelationFilter
     behaviorScores?: BehaviorScoreListRelationFilter
     recommendationLogs?: RecommendationLogListRelationFilter
+    recommendationCalls?: RecommendationCallListRelationFilter
   }
 
   export type UsersOrderByWithRelationInput = {
@@ -28799,6 +30036,7 @@ export namespace Prisma {
     events?: EventOrderByRelationAggregateInput
     behaviorScores?: BehaviorScoreOrderByRelationAggregateInput
     recommendationLogs?: RecommendationLogOrderByRelationAggregateInput
+    recommendationCalls?: RecommendationCallOrderByRelationAggregateInput
   }
 
   export type UsersWhereUniqueInput = Prisma.AtLeast<{
@@ -28827,6 +30065,7 @@ export namespace Prisma {
     events?: EventListRelationFilter
     behaviorScores?: BehaviorScoreListRelationFilter
     recommendationLogs?: RecommendationLogListRelationFilter
+    recommendationCalls?: RecommendationCallListRelationFilter
   }, "userId" | "email" | "phoneNo">
 
   export type UsersOrderByWithAggregationInput = {
@@ -29862,6 +31101,66 @@ export namespace Prisma {
     clicked?: BoolWithAggregatesFilter<"RecommendationLog"> | boolean
   }
 
+  export type RecommendationCallWhereInput = {
+    AND?: RecommendationCallWhereInput | RecommendationCallWhereInput[]
+    OR?: RecommendationCallWhereInput[]
+    NOT?: RecommendationCallWhereInput | RecommendationCallWhereInput[]
+    callId?: UuidFilter<"RecommendationCall"> | string
+    userId?: UuidFilter<"RecommendationCall"> | string
+    persona?: StringNullableFilter<"RecommendationCall"> | string | null
+    budget?: JsonNullableFilter<"RecommendationCall">
+    topResults?: JsonNullableFilter<"RecommendationCall">
+    servedAt?: DateTimeFilter<"RecommendationCall"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }
+
+  export type RecommendationCallOrderByWithRelationInput = {
+    callId?: SortOrder
+    userId?: SortOrder
+    persona?: SortOrderInput | SortOrder
+    budget?: SortOrderInput | SortOrder
+    topResults?: SortOrderInput | SortOrder
+    servedAt?: SortOrder
+    user?: UsersOrderByWithRelationInput
+  }
+
+  export type RecommendationCallWhereUniqueInput = Prisma.AtLeast<{
+    callId?: string
+    AND?: RecommendationCallWhereInput | RecommendationCallWhereInput[]
+    OR?: RecommendationCallWhereInput[]
+    NOT?: RecommendationCallWhereInput | RecommendationCallWhereInput[]
+    userId?: UuidFilter<"RecommendationCall"> | string
+    persona?: StringNullableFilter<"RecommendationCall"> | string | null
+    budget?: JsonNullableFilter<"RecommendationCall">
+    topResults?: JsonNullableFilter<"RecommendationCall">
+    servedAt?: DateTimeFilter<"RecommendationCall"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }, "callId">
+
+  export type RecommendationCallOrderByWithAggregationInput = {
+    callId?: SortOrder
+    userId?: SortOrder
+    persona?: SortOrderInput | SortOrder
+    budget?: SortOrderInput | SortOrder
+    topResults?: SortOrderInput | SortOrder
+    servedAt?: SortOrder
+    _count?: RecommendationCallCountOrderByAggregateInput
+    _max?: RecommendationCallMaxOrderByAggregateInput
+    _min?: RecommendationCallMinOrderByAggregateInput
+  }
+
+  export type RecommendationCallScalarWhereWithAggregatesInput = {
+    AND?: RecommendationCallScalarWhereWithAggregatesInput | RecommendationCallScalarWhereWithAggregatesInput[]
+    OR?: RecommendationCallScalarWhereWithAggregatesInput[]
+    NOT?: RecommendationCallScalarWhereWithAggregatesInput | RecommendationCallScalarWhereWithAggregatesInput[]
+    callId?: UuidWithAggregatesFilter<"RecommendationCall"> | string
+    userId?: UuidWithAggregatesFilter<"RecommendationCall"> | string
+    persona?: StringNullableWithAggregatesFilter<"RecommendationCall"> | string | null
+    budget?: JsonNullableWithAggregatesFilter<"RecommendationCall">
+    topResults?: JsonNullableWithAggregatesFilter<"RecommendationCall">
+    servedAt?: DateTimeWithAggregatesFilter<"RecommendationCall"> | Date | string
+  }
+
   export type CustomerProfileWhereInput = {
     AND?: CustomerProfileWhereInput | CustomerProfileWhereInput[]
     OR?: CustomerProfileWhereInput[]
@@ -29888,6 +31187,7 @@ export namespace Prisma {
     totalComparisons?: IntFilter<"CustomerProfile"> | number
     totalWishlist?: IntFilter<"CustomerProfile"> | number
     lastUpdated?: DateTimeFilter<"CustomerProfile"> | Date | string
+    lastAggregatedAt?: DateTimeNullableFilter<"CustomerProfile"> | Date | string | null
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
   }
 
@@ -29914,6 +31214,7 @@ export namespace Prisma {
     totalComparisons?: SortOrder
     totalWishlist?: SortOrder
     lastUpdated?: SortOrder
+    lastAggregatedAt?: SortOrderInput | SortOrder
     user?: UsersOrderByWithRelationInput
   }
 
@@ -29943,6 +31244,7 @@ export namespace Prisma {
     totalComparisons?: IntFilter<"CustomerProfile"> | number
     totalWishlist?: IntFilter<"CustomerProfile"> | number
     lastUpdated?: DateTimeFilter<"CustomerProfile"> | Date | string
+    lastAggregatedAt?: DateTimeNullableFilter<"CustomerProfile"> | Date | string | null
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
   }, "profileId" | "userId">
 
@@ -29969,6 +31271,7 @@ export namespace Prisma {
     totalComparisons?: SortOrder
     totalWishlist?: SortOrder
     lastUpdated?: SortOrder
+    lastAggregatedAt?: SortOrderInput | SortOrder
     _count?: CustomerProfileCountOrderByAggregateInput
     _avg?: CustomerProfileAvgOrderByAggregateInput
     _max?: CustomerProfileMaxOrderByAggregateInput
@@ -30002,6 +31305,7 @@ export namespace Prisma {
     totalComparisons?: IntWithAggregatesFilter<"CustomerProfile"> | number
     totalWishlist?: IntWithAggregatesFilter<"CustomerProfile"> | number
     lastUpdated?: DateTimeWithAggregatesFilter<"CustomerProfile"> | Date | string
+    lastAggregatedAt?: DateTimeNullableWithAggregatesFilter<"CustomerProfile"> | Date | string | null
   }
 
   export type WishlistWhereInput = {
@@ -30275,6 +31579,7 @@ export namespace Prisma {
     browsingId?: UuidFilter<"BrowsingHistory"> | string
     userId?: UuidFilter<"BrowsingHistory"> | string
     phoneLabel?: StringFilter<"BrowsingHistory"> | string
+    phoneId?: UuidNullableFilter<"BrowsingHistory"> | string | null
     brandName?: StringNullableFilter<"BrowsingHistory"> | string | null
     viewedAt?: DateTimeNullableFilter<"BrowsingHistory"> | Date | string | null
     sourceLine?: IntNullableFilter<"BrowsingHistory"> | number | null
@@ -30287,6 +31592,7 @@ export namespace Prisma {
     browsingId?: SortOrder
     userId?: SortOrder
     phoneLabel?: SortOrder
+    phoneId?: SortOrderInput | SortOrder
     brandName?: SortOrderInput | SortOrder
     viewedAt?: SortOrderInput | SortOrder
     sourceLine?: SortOrderInput | SortOrder
@@ -30302,6 +31608,7 @@ export namespace Prisma {
     NOT?: BrowsingHistoryWhereInput | BrowsingHistoryWhereInput[]
     userId?: UuidFilter<"BrowsingHistory"> | string
     phoneLabel?: StringFilter<"BrowsingHistory"> | string
+    phoneId?: UuidNullableFilter<"BrowsingHistory"> | string | null
     brandName?: StringNullableFilter<"BrowsingHistory"> | string | null
     viewedAt?: DateTimeNullableFilter<"BrowsingHistory"> | Date | string | null
     sourceLine?: IntNullableFilter<"BrowsingHistory"> | number | null
@@ -30314,6 +31621,7 @@ export namespace Prisma {
     browsingId?: SortOrder
     userId?: SortOrder
     phoneLabel?: SortOrder
+    phoneId?: SortOrderInput | SortOrder
     brandName?: SortOrderInput | SortOrder
     viewedAt?: SortOrderInput | SortOrder
     sourceLine?: SortOrderInput | SortOrder
@@ -30333,6 +31641,7 @@ export namespace Prisma {
     browsingId?: UuidWithAggregatesFilter<"BrowsingHistory"> | string
     userId?: UuidWithAggregatesFilter<"BrowsingHistory"> | string
     phoneLabel?: StringWithAggregatesFilter<"BrowsingHistory"> | string
+    phoneId?: UuidNullableWithAggregatesFilter<"BrowsingHistory"> | string | null
     brandName?: StringNullableWithAggregatesFilter<"BrowsingHistory"> | string | null
     viewedAt?: DateTimeNullableWithAggregatesFilter<"BrowsingHistory"> | Date | string | null
     sourceLine?: IntNullableWithAggregatesFilter<"BrowsingHistory"> | number | null
@@ -30597,6 +31906,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateInput = {
@@ -30621,6 +31931,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersUpdateInput = {
@@ -30645,6 +31956,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateInput = {
@@ -30669,6 +31981,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateManyInput = {
@@ -31860,6 +33173,68 @@ export namespace Prisma {
     clicked?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type RecommendationCallCreateInput = {
+    callId?: string
+    persona?: string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: Date | string
+    user: UsersCreateNestedOneWithoutRecommendationCallsInput
+  }
+
+  export type RecommendationCallUncheckedCreateInput = {
+    callId?: string
+    userId: string
+    persona?: string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: Date | string
+  }
+
+  export type RecommendationCallUpdateInput = {
+    callId?: StringFieldUpdateOperationsInput | string
+    persona?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutRecommendationCallsNestedInput
+  }
+
+  export type RecommendationCallUncheckedUpdateInput = {
+    callId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    persona?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecommendationCallCreateManyInput = {
+    callId?: string
+    userId: string
+    persona?: string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: Date | string
+  }
+
+  export type RecommendationCallUpdateManyMutationInput = {
+    callId?: StringFieldUpdateOperationsInput | string
+    persona?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecommendationCallUncheckedUpdateManyInput = {
+    callId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    persona?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CustomerProfileCreateInput = {
     profileId?: string
     budgetSegment?: $Enums.BudgetSegment | null
@@ -31882,6 +33257,7 @@ export namespace Prisma {
     totalComparisons?: number
     totalWishlist?: number
     lastUpdated?: Date | string
+    lastAggregatedAt?: Date | string | null
     user: UsersCreateNestedOneWithoutCustomerProfileInput
   }
 
@@ -31908,6 +33284,7 @@ export namespace Prisma {
     totalComparisons?: number
     totalWishlist?: number
     lastUpdated?: Date | string
+    lastAggregatedAt?: Date | string | null
   }
 
   export type CustomerProfileUpdateInput = {
@@ -31932,6 +33309,7 @@ export namespace Prisma {
     totalComparisons?: IntFieldUpdateOperationsInput | number
     totalWishlist?: IntFieldUpdateOperationsInput | number
     lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastAggregatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UsersUpdateOneRequiredWithoutCustomerProfileNestedInput
   }
 
@@ -31958,6 +33336,7 @@ export namespace Prisma {
     totalComparisons?: IntFieldUpdateOperationsInput | number
     totalWishlist?: IntFieldUpdateOperationsInput | number
     lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastAggregatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CustomerProfileCreateManyInput = {
@@ -31983,6 +33362,7 @@ export namespace Prisma {
     totalComparisons?: number
     totalWishlist?: number
     lastUpdated?: Date | string
+    lastAggregatedAt?: Date | string | null
   }
 
   export type CustomerProfileUpdateManyMutationInput = {
@@ -32007,6 +33387,7 @@ export namespace Prisma {
     totalComparisons?: IntFieldUpdateOperationsInput | number
     totalWishlist?: IntFieldUpdateOperationsInput | number
     lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastAggregatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CustomerProfileUncheckedUpdateManyInput = {
@@ -32032,6 +33413,7 @@ export namespace Prisma {
     totalComparisons?: IntFieldUpdateOperationsInput | number
     totalWishlist?: IntFieldUpdateOperationsInput | number
     lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastAggregatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type WishlistCreateInput = {
@@ -32296,6 +33678,7 @@ export namespace Prisma {
   export type BrowsingHistoryCreateInput = {
     browsingId?: string
     phoneLabel: string
+    phoneId?: string | null
     brandName?: string | null
     viewedAt?: Date | string | null
     sourceLine?: number | null
@@ -32308,6 +33691,7 @@ export namespace Prisma {
     browsingId?: string
     userId: string
     phoneLabel: string
+    phoneId?: string | null
     brandName?: string | null
     viewedAt?: Date | string | null
     sourceLine?: number | null
@@ -32318,6 +33702,7 @@ export namespace Prisma {
   export type BrowsingHistoryUpdateInput = {
     browsingId?: StringFieldUpdateOperationsInput | string
     phoneLabel?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceLine?: NullableIntFieldUpdateOperationsInput | number | null
@@ -32330,6 +33715,7 @@ export namespace Prisma {
     browsingId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     phoneLabel?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceLine?: NullableIntFieldUpdateOperationsInput | number | null
@@ -32341,6 +33727,7 @@ export namespace Prisma {
     browsingId?: string
     userId: string
     phoneLabel: string
+    phoneId?: string | null
     brandName?: string | null
     viewedAt?: Date | string | null
     sourceLine?: number | null
@@ -32351,6 +33738,7 @@ export namespace Prisma {
   export type BrowsingHistoryUpdateManyMutationInput = {
     browsingId?: StringFieldUpdateOperationsInput | string
     phoneLabel?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceLine?: NullableIntFieldUpdateOperationsInput | number | null
@@ -32362,6 +33750,7 @@ export namespace Prisma {
     browsingId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     phoneLabel?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceLine?: NullableIntFieldUpdateOperationsInput | number | null
@@ -32757,6 +34146,12 @@ export namespace Prisma {
     none?: RecommendationLogWhereInput
   }
 
+  export type RecommendationCallListRelationFilter = {
+    every?: RecommendationCallWhereInput
+    some?: RecommendationCallWhereInput
+    none?: RecommendationCallWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -32799,6 +34194,10 @@ export namespace Prisma {
   }
 
   export type RecommendationLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type RecommendationCallOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -33861,6 +35260,29 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type RecommendationCallCountOrderByAggregateInput = {
+    callId?: SortOrder
+    userId?: SortOrder
+    persona?: SortOrder
+    budget?: SortOrder
+    topResults?: SortOrder
+    servedAt?: SortOrder
+  }
+
+  export type RecommendationCallMaxOrderByAggregateInput = {
+    callId?: SortOrder
+    userId?: SortOrder
+    persona?: SortOrder
+    servedAt?: SortOrder
+  }
+
+  export type RecommendationCallMinOrderByAggregateInput = {
+    callId?: SortOrder
+    userId?: SortOrder
+    persona?: SortOrder
+    servedAt?: SortOrder
+  }
+
   export type EnumBudgetSegmentNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.BudgetSegment | EnumBudgetSegmentFieldRefInput<$PrismaModel> | null
     in?: $Enums.BudgetSegment[] | ListEnumBudgetSegmentFieldRefInput<$PrismaModel> | null
@@ -33912,6 +35334,7 @@ export namespace Prisma {
     totalComparisons?: SortOrder
     totalWishlist?: SortOrder
     lastUpdated?: SortOrder
+    lastAggregatedAt?: SortOrder
   }
 
   export type CustomerProfileAvgOrderByAggregateInput = {
@@ -33952,6 +35375,7 @@ export namespace Prisma {
     totalComparisons?: SortOrder
     totalWishlist?: SortOrder
     lastUpdated?: SortOrder
+    lastAggregatedAt?: SortOrder
   }
 
   export type CustomerProfileMinOrderByAggregateInput = {
@@ -33977,6 +35401,7 @@ export namespace Prisma {
     totalComparisons?: SortOrder
     totalWishlist?: SortOrder
     lastUpdated?: SortOrder
+    lastAggregatedAt?: SortOrder
   }
 
   export type CustomerProfileSumOrderByAggregateInput = {
@@ -34171,6 +35596,7 @@ export namespace Prisma {
     browsingId?: SortOrder
     userId?: SortOrder
     phoneLabel?: SortOrder
+    phoneId?: SortOrder
     brandName?: SortOrder
     viewedAt?: SortOrder
     sourceLine?: SortOrder
@@ -34186,6 +35612,7 @@ export namespace Prisma {
     browsingId?: SortOrder
     userId?: SortOrder
     phoneLabel?: SortOrder
+    phoneId?: SortOrder
     brandName?: SortOrder
     viewedAt?: SortOrder
     sourceLine?: SortOrder
@@ -34197,6 +35624,7 @@ export namespace Prisma {
     browsingId?: SortOrder
     userId?: SortOrder
     phoneLabel?: SortOrder
+    phoneId?: SortOrder
     brandName?: SortOrder
     viewedAt?: SortOrder
     sourceLine?: SortOrder
@@ -34458,6 +35886,13 @@ export namespace Prisma {
     connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
   }
 
+  export type RecommendationCallCreateNestedManyWithoutUserInput = {
+    create?: XOR<RecommendationCallCreateWithoutUserInput, RecommendationCallUncheckedCreateWithoutUserInput> | RecommendationCallCreateWithoutUserInput[] | RecommendationCallUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecommendationCallCreateOrConnectWithoutUserInput | RecommendationCallCreateOrConnectWithoutUserInput[]
+    createMany?: RecommendationCallCreateManyUserInputEnvelope
+    connect?: RecommendationCallWhereUniqueInput | RecommendationCallWhereUniqueInput[]
+  }
+
   export type OtpUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OtpCreateWithoutUserInput, OtpUncheckedCreateWithoutUserInput> | OtpCreateWithoutUserInput[] | OtpUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OtpCreateOrConnectWithoutUserInput | OtpCreateOrConnectWithoutUserInput[]
@@ -34544,6 +35979,13 @@ export namespace Prisma {
     connectOrCreate?: RecommendationLogCreateOrConnectWithoutUserInput | RecommendationLogCreateOrConnectWithoutUserInput[]
     createMany?: RecommendationLogCreateManyUserInputEnvelope
     connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+  }
+
+  export type RecommendationCallUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<RecommendationCallCreateWithoutUserInput, RecommendationCallUncheckedCreateWithoutUserInput> | RecommendationCallCreateWithoutUserInput[] | RecommendationCallUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecommendationCallCreateOrConnectWithoutUserInput | RecommendationCallCreateOrConnectWithoutUserInput[]
+    createMany?: RecommendationCallCreateManyUserInputEnvelope
+    connect?: RecommendationCallWhereUniqueInput | RecommendationCallWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -34734,6 +36176,20 @@ export namespace Prisma {
     deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
   }
 
+  export type RecommendationCallUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RecommendationCallCreateWithoutUserInput, RecommendationCallUncheckedCreateWithoutUserInput> | RecommendationCallCreateWithoutUserInput[] | RecommendationCallUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecommendationCallCreateOrConnectWithoutUserInput | RecommendationCallCreateOrConnectWithoutUserInput[]
+    upsert?: RecommendationCallUpsertWithWhereUniqueWithoutUserInput | RecommendationCallUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RecommendationCallCreateManyUserInputEnvelope
+    set?: RecommendationCallWhereUniqueInput | RecommendationCallWhereUniqueInput[]
+    disconnect?: RecommendationCallWhereUniqueInput | RecommendationCallWhereUniqueInput[]
+    delete?: RecommendationCallWhereUniqueInput | RecommendationCallWhereUniqueInput[]
+    connect?: RecommendationCallWhereUniqueInput | RecommendationCallWhereUniqueInput[]
+    update?: RecommendationCallUpdateWithWhereUniqueWithoutUserInput | RecommendationCallUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RecommendationCallUpdateManyWithWhereWithoutUserInput | RecommendationCallUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RecommendationCallScalarWhereInput | RecommendationCallScalarWhereInput[]
+  }
+
   export type OtpUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OtpCreateWithoutUserInput, OtpUncheckedCreateWithoutUserInput> | OtpCreateWithoutUserInput[] | OtpUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OtpCreateOrConnectWithoutUserInput | OtpCreateOrConnectWithoutUserInput[]
@@ -34902,6 +36358,20 @@ export namespace Prisma {
     update?: RecommendationLogUpdateWithWhereUniqueWithoutUserInput | RecommendationLogUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: RecommendationLogUpdateManyWithWhereWithoutUserInput | RecommendationLogUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
+  }
+
+  export type RecommendationCallUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RecommendationCallCreateWithoutUserInput, RecommendationCallUncheckedCreateWithoutUserInput> | RecommendationCallCreateWithoutUserInput[] | RecommendationCallUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecommendationCallCreateOrConnectWithoutUserInput | RecommendationCallCreateOrConnectWithoutUserInput[]
+    upsert?: RecommendationCallUpsertWithWhereUniqueWithoutUserInput | RecommendationCallUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RecommendationCallCreateManyUserInputEnvelope
+    set?: RecommendationCallWhereUniqueInput | RecommendationCallWhereUniqueInput[]
+    disconnect?: RecommendationCallWhereUniqueInput | RecommendationCallWhereUniqueInput[]
+    delete?: RecommendationCallWhereUniqueInput | RecommendationCallWhereUniqueInput[]
+    connect?: RecommendationCallWhereUniqueInput | RecommendationCallWhereUniqueInput[]
+    update?: RecommendationCallUpdateWithWhereUniqueWithoutUserInput | RecommendationCallUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RecommendationCallUpdateManyWithWhereWithoutUserInput | RecommendationCallUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RecommendationCallScalarWhereInput | RecommendationCallScalarWhereInput[]
   }
 
   export type UsersCreateNestedOneWithoutOtpsInput = {
@@ -35616,6 +37086,20 @@ export namespace Prisma {
     upsert?: PhonesUpsertWithoutRecommendationLogsInput
     connect?: PhonesWhereUniqueInput
     update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutRecommendationLogsInput, PhonesUpdateWithoutRecommendationLogsInput>, PhonesUncheckedUpdateWithoutRecommendationLogsInput>
+  }
+
+  export type UsersCreateNestedOneWithoutRecommendationCallsInput = {
+    create?: XOR<UsersCreateWithoutRecommendationCallsInput, UsersUncheckedCreateWithoutRecommendationCallsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutRecommendationCallsInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type UsersUpdateOneRequiredWithoutRecommendationCallsNestedInput = {
+    create?: XOR<UsersCreateWithoutRecommendationCallsInput, UsersUncheckedCreateWithoutRecommendationCallsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutRecommendationCallsInput
+    upsert?: UsersUpsertWithoutRecommendationCallsInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutRecommendationCallsInput, UsersUpdateWithoutRecommendationCallsInput>, UsersUncheckedUpdateWithoutRecommendationCallsInput>
   }
 
   export type UsersCreateNestedOneWithoutCustomerProfileInput = {
@@ -36356,6 +37840,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutRoleInput = {
@@ -36379,6 +37864,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutRoleInput = {
@@ -36540,6 +38026,7 @@ export namespace Prisma {
     totalComparisons?: number
     totalWishlist?: number
     lastUpdated?: Date | string
+    lastAggregatedAt?: Date | string | null
   }
 
   export type CustomerProfileUncheckedCreateWithoutUserInput = {
@@ -36564,6 +38051,7 @@ export namespace Prisma {
     totalComparisons?: number
     totalWishlist?: number
     lastUpdated?: Date | string
+    lastAggregatedAt?: Date | string | null
   }
 
   export type CustomerProfileCreateOrConnectWithoutUserInput = {
@@ -36732,6 +38220,7 @@ export namespace Prisma {
   export type BrowsingHistoryCreateWithoutUserInput = {
     browsingId?: string
     phoneLabel: string
+    phoneId?: string | null
     brandName?: string | null
     viewedAt?: Date | string | null
     sourceLine?: number | null
@@ -36742,6 +38231,7 @@ export namespace Prisma {
   export type BrowsingHistoryUncheckedCreateWithoutUserInput = {
     browsingId?: string
     phoneLabel: string
+    phoneId?: string | null
     brandName?: string | null
     viewedAt?: Date | string | null
     sourceLine?: number | null
@@ -36832,6 +38322,32 @@ export namespace Prisma {
 
   export type RecommendationLogCreateManyUserInputEnvelope = {
     data: RecommendationLogCreateManyUserInput | RecommendationLogCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RecommendationCallCreateWithoutUserInput = {
+    callId?: string
+    persona?: string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: Date | string
+  }
+
+  export type RecommendationCallUncheckedCreateWithoutUserInput = {
+    callId?: string
+    persona?: string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: Date | string
+  }
+
+  export type RecommendationCallCreateOrConnectWithoutUserInput = {
+    where: RecommendationCallWhereUniqueInput
+    create: XOR<RecommendationCallCreateWithoutUserInput, RecommendationCallUncheckedCreateWithoutUserInput>
+  }
+
+  export type RecommendationCallCreateManyUserInputEnvelope = {
+    data: RecommendationCallCreateManyUserInput | RecommendationCallCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -36984,6 +38500,7 @@ export namespace Prisma {
     totalComparisons?: IntFieldUpdateOperationsInput | number
     totalWishlist?: IntFieldUpdateOperationsInput | number
     lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastAggregatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CustomerProfileUncheckedUpdateWithoutUserInput = {
@@ -37008,6 +38525,7 @@ export namespace Prisma {
     totalComparisons?: IntFieldUpdateOperationsInput | number
     totalWishlist?: IntFieldUpdateOperationsInput | number
     lastUpdated?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastAggregatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RecommendationHistoryUpsertWithWhereUniqueWithoutUserInput = {
@@ -37187,6 +38705,7 @@ export namespace Prisma {
     browsingId?: UuidFilter<"BrowsingHistory"> | string
     userId?: UuidFilter<"BrowsingHistory"> | string
     phoneLabel?: StringFilter<"BrowsingHistory"> | string
+    phoneId?: UuidNullableFilter<"BrowsingHistory"> | string | null
     brandName?: StringNullableFilter<"BrowsingHistory"> | string | null
     viewedAt?: DateTimeNullableFilter<"BrowsingHistory"> | Date | string | null
     sourceLine?: IntNullableFilter<"BrowsingHistory"> | number | null
@@ -37277,6 +38796,34 @@ export namespace Prisma {
     clicked?: BoolFilter<"RecommendationLog"> | boolean
   }
 
+  export type RecommendationCallUpsertWithWhereUniqueWithoutUserInput = {
+    where: RecommendationCallWhereUniqueInput
+    update: XOR<RecommendationCallUpdateWithoutUserInput, RecommendationCallUncheckedUpdateWithoutUserInput>
+    create: XOR<RecommendationCallCreateWithoutUserInput, RecommendationCallUncheckedCreateWithoutUserInput>
+  }
+
+  export type RecommendationCallUpdateWithWhereUniqueWithoutUserInput = {
+    where: RecommendationCallWhereUniqueInput
+    data: XOR<RecommendationCallUpdateWithoutUserInput, RecommendationCallUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RecommendationCallUpdateManyWithWhereWithoutUserInput = {
+    where: RecommendationCallScalarWhereInput
+    data: XOR<RecommendationCallUpdateManyMutationInput, RecommendationCallUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type RecommendationCallScalarWhereInput = {
+    AND?: RecommendationCallScalarWhereInput | RecommendationCallScalarWhereInput[]
+    OR?: RecommendationCallScalarWhereInput[]
+    NOT?: RecommendationCallScalarWhereInput | RecommendationCallScalarWhereInput[]
+    callId?: UuidFilter<"RecommendationCall"> | string
+    userId?: UuidFilter<"RecommendationCall"> | string
+    persona?: StringNullableFilter<"RecommendationCall"> | string | null
+    budget?: JsonNullableFilter<"RecommendationCall">
+    topResults?: JsonNullableFilter<"RecommendationCall">
+    servedAt?: DateTimeFilter<"RecommendationCall"> | Date | string
+  }
+
   export type UsersCreateWithoutOtpsInput = {
     name: string
     userId?: string
@@ -37298,6 +38845,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutOtpsInput = {
@@ -37321,6 +38869,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutOtpsInput = {
@@ -37360,6 +38909,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutOtpsInput = {
@@ -37383,6 +38933,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesCreateWithoutBrandInput = {
@@ -38521,6 +40072,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutProfileInput = {
@@ -38544,6 +40096,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutProfileInput = {
@@ -38583,6 +40136,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutProfileInput = {
@@ -38606,6 +40160,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type BrandsCreateWithoutUserPreferencesInput = {
@@ -38656,6 +40211,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutPreferenceInput = {
@@ -38679,6 +40235,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutPreferenceInput = {
@@ -38751,6 +40308,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutPreferenceInput = {
@@ -38774,6 +40332,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutRecommendationHistoryInput = {
@@ -38797,6 +40356,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutRecommendationHistoryInput = {
@@ -38820,6 +40380,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutRecommendationHistoryInput = {
@@ -38914,6 +40475,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutRecommendationHistoryInput = {
@@ -38937,6 +40499,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesUpsertWithoutRecommendationHistoryInput = {
@@ -39021,6 +40584,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutRecommendationLogsInput = {
@@ -39044,6 +40608,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutRecommendationLogsInput = {
@@ -39138,6 +40703,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutRecommendationLogsInput = {
@@ -39161,6 +40727,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesUpsertWithoutRecommendationLogsInput = {
@@ -39224,6 +40791,118 @@ export namespace Prisma {
     mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
   }
 
+  export type UsersCreateWithoutRecommendationCallsInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    role?: RolesCreateNestedOneWithoutUsersInput
+    otps?: OtpCreateNestedManyWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutRecommendationCallsInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    roleId?: string | null
+    otps?: OtpUncheckedCreateNestedManyWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutRecommendationCallsInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutRecommendationCallsInput, UsersUncheckedCreateWithoutRecommendationCallsInput>
+  }
+
+  export type UsersUpsertWithoutRecommendationCallsInput = {
+    update: XOR<UsersUpdateWithoutRecommendationCallsInput, UsersUncheckedUpdateWithoutRecommendationCallsInput>
+    create: XOR<UsersCreateWithoutRecommendationCallsInput, UsersUncheckedCreateWithoutRecommendationCallsInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutRecommendationCallsInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutRecommendationCallsInput, UsersUncheckedUpdateWithoutRecommendationCallsInput>
+  }
+
+  export type UsersUpdateWithoutRecommendationCallsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    role?: RolesUpdateOneWithoutUsersNestedInput
+    otps?: OtpUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutRecommendationCallsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    otps?: OtpUncheckedUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type UsersCreateWithoutCustomerProfileInput = {
     name: string
     userId?: string
@@ -39245,6 +40924,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutCustomerProfileInput = {
@@ -39268,6 +40948,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutCustomerProfileInput = {
@@ -39307,6 +40988,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutCustomerProfileInput = {
@@ -39330,6 +41012,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutWishlistInput = {
@@ -39353,6 +41036,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutWishlistInput = {
@@ -39376,6 +41060,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutWishlistInput = {
@@ -39470,6 +41155,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutWishlistInput = {
@@ -39493,6 +41179,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesUpsertWithoutWishlistInput = {
@@ -39577,6 +41264,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutComparisonHistoryInput = {
@@ -39600,6 +41288,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutComparisonHistoryInput = {
@@ -39749,6 +41438,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutComparisonHistoryInput = {
@@ -39772,6 +41462,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesUpsertWithoutComparedAsAInput = {
@@ -39917,6 +41608,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutPaymentHistoryInput = {
@@ -39940,6 +41632,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutPaymentHistoryInput = {
@@ -39979,6 +41672,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutPaymentHistoryInput = {
@@ -40002,6 +41696,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutSearchHistoryInput = {
@@ -40025,6 +41720,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutSearchHistoryInput = {
@@ -40048,6 +41744,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutSearchHistoryInput = {
@@ -40087,6 +41784,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutSearchHistoryInput = {
@@ -40110,6 +41808,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutBrowsingHistoryInput = {
@@ -40133,6 +41832,7 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutBrowsingHistoryInput = {
@@ -40156,6 +41856,7 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutBrowsingHistoryInput = {
@@ -40195,6 +41896,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutBrowsingHistoryInput = {
@@ -40218,6 +41920,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesCreateWithoutMostRecommendedInStatsInput = {
@@ -40589,6 +42292,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutEventsInput = {
@@ -40612,6 +42316,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutEventsInput = {
@@ -40651,6 +42356,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutEventsInput = {
@@ -40674,6 +42380,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutBehaviorScoresInput = {
@@ -40697,6 +42404,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutBehaviorScoresInput = {
@@ -40720,6 +42428,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutBehaviorScoresInput = {
@@ -40759,6 +42468,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutBehaviorScoresInput = {
@@ -40782,6 +42492,7 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateManyRoleInput = {
@@ -40815,6 +42526,7 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutRoleInput = {
@@ -40838,6 +42550,7 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateManyWithoutRoleInput = {
@@ -40916,6 +42629,7 @@ export namespace Prisma {
   export type BrowsingHistoryCreateManyUserInput = {
     browsingId?: string
     phoneLabel: string
+    phoneId?: string | null
     brandName?: string | null
     viewedAt?: Date | string | null
     sourceLine?: number | null
@@ -40944,6 +42658,14 @@ export namespace Prisma {
     rank: number
     shownAt?: Date | string
     clicked?: boolean
+  }
+
+  export type RecommendationCallCreateManyUserInput = {
+    callId?: string
+    persona?: string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: Date | string
   }
 
   export type OtpUpdateWithoutUserInput = {
@@ -41138,6 +42860,7 @@ export namespace Prisma {
   export type BrowsingHistoryUpdateWithoutUserInput = {
     browsingId?: StringFieldUpdateOperationsInput | string
     phoneLabel?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceLine?: NullableIntFieldUpdateOperationsInput | number | null
@@ -41148,6 +42871,7 @@ export namespace Prisma {
   export type BrowsingHistoryUncheckedUpdateWithoutUserInput = {
     browsingId?: StringFieldUpdateOperationsInput | string
     phoneLabel?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceLine?: NullableIntFieldUpdateOperationsInput | number | null
@@ -41158,6 +42882,7 @@ export namespace Prisma {
   export type BrowsingHistoryUncheckedUpdateManyWithoutUserInput = {
     browsingId?: StringFieldUpdateOperationsInput | string
     phoneLabel?: StringFieldUpdateOperationsInput | string
+    phoneId?: NullableStringFieldUpdateOperationsInput | string | null
     brandName?: NullableStringFieldUpdateOperationsInput | string | null
     viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sourceLine?: NullableIntFieldUpdateOperationsInput | number | null
@@ -41232,6 +42957,30 @@ export namespace Prisma {
     rank?: IntFieldUpdateOperationsInput | number
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clicked?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type RecommendationCallUpdateWithoutUserInput = {
+    callId?: StringFieldUpdateOperationsInput | string
+    persona?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecommendationCallUncheckedUpdateWithoutUserInput = {
+    callId?: StringFieldUpdateOperationsInput | string
+    persona?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecommendationCallUncheckedUpdateManyWithoutUserInput = {
+    callId?: StringFieldUpdateOperationsInput | string
+    persona?: NullableStringFieldUpdateOperationsInput | string | null
+    budget?: NullableJsonNullValueInput | InputJsonValue
+    topResults?: NullableJsonNullValueInput | InputJsonValue
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PhonesCreateManyBrandInput = {
