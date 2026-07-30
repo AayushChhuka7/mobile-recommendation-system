@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../hooks/useAuth.jsx";
 import { useEventLogger } from "../hooks/useEventLogger.jsx";
+import { formatPriceNpr } from "../utils/formatPrice.js";
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneListing.css";
@@ -557,7 +558,7 @@ function PhoneListing() {
                       {p.cheapestVariant?.price && (
                         <div className="phone-spec phone-price">
                           <TagIcon />
-                          <span>€{p.cheapestVariant.price}</span>
+                          <span>{formatPriceNpr(p.cheapestVariant.price) ?? "—"}</span>
                         </div>
                       )}
                     </div>

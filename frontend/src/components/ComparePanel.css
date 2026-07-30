@@ -351,6 +351,19 @@
   box-shadow: 0 0 0 2px var(--primary-light);
 }
 
+.cmp-result-card[role="button"]:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.cmp-result-card[role="button"]:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 .cmp-overall-badge {
   position: absolute;
   top: -10px;
