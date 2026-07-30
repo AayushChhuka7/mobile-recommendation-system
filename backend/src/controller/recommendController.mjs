@@ -4,6 +4,7 @@ import { badRequest } from "../utils/ApiError.mjs";
 import * as recommendService from "../services/recommendService.mjs";
 import {
   safeRecordCompareEvent,
+  safeRecordRecommendationCall,
   safeRecordRecommendationEvent,
 } from "../services/profileService.mjs";
 
@@ -27,6 +28,15 @@ export const postRecommend = catchAsync(async (req, res) => {
   // forget so analytics never breaks the response.
   if (req.user && req.user.userId) {
     safeRecordRecommendationEvent(req.user.userId, {
+      persona: req.body.persona,
+      budget: req.body.budget,
+      results,
+    });
+    // One row per *call* into RecommendationCall so the admin "Last
+    // recommendation → Top results" panel can render the top-3 phones
+    // from the most-recent call without fanning out into
+    // RecommendationHistory. Also fire-and-forget.
+    safeRecordRecommendationCall(req.user.userId, {
       persona: req.body.persona,
       budget: req.body.budget,
       results,
@@ -86,6 +96,13 @@ export const getAutoRecommend = catchAsync(async (req, res) => {
   // captured in RecommendationHistory. Fire-and-forget.
   if (results.length > 0) {
     safeRecordRecommendationEvent(userId, {
+      persona: "auto",
+      budget: { auto: true, defaultedAt },
+      results,
+    });
+    // Also write the per-call snapshot so the admin panel can show
+    // what the dashboard auto-recommender served most recently.
+    safeRecordRecommendationCall(userId, {
       persona: "auto",
       budget: { auto: true, defaultedAt },
       results,
