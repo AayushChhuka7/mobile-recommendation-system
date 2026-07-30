@@ -115,7 +115,6 @@ def _rebuild_from_csv(csv_path: Path, out_path: Path) -> None:
           .reset_index(drop=True)
     )
 
-
     print(
         f"[build_similarity_bundle] df shape after clean: {df.shape}",
         flush=True,
