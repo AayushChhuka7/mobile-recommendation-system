@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import {
   getAutoRecommendations,
@@ -168,17 +168,21 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout, setUser } = useAuth();
 
+  // The Compare interface is a side-docked overlay rendered below,
+  // not a separate page — the URL `/dashboard/compare` toggles its
+  // open state so back-nav from a clicked phone restores it (the
+  // bug the user originally reported).
+  const isCompareOpen = location.pathname === "/dashboard/compare";
+  const closeCompare = useCallback(() => navigate("/dashboard"), [navigate]);
+
   const [isProfileOpen, setProfileOpen] = useState(false);
-  const [isSearchOpen, setSearchOpen] = useState(false);
 
-  const [panelPhase, setPanelPhase] = useState("closed");
-  const closeAnimMs = 180;
-
-  const closeTimerRef = useRef(null);
-
-  const [isCompareOpen, setIsCompareOpen] = useState(false);
+  // `/dashboard/compare` and `/dashboard/recommend` are now real child
+  // routes — the modal/panel open state is driven by URL via
+  // `useLocation()` below, so there's no `useState` for them anymore.
 
   const [changePwPhase, setChangePwPhase] = useState("closed");
   const changePwCloseTimerRef = useRef(null);
@@ -236,6 +240,14 @@ function Dashboard() {
   const [recsPersona, setRecsPersona] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  // Live-typeahead suggestions for the search bar. Reuses the same
+  // /phones/search endpoint that the ComparePanel autocomplete hits
+  // so the two surfaces always agree on what "matches" a query.
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
+  const [searchSuggestionsLoading, setSearchSuggestionsLoading] =
+    useState(false);
+  const searchSuggestionsRef = useRef(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [pendingFilters, setPendingFilters] = useState(EMPTY_FILTERS);
@@ -326,28 +338,14 @@ function Dashboard() {
   // session-validation effect on app boot, so by the time the
   // dashboard mounts the auth context already has fresh data.
   // No on-mount fetch needed here.
-  const openRecommend = useCallback(() => {
-    if (closeTimerRef.current) {
-      clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = null;
-    }
-    setSearchOpen(true);
-    setPanelPhase("open");
-  }, []);
-
+  // Recommend modal close: just navigate back to the dashboard root.
+  // (Opening is handled by the header button → navigate("/dashboard/recommend").)
   const closeRecommend = useCallback(() => {
-    setSearchOpen(false);
-    setPanelPhase("closing");
-    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-    closeTimerRef.current = setTimeout(() => {
-      setPanelPhase("closed");
-      closeTimerRef.current = null;
-    }, closeAnimMs);
-  }, []);
+    navigate("/dashboard");
+  }, [navigate]);
 
   useEffect(() => {
     return () => {
-      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
       if (changePwCloseTimerRef.current)
         clearTimeout(changePwCloseTimerRef.current);
       if (editProfileCloseTimerRef.current)
@@ -767,6 +765,7 @@ function Dashboard() {
     e.preventDefault();
     const term = searchInput.trim();
     setSearchTerm(term);
+    setShowSearchSuggestions(false);
     // Drop the auto/explicit recs once the user starts searching so the
     // "All Phones Ranked For You" block can't bury the search results.
     // The user can hit "Clear recommendations" to bring them back, or
@@ -784,8 +783,66 @@ function Dashboard() {
   const handleClearSearch = () => {
     setSearchInput("");
     setSearchTerm("");
+    setSearchSuggestions([]);
+    setShowSearchSuggestions(false);
     setPage(1);
   };
+
+  // Debounced search-suggestion fetch. Fires on every keystroke into
+  // the dashboard search bar; renders an inline dropdown under the
+  // input. Hits the same /phones/search endpoint the ComparePanel
+  // autocomplete uses so the matching semantics stay consistent.
+  const searchSuggestTimerRef = useRef(null);
+  const fetchSearchSuggestions = (value) => {
+    const q = (value || "").trim();
+    if (!q) {
+      setSearchSuggestions([]);
+      setShowSearchSuggestions(false);
+      return;
+    }
+    setSearchSuggestionsLoading(true);
+    api
+      .get("/phones/search", { params: { q, limit: 8 } })
+      .then((res) => {
+        setSearchSuggestions(res?.data?.data || []);
+        setShowSearchSuggestions(true);
+      })
+      .catch((err) => {
+        console.warn("[search-suggest] failed:", err?.message || err);
+        setSearchSuggestions([]);
+      })
+      .finally(() => setSearchSuggestionsLoading(false));
+  };
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    if (searchSuggestTimerRef.current)
+      clearTimeout(searchSuggestTimerRef.current);
+    searchSuggestTimerRef.current = setTimeout(
+      () => fetchSearchSuggestions(value),
+      300,
+    );
+  };
+  const handleSearchSuggestionClick = (phone) => {
+    setShowSearchSuggestions(false);
+    setSearchSuggestions([]);
+    setSearchInput("");
+    if (phone?.id) navigate(`/phones/${phone.id}`);
+  };
+  // Close the suggestion dropdown on outside click — same pattern the
+  // profile menu + filter popover use, just scoped to this ref.
+  useEffect(() => {
+    function handleOutside(e) {
+      if (
+        searchSuggestionsRef.current &&
+        !searchSuggestionsRef.current.contains(e.target)
+      ) {
+        setShowSearchSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, []);
   const openFilters = () => {
     setPendingFilters(filters);
     setShowFilters((s) => !s);
@@ -853,10 +910,8 @@ function Dashboard() {
         <div className="dash-header-actions">
           <button
             type="button"
-            className={`btn btn-outline dash-compare-btn ${isCompareOpen ? "active" : ""}`}
-            onClick={() => setIsCompareOpen((o) => !o)}
-            aria-expanded={isCompareOpen}
-            aria-controls="dash-compare-panel"
+            className="btn btn-outline dash-compare-btn"
+            onClick={() => navigate("/dashboard/compare")}
             title="Compare two phones side by side"
           >
             <span>Compare</span>
@@ -864,9 +919,8 @@ function Dashboard() {
           <button
             type="button"
             className="btn btn-primary dash-recommend-btn"
-            onClick={openRecommend}
+            onClick={() => navigate("/dashboard/recommend")}
             aria-haspopup="dialog"
-            aria-expanded={isSearchOpen}
             title="Get personalized phone recommendations"
           >
             <span>Recommend Me a Phone</span>
@@ -1013,7 +1067,7 @@ function Dashboard() {
             onSubmit={handleSearch}
             role="search"
           >
-            <div className="dash-search-input-wrapper">
+            <div className="dash-search-input-wrapper" ref={searchSuggestionsRef}>
               <span className="dash-search-input-icon" aria-hidden="true">
                 <SearchIcon />
               </span>
@@ -1022,8 +1076,15 @@ function Dashboard() {
                 className="dash-search-input"
                 placeholder="Search phones by name or model..."
                 value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
+                onChange={handleSearchInputChange}
+                onFocus={() => {
+                  if (searchSuggestions.length > 0)
+                    setShowSearchSuggestions(true);
+                }}
                 aria-label="Search phones by name or model"
+                aria-autocomplete="list"
+                aria-expanded={showSearchSuggestions}
+                aria-controls="dash-search-suggestions"
               />
               {searchInput && (
                 <button
@@ -1034,6 +1095,74 @@ function Dashboard() {
                 >
                   <CloseIcon />
                 </button>
+              )}
+              {showSearchSuggestions && (
+                <ul
+                  id="dash-search-suggestions"
+                  className="dash-search-suggestions"
+                  role="listbox"
+                >
+                  {searchSuggestionsLoading &&
+                    searchSuggestions.length === 0 && (
+                      <li className="dash-search-suggestion-empty">
+                        Searching…
+                      </li>
+                    )}
+                  {!searchSuggestionsLoading &&
+                    searchSuggestions.length === 0 && (
+                      <li className="dash-search-suggestion-empty">
+                        No phones found
+                      </li>
+                    )}
+                  {searchSuggestions.map((p) => (
+                    <li
+                      key={p.id}
+                      role="option"
+                      aria-selected="false"
+                      className="dash-search-suggestion"
+                      onMouseDown={(e) => {
+                        // mousedown (not click) so the input's blur
+                        // doesn't close the dropdown before the
+                        // navigation handler fires.
+                        e.preventDefault();
+                        handleSearchSuggestionClick(p);
+                      }}
+                    >
+                      <span
+                        className="dash-search-suggestion-thumb"
+                        aria-hidden="true"
+                      >
+                        {p.imageUrl ? (
+                          <img
+                            src={p.imageUrl}
+                            alt=""
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.parentElement.classList.add(
+                                "no-image",
+                              );
+                            }}
+                          />
+                        ) : (
+                          <span className="phone-card-emoji">📱</span>
+                        )}
+                      </span>
+                      <span className="dash-search-suggestion-info">
+                        <span className="dash-search-suggestion-name">
+                          {p.modelName}
+                        </span>
+                        <span className="dash-search-suggestion-brand">
+                          {p.brand?.name || "Unknown brand"}
+                        </span>
+                      </span>
+                      {p.cheapestVariant?.price && (
+                        <span className="dash-search-suggestion-price">
+                          {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
             <button type="submit" className="btn btn-primary dash-search-btn">
@@ -1578,13 +1707,13 @@ function Dashboard() {
         )}
       </main>
 
-      {panelPhase !== "closed" && (
+      {location.pathname === "/dashboard/recommend" && (
         <div
-          className={`search-overlay dash-recommend-overlay ${panelPhase === "closing" ? "closing" : ""}`}
+          className="search-overlay dash-recommend-overlay"
           onClick={closeRecommend}
         >
           <div
-            className={`search-modal dash-recommend-modal ${panelPhase === "closing" ? "closing" : ""}`}
+            className="search-modal dash-recommend-modal"
             role="dialog"
             aria-label="Phone recommendation"
             onClick={(e) => e.stopPropagation()}
@@ -1928,10 +2057,10 @@ function Dashboard() {
         </div>
       )}
 
-      <ComparePanel
-        open={isCompareOpen}
-        onClose={() => setIsCompareOpen(false)}
-      />
+      {/* Compare panel — side-docked overlay. `open` is driven by the
+          URL so back-nav from a phone click keeps the panel visible.
+          The dashboard chrome stays mounted underneath. */}
+      <ComparePanel open={isCompareOpen} onClose={closeCompare} />
     </div>
   );
 }

@@ -234,28 +234,106 @@ function getWinner(val1, val2, higherIsBetter = true) {
 }
 
 // ---- Main Compare Panel Component ----
+//
+// State persistence
+// -----------------
+// The user selects two phones, clicks one to view its spec page, hits
+// browser Back, and expects the panel to come back with both phones
+// still selected. Because the dashboard unmounts during the
+// `/phones/:id` detour (App.jsx routes that path to <PhoneDetail />,
+// not <Dashboard />), the panel's React state is lost across the
+// trip. We mirror phone1/phone2/compareResult into sessionStorage
+// and re-hydrate on (re)mount + on every open transition. Storage
+// is cleared only when the user explicitly clicks "Compare different
+// phones" — clicking the X to close the panel keeps the storage
+// alive so a later reopen restores the same selections.
+const CMP_STORAGE_KEYS = {
+  phone1: "compare.phone1",
+  phone2: "compare.phone2",
+  result: "compare.result",
+};
+
+function readCmpStorage(key) {
+  try {
+    const raw = sessionStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCmpStorage(key, value) {
+  try {
+    if (value == null) sessionStorage.removeItem(key);
+    else sessionStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* sessionStorage unavailable — ignore */
+  }
+}
+
+function clearCmpStorage() {
+  try {
+    sessionStorage.removeItem(CMP_STORAGE_KEYS.phone1);
+    sessionStorage.removeItem(CMP_STORAGE_KEYS.phone2);
+    sessionStorage.removeItem(CMP_STORAGE_KEYS.result);
+  } catch {
+    /* ignore */
+  }
+}
+
 function ComparePanel({ open, onClose }) {
   const navigate = useNavigate();
-  const [phone1, setPhone1] = useState(null);
-  const [phone2, setPhone2] = useState(null);
-  const [compareResult, setCompareResult] = useState(null);
+  const [phone1, setPhone1] = useState(() =>
+    readCmpStorage(CMP_STORAGE_KEYS.phone1),
+  );
+  const [phone2, setPhone2] = useState(() =>
+    readCmpStorage(CMP_STORAGE_KEYS.phone2),
+  );
+  const [compareResult, setCompareResult] = useState(() =>
+    readCmpStorage(CMP_STORAGE_KEYS.result),
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [validationError, setValidationError] = useState("");
 
-  // Reset state when panel is closed so reopening starts fresh
+  // Persist the selections + ML result so they survive the
+  // `/phones/:id` → Back round-trip. Each effect only writes when the
+  // corresponding state actually changes; `null` clears the storage
+  // entry so a deliberate single-phone clear (autocomplete X button)
+  // is reflected.
   useEffect(() => {
-    if (!open) {
-      // Slight delay so the close animation doesn't flash new content
-      const t = setTimeout(() => {
-        setPhone1(null);
-        setPhone2(null);
-        setCompareResult(null);
-        setError("");
-        setValidationError("");
-      }, 250);
-      return () => clearTimeout(t);
+    writeCmpStorage(CMP_STORAGE_KEYS.phone1, phone1);
+  }, [phone1]);
+  useEffect(() => {
+    writeCmpStorage(CMP_STORAGE_KEYS.phone2, phone2);
+  }, [phone2]);
+  useEffect(() => {
+    writeCmpStorage(CMP_STORAGE_KEYS.result, compareResult);
+  }, [compareResult]);
+
+  // React to the panel's open/closed transitions. On open we pull
+  // the latest values out of sessionStorage (handles the case where
+  // the user closed the panel with X and later reopens it — without
+  // this the closed-state cleanup below would wipe the visible
+  // selections on the way back). On close we wipe React state after
+  // the slide-out animation, but deliberately keep the storage so
+  // the next open can re-hydrate from it. The cleanup clears the
+  // pending timeout if the panel re-opens within the 250ms window.
+  useEffect(() => {
+    if (open) {
+      setPhone1(readCmpStorage(CMP_STORAGE_KEYS.phone1));
+      setPhone2(readCmpStorage(CMP_STORAGE_KEYS.phone2));
+      setCompareResult(readCmpStorage(CMP_STORAGE_KEYS.result));
+      return;
     }
+    const t = setTimeout(() => {
+      setPhone1(null);
+      setPhone2(null);
+      setCompareResult(null);
+      setError("");
+      setValidationError("");
+    }, 250);
+    return () => clearTimeout(t);
   }, [open]);
 
   const handleCompare = useCallback(async () => {
@@ -301,6 +379,9 @@ function ComparePanel({ open, onClose }) {
     setCompareResult(null);
     setError("");
     setValidationError("");
+    // User explicitly asked to start over — drop the persisted
+    // selections too so a future reopen starts from a blank panel.
+    clearCmpStorage();
   };
 
   // Derive per-dimension rows + overall winner from the ML response.
