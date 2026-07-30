@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { getAutoRecommendations, getRecommendations } from "../services/recommend";
 import {
-  getMyFilterPreset,
+  getAutoRecommendations,
+  getRecommendations,
+} from "../services/recommend";
+import {
   getMyPreferences,
   getMyProfileBundle,
-  saveMyFilterPreset,
   saveMyPreferences,
 } from "../services/profile";
 import { useAuth } from "../hooks/useAuth.jsx";
@@ -35,6 +36,7 @@ import {
   PASSWORD_MIN_LENGTH,
 } from "./AuthShared";
 import ComparePanel from "./ComparePanel.jsx";
+import { formatPriceNpr } from "../utils/formatPrice.js";
 
 // function ThemeIcon() {
 //   return (
@@ -285,8 +287,7 @@ function Dashboard() {
         // 1. Restore the recommend modal state — persona + weights +
         //    budget. If `recommendationPersona` is missing (fresh user)
         //    keep the default `gamer` selection already in state.
-        const persona =
-          bundle.customerProfile?.recommendationPersona || null;
+        const persona = bundle.customerProfile?.recommendationPersona || null;
         if (persona) {
           const cat = personaToCategory(persona);
           setSelectedCategory(cat);
@@ -299,25 +300,6 @@ function Dashboard() {
             ? bundle.preference.maxBudget
             : null;
         if (maxBudget !== null) setBudgetMax(String(maxBudget));
-
-        // 2. Restore filters + sort from the saved preset. The
-        //    backend stores it under `preferredBrands` with a
-        //    `__kind: "filter-preset"` discriminator.
-        const preset = await getMyFilterPreset();
-        if (ignore) return;
-        if (preset && preset.filters && typeof preset.filters === "object") {
-          // Defensive: only pick keys present in EMPTY_FILTERS so a
-          // stale key in storage can't break the filter UI.
-          const merged = { ...EMPTY_FILTERS };
-          for (const k of Object.keys(EMPTY_FILTERS)) {
-            if (k in preset.filters) merged[k] = preset.filters[k];
-          }
-          setFilters(merged);
-          setPendingFilters(merged);
-        }
-        if (preset && typeof preset.sort === "string" && preset.sort.length > 0) {
-          setSort(preset.sort);
-        }
 
         hydratedRef.current = true;
       } catch (err) {
@@ -544,8 +526,7 @@ function Dashboard() {
       else if (serverKey === "password") fieldErrors.newPassword = msg;
       else if (serverKey === "confirmPassword")
         fieldErrors.confirmPassword = msg;
-      else
-        bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
+      else bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
     }
     return { fieldErrors, bannerMessage };
   }, []);
@@ -578,13 +559,16 @@ function Dashboard() {
             currentPassword: data?.message || "Current password is incorrect",
           }));
         } else {
-          const { fieldErrors, bannerMessage } =
-            mapChangePwFieldErrors(data?.details);
+          const { fieldErrors, bannerMessage } = mapChangePwFieldErrors(
+            data?.details,
+          );
           if (Object.keys(fieldErrors).length) {
             setChangePwErrors((prev) => ({ ...prev, ...fieldErrors }));
           }
           setChangePwSubmitError(
-            bannerMessage || data?.message || "Couldn't change password. Please try again.",
+            bannerMessage ||
+              data?.message ||
+              "Couldn't change password. Please try again.",
           );
         }
       } finally {
@@ -673,6 +657,16 @@ function Dashboard() {
     e.preventDefault();
     const term = searchInput.trim();
     setSearchTerm(term);
+    // Drop the auto/explicit recs once the user starts searching so the
+    // "All Phones Ranked For You" block can't bury the search results.
+    // The user can hit "Clear recommendations" to bring them back, or
+    // simply clear the search box.
+    if (term && (recs || recsLoading)) {
+      setRecs(null);
+      setRecsError("");
+      setRecsLoading(false);
+      setRecsPersona(null);
+    }
     setShowFilters(false);
     setPage(1);
   };
@@ -692,17 +686,21 @@ function Dashboard() {
   };
 
   const handleApplyFilters = () => {
+    const willHaveActiveFilters = Object.values(pendingFilters).some(Boolean);
     setFilters(pendingFilters);
     setShowFilters(false);
     setPage(1);
-    // Auto-save the filter + current sort. Wrapped in a try so a save
-    // failure can never abort the apply flow.
-    saveMyFilterPreset({
-      filters: pendingFilters,
-      sort,
-    }).catch((err) => {
-      console.warn("Filter preset save failed:", err?.message || err);
-    });
+    // Drop the auto/explicit recs once the user narrows the catalog so
+    // the "All Phones Ranked For You" block can't bury the filtered
+    // results. Mirrors the search-term behaviour above.
+    if (willHaveActiveFilters && (recs || recsLoading)) {
+      setRecs(null);
+      setRecsError("");
+      setRecsLoading(false);
+      setRecsPersona(null);
+    }
+    // Auto-save disabled — applying filters should not persist them
+    // across a page refresh.
   };
 
   const handleClearFilters = () => {
@@ -713,14 +711,8 @@ function Dashboard() {
   const handleSortChange = (nextSort) => {
     setSort(nextSort);
     setPage(1);
-    // Auto-save the new sort alongside the current filters so a reload
-    // restores both.
-    saveMyFilterPreset({
-      filters,
-      sort: nextSort,
-    }).catch((err) => {
-      console.warn("Filter preset save failed:", err?.message || err);
-    });
+    // Auto-save disabled — sort selection should not persist across
+    // a page refresh.
   };
 
   const displayName = user?.name || user?.username || "there";
@@ -1188,7 +1180,7 @@ function Dashboard() {
           </div>
         )}
 
-        {recs && !recsLoading && (
+        {recs && !recsLoading && !searchTerm && activeFilterCount === 0 && (
           <section
             className="dash-recs-section"
             aria-label="Recommended for you"
@@ -1227,126 +1219,113 @@ function Dashboard() {
                     }
                   };
                   return (
-                  <div
-                    key={r.id || `${r.brand?.name}-${r.modelName}`}
-                    className="phone-card rec-card"
-                    role={isClickable ? "button" : undefined}
-                    tabIndex={isClickable ? 0 : -1}
-                    aria-label={
-                      isClickable
-                        ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
-                        : undefined
-                    }
-                    onClick={handleRecClick}
-                    onKeyDown={handleRecKeyDown}
-                    onMouseEnter={() => r.id && setHoveredCard(r.id)}
-                    onMouseLeave={() => setHoveredCard(null)}
-                    style={{ cursor: isClickable ? "pointer" : "default" }}
-                  >
-                    <div className="phone-card-top">
-                      <div className="phone-card-image">
-                        {r.imageUrl ? (
-                          <img
-                            src={r.imageUrl}
-                            alt={r.modelName}
-                            onError={(e) => {
-                              e.target.style.display = "none";
-                              e.target.parentElement.classList.add("no-image");
-                            }}
-                          />
-                        ) : (
-                          <span className="phone-card-emoji">📱</span>
-                        )}
-<<<<<<< HEAD
-                        {typeof r.matchScore === "number" && (() => {
-                          // Backend already returns matchScore on a 0..100
-                          // scale (e.g. 70.7), so the previous
-                          // `r.matchScore * 100` printed "7070%". To stay
-                          // forward-compatible, treat any value <= 1 as a
-                          // 0..1 ratio and scale it up; otherwise use the
-                          // value directly.
-                          const pct =
-                            r.matchScore <= 1
-                              ? r.matchScore * 100
-                              : r.matchScore;
-                          return (
+                    <div
+                      key={r.id || `${r.brand?.name}-${r.modelName}`}
+                      className="phone-card rec-card"
+                      role={isClickable ? "button" : undefined}
+                      tabIndex={isClickable ? 0 : -1}
+                      aria-label={
+                        isClickable
+                          ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
+                          : undefined
+                      }
+                      onClick={handleRecClick}
+                      onKeyDown={handleRecKeyDown}
+                      onMouseEnter={() => r.id && setHoveredCard(r.id)}
+                      onMouseLeave={() => setHoveredCard(null)}
+                      style={{ cursor: isClickable ? "pointer" : "default" }}
+                    >
+                      <div className="phone-card-top">
+                        <div className="phone-card-image">
+                          {r.imageUrl ? (
+                            <img
+                              src={r.imageUrl}
+                              alt={r.modelName}
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                                e.target.parentElement.classList.add(
+                                  "no-image",
+                                );
+                              }}
+                            />
+                          ) : (
+                            <span className="phone-card-emoji">📱</span>
+                          )}
+                          {typeof r.matchScore === "number" && (
                             <span
                               className="rec-match-badge"
                               title="Match score from the recommender"
                             >
-                              {Math.round(pct)}% match
+                              {Math.min(
+                                100,
+                                Math.round(r.matchScore * 10) / 10,
+                              ).toFixed(1)}
+                              % match
                             </span>
-                          );
-                        })()}
-=======
-                        {typeof r.matchScore === "number" && (
-                          <span
-                            className="rec-match-badge"
-                            title="Match score from the recommender"
-                          >
-                            {Math.round(r.matchScore * 100)}% match
-                          </span>
-                        )}
-                        {r.matchComponents?.search_history > 0.6 && (
-                          <span
-                            className="rec-boosted-badge"
-                            title="Ranked higher because of your recent searches & views"
-                          >
-                            Boosted by your activity
-                          </span>
-                        )}
->>>>>>> development
+                          )}
+                          {r.matchComponents?.search_history > 0.6 && (
+                            <span
+                              className="rec-boosted-badge"
+                              title="Ranked higher because of your recent searches & views"
+                            >
+                              Boosted by your activity
+                            </span>
+                          )}
+                        </div>
+                        <div className="phone-card-name">{r.modelName}</div>
+                        <div className="phone-card-tagline">
+                          {r.brand?.name || "Unknown brand"}
+                        </div>
                       </div>
-                      <div className="phone-card-name">{r.modelName}</div>
-                      <div className="phone-card-tagline">
-                        {r.brand?.name || "Unknown brand"}
+
+                      <div className="phone-card-details">
+                        {r.keySpecs?.os && (
+                          <div className="phone-spec">
+                            <CpuIcon />
+                            <span>{r.keySpecs.os}</span>
+                          </div>
+                        )}
+                        {r.keySpecs?.camera && (
+                          <div className="phone-spec">
+                            <CameraIcon />
+                            <span>{r.keySpecs.camera}</span>
+                          </div>
+                        )}
+                        {r.keySpecs?.battery && (
+                          <div className="phone-spec">
+                            <BatteryIcon />
+                            <span>{r.keySpecs.battery} mAh</span>
+                          </div>
+                        )}
+                        {r.cheapestVariant?.price && (
+                          <div className="phone-spec phone-price">
+                            <TagIcon />
+                            <span>
+                              {formatPriceNpr(r.cheapestVariant.price) ?? "—"}
+                              {r.cheapestVariant.ram &&
+                              r.cheapestVariant.storage
+                                ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
+                                : ""}
+                            </span>
+                          </div>
+                        )}
                       </div>
-                    </div>
 
-                    <div className="phone-card-details">
-                      {r.keySpecs?.os && (
-                        <div className="phone-spec">
-                          <CpuIcon />
-                          <span>{r.keySpecs.os}</span>
-                        </div>
+                      {Array.isArray(r.why) && r.why.length > 0 && (
+                        <ul
+                          className="rec-why-list"
+                          aria-label="Why this match"
+                        >
+                          {r.why.slice(0, 3).map((reason, idx) => (
+                            <li key={idx}>{reason}</li>
+                          ))}
+                        </ul>
                       )}
-                      {r.keySpecs?.camera && (
-                        <div className="phone-spec">
-                          <CameraIcon />
-                          <span>{r.keySpecs.camera}</span>
-                        </div>
-                      )}
-                      {r.keySpecs?.battery && (
-                        <div className="phone-spec">
-                          <BatteryIcon />
-                          <span>{r.keySpecs.battery} mAh</span>
-                        </div>
-                      )}
-                      {r.cheapestVariant?.price && (
-                        <div className="phone-spec phone-price">
-                          <TagIcon />
-                          <span>
-                            €{r.cheapestVariant.price}
-                            {r.cheapestVariant.ram && r.cheapestVariant.storage
-                              ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
-                              : ""}
-                          </span>
-                        </div>
+
+                      {r.inDatabase === false && (
+                        <div className="rec-not-in-db">Not in our catalog</div>
                       )}
                     </div>
-
-                    {Array.isArray(r.why) && r.why.length > 0 && (
-                      <ul className="rec-why-list" aria-label="Why this match">
-                        {r.why.slice(0, 3).map((reason, idx) => (
-                          <li key={idx}>{reason}</li>
-                        ))}
-                      </ul>
-                    )}
-
-                    {r.inDatabase === false && (
-                      <div className="rec-not-in-db">Not in our catalog</div>
-                    )}
-                  </div>
                   );
                 })}
               </div>
@@ -1415,7 +1394,7 @@ function Dashboard() {
                     <div className="phone-spec phone-price">
                       <TagIcon />
                       <span>
-                        €{p.cheapestVariant.price}
+                        {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
                         {p.cheapestVariant.ram && p.cheapestVariant.storage
                           ? ` · ${p.cheapestVariant.ram}GB/${p.cheapestVariant.storage}GB`
                           : ""}

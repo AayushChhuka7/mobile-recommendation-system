@@ -1,11 +1,16 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
-=======
->>>>>>> development
 import api from "../services/api";
 import { postCompareMl } from "../services/recommend";
-import { CloseIcon, SearchIcon, CameraIcon, BatteryIcon, CpuIcon, TagIcon } from "./AuthShared";
+import { formatPriceNpr } from "../utils/formatPrice.js";
+import {
+  CloseIcon,
+  SearchIcon,
+  CameraIcon,
+  BatteryIcon,
+  CpuIcon,
+  TagIcon,
+} from "./AuthShared";
 import "./ComparePanel.css";
 
 // ---- Debounce helper ----
@@ -112,7 +117,8 @@ function PhoneAutocomplete({ label, selectedPhone, onSelect, placeholder }) {
           value={selectedPhone ? selectedPhone.modelName : query}
           onChange={handleInputChange}
           onFocus={() => {
-            if (suggestions.length > 0 || query.length >= 1) setShowDropdown(true);
+            if (suggestions.length > 0 || query.length >= 1)
+              setShowDropdown(true);
           }}
         />
         {isLoading && <span className="cmp-spinner">⟳</span>}
@@ -157,18 +163,21 @@ function PhoneAutocomplete({ label, selectedPhone, onSelect, placeholder }) {
                 </div>
                 {p.cheapestVariant?.price && (
                   <span className="cmp-suggestion-price">
-                    €{p.cheapestVariant.price}
+                    {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
                   </span>
                 )}
               </li>
             ))}
           </ul>
         )}
-        {showDropdown && !isLoading && suggestions.length === 0 && query.length >= 1 && (
-          <ul className="cmp-dropdown" role="listbox">
-            <li className="cmp-no-results">No phones found</li>
-          </ul>
-        )}
+        {showDropdown &&
+          !isLoading &&
+          suggestions.length === 0 &&
+          query.length >= 1 && (
+            <ul className="cmp-dropdown" role="listbox">
+              <li className="cmp-no-results">No phones found</li>
+            </ul>
+          )}
       </div>
     </div>
   );
@@ -215,15 +224,18 @@ function getWinner(val1, val2, higherIsBetter = true) {
   }
   if (val2 == null || val2 === "" || val2 === 0) return "phone1";
   if (val1 === val2) return "tie";
-  return higherIsBetter ? (val1 > val2 ? "phone1" : "phone2") : val1 < val2 ? "phone1" : "phone2";
+  return higherIsBetter
+    ? val1 > val2
+      ? "phone1"
+      : "phone2"
+    : val1 < val2
+      ? "phone1"
+      : "phone2";
 }
 
 // ---- Main Compare Panel Component ----
 function ComparePanel({ open, onClose }) {
-<<<<<<< HEAD
   const navigate = useNavigate();
-=======
->>>>>>> development
   const [phone1, setPhone1] = useState(null);
   const [phone2, setPhone2] = useState(null);
   const [compareResult, setCompareResult] = useState(null);
@@ -306,18 +318,17 @@ function ComparePanel({ open, onClose }) {
   const formatMlPrice = (price) =>
     price == null || Number.isNaN(Number(price))
       ? "—"
-      : `€${Number(price).toLocaleString()}`;
+      : formatPriceNpr(price) ?? "—";
 
   // Map the ML "Winner" string to a UI side key.
   const overallWinnerName = compareResult?.Overall_Winner || null;
-  const overallWinnerKey =
-    !compareResult
-      ? null
-      : overallWinnerName === compareResult.Phone_A
-        ? "phone1"
-        : overallWinnerName === compareResult.Phone_B
-          ? "phone2"
-          : null; // "Tie" or missing
+  const overallWinnerKey = !compareResult
+    ? null
+    : overallWinnerName === compareResult.Phone_A
+      ? "phone1"
+      : overallWinnerName === compareResult.Phone_B
+        ? "phone2"
+        : null; // "Tie" or missing
   const isOverallTie = overallWinnerName === "Tie";
 
   return (
@@ -392,19 +403,26 @@ function ComparePanel({ open, onClose }) {
                 if (!phone) return null;
                 const phoneKey = idx === 0 ? "phone1" : "phone2";
                 const isOverallWinner = overallWinnerKey === phoneKey;
+                const handleCardClick = () => {
+                  if (phone.id) navigate(`/phones/${phone.id}`);
+                };
+                const handleCardKeyDown = (e) => {
+                  if (!phone.id) return;
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleCardClick();
+                  }
+                };
                 return (
-<<<<<<< HEAD
-                  <button
-                    key={phone.id}
-                    type="button"
-                    className={`cmp-result-card ${isOverallWinner ? "winner" : ""}`}
-                    onClick={() => phone?.id && navigate(`/phones/${phone.id}`)}
-                    aria-label={`Open ${phone.modelName} specifications`}
-=======
                   <div
                     key={phone.id}
                     className={`cmp-result-card ${isOverallWinner ? "winner" : ""}`}
->>>>>>> development
+                    role="button"
+                    tabIndex={phone.id ? 0 : -1}
+                    aria-label={`View ${phone.modelName || "phone"} details`}
+                    onClick={handleCardClick}
+                    onKeyDown={handleCardKeyDown}
+                    style={{ cursor: phone.id ? "pointer" : "default" }}
                   >
                     {isOverallWinner && !isOverallTie && (
                       <span className="cmp-overall-badge">🏆 ML Pick</span>
@@ -427,7 +445,9 @@ function ComparePanel({ open, onClose }) {
                       <TagIcon />
                       <span>
                         {formatMlPrice(
-                          idx === 0 ? compareResult?.Price_A : compareResult?.Price_B,
+                          idx === 0
+                            ? compareResult?.Price_A
+                            : compareResult?.Price_B,
                         )}
                       </span>
                     </div>
@@ -451,11 +471,7 @@ function ComparePanel({ open, onClose }) {
                         </div>
                       )}
                     </div>
-<<<<<<< HEAD
-                  </button>
-=======
                   </div>
->>>>>>> development
                 );
               })}
             </div>
@@ -483,7 +499,13 @@ function ComparePanel({ open, onClose }) {
                   );
                 })
               ) : (
-                <p style={{ fontSize: 12.5, color: "var(--text-muted)", margin: 0 }}>
+                <p
+                  style={{
+                    fontSize: 12.5,
+                    color: "var(--text-muted)",
+                    margin: 0,
+                  }}
+                >
                   No per-dimension scores returned.
                 </p>
               )}
@@ -497,9 +519,7 @@ function ComparePanel({ open, onClose }) {
                 <h4 className="cmp-categories-title">Why these scores?</h4>
                 <div className="cmp-shap-grid">
                   <div>
-                    <div className="cmp-shap-name">
-                      {compareResult.Phone_A}
-                    </div>
+                    <div className="cmp-shap-name">{compareResult.Phone_A}</div>
                     <ul className="cmp-shap-list">
                       {(compareResult.SHAP_A || []).map((s) => (
                         <li key={s.feature}>
@@ -518,9 +538,7 @@ function ComparePanel({ open, onClose }) {
                     </ul>
                   </div>
                   <div>
-                    <div className="cmp-shap-name">
-                      {compareResult.Phone_B}
-                    </div>
+                    <div className="cmp-shap-name">{compareResult.Phone_B}</div>
                     <ul className="cmp-shap-list">
                       {(compareResult.SHAP_B || []).map((s) => (
                         <li key={s.feature}>

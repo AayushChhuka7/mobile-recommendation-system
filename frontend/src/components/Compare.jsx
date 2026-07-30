@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { getPhoneById } from "../services/phones";
 import { postCompareMl } from "../services/recommend";
+import { formatPriceNpr } from "../utils/formatPrice.js";
 import { useAuth } from "../hooks/useAuth.jsx";
 import { PhoneDetailView } from "./PhoneDetail";
 import "./Dashboard.css";
@@ -107,7 +108,7 @@ function PhoneAutocomplete({ label, selectedPhone, onSelect, placeholder }) {
                   <span className="ac-brand">{p.brand?.name}</span>
                 </div>
                 {p.cheapestVariant?.price && (
-                  <span className="ac-price">€{p.cheapestVariant.price}</span>
+                  <span className="ac-price">{formatPriceNpr(p.cheapestVariant.price) ?? "—"}</span>
                 )}
               </li>
             ))}
@@ -160,7 +161,7 @@ function formatScore(v) {
 
 function formatMlPrice(price) {
   if (price == null || Number.isNaN(Number(price))) return "—";
-  return `€${Number(price).toLocaleString()}`;
+  return formatPriceNpr(price) ?? "—";
 }
 
 // ---- Full-detail panel for a single phone (uses GET /phones/:id) ----
