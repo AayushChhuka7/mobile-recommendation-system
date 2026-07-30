@@ -114,14 +114,6 @@ export const revokeRole = async (userId) => {
 // source of truth.
 
 // Whitelist of roles a user can self-assign at registration.
-<<<<<<< HEAD
-// `Admin` is admin-only.
-const ASSIGNABLE_ROLES = ["Customer", "Salesman"];
-
-export const getAssignableRoles = () => {
-  // Return a fresh array so callers can't mutate the source.
-  return [...ASSIGNABLE_ROLES];
-=======
 //
 // Production-safe default: Admin is admin-only and cannot be self-
 // assigned through the public registration endpoint. An attacker
@@ -154,16 +146,11 @@ const getAssignableRolesList = () => {
 export const getAssignableRoles = () => {
   // Return a fresh array so callers can't mutate the source.
   return getAssignableRolesList();
->>>>>>> proxy-dev
 };
 
 export const isAssignableRole = (roleName) => {
   if (typeof roleName !== "string" || roleName.length === 0) return false;
-<<<<<<< HEAD
-  return ASSIGNABLE_ROLES.includes(roleName);
-=======
   return getAssignableRolesList().includes(roleName);
->>>>>>> proxy-dev
 };
 
 export const assertUserRoleMatches = async (userId, roleName) => {

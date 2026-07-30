@@ -2,15 +2,12 @@ import { prisma } from "../config/prisma.mjs";
 import { generateOtp, hashPassword, verifyPassword } from "../utils/crypto.mjs";
 import { sendEmail } from "../utils/email.mjs";
 import { findRoleByName } from "./rbacService.mjs";
-<<<<<<< HEAD
-=======
 import {
   PERSONA_TO_USAGE_TYPE,
   deriveCameraPreference,
   deriveBudgetSegment,
   ALLOWED_PERSONAS,
 } from "./profileService.mjs";
->>>>>>> proxy-dev
 
 import {
   notFound,
@@ -40,9 +37,6 @@ const newOtpExpiry = () => new Date(Date.now() + OTP_TTL_MS);
 // per the locked-in Phase 1 design.
 
 export const registerUserService = async (userData) => {
-<<<<<<< HEAD
-  const { confirmPassword, roleName, ...data } = userData;
-=======
   const {
     confirmPassword,
     roleName,
@@ -56,7 +50,6 @@ export const registerUserService = async (userData) => {
     weights,
     ...data
   } = userData;
->>>>>>> proxy-dev
 
   const role = await findRoleByName(roleName);
   if (!role) {
@@ -67,8 +60,6 @@ export const registerUserService = async (userData) => {
 
   const code = generateOtp();
 
-<<<<<<< HEAD
-=======
   // ---- Normalise onboarding payload --------------------------------------
   // The persona + budget shape mirrors what `saveExplicitPreferences`
   // expects. We re-derive the same enums (usageType, cameraPreference,
@@ -110,7 +101,6 @@ export const registerUserService = async (userData) => {
     (Array.isArray(cleanedBrands) && cleanedBrands.length > 0) ||
     (weights && typeof weights === "object");
 
->>>>>>> proxy-dev
   const newUser = await prisma.$transaction(async (tx) => {
     const createdUser = await tx.users.create({
       data: { ...data, roleId: role.roleId },
@@ -125,8 +115,6 @@ export const registerUserService = async (userData) => {
       },
     });
 
-<<<<<<< HEAD
-=======
     // Issue 2 — write the onboarding answers into UserPreference +
     // CustomerProfile inside the SAME transaction as the user create.
     // This is what `saveExplicitPreferences` does for the post-login
@@ -173,7 +161,6 @@ export const registerUserService = async (userData) => {
       });
     }
 
->>>>>>> proxy-dev
     return createdUser;
   });
   await sendEmail(data.email, code);

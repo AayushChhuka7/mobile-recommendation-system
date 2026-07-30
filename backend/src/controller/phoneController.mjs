@@ -1,11 +1,8 @@
 import * as phoneService from "../services/phoneService.mjs";
 import {
-<<<<<<< HEAD
-=======
   safeRecordSearchEvent,
 } from "../services/profileService.mjs";
 import {
->>>>>>> proxy-dev
   formatPhoneListItem,
   formatPhoneDetail,
 } from "../serializers/phoneSerializer.mjs";
@@ -17,8 +14,6 @@ import { badRequest } from "../utils/ApiError.mjs";
 export const getAllPhones = catchAsync(async (req, res) => {
   const { phones, pagination } = await phoneService.getAllPhones(req.query);
 
-<<<<<<< HEAD
-=======
   // Implicit signal: log the search query / filter snapshot into
   // SearchHistory. Fire-and-forget so analytics never breaks the
   // listing response.
@@ -51,7 +46,6 @@ export const getAllPhones = catchAsync(async (req, res) => {
     }
   }
 
->>>>>>> proxy-dev
   return sendPaginated(res, phones.map(formatPhoneListItem), pagination);
 });
 
@@ -65,8 +59,6 @@ export const getPhoneById = catchAsync(async (req, res) => {
 
   const phone = await phoneService.getPhoneById(id);
 
-<<<<<<< HEAD
-=======
   // Implicit signal: the unified "view" event is fired by the FE via
   // `useEventLogger("view", { phoneId: id })` (see PhoneDetail.jsx),
   // which lands in the `Event` table + per-tag `BehaviorScore` upserts
@@ -79,7 +71,6 @@ export const getPhoneById = catchAsync(async (req, res) => {
   // (and even more under React 18 StrictMode's dev-mode double-mount).
   // Removed so the FE is the single source of truth for view tracking.
 
->>>>>>> proxy-dev
   return sendSuccess(res, formatPhoneDetail(phone), {
     message: "Phone retrieved successfully",
   });

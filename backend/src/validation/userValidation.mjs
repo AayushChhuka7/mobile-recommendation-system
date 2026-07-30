@@ -109,8 +109,6 @@ export const userCreationValidation = checkSchema({
       },
     },
   },
-<<<<<<< HEAD
-=======
   // ---- Issue 2 — onboarding fields ----------------------------------------
   // All optional. The FE collects them on the new /register/preferences
   // step and forwards them in the same POST /auth/register body so the
@@ -185,7 +183,6 @@ export const userCreationValidation = checkSchema({
     },
     toInt: true,
   },
->>>>>>> proxy-dev
 });
 
 export const userUpdateValidation = checkSchema({

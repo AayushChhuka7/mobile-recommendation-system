@@ -3,16 +3,12 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { getPhoneById } from "../services/phones";
 import { postCompareMl } from "../services/recommend";
+import { formatPriceNpr } from "../utils/formatPrice.js";
 import { useAuth } from "../hooks/useAuth.jsx";
 import { PhoneDetailView } from "./PhoneDetail";
 import "./Dashboard.css";
 import "./Compare.css";
-import {
-  UserIcon,
-  CloseIcon,
-  LogoutIcon,
-  ChevronDownIcon,
-} from "./AuthShared";
+import { UserIcon, CloseIcon, LogoutIcon, ChevronDownIcon } from "./AuthShared";
 
 // ---- Debounce helper ----
 function useDebounce(callback, delay) {
@@ -112,7 +108,7 @@ function PhoneAutocomplete({ label, selectedPhone, onSelect, placeholder }) {
                   <span className="ac-brand">{p.brand?.name}</span>
                 </div>
                 {p.cheapestVariant?.price && (
-                  <span className="ac-price">€{p.cheapestVariant.price}</span>
+                  <span className="ac-price">{formatPriceNpr(p.cheapestVariant.price) ?? "—"}</span>
                 )}
               </li>
             ))}
@@ -165,7 +161,7 @@ function formatScore(v) {
 
 function formatMlPrice(price) {
   if (price == null || Number.isNaN(Number(price))) return "—";
-  return `€${Number(price).toLocaleString()}`;
+  return formatPriceNpr(price) ?? "—";
 }
 
 // ---- Full-detail panel for a single phone (uses GET /phones/:id) ----
@@ -443,10 +439,7 @@ function Compare() {
         </div>
 
         {/* ML comparison results */}
-        <section
-          className="compare-ml-area"
-          aria-label="ML comparison results"
-        >
+        <section className="compare-ml-area" aria-label="ML comparison results">
           <div className="compare-section-label">
             <span className="compare-ml-badge">AI</span>
             <span>ML-powered comparison</span>
@@ -519,7 +512,10 @@ function Compare() {
                   <>
                     <span className="winner-badge muted">🤝 Even</span>
                     <strong>Overall tie</strong>
-                    <span> — both phones win the same number of dimensions.</span>
+                    <span>
+                      {" "}
+                      — both phones win the same number of dimensions.
+                    </span>
                   </>
                 )}
               </div>

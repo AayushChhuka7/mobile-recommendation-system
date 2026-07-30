@@ -24,21 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
-<<<<<<< HEAD
- * Prisma Client JS version: 7.9.0
- * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
- */
-Prisma.prismaVersion = {
-  client: "7.9.0",
-  engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
-=======
  * Prisma Client JS version: 7.8.0
  * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 Prisma.prismaVersion = {
   client: "7.8.0",
   engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
->>>>>>> proxy-dev
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -295,8 +286,6 @@ exports.Prisma.RecommendationHistoryScalarFieldEnum = {
   purchased: 'purchased'
 };
 
-<<<<<<< HEAD
-=======
 exports.Prisma.RecommendationLogScalarFieldEnum = {
   logId: 'logId',
   userId: 'userId',
@@ -307,7 +296,6 @@ exports.Prisma.RecommendationLogScalarFieldEnum = {
   clicked: 'clicked'
 };
 
->>>>>>> proxy-dev
 exports.Prisma.CustomerProfileScalarFieldEnum = {
   profileId: 'profileId',
   userId: 'userId',
@@ -394,8 +382,6 @@ exports.Prisma.AdminStatsCacheScalarFieldEnum = {
   avgCompatibility: 'avgCompatibility'
 };
 
-<<<<<<< HEAD
-=======
 exports.Prisma.EventScalarFieldEnum = {
   eventId: 'eventId',
   userId: 'userId',
@@ -412,7 +398,6 @@ exports.Prisma.BehaviorScoreScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
->>>>>>> proxy-dev
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -495,23 +480,16 @@ exports.Prisma.ModelName = {
   UserProfile: 'UserProfile',
   UserPreference: 'UserPreference',
   RecommendationHistory: 'RecommendationHistory',
-<<<<<<< HEAD
-=======
   RecommendationLog: 'RecommendationLog',
->>>>>>> proxy-dev
   CustomerProfile: 'CustomerProfile',
   Wishlist: 'Wishlist',
   ComparisonHistory: 'ComparisonHistory',
   PaymentHistory: 'PaymentHistory',
   SearchHistory: 'SearchHistory',
   BrowsingHistory: 'BrowsingHistory',
-<<<<<<< HEAD
-  AdminStatsCache: 'AdminStatsCache'
-=======
   AdminStatsCache: 'AdminStatsCache',
   Event: 'Event',
   BehaviorScore: 'BehaviorScore'
->>>>>>> proxy-dev
 };
 
 /**

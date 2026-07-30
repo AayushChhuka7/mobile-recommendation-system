@@ -601,8 +601,6 @@ select.input-field {
   color: #fff;
 }
 
-<<<<<<< HEAD
-=======
 /* Issue 2 — onboarding step. The persona radio + brand multi-select
    both render as small pill chips. Reuse .usage-chip for persona choice
    (selected = active) and add a brand-chip variant for the multi-select. */
@@ -690,7 +688,6 @@ select.input-field {
   margin-top: 4px;
 }
 
->>>>>>> proxy-dev
 .otp-container {
   margin: 24px 0;
 }

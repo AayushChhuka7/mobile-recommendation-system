@@ -90,8 +90,6 @@ model Users {
   searchHistory         SearchHistory[]
   browsingHistory       BrowsingHistory[]
 
-<<<<<<< HEAD
-=======
   // Step B — unified behaviour event log + per-tag behaviour score
   events         Event[]
   behaviorScores BehaviorScore[]
@@ -101,7 +99,6 @@ model Users {
   // signal reserved at 0.05 weight in FUSION_WEIGHTS).
   recommendationLogs RecommendationLog[]
 
->>>>>>> proxy-dev
   @@index([roleId])
   @@map("users")
 }
@@ -181,10 +178,7 @@ model Phones {
 
   // Recommendation relations
   recommendationHistory RecommendationHistory[]
-<<<<<<< HEAD
-=======
   recommendationLogs    RecommendationLog[]
->>>>>>> proxy-dev
   wishlist              Wishlist[]
   comparedAsA           ComparisonHistory[]     @relation("ComparisonPhoneA")
   comparedAsB           ComparisonHistory[]     @relation("ComparisonPhoneB")
@@ -391,8 +385,6 @@ model RecommendationHistory {
   @@map("recommendation_history")
 }
 
-<<<<<<< HEAD
-=======
 // Step D — per-candidate impression log. One row per served candidate
 // (rank + finalScore + userId + phoneId). Feeds the future customer-
 // segmentation cluster that will reclaim the 0.05 popularity slot
@@ -416,7 +408,6 @@ model RecommendationLog {
   @@map("recommendation_logs")
 }
 
->>>>>>> proxy-dev
 model CustomerProfile {
   profileId String @id @default(uuid()) @map("profile_id") @db.Uuid
   userId    String @unique @map("user_id") @db.Uuid
@@ -589,8 +580,6 @@ model AdminStatsCache {
 }
 
 // ============================================================
-<<<<<<< HEAD
-=======
 // Step B — Unified Event Log + Per-Tag Behaviour Scores
 // ============================================================
 //
@@ -632,7 +621,6 @@ model BehaviorScore {
 }
 
 // ============================================================
->>>>>>> proxy-dev
 // Notes:
 //
 // 1. This schema normalizes phone data into:

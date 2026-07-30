@@ -69,14 +69,11 @@ export type UserPreference = $Result.DefaultSelection<Prisma.$UserPreferencePayl
  */
 export type RecommendationHistory = $Result.DefaultSelection<Prisma.$RecommendationHistoryPayload>
 /**
-<<<<<<< HEAD
-=======
  * Model RecommendationLog
  * 
  */
 export type RecommendationLog = $Result.DefaultSelection<Prisma.$RecommendationLogPayload>
 /**
->>>>>>> proxy-dev
  * Model CustomerProfile
  * 
  */
@@ -111,8 +108,6 @@ export type BrowsingHistory = $Result.DefaultSelection<Prisma.$BrowsingHistoryPa
  * 
  */
 export type AdminStatsCache = $Result.DefaultSelection<Prisma.$AdminStatsCachePayload>
-<<<<<<< HEAD
-=======
 /**
  * Model Event
  * 
@@ -123,7 +118,6 @@ export type Event = $Result.DefaultSelection<Prisma.$EventPayload>
  * 
  */
 export type BehaviorScore = $Result.DefaultSelection<Prisma.$BehaviorScorePayload>
->>>>>>> proxy-dev
 
 /**
  * Enums
@@ -253,11 +247,7 @@ export class PrismaClient<
    * Read more in our [docs](https://pris.ly/d/client).
    */
 
-<<<<<<< HEAD
-  constructor(optionsArg ?: Prisma.PrismaClientConstructorArgs<ClientOptions>);
-=======
   constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
->>>>>>> proxy-dev
   $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): PrismaClient;
 
   /**
@@ -449,8 +439,6 @@ export class PrismaClient<
   get recommendationHistory(): Prisma.RecommendationHistoryDelegate<ExtArgs, ClientOptions>;
 
   /**
-<<<<<<< HEAD
-=======
    * `prisma.recommendationLog`: Exposes CRUD operations for the **RecommendationLog** model.
     * Example usage:
     * ```ts
@@ -461,7 +449,6 @@ export class PrismaClient<
   get recommendationLog(): Prisma.RecommendationLogDelegate<ExtArgs, ClientOptions>;
 
   /**
->>>>>>> proxy-dev
    * `prisma.customerProfile`: Exposes CRUD operations for the **CustomerProfile** model.
     * Example usage:
     * ```ts
@@ -530,8 +517,6 @@ export class PrismaClient<
     * ```
     */
   get adminStatsCache(): Prisma.AdminStatsCacheDelegate<ExtArgs, ClientOptions>;
-<<<<<<< HEAD
-=======
 
   /**
    * `prisma.event`: Exposes CRUD operations for the **Event** model.
@@ -552,7 +537,6 @@ export class PrismaClient<
     * ```
     */
   get behaviorScore(): Prisma.BehaviorScoreDelegate<ExtArgs, ClientOptions>;
->>>>>>> proxy-dev
 }
 
 export namespace Prisma {
@@ -603,13 +587,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-<<<<<<< HEAD
-   * Prisma Client JS version: 7.9.0
-   * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
-=======
    * Prisma Client JS version: 7.8.0
    * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
->>>>>>> proxy-dev
    */
   export type PrismaVersion = {
     client: string
@@ -744,22 +723,6 @@ export namespace Prisma {
   };
 
   /**
-<<<<<<< HEAD
-   * Resolved type of the argument passed to the `PrismaClient` constructor.
-   *
-   * When called without a narrower options type (the common case), this resolves
-   * to `PrismaClientOptions` directly, which produces a clear TypeScript error
-   * message (`not assignable to parameter of type 'PrismaClientOptions'`) when
-   * the argument is missing or incomplete. When the user supplies a narrower
-   * options type (e.g. via a literal), it falls back to `Subset` to keep
-   * filtering out unknown properties.
-   */
-  export type PrismaClientConstructorArgs<Options extends PrismaClientOptions> =
-    [PrismaClientOptions] extends [Options] ? PrismaClientOptions : Subset<Options, PrismaClientOptions>;
-
-  /**
-=======
->>>>>>> proxy-dev
    * SelectSubset
    * @desc From `T` pick properties that exist in `U`. Simple version of Intersection.
    * Additionally, it validates, if both select and include are present. If the case, it errors.
@@ -791,11 +754,7 @@ export namespace Prisma {
   type XOR<T, U> =
     T extends object ?
     U extends object ?
-<<<<<<< HEAD
-      ((Without<T, U> & U) | (Without<U, T> & T)) & object
-=======
       (Without<T, U> & U) | (Without<U, T> & T)
->>>>>>> proxy-dev
     : U : T
 
 
@@ -1023,23 +982,16 @@ export namespace Prisma {
     UserProfile: 'UserProfile',
     UserPreference: 'UserPreference',
     RecommendationHistory: 'RecommendationHistory',
-<<<<<<< HEAD
-=======
     RecommendationLog: 'RecommendationLog',
->>>>>>> proxy-dev
     CustomerProfile: 'CustomerProfile',
     Wishlist: 'Wishlist',
     ComparisonHistory: 'ComparisonHistory',
     PaymentHistory: 'PaymentHistory',
     SearchHistory: 'SearchHistory',
     BrowsingHistory: 'BrowsingHistory',
-<<<<<<< HEAD
-    AdminStatsCache: 'AdminStatsCache'
-=======
     AdminStatsCache: 'AdminStatsCache',
     Event: 'Event',
     BehaviorScore: 'BehaviorScore'
->>>>>>> proxy-dev
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1055,11 +1007,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-<<<<<<< HEAD
-      modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "customerProfile" | "wishlist" | "comparisonHistory" | "paymentHistory" | "searchHistory" | "browsingHistory" | "adminStatsCache"
-=======
       modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "recommendationLog" | "customerProfile" | "wishlist" | "comparisonHistory" | "paymentHistory" | "searchHistory" | "browsingHistory" | "adminStatsCache" | "event" | "behaviorScore"
->>>>>>> proxy-dev
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1877,8 +1825,6 @@ export namespace Prisma {
           }
         }
       }
-<<<<<<< HEAD
-=======
       RecommendationLog: {
         payload: Prisma.$RecommendationLogPayload<ExtArgs>
         fields: Prisma.RecommendationLogFieldRefs
@@ -1953,7 +1899,6 @@ export namespace Prisma {
           }
         }
       }
->>>>>>> proxy-dev
       CustomerProfile: {
         payload: Prisma.$CustomerProfilePayload<ExtArgs>
         fields: Prisma.CustomerProfileFieldRefs
@@ -2472,8 +2417,6 @@ export namespace Prisma {
           }
         }
       }
-<<<<<<< HEAD
-=======
       Event: {
         payload: Prisma.$EventPayload<ExtArgs>
         fields: Prisma.EventFieldRefs
@@ -2622,7 +2565,6 @@ export namespace Prisma {
           }
         }
       }
->>>>>>> proxy-dev
     }
   } & {
     other: {
@@ -2691,34 +2633,11 @@ export namespace Prisma {
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
     /**
-<<<<<<< HEAD
-     * A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by `@prisma/adapter-pg`, `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
-     * 
-     * A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use `accelerateUrl` instead).
-     * 
-     * Learn more: https://pris.ly/d/driver-adapters
-     * 
-     * @example
-     * ```ts
-     * import { PrismaPg } from '@prisma/adapter-pg'
-     * import { PrismaClient } from './generated/prisma/client'
-     * 
-     * const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
-     * const prisma = new PrismaClient({ adapter })
-     * ```
-     */
-    adapter?: runtime.SqlDriverAdapterFactory
-    /**
-     * The Prisma Accelerate connection URL. Use this option to connect to your database through Prisma Accelerate instead of using a driver adapter to connect directly.
-     * 
-     * Learn more: https://pris.ly/d/accelerate
-=======
      * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
      */
     adapter?: runtime.SqlDriverAdapterFactory
     /**
      * Prisma Accelerate URL allowing the client to connect through Accelerate instead of a direct database.
->>>>>>> proxy-dev
      */
     accelerateUrl?: string
     /**
@@ -2765,10 +2684,7 @@ export namespace Prisma {
     userProfile?: UserProfileOmit
     userPreference?: UserPreferenceOmit
     recommendationHistory?: RecommendationHistoryOmit
-<<<<<<< HEAD
-=======
     recommendationLog?: RecommendationLogOmit
->>>>>>> proxy-dev
     customerProfile?: CustomerProfileOmit
     wishlist?: WishlistOmit
     comparisonHistory?: ComparisonHistoryOmit
@@ -2776,11 +2692,8 @@ export namespace Prisma {
     searchHistory?: SearchHistoryOmit
     browsingHistory?: BrowsingHistoryOmit
     adminStatsCache?: AdminStatsCacheOmit
-<<<<<<< HEAD
-=======
     event?: EventOmit
     behaviorScore?: BehaviorScoreOmit
->>>>>>> proxy-dev
   }
 
   /* Types for Logging */
@@ -2899,12 +2812,9 @@ export namespace Prisma {
     paymentHistory: number
     searchHistory: number
     browsingHistory: number
-<<<<<<< HEAD
-=======
     events: number
     behaviorScores: number
     recommendationLogs: number
->>>>>>> proxy-dev
   }
 
   export type UsersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2915,12 +2825,9 @@ export namespace Prisma {
     paymentHistory?: boolean | UsersCountOutputTypeCountPaymentHistoryArgs
     searchHistory?: boolean | UsersCountOutputTypeCountSearchHistoryArgs
     browsingHistory?: boolean | UsersCountOutputTypeCountBrowsingHistoryArgs
-<<<<<<< HEAD
-=======
     events?: boolean | UsersCountOutputTypeCountEventsArgs
     behaviorScores?: boolean | UsersCountOutputTypeCountBehaviorScoresArgs
     recommendationLogs?: boolean | UsersCountOutputTypeCountRecommendationLogsArgs
->>>>>>> proxy-dev
   }
 
   // Custom InputTypes
@@ -2983,8 +2890,6 @@ export namespace Prisma {
     where?: BrowsingHistoryWhereInput
   }
 
-<<<<<<< HEAD
-=======
   /**
    * UsersCountOutputType without action
    */
@@ -3006,7 +2911,6 @@ export namespace Prisma {
     where?: RecommendationLogWhereInput
   }
 
->>>>>>> proxy-dev
 
   /**
    * Count Type BrandsCountOutputType
@@ -3055,10 +2959,7 @@ export namespace Prisma {
   export type PhonesCountOutputType = {
     variants: number
     recommendationHistory: number
-<<<<<<< HEAD
-=======
     recommendationLogs: number
->>>>>>> proxy-dev
     wishlist: number
     comparedAsA: number
     comparedAsB: number
@@ -3070,10 +2971,7 @@ export namespace Prisma {
   export type PhonesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     variants?: boolean | PhonesCountOutputTypeCountVariantsArgs
     recommendationHistory?: boolean | PhonesCountOutputTypeCountRecommendationHistoryArgs
-<<<<<<< HEAD
-=======
     recommendationLogs?: boolean | PhonesCountOutputTypeCountRecommendationLogsArgs
->>>>>>> proxy-dev
     wishlist?: boolean | PhonesCountOutputTypeCountWishlistArgs
     comparedAsA?: boolean | PhonesCountOutputTypeCountComparedAsAArgs
     comparedAsB?: boolean | PhonesCountOutputTypeCountComparedAsBArgs
@@ -3110,8 +3008,6 @@ export namespace Prisma {
   /**
    * PhonesCountOutputType without action
    */
-<<<<<<< HEAD
-=======
   export type PhonesCountOutputTypeCountRecommendationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RecommendationLogWhereInput
   }
@@ -3119,7 +3015,6 @@ export namespace Prisma {
   /**
    * PhonesCountOutputType without action
    */
->>>>>>> proxy-dev
   export type PhonesCountOutputTypeCountWishlistArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WishlistWhereInput
   }
@@ -4399,12 +4294,9 @@ export namespace Prisma {
     paymentHistory?: boolean | Users$paymentHistoryArgs<ExtArgs>
     searchHistory?: boolean | Users$searchHistoryArgs<ExtArgs>
     browsingHistory?: boolean | Users$browsingHistoryArgs<ExtArgs>
-<<<<<<< HEAD
-=======
     events?: boolean | Users$eventsArgs<ExtArgs>
     behaviorScores?: boolean | Users$behaviorScoresArgs<ExtArgs>
     recommendationLogs?: boolean | Users$recommendationLogsArgs<ExtArgs>
->>>>>>> proxy-dev
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
 
@@ -4456,12 +4348,9 @@ export namespace Prisma {
     paymentHistory?: boolean | Users$paymentHistoryArgs<ExtArgs>
     searchHistory?: boolean | Users$searchHistoryArgs<ExtArgs>
     browsingHistory?: boolean | Users$browsingHistoryArgs<ExtArgs>
-<<<<<<< HEAD
-=======
     events?: boolean | Users$eventsArgs<ExtArgs>
     behaviorScores?: boolean | Users$behaviorScoresArgs<ExtArgs>
     recommendationLogs?: boolean | Users$recommendationLogsArgs<ExtArgs>
->>>>>>> proxy-dev
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UsersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4485,12 +4374,9 @@ export namespace Prisma {
       paymentHistory: Prisma.$PaymentHistoryPayload<ExtArgs>[]
       searchHistory: Prisma.$SearchHistoryPayload<ExtArgs>[]
       browsingHistory: Prisma.$BrowsingHistoryPayload<ExtArgs>[]
-<<<<<<< HEAD
-=======
       events: Prisma.$EventPayload<ExtArgs>[]
       behaviorScores: Prisma.$BehaviorScorePayload<ExtArgs>[]
       recommendationLogs: Prisma.$RecommendationLogPayload<ExtArgs>[]
->>>>>>> proxy-dev
     }
     scalars: $Extensions.GetPayloadResult<{
       name: string
@@ -4906,12 +4792,9 @@ export namespace Prisma {
     paymentHistory<T extends Users$paymentHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Users$paymentHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     searchHistory<T extends Users$searchHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Users$searchHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SearchHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     browsingHistory<T extends Users$browsingHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Users$browsingHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BrowsingHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-<<<<<<< HEAD
-=======
     events<T extends Users$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Users$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     behaviorScores<T extends Users$behaviorScoresArgs<ExtArgs> = {}>(args?: Subset<T, Users$behaviorScoresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     recommendationLogs<T extends Users$recommendationLogsArgs<ExtArgs> = {}>(args?: Subset<T, Users$recommendationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
->>>>>>> proxy-dev
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5594,8 +5477,6 @@ export namespace Prisma {
   }
 
   /**
-<<<<<<< HEAD
-=======
    * Users.events
    */
   export type Users$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5668,7 +5549,6 @@ export namespace Prisma {
   }
 
   /**
->>>>>>> proxy-dev
    * Users without action
    */
   export type UsersDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9145,10 +9025,7 @@ export namespace Prisma {
     variants?: boolean | Phones$variantsArgs<ExtArgs>
     specs?: boolean | Phones$specsArgs<ExtArgs>
     recommendationHistory?: boolean | Phones$recommendationHistoryArgs<ExtArgs>
-<<<<<<< HEAD
-=======
     recommendationLogs?: boolean | Phones$recommendationLogsArgs<ExtArgs>
->>>>>>> proxy-dev
     wishlist?: boolean | Phones$wishlistArgs<ExtArgs>
     comparedAsA?: boolean | Phones$comparedAsAArgs<ExtArgs>
     comparedAsB?: boolean | Phones$comparedAsBArgs<ExtArgs>
@@ -9214,10 +9091,7 @@ export namespace Prisma {
     variants?: boolean | Phones$variantsArgs<ExtArgs>
     specs?: boolean | Phones$specsArgs<ExtArgs>
     recommendationHistory?: boolean | Phones$recommendationHistoryArgs<ExtArgs>
-<<<<<<< HEAD
-=======
     recommendationLogs?: boolean | Phones$recommendationLogsArgs<ExtArgs>
->>>>>>> proxy-dev
     wishlist?: boolean | Phones$wishlistArgs<ExtArgs>
     comparedAsA?: boolean | Phones$comparedAsAArgs<ExtArgs>
     comparedAsB?: boolean | Phones$comparedAsBArgs<ExtArgs>
@@ -9240,10 +9114,7 @@ export namespace Prisma {
       variants: Prisma.$PhoneVariantsPayload<ExtArgs>[]
       specs: Prisma.$PhoneSpecsPayload<ExtArgs> | null
       recommendationHistory: Prisma.$RecommendationHistoryPayload<ExtArgs>[]
-<<<<<<< HEAD
-=======
       recommendationLogs: Prisma.$RecommendationLogPayload<ExtArgs>[]
->>>>>>> proxy-dev
       wishlist: Prisma.$WishlistPayload<ExtArgs>[]
       comparedAsA: Prisma.$ComparisonHistoryPayload<ExtArgs>[]
       comparedAsB: Prisma.$ComparisonHistoryPayload<ExtArgs>[]
@@ -9663,10 +9534,7 @@ export namespace Prisma {
     variants<T extends Phones$variantsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$variantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     specs<T extends Phones$specsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$specsArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     recommendationHistory<T extends Phones$recommendationHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Phones$recommendationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-<<<<<<< HEAD
-=======
     recommendationLogs<T extends Phones$recommendationLogsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$recommendationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
->>>>>>> proxy-dev
     wishlist<T extends Phones$wishlistArgs<ExtArgs> = {}>(args?: Subset<T, Phones$wishlistArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WishlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     comparedAsA<T extends Phones$comparedAsAArgs<ExtArgs> = {}>(args?: Subset<T, Phones$comparedAsAArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComparisonHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     comparedAsB<T extends Phones$comparedAsBArgs<ExtArgs> = {}>(args?: Subset<T, Phones$comparedAsBArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComparisonHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -10183,8 +10051,6 @@ export namespace Prisma {
   }
 
   /**
-<<<<<<< HEAD
-=======
    * Phones.recommendationLogs
    */
   export type Phones$recommendationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10209,7 +10075,6 @@ export namespace Prisma {
   }
 
   /**
->>>>>>> proxy-dev
    * Phones.wishlist
    */
   export type Phones$wishlistArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16825,8 +16690,6 @@ export namespace Prisma {
 
 
   /**
-<<<<<<< HEAD
-=======
    * Model RecommendationLog
    */
 
@@ -17962,7 +17825,6 @@ export namespace Prisma {
 
 
   /**
->>>>>>> proxy-dev
    * Model CustomerProfile
    */
 
@@ -26105,8 +25967,6 @@ export namespace Prisma {
 
 
   /**
-<<<<<<< HEAD
-=======
    * Model Event
    */
 
@@ -28263,7 +28123,6 @@ export namespace Prisma {
 
 
   /**
->>>>>>> proxy-dev
    * Enums
    */
 
@@ -28476,8 +28335,6 @@ export namespace Prisma {
   export type RecommendationHistoryScalarFieldEnum = (typeof RecommendationHistoryScalarFieldEnum)[keyof typeof RecommendationHistoryScalarFieldEnum]
 
 
-<<<<<<< HEAD
-=======
   export const RecommendationLogScalarFieldEnum: {
     logId: 'logId',
     userId: 'userId',
@@ -28491,7 +28348,6 @@ export namespace Prisma {
   export type RecommendationLogScalarFieldEnum = (typeof RecommendationLogScalarFieldEnum)[keyof typeof RecommendationLogScalarFieldEnum]
 
 
->>>>>>> proxy-dev
   export const CustomerProfileScalarFieldEnum: {
     profileId: 'profileId',
     userId: 'userId',
@@ -28599,8 +28455,6 @@ export namespace Prisma {
   export type AdminStatsCacheScalarFieldEnum = (typeof AdminStatsCacheScalarFieldEnum)[keyof typeof AdminStatsCacheScalarFieldEnum]
 
 
-<<<<<<< HEAD
-=======
   export const EventScalarFieldEnum: {
     eventId: 'eventId',
     userId: 'userId',
@@ -28623,7 +28477,6 @@ export namespace Prisma {
   export type BehaviorScoreScalarFieldEnum = (typeof BehaviorScoreScalarFieldEnum)[keyof typeof BehaviorScoreScalarFieldEnum]
 
 
->>>>>>> proxy-dev
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -28797,8 +28650,6 @@ export namespace Prisma {
 
 
   /**
-<<<<<<< HEAD
-=======
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -28813,7 +28664,6 @@ export namespace Prisma {
 
 
   /**
->>>>>>> proxy-dev
    * Reference to a field of type 'BudgetSegment'
    */
   export type EnumBudgetSegmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BudgetSegment'>
@@ -28853,23 +28703,6 @@ export namespace Prisma {
    */
   export type ListEnumSegmentConfidenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SegmentConfidence[]'>
     
-<<<<<<< HEAD
-
-
-  /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-=======
->>>>>>> proxy-dev
   /**
    * Deep Input Types
    */
@@ -28938,12 +28771,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryListRelationFilter
     searchHistory?: SearchHistoryListRelationFilter
     browsingHistory?: BrowsingHistoryListRelationFilter
-<<<<<<< HEAD
-=======
     events?: EventListRelationFilter
     behaviorScores?: BehaviorScoreListRelationFilter
     recommendationLogs?: RecommendationLogListRelationFilter
->>>>>>> proxy-dev
   }
 
   export type UsersOrderByWithRelationInput = {
@@ -28966,12 +28796,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryOrderByRelationAggregateInput
     searchHistory?: SearchHistoryOrderByRelationAggregateInput
     browsingHistory?: BrowsingHistoryOrderByRelationAggregateInput
-<<<<<<< HEAD
-=======
     events?: EventOrderByRelationAggregateInput
     behaviorScores?: BehaviorScoreOrderByRelationAggregateInput
     recommendationLogs?: RecommendationLogOrderByRelationAggregateInput
->>>>>>> proxy-dev
   }
 
   export type UsersWhereUniqueInput = Prisma.AtLeast<{
@@ -28997,12 +28824,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryListRelationFilter
     searchHistory?: SearchHistoryListRelationFilter
     browsingHistory?: BrowsingHistoryListRelationFilter
-<<<<<<< HEAD
-=======
     events?: EventListRelationFilter
     behaviorScores?: BehaviorScoreListRelationFilter
     recommendationLogs?: RecommendationLogListRelationFilter
->>>>>>> proxy-dev
   }, "userId" | "email" | "phoneNo">
 
   export type UsersOrderByWithAggregationInput = {
@@ -29229,10 +29053,7 @@ export namespace Prisma {
     variants?: PhoneVariantsListRelationFilter
     specs?: XOR<PhoneSpecsNullableScalarRelationFilter, PhoneSpecsWhereInput> | null
     recommendationHistory?: RecommendationHistoryListRelationFilter
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogListRelationFilter
->>>>>>> proxy-dev
     wishlist?: WishlistListRelationFilter
     comparedAsA?: ComparisonHistoryListRelationFilter
     comparedAsB?: ComparisonHistoryListRelationFilter
@@ -29259,10 +29080,7 @@ export namespace Prisma {
     variants?: PhoneVariantsOrderByRelationAggregateInput
     specs?: PhoneSpecsOrderByWithRelationInput
     recommendationHistory?: RecommendationHistoryOrderByRelationAggregateInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogOrderByRelationAggregateInput
->>>>>>> proxy-dev
     wishlist?: WishlistOrderByRelationAggregateInput
     comparedAsA?: ComparisonHistoryOrderByRelationAggregateInput
     comparedAsB?: ComparisonHistoryOrderByRelationAggregateInput
@@ -29293,10 +29111,7 @@ export namespace Prisma {
     variants?: PhoneVariantsListRelationFilter
     specs?: XOR<PhoneSpecsNullableScalarRelationFilter, PhoneSpecsWhereInput> | null
     recommendationHistory?: RecommendationHistoryListRelationFilter
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogListRelationFilter
->>>>>>> proxy-dev
     wishlist?: WishlistListRelationFilter
     comparedAsA?: ComparisonHistoryListRelationFilter
     comparedAsB?: ComparisonHistoryListRelationFilter
@@ -29977,8 +29792,6 @@ export namespace Prisma {
     purchased?: BoolWithAggregatesFilter<"RecommendationHistory"> | boolean
   }
 
-<<<<<<< HEAD
-=======
   export type RecommendationLogWhereInput = {
     AND?: RecommendationLogWhereInput | RecommendationLogWhereInput[]
     OR?: RecommendationLogWhereInput[]
@@ -30049,7 +29862,6 @@ export namespace Prisma {
     clicked?: BoolWithAggregatesFilter<"RecommendationLog"> | boolean
   }
 
->>>>>>> proxy-dev
   export type CustomerProfileWhereInput = {
     AND?: CustomerProfileWhereInput | CustomerProfileWhereInput[]
     OR?: CustomerProfileWhereInput[]
@@ -30611,8 +30423,6 @@ export namespace Prisma {
     avgCompatibility?: DecimalNullableWithAggregatesFilter<"AdminStatsCache"> | Decimal | DecimalJsLike | number | string | null
   }
 
-<<<<<<< HEAD
-=======
   export type EventWhereInput = {
     AND?: EventWhereInput | EventWhereInput[]
     OR?: EventWhereInput[]
@@ -30726,7 +30536,6 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"BehaviorScore"> | Date | string
   }
 
->>>>>>> proxy-dev
   export type RolesCreateInput = {
     roleId?: string
     roleName: string
@@ -30785,12 +30594,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateInput = {
@@ -30812,12 +30618,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUpdateInput = {
@@ -30839,12 +30642,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateInput = {
@@ -30866,12 +30666,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateManyInput = {
@@ -31112,10 +30909,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -31141,10 +30935,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -31170,10 +30961,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -31199,10 +30987,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -32007,8 +31792,6 @@ export namespace Prisma {
     purchased?: BoolFieldUpdateOperationsInput | boolean
   }
 
-<<<<<<< HEAD
-=======
   export type RecommendationLogCreateInput = {
     logId?: string
     finalScore: number
@@ -32077,7 +31860,6 @@ export namespace Prisma {
     clicked?: BoolFieldUpdateOperationsInput | boolean
   }
 
->>>>>>> proxy-dev
   export type CustomerProfileCreateInput = {
     profileId?: string
     budgetSegment?: $Enums.BudgetSegment | null
@@ -32668,8 +32450,6 @@ export namespace Prisma {
     avgCompatibility?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
-<<<<<<< HEAD
-=======
   export type EventCreateInput = {
     eventId?: string
     eventType: string
@@ -32780,7 +32560,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
->>>>>>> proxy-dev
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -32960,8 +32739,6 @@ export namespace Prisma {
     none?: BrowsingHistoryWhereInput
   }
 
-<<<<<<< HEAD
-=======
   export type EventListRelationFilter = {
     every?: EventWhereInput
     some?: EventWhereInput
@@ -32980,7 +32757,6 @@ export namespace Prisma {
     none?: RecommendationLogWhereInput
   }
 
->>>>>>> proxy-dev
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -33014,8 +32790,6 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-<<<<<<< HEAD
-=======
   export type EventOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -33028,7 +32802,6 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
->>>>>>> proxy-dev
   export type UsersCountOrderByAggregateInput = {
     name?: SortOrder
     userId?: SortOrder
@@ -34021,8 +33794,6 @@ export namespace Prisma {
     overallCompatibility?: SortOrder
   }
 
-<<<<<<< HEAD
-=======
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -34090,7 +33861,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
->>>>>>> proxy-dev
   export type EnumBudgetSegmentNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.BudgetSegment | EnumBudgetSegmentFieldRefInput<$PrismaModel> | null
     in?: $Enums.BudgetSegment[] | ListEnumBudgetSegmentFieldRefInput<$PrismaModel> | null
@@ -34489,8 +34259,6 @@ export namespace Prisma {
     avgCompatibility?: SortOrder
   }
 
-<<<<<<< HEAD
-=======
   export type EventCountOrderByAggregateInput = {
     eventId?: SortOrder
     userId?: SortOrder
@@ -34550,7 +34318,6 @@ export namespace Prisma {
     score?: SortOrder
   }
 
->>>>>>> proxy-dev
   export type UsersCreateNestedManyWithoutRoleInput = {
     create?: XOR<UsersCreateWithoutRoleInput, UsersUncheckedCreateWithoutRoleInput> | UsersCreateWithoutRoleInput[] | UsersUncheckedCreateWithoutRoleInput[]
     connectOrCreate?: UsersCreateOrConnectWithoutRoleInput | UsersCreateOrConnectWithoutRoleInput[]
@@ -34670,8 +34437,6 @@ export namespace Prisma {
     connect?: BrowsingHistoryWhereUniqueInput | BrowsingHistoryWhereUniqueInput[]
   }
 
-<<<<<<< HEAD
-=======
   export type EventCreateNestedManyWithoutUserInput = {
     create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
     connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
@@ -34693,7 +34458,6 @@ export namespace Prisma {
     connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
   }
 
->>>>>>> proxy-dev
   export type OtpUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<OtpCreateWithoutUserInput, OtpUncheckedCreateWithoutUserInput> | OtpCreateWithoutUserInput[] | OtpUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OtpCreateOrConnectWithoutUserInput | OtpCreateOrConnectWithoutUserInput[]
@@ -34761,8 +34525,6 @@ export namespace Prisma {
     connect?: BrowsingHistoryWhereUniqueInput | BrowsingHistoryWhereUniqueInput[]
   }
 
-<<<<<<< HEAD
-=======
   export type EventUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
     connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
@@ -34784,7 +34546,6 @@ export namespace Prisma {
     connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
   }
 
->>>>>>> proxy-dev
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
@@ -34931,8 +34692,6 @@ export namespace Prisma {
     deleteMany?: BrowsingHistoryScalarWhereInput | BrowsingHistoryScalarWhereInput[]
   }
 
-<<<<<<< HEAD
-=======
   export type EventUpdateManyWithoutUserNestedInput = {
     create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
     connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
@@ -34975,7 +34734,6 @@ export namespace Prisma {
     deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
   }
 
->>>>>>> proxy-dev
   export type OtpUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<OtpCreateWithoutUserInput, OtpUncheckedCreateWithoutUserInput> | OtpCreateWithoutUserInput[] | OtpUncheckedCreateWithoutUserInput[]
     connectOrCreate?: OtpCreateOrConnectWithoutUserInput | OtpCreateOrConnectWithoutUserInput[]
@@ -35104,8 +34862,6 @@ export namespace Prisma {
     deleteMany?: BrowsingHistoryScalarWhereInput | BrowsingHistoryScalarWhereInput[]
   }
 
-<<<<<<< HEAD
-=======
   export type EventUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<EventCreateWithoutUserInput, EventUncheckedCreateWithoutUserInput> | EventCreateWithoutUserInput[] | EventUncheckedCreateWithoutUserInput[]
     connectOrCreate?: EventCreateOrConnectWithoutUserInput | EventCreateOrConnectWithoutUserInput[]
@@ -35148,7 +34904,6 @@ export namespace Prisma {
     deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
   }
 
->>>>>>> proxy-dev
   export type UsersCreateNestedOneWithoutOtpsInput = {
     create?: XOR<UsersCreateWithoutOtpsInput, UsersUncheckedCreateWithoutOtpsInput>
     connectOrCreate?: UsersCreateOrConnectWithoutOtpsInput
@@ -35281,8 +35036,6 @@ export namespace Prisma {
     connect?: RecommendationHistoryWhereUniqueInput | RecommendationHistoryWhereUniqueInput[]
   }
 
-<<<<<<< HEAD
-=======
   export type RecommendationLogCreateNestedManyWithoutPhoneInput = {
     create?: XOR<RecommendationLogCreateWithoutPhoneInput, RecommendationLogUncheckedCreateWithoutPhoneInput> | RecommendationLogCreateWithoutPhoneInput[] | RecommendationLogUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: RecommendationLogCreateOrConnectWithoutPhoneInput | RecommendationLogCreateOrConnectWithoutPhoneInput[]
@@ -35290,7 +35043,6 @@ export namespace Prisma {
     connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
   }
 
->>>>>>> proxy-dev
   export type WishlistCreateNestedManyWithoutPhoneInput = {
     create?: XOR<WishlistCreateWithoutPhoneInput, WishlistUncheckedCreateWithoutPhoneInput> | WishlistCreateWithoutPhoneInput[] | WishlistUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: WishlistCreateOrConnectWithoutPhoneInput | WishlistCreateOrConnectWithoutPhoneInput[]
@@ -35353,8 +35105,6 @@ export namespace Prisma {
     connect?: RecommendationHistoryWhereUniqueInput | RecommendationHistoryWhereUniqueInput[]
   }
 
-<<<<<<< HEAD
-=======
   export type RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput = {
     create?: XOR<RecommendationLogCreateWithoutPhoneInput, RecommendationLogUncheckedCreateWithoutPhoneInput> | RecommendationLogCreateWithoutPhoneInput[] | RecommendationLogUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: RecommendationLogCreateOrConnectWithoutPhoneInput | RecommendationLogCreateOrConnectWithoutPhoneInput[]
@@ -35362,7 +35112,6 @@ export namespace Prisma {
     connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
   }
 
->>>>>>> proxy-dev
   export type WishlistUncheckedCreateNestedManyWithoutPhoneInput = {
     create?: XOR<WishlistCreateWithoutPhoneInput, WishlistUncheckedCreateWithoutPhoneInput> | WishlistCreateWithoutPhoneInput[] | WishlistUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: WishlistCreateOrConnectWithoutPhoneInput | WishlistCreateOrConnectWithoutPhoneInput[]
@@ -35463,8 +35212,6 @@ export namespace Prisma {
     deleteMany?: RecommendationHistoryScalarWhereInput | RecommendationHistoryScalarWhereInput[]
   }
 
-<<<<<<< HEAD
-=======
   export type RecommendationLogUpdateManyWithoutPhoneNestedInput = {
     create?: XOR<RecommendationLogCreateWithoutPhoneInput, RecommendationLogUncheckedCreateWithoutPhoneInput> | RecommendationLogCreateWithoutPhoneInput[] | RecommendationLogUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: RecommendationLogCreateOrConnectWithoutPhoneInput | RecommendationLogCreateOrConnectWithoutPhoneInput[]
@@ -35479,7 +35226,6 @@ export namespace Prisma {
     deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
   }
 
->>>>>>> proxy-dev
   export type WishlistUpdateManyWithoutPhoneNestedInput = {
     create?: XOR<WishlistCreateWithoutPhoneInput, WishlistUncheckedCreateWithoutPhoneInput> | WishlistCreateWithoutPhoneInput[] | WishlistUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: WishlistCreateOrConnectWithoutPhoneInput | WishlistCreateOrConnectWithoutPhoneInput[]
@@ -35602,8 +35348,6 @@ export namespace Prisma {
     deleteMany?: RecommendationHistoryScalarWhereInput | RecommendationHistoryScalarWhereInput[]
   }
 
-<<<<<<< HEAD
-=======
   export type RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput = {
     create?: XOR<RecommendationLogCreateWithoutPhoneInput, RecommendationLogUncheckedCreateWithoutPhoneInput> | RecommendationLogCreateWithoutPhoneInput[] | RecommendationLogUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: RecommendationLogCreateOrConnectWithoutPhoneInput | RecommendationLogCreateOrConnectWithoutPhoneInput[]
@@ -35618,7 +35362,6 @@ export namespace Prisma {
     deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
   }
 
->>>>>>> proxy-dev
   export type WishlistUncheckedUpdateManyWithoutPhoneNestedInput = {
     create?: XOR<WishlistCreateWithoutPhoneInput, WishlistUncheckedCreateWithoutPhoneInput> | WishlistCreateWithoutPhoneInput[] | WishlistUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: WishlistCreateOrConnectWithoutPhoneInput | WishlistCreateOrConnectWithoutPhoneInput[]
@@ -35839,8 +35582,6 @@ export namespace Prisma {
     update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutRecommendationHistoryInput, PhonesUpdateWithoutRecommendationHistoryInput>, PhonesUncheckedUpdateWithoutRecommendationHistoryInput>
   }
 
-<<<<<<< HEAD
-=======
   export type UsersCreateNestedOneWithoutRecommendationLogsInput = {
     create?: XOR<UsersCreateWithoutRecommendationLogsInput, UsersUncheckedCreateWithoutRecommendationLogsInput>
     connectOrCreate?: UsersCreateOrConnectWithoutRecommendationLogsInput
@@ -35877,7 +35618,6 @@ export namespace Prisma {
     update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutRecommendationLogsInput, PhonesUpdateWithoutRecommendationLogsInput>, PhonesUncheckedUpdateWithoutRecommendationLogsInput>
   }
 
->>>>>>> proxy-dev
   export type UsersCreateNestedOneWithoutCustomerProfileInput = {
     create?: XOR<UsersCreateWithoutCustomerProfileInput, UsersUncheckedCreateWithoutCustomerProfileInput>
     connectOrCreate?: UsersCreateOrConnectWithoutCustomerProfileInput
@@ -36068,8 +35808,6 @@ export namespace Prisma {
     update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutMostViewedInStatsInput, PhonesUpdateWithoutMostViewedInStatsInput>, PhonesUncheckedUpdateWithoutMostViewedInStatsInput>
   }
 
-<<<<<<< HEAD
-=======
   export type UsersCreateNestedOneWithoutEventsInput = {
     create?: XOR<UsersCreateWithoutEventsInput, UsersUncheckedCreateWithoutEventsInput>
     connectOrCreate?: UsersCreateOrConnectWithoutEventsInput
@@ -36098,7 +35836,6 @@ export namespace Prisma {
     update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutBehaviorScoresInput, UsersUpdateWithoutBehaviorScoresInput>, UsersUncheckedUpdateWithoutBehaviorScoresInput>
   }
 
->>>>>>> proxy-dev
   export type NestedUuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -36514,8 +36251,6 @@ export namespace Prisma {
     _max?: NestedEnumUsageTypeFilter<$PrismaModel>
   }
 
-<<<<<<< HEAD
-=======
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -36532,7 +36267,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
->>>>>>> proxy-dev
   export type NestedEnumBudgetSegmentNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.BudgetSegment | EnumBudgetSegmentFieldRefInput<$PrismaModel> | null
     in?: $Enums.BudgetSegment[] | ListEnumBudgetSegmentFieldRefInput<$PrismaModel> | null
@@ -36619,12 +36353,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutRoleInput = {
@@ -36645,12 +36376,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutRoleInput = {
@@ -37031,8 +36759,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-<<<<<<< HEAD
-=======
   export type EventCreateWithoutUserInput = {
     eventId?: string
     eventType: string
@@ -37109,7 +36835,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
->>>>>>> proxy-dev
   export type RolesUpsertWithoutUsersInput = {
     update: XOR<RolesUpdateWithoutUsersInput, RolesUncheckedUpdateWithoutUsersInput>
     create: XOR<RolesCreateWithoutUsersInput, RolesUncheckedCreateWithoutUsersInput>
@@ -37469,8 +37194,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"BrowsingHistory"> | Date | string
   }
 
-<<<<<<< HEAD
-=======
   export type EventUpsertWithWhereUniqueWithoutUserInput = {
     where: EventWhereUniqueInput
     update: XOR<EventUpdateWithoutUserInput, EventUncheckedUpdateWithoutUserInput>
@@ -37554,7 +37277,6 @@ export namespace Prisma {
     clicked?: BoolFilter<"RecommendationLog"> | boolean
   }
 
->>>>>>> proxy-dev
   export type UsersCreateWithoutOtpsInput = {
     name: string
     userId?: string
@@ -37573,12 +37295,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutOtpsInput = {
@@ -37599,12 +37318,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutOtpsInput = {
@@ -37641,12 +37357,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutOtpsInput = {
@@ -37667,12 +37380,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type PhonesCreateWithoutBrandInput = {
@@ -37691,10 +37401,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -37719,10 +37426,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -38053,8 +37757,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-<<<<<<< HEAD
-=======
   export type RecommendationLogCreateWithoutPhoneInput = {
     logId?: string
     finalScore: number
@@ -38083,7 +37785,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
->>>>>>> proxy-dev
   export type WishlistCreateWithoutPhoneInput = {
     wishlistId?: string
     addedDate?: Date | string
@@ -38440,8 +38141,6 @@ export namespace Prisma {
     data: XOR<RecommendationHistoryUpdateManyMutationInput, RecommendationHistoryUncheckedUpdateManyWithoutPhoneInput>
   }
 
-<<<<<<< HEAD
-=======
   export type RecommendationLogUpsertWithWhereUniqueWithoutPhoneInput = {
     where: RecommendationLogWhereUniqueInput
     update: XOR<RecommendationLogUpdateWithoutPhoneInput, RecommendationLogUncheckedUpdateWithoutPhoneInput>
@@ -38458,7 +38157,6 @@ export namespace Prisma {
     data: XOR<RecommendationLogUpdateManyMutationInput, RecommendationLogUncheckedUpdateManyWithoutPhoneInput>
   }
 
->>>>>>> proxy-dev
   export type WishlistUpsertWithWhereUniqueWithoutPhoneInput = {
     where: WishlistWhereUniqueInput
     update: XOR<WishlistUpdateWithoutPhoneInput, WishlistUncheckedUpdateWithoutPhoneInput>
@@ -38586,10 +38284,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -38614,10 +38309,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -38658,10 +38350,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -38686,10 +38375,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -38714,10 +38400,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -38742,10 +38425,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -38786,10 +38466,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -38814,10 +38491,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -38844,12 +38518,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutProfileInput = {
@@ -38870,12 +38541,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutProfileInput = {
@@ -38912,12 +38580,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutProfileInput = {
@@ -38938,12 +38603,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type BrandsCreateWithoutUserPreferencesInput = {
@@ -38991,12 +38653,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutPreferenceInput = {
@@ -39017,12 +38676,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutPreferenceInput = {
@@ -39092,12 +38748,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutPreferenceInput = {
@@ -39118,12 +38771,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateWithoutRecommendationHistoryInput = {
@@ -39144,12 +38794,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutRecommendationHistoryInput = {
@@ -39170,12 +38817,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutRecommendationHistoryInput = {
@@ -39199,10 +38843,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -39227,10 +38868,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -39273,12 +38911,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutRecommendationHistoryInput = {
@@ -39299,12 +38934,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type PhonesUpsertWithoutRecommendationHistoryInput = {
@@ -39334,10 +38966,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -39362,8 +38991,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
@@ -39589,7 +39216,6 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -39616,12 +39242,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutCustomerProfileInput = {
@@ -39642,12 +39265,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutCustomerProfileInput = {
@@ -39684,12 +39304,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutCustomerProfileInput = {
@@ -39710,12 +39327,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateWithoutWishlistInput = {
@@ -39736,12 +39350,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutWishlistInput = {
@@ -39762,12 +39373,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutWishlistInput = {
@@ -39792,10 +39400,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
     mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -39820,10 +39425,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -39865,12 +39467,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutWishlistInput = {
@@ -39891,12 +39490,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type PhonesUpsertWithoutWishlistInput = {
@@ -39927,10 +39523,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
     mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -39955,10 +39548,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -39984,12 +39574,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutComparisonHistoryInput = {
@@ -40010,12 +39597,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutComparisonHistoryInput = {
@@ -40040,10 +39624,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
     mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -40068,10 +39649,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -40101,10 +39679,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -40129,10 +39704,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
@@ -40174,12 +39746,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutComparisonHistoryInput = {
@@ -40200,12 +39769,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type PhonesUpsertWithoutComparedAsAInput = {
@@ -40236,10 +39802,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
     mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -40264,10 +39827,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -40303,10 +39863,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -40331,10 +39888,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
@@ -40360,12 +39914,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutPaymentHistoryInput = {
@@ -40386,12 +39937,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutPaymentHistoryInput = {
@@ -40428,12 +39976,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutPaymentHistoryInput = {
@@ -40454,12 +39999,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateWithoutSearchHistoryInput = {
@@ -40480,12 +40022,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutSearchHistoryInput = {
@@ -40506,12 +40045,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutSearchHistoryInput = {
@@ -40548,12 +40084,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutSearchHistoryInput = {
@@ -40574,12 +40107,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateWithoutBrowsingHistoryInput = {
@@ -40600,12 +40130,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
     paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedCreateWithoutBrowsingHistoryInput = {
@@ -40626,12 +40153,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
     paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
     searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
->>>>>>> proxy-dev
   }
 
   export type UsersCreateOrConnectWithoutBrowsingHistoryInput = {
@@ -40668,12 +40192,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutBrowsingHistoryInput = {
@@ -40694,12 +40215,9 @@ export namespace Prisma {
     comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type PhonesCreateWithoutMostRecommendedInStatsInput = {
@@ -40719,10 +40237,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -40747,10 +40262,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -40780,10 +40292,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -40808,10 +40317,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -40841,10 +40347,7 @@ export namespace Prisma {
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
@@ -40869,10 +40372,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
     comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
@@ -40913,10 +40413,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -40941,10 +40438,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -40980,10 +40474,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -41008,10 +40499,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -41047,10 +40535,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -41075,10 +40560,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -41086,8 +40568,6 @@ export namespace Prisma {
     mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
   }
 
-<<<<<<< HEAD
-=======
   export type UsersCreateWithoutEventsInput = {
     name: string
     userId?: string
@@ -41304,7 +40784,6 @@ export namespace Prisma {
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
->>>>>>> proxy-dev
   export type UsersCreateManyRoleInput = {
     name: string
     userId?: string
@@ -41333,12 +40812,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateWithoutRoleInput = {
@@ -41359,12 +40835,9 @@ export namespace Prisma {
     paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
     searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
-<<<<<<< HEAD
-=======
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
->>>>>>> proxy-dev
   }
 
   export type UsersUncheckedUpdateManyWithoutRoleInput = {
@@ -41450,8 +40923,6 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-<<<<<<< HEAD
-=======
   export type EventCreateManyUserInput = {
     eventId?: string
     eventType: string
@@ -41475,7 +40946,6 @@ export namespace Prisma {
     clicked?: boolean
   }
 
->>>>>>> proxy-dev
   export type OtpUpdateWithoutUserInput = {
     otpId?: StringFieldUpdateOperationsInput | string
     code?: StringFieldUpdateOperationsInput | string
@@ -41695,8 +41165,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-<<<<<<< HEAD
-=======
   export type EventUpdateWithoutUserInput = {
     eventId?: StringFieldUpdateOperationsInput | string
     eventType?: StringFieldUpdateOperationsInput | string
@@ -41766,7 +41234,6 @@ export namespace Prisma {
     clicked?: BoolFieldUpdateOperationsInput | boolean
   }
 
->>>>>>> proxy-dev
   export type PhonesCreateManyBrandInput = {
     phoneId?: string
     modelName: string
@@ -41809,10 +41276,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
@@ -41837,10 +41301,7 @@ export namespace Prisma {
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
-<<<<<<< HEAD
-=======
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
->>>>>>> proxy-dev
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
     comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
@@ -41929,8 +41390,6 @@ export namespace Prisma {
     purchased?: boolean
   }
 
-<<<<<<< HEAD
-=======
   export type RecommendationLogCreateManyPhoneInput = {
     logId?: string
     userId: string
@@ -41940,7 +41399,6 @@ export namespace Prisma {
     clicked?: boolean
   }
 
->>>>>>> proxy-dev
   export type WishlistCreateManyPhoneInput = {
     wishlistId?: string
     userId: string
@@ -42090,8 +41548,6 @@ export namespace Prisma {
     purchased?: BoolFieldUpdateOperationsInput | boolean
   }
 
-<<<<<<< HEAD
-=======
   export type RecommendationLogUpdateWithoutPhoneInput = {
     logId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
@@ -42119,7 +41575,6 @@ export namespace Prisma {
     clicked?: BoolFieldUpdateOperationsInput | boolean
   }
 
->>>>>>> proxy-dev
   export type WishlistUpdateWithoutPhoneInput = {
     wishlistId?: StringFieldUpdateOperationsInput | string
     addedDate?: DateTimeFieldUpdateOperationsInput | Date | string

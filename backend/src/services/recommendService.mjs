@@ -1,11 +1,6 @@
 import { ML_BASE_URL } from "../config/ml.mjs";
 import { badRequest, internal } from "../utils/ApiError.mjs";
 import { prisma } from "../config/prisma.mjs";
-<<<<<<< HEAD
-
-const TIMEOUT_MS = 8000;
-
-=======
 import { buildFusedWeights } from "./profileFusion.mjs";
 import { fusionRank } from "./fusionRanker.mjs";
 import { fetchContentSimilarity } from "./similarityClient.mjs";
@@ -79,7 +74,6 @@ const safeErrorMessage = (err) => {
   return err.name || "unknown error";
 };
 
->>>>>>> proxy-dev
 const mlFetch = async (path, options = {}) => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -94,12 +88,6 @@ const mlFetch = async (path, options = {}) => {
       },
     });
 
-<<<<<<< HEAD
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw badRequest(data.message || data.detail || "ML service error");
-=======
     const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
@@ -109,16 +97,10 @@ const mlFetch = async (path, options = {}) => {
       // {error: "..."}.
       const msg = describeError(data?.message ?? data?.detail ?? data?.error);
       throw badRequest(msg);
->>>>>>> proxy-dev
     }
 
     return data;
   } catch (err) {
-<<<<<<< HEAD
-    if (err.statusCode) throw err;
-    if (err.name === "AbortError") throw internal("ML service timed out");
-    throw internal(`ML service unreachable (${err.message})`);
-=======
     // Re-throw already-shaped ApiError factories unchanged. NOTE: the
     // factory errors expose `err.status`, not `err.statusCode` — fix
     // a pre-existing bug where the wrong property was being checked
@@ -126,7 +108,6 @@ const mlFetch = async (path, options = {}) => {
     if (err && err.status) throw err;
     if (err && err.name === "AbortError") throw internal("ML service timed out");
     throw internal(`ML service unreachable (${safeErrorMessage(err)})`);
->>>>>>> proxy-dev
   } finally {
     clearTimeout(timer);
   }
@@ -136,19 +117,13 @@ export const checkHealth = async () => {
   return mlFetch("/health");
 };
 
-<<<<<<< HEAD
-export const getRecommendations = async (body) => {
-=======
 export const getRecommendations = async (body, userId) => {
->>>>>>> proxy-dev
   const { persona, budget, preferences, topN } = body || {};
 
   if (!persona) throw badRequest("persona is required");
   if (!budget || typeof budget.max !== "number")
     throw badRequest("budget.max is required");
 
-<<<<<<< HEAD
-=======
   // ---- Step C: Profile Fusion ---------------------------------------------
   // Build the per-dim weight map from Step A (explicit) + Step B
   // (behaviour). If the request supplies explicit `preferences` already
@@ -170,22 +145,14 @@ export const getRecommendations = async (body, userId) => {
   // the response so the FE still sees what the user asked for.
   const effectivePersona = fusedPreferences ? "Custom" : persona;
 
->>>>>>> proxy-dev
   // 1. Get ML results
   const data = await mlFetch("/recommend", {
     method: "POST",
     body: JSON.stringify({
-<<<<<<< HEAD
-      persona,
-      budget: { min: budget.min || 0, max: budget.max },
-      preferences: preferences || {},
-      topN: topN || 6,
-=======
       persona: effectivePersona,
       budget: { min: budget.min || 0, max: budget.max },
       preferences: fusedPreferences || preferences || {},
       topN: topN || FULL_LIST_TOP_N,
->>>>>>> proxy-dev
     }),
   });
 
@@ -231,13 +198,6 @@ export const getRecommendations = async (body, userId) => {
         },
       });
 
-<<<<<<< HEAD
-      return formatRecommendation(item, phone);
-    }),
-  );
-
-  return enriched;
-=======
       // Step D — attach sub-scores + tag set so fusionRank can consume
       // them in the same pass as the DB enrichment. item.* come from
       // FastAPI's extended /recommend response (Step D Python side).
@@ -383,7 +343,6 @@ export const getAutoRecommendations = async (userId) => {
   }
 
   return { results, defaultedAt };
->>>>>>> proxy-dev
 };
 
 // Format ML result + DB data into frontend-friendly shape
@@ -446,14 +405,9 @@ export const compareWithML = async (modelNameA, modelNameB) => {
     });
     return data;
   } catch (err) {
-<<<<<<< HEAD
-    if (err.statusCode) throw err;
-    throw internal(`ML compare failed (${err.message})`);
-=======
     // Same `err.status` vs `err.statusCode` fix as `mlFetch`. The
     // `safeErrorMessage` helper is already defined at module scope.
     if (err && err.status) throw err;
     throw internal(`ML compare failed (${safeErrorMessage(err)})`);
->>>>>>> proxy-dev
   }
 };

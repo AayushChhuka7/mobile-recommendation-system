@@ -8,11 +8,8 @@ import PhoneListing from "./components/PhoneListing";
 import { useAuth } from "./hooks/useAuth.jsx";
 import Compare from "./components/Compare.jsx";
 import PhoneDetail from "./components/PhoneDetail.jsx";
-<<<<<<< HEAD
-=======
 import AdminCustomerList from "./components/AdminCustomerList.jsx";
 import AdminCustomerDetail from "./components/AdminCustomerDetail.jsx";
->>>>>>> proxy-dev
 
 function App() {
   const { login } = useAuth();
@@ -20,11 +17,6 @@ function App() {
 
   const handleLogin = (userData) => {
     if (!userData) return;
-<<<<<<< HEAD
-    const unwrapped = userData.user
-      ? { ...userData.user, ...(userData.role ? { role: userData.role } : {}) }
-      : userData;
-=======
     // Axios response shape from POST /api/auth/login:
     //   { success: true, data: { user: { id, email } }, message: "..." }
     // The "/api/users/me" response (used by useAuth to hydrate role +
@@ -48,7 +40,6 @@ function App() {
       ...(record.id ? { id: record.id } : {}),
       ...(record.role ? { role: record.role } : {}),
     };
->>>>>>> proxy-dev
     login(unwrapped);
     navigate("/dashboard", { replace: true });
   };
@@ -66,8 +57,6 @@ function App() {
   if (path.match(/^\/phones\/[^/]+/)) return <PhoneDetail />;
   if (path.startsWith("/phones")) return <PhoneListing />;
   if (path.startsWith("/compare")) return <Compare />;
-<<<<<<< HEAD
-=======
   // Admin: customer-profiles detail must match before the listing, same
   // reason as /phones/:id above. The role guard lives inside the
   // components via `useAdminGuard` — non-admins get redirected.
@@ -75,7 +64,6 @@ function App() {
     return <AdminCustomerDetail />;
   if (path.startsWith("/admin/customer-profiles"))
     return <AdminCustomerList />;
->>>>>>> proxy-dev
 
   return <Login onLogin={handleLogin} />;
 }

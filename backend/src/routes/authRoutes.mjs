@@ -46,9 +46,6 @@ authRoutes.post(
   "/register",
   validationWith(
     userCreationValidation,
-<<<<<<< HEAD
-    ["name", "email", "password", "confirmPassword", "phoneNo", "roleName"],
-=======
     [
       "name",
       "email",
@@ -64,7 +61,6 @@ authRoutes.post(
       "preferredBrands",
       "weights",
     ],
->>>>>>> proxy-dev
   ),
   registerUser,
 );

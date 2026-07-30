@@ -27,9 +27,6 @@ const REGISTER_ROLE_OPTIONS = [...SELF_ASSIGNABLE_ROLES, "Admin"];
 function Registration({ onLogin }) {
   const navigate = useNavigate();
   const location = useLocation();
-<<<<<<< HEAD
-  const step = location.pathname.endsWith("/otp") ? 2 : 1;
-=======
   // Issue 2 — registration is now a 3-step flow:
   //   /register              → step 1 (basic info)
   //   /register/preferences  → step 2 (onboarding)
@@ -39,7 +36,6 @@ function Registration({ onLogin }) {
     : location.pathname.endsWith("/preferences")
       ? 2
       : 1;
->>>>>>> proxy-dev
 
   const [registerData, setRegisterData] = useState({
     username: "",
@@ -53,8 +49,6 @@ function Registration({ onLogin }) {
   const [serverError, setServerError] = useState("");
   const [registerLoading, setRegisterLoading] = useState(false);
 
-<<<<<<< HEAD
-=======
   // Issue 2 — onboarding answers. Held in component state across the
   // step-1 → step-2 navigation. Submitted alongside the basic-info
   // fields in the single POST /auth/register call from step 2.
@@ -67,7 +61,6 @@ function Registration({ onLogin }) {
   const [prefErrors, setPrefErrors] = useState({});
   const [brands, setBrands] = useState([]);
 
->>>>>>> proxy-dev
   const [otp, setOtp] = useState(EMPTY_OTP);
   const [otpError, setOtpError] = useState("");
   const [otpLoading, setOtpLoading] = useState(false);
@@ -81,12 +74,6 @@ function Registration({ onLogin }) {
     return () => clearTimeout(timer);
   }, [resendCooldown]);
   useEffect(() => {
-<<<<<<< HEAD
-    if (step === 2 && !registerData.email) {
-      navigate("/register", { replace: true });
-    }
-  }, [step]);
-=======
     // Only the OTP step requires registerData.email to be present;
     // the new /register/preferences step is allowed even when the
     // email hasn't been entered yet — it'll just bounce back to
@@ -116,7 +103,6 @@ function Registration({ onLogin }) {
       ignore = true;
     };
   }, []);
->>>>>>> proxy-dev
 
   const validateRegister = useCallback(() => {
     const e = {};
@@ -174,11 +160,7 @@ function Registration({ onLogin }) {
   }, []);
 
   const handleRegisterNext = useCallback(
-<<<<<<< HEAD
-    async (e) => {
-=======
     (e) => {
->>>>>>> proxy-dev
       e?.preventDefault();
       setServerError("");
       setRegisterErrors({});
@@ -186,19 +168,6 @@ function Registration({ onLogin }) {
       setRegisterErrors(validationErrors);
       if (Object.keys(validationErrors).length) return;
 
-<<<<<<< HEAD
-      setRegisterLoading(true);
-      try {
-        await api.post("/auth/register", {
-          name: registerData.username,
-          email: registerData.email,
-          password: registerData.password,
-          confirmPassword: registerData.confirmPassword,
-          phoneNo: registerData.phone,
-          roleName: registerRole,
-        });
-
-=======
       // Issue 2 — Step 1 no longer calls /auth/register. We hold
       // basic-info in component state and forward to the new
       // /register/preferences step where the user picks persona /
@@ -256,7 +225,6 @@ function Registration({ onLogin }) {
       setRegisterLoading(true);
       try {
         await api.post("/auth/register", body);
->>>>>>> proxy-dev
         setResendCooldown(RESEND_COOLDOWN_SECONDS);
         navigate("/register/otp");
       } catch (error) {
@@ -266,9 +234,6 @@ function Registration({ onLogin }) {
           data?.details,
         );
         if (Object.keys(fieldErrors).length) {
-<<<<<<< HEAD
-          setRegisterErrors(fieldErrors);
-=======
           // Field-level errors on the basic-info fields belong on
           // step 1; route the user back there so they can fix it.
           const basicFields = ["username", "email", "password", "confirmPassword", "phone"];
@@ -282,7 +247,6 @@ function Registration({ onLogin }) {
             return;
           }
           setPrefErrors(fieldErrors);
->>>>>>> proxy-dev
         }
         setServerError(
           bannerMessage || data?.message || "Registration failed. Please try again.",
@@ -291,17 +255,6 @@ function Registration({ onLogin }) {
         setRegisterLoading(false);
       }
     },
-<<<<<<< HEAD
-    [
-      registerData,
-      registerRole,
-      validateRegister,
-      navigate,
-      mapServerFieldErrors,
-    ],
-  );
-
-=======
     [buildRegisterBody, prefData, mapServerFieldErrors, navigate],
   );
 
@@ -324,7 +277,6 @@ function Registration({ onLogin }) {
     await submitRegisterWithPrefs(false);
   }, [submitRegisterWithPrefs]);
 
->>>>>>> proxy-dev
   const handleOtpChange = useCallback((index, value) => {
     if (!/^\d?$/.test(value)) return;
     setOtp((prev) => {
@@ -355,10 +307,7 @@ function Registration({ onLogin }) {
   const completeRegistration = useCallback(() => {
     onLogin({
       id: registerData.email,
-<<<<<<< HEAD
-=======
       userId: registerData.email,
->>>>>>> proxy-dev
       name: registerData.username,
       email: registerData.email,
       phoneNo: registerData.phone,
@@ -437,25 +386,19 @@ function Registration({ onLogin }) {
     }
   }, [registerData.email]);
 
-<<<<<<< HEAD
-=======
   // Issue 2 — going back from the OTP step lands on the preferences step
   // (the new step between basic-info and OTP) so the user can adjust
   // their onboarding answers without re-entering basic-info.
->>>>>>> proxy-dev
   const handleOtpBack = useCallback(() => {
     setOtp(EMPTY_OTP);
     setOtpError("");
     setOtpResult(null);
-<<<<<<< HEAD
-=======
     navigate("/register/preferences");
   }, [navigate]);
 
   const handlePrefBack = useCallback(() => {
     setPrefErrors({});
     setServerError("");
->>>>>>> proxy-dev
     navigate("/register");
   }, [navigate]);
 
@@ -470,8 +413,6 @@ function Registration({ onLogin }) {
     setServerError("");
   }, []);
 
-<<<<<<< HEAD
-=======
   const updatePref = useCallback((key, value) => {
     setPrefData((prev) => ({ ...prev, [key]: value }));
     setPrefErrors((prev) => {
@@ -493,7 +434,6 @@ function Registration({ onLogin }) {
     setServerError("");
   }, []);
 
->>>>>>> proxy-dev
   return (
     <div className="auth-page">
       <Toast
@@ -518,15 +458,12 @@ function Registration({ onLogin }) {
               Create an account to get started
             </div>
 
-<<<<<<< HEAD
-=======
             <div className="step-indicator">
               <div className="step-dot active"></div>
               <div className="step-dot"></div>
               <div className="step-dot"></div>
             </div>
 
->>>>>>> proxy-dev
             {serverError && (
               <div
                 className="server-error"
@@ -621,14 +558,10 @@ function Registration({ onLogin }) {
               className="btn btn-primary w-full"
               disabled={registerLoading}
             >
-<<<<<<< HEAD
-              {registerLoading ? "Submitting..." : "Register"}
-=======
               {/* Issue 2 — Step 1 no longer registers. It validates and
                   navigates to the new /register/preferences step where
                   the actual POST /auth/register happens. */}
               {registerLoading ? "Submitting..." : "Continue"}
->>>>>>> proxy-dev
             </button>
 
             <div className="auth-footer">
@@ -638,8 +571,6 @@ function Registration({ onLogin }) {
               </span>
             </div>
           </form>
-<<<<<<< HEAD
-=======
         ) : step === 2 ? (
           // Issue 2 — onboarding step. Filled before the OTP is sent;
           // the basic-info fields are still in component state and will
@@ -800,7 +731,6 @@ function Registration({ onLogin }) {
               </span>
             </div>
           </form>
->>>>>>> proxy-dev
         ) : (
           <form onSubmit={handleOtpVerify}>
             <button
@@ -821,10 +751,7 @@ function Registration({ onLogin }) {
             <div className="step-indicator">
               <div className="step-dot active"></div>
               <div className="step-dot active"></div>
-<<<<<<< HEAD
-=======
               <div className="step-dot active"></div>
->>>>>>> proxy-dev
             </div>
 
             <OtpInputRow

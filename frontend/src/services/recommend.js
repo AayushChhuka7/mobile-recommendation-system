@@ -42,8 +42,6 @@ export async function getRecommendations({
 }
 
 /**
-<<<<<<< HEAD
-=======
  * Auto-recommend — fired by the Dashboard on mount.
  *
  * Backend contract (see `backend/src/controller/recommendController.mjs::
@@ -76,7 +74,6 @@ export async function getAutoRecommendations() {
 }
 
 /**
->>>>>>> proxy-dev
  * Hit the backend ML-powered phone-vs-phone comparison endpoint.
  *
  * Backend contract (see backend/src/routes/recommendRoutes.mjs +

@@ -72,15 +72,6 @@ export function AuthProvider({ children }) {
         const profile = res?.data?.data;
         if (profile) {
           // Merge fresh server fields onto whatever localStorage had.
-<<<<<<< HEAD
-          // (e.g. login only returns id+email; /users/me adds name/phone.)
-          const next = {
-            ...stored,
-            id: profile.userId ?? stored.id,
-            name: profile.name ?? stored.name,
-            email: profile.email ?? stored.email,
-            phoneNo: profile.phoneNo ?? stored.phoneNo,
-=======
           // (e.g. login only returns id+email; /users/me adds name/phone,
           // role, and the real numeric userId.)
           const next = {
@@ -97,7 +88,6 @@ export function AuthProvider({ children }) {
             // user type) we want localStorage to reflect that and not
             // keep a stale role from a previous login.
             role: profile.role ?? null,
->>>>>>> proxy-dev
           };
           localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(next));
           setStoredUser(next);
@@ -123,10 +113,6 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback((userData) => {
-<<<<<<< HEAD
-    if (userData) {
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
-=======
     // Normalise: the BE login endpoint returns `{ id, email }`, but
     // other call-sites (Dashboard auto-recommend, profile hydration)
     // reference `userId`. If we got `id` but no `userId`, mirror the
@@ -137,15 +123,11 @@ export function AuthProvider({ children }) {
     }
     if (normalized) {
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(normalized));
->>>>>>> proxy-dev
     } else {
       localStorage.removeItem(AUTH_STORAGE_KEY);
     }
     // setState after localStorage so listeners that read from storage
     // in the same tick see the new value.
-<<<<<<< HEAD
-    setStoredUser(userData);
-=======
     setStoredUser(normalized);
     // After login: hydrate fields that the login response doesn't
     // include (name, phoneNo, role). The boot effect only runs once at
@@ -179,7 +161,6 @@ export function AuthProvider({ children }) {
         console.warn("Post-login profile refresh failed:", err?.message || err);
       }
     })();
->>>>>>> proxy-dev
   }, []);
 
   // Merge a partial update into the existing stored user. Used to fill in
