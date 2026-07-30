@@ -1,10 +1,11 @@
 // behaviorAnalyzer — Step B single source of truth for behaviour events.
 //
 // Three exports work together:
-//   - `recordEvent`   the only thing controllers should call: writes the
-//                     `Event` row AND the `BehaviorScore` deltas in one tx.
-//   - `extractTagsForEvent`  pure (phone-aware) tag-delta mapper.
-//   - `applyDecay`    exponential decay helper for one tag at a time.
+//   - `recordEvent`            the only thing controllers should call:
+//                              writes the `Event` row AND the
+//                              `BehaviorScore` deltas in one tx.
+//   - `extractTagsForEvent`    pure (phone-aware) tag-delta mapper.
+//   - `applyDecay`             bounded decay helper for one tag.
 //
 // Failure policy:
 //   `recordEvent` is supposed to be called from the same fire-and-forget
@@ -13,66 +14,199 @@
 //   the call in try/catch. We still surface the error to the server log so
 //   it can be diagnosed post-hoc.
 //
-// Why a separate service instead of inlining the logic into controllers:
-//   - The mapping (event → tags) is the same whether the source is the FE
-//     clicking a card or the BE receiving a `safeRecordBrowseEvent`. By
-//     centralising here, every incoming event funnels through the same
-//     scoring formula. Step C (Profile Fusion) reads from this table.
+// Behaviour-learning refresh (2026-07):
+//   - All magic numbers moved to `config/behaviorConfig.mjs` (Phase 0).
+//   - Per-event deltas derived from the phone's actual spec via
+//     `services/phoneFeatureProfile.mjs` (Phase 1 + Phase 2). The
+//     legacy structural `gaming` / `chipset` / `category` hard-coding
+//     is gone; we emit `feature:<dim>` tags instead.
+//   - Scores are bounded via tanh saturation (Phase 3) so a long
+//     history cannot grow scores without limit.
+//   - Per-event delta magnitude is multiplied by the confidence ramp
+//     (Phase 4) so the first few events barely shift the dial.
+//   - Repeats within the dedup window still hard-skip; repeats outside
+//     apply a smooth `f(n) = 1 / (1 + K * (n-1))` curve (Phase 5).
+//   - Each BehaviorScore row carries an LRU of the last 5 reasons it
+//     was updated (Phase 6) so the FE can render per-tag
+//     "Gaming +2 — Compared RedMagic 10 Pro" without a separate query.
+//
+// The public API (`recordEvent`, `extractTagsForEvent`, `applyDecay`)
+// is unchanged from the prior version — controllers and tests that
+// imported this file do not need to be edited.
 
 import { prisma } from "../config/prisma.mjs";
+import {
+  BEHAVIOR_CONFIG,
+  eventBaseWeight,
+  featureBaseWeight,
+} from "../config/behaviorConfig.mjs";
+import {
+  buildPhoneFeatureProfile,
+  buildPhoneFeatureTagDeltas,
+  FEATURE_DIMS,
+} from "./phoneFeatureProfile.mjs";
+import { computeConfidence, isConfidenceSaturated } from "./behaviorConfidence.mjs";
 
-// ---- Delta table ------------------------------------------------------------
+// ---- Search-keyword table --------------------------------------------------
 //
-// Mirrors the README architecture doc §4. Keys are eventTypes; values are
-// the tag → delta mapping. Numeric deltas (positive = stronger interest,
-// negative = weaker). The actual decay multiplier is `ALPHA` below.
-//
-// We deliberately keep the taxonomy coarse at this stage: a `phoneId`
-// lookup below expands these tags into the specific brand / category /
-// tier for that phone.
-const DELTAS = {
-  search:    { gaming: +2, chipset: +1 },
-  compare:   { gaming: +3 },
-  view:      { brand: +1, tier: +1 },
-  click:     { brand: +2, category: +1 },
-  ignore:    { brand: -1, category: -1 },
-  save:      { brand: +4, category: +2 },
-  recommend: { gaming: +1, category: +1 },
+// Pure mapping from free-form search query to behaviour tags. We don't
+// run NLP here; we grep for category / brand / tier keywords that exist
+// in our own seed data and return the matching tag. Search evidence is
+// weaker than a phone lookup, so each matched keyword contributes only
+// half the per-event weight (see `extractTagsForEvent`).
+const SEARCH_KEYWORDS = {
+  // categories
+  rog: "category:gaming",
+  gaming: "category:gaming",
+  gamer: "category:gaming",
+  camera: "category:camera",
+  photography: "category:camera",
+  battery: "category:battery",
+  battery_life: "category:battery",
+  // tiers
+  ultra: "tier:flagship",
+  flagship: "tier:flagship",
+  premium: "tier:flagship",
+  budget: "tier:budget",
+  midrange: "tier:mid",
+  lite: "tier:mid",
+  // brands
+  apple: "brand:apple",
+  iphone: "brand:apple",
+  samsung: "brand:samsung",
+  galaxy: "brand:samsung",
+  xiaomi: "brand:xiaomi",
+  redmi: "brand:xiaomi",
+  poco: "brand:xiaomi",
+  oneplus: "brand:oneplus",
+  google: "brand:google",
+  pixel: "brand:google",
 };
 
-// Exponential decay. Each new event contributes delta to the freshly
-// decaying score instead of to the score in isolation.
-const ALPHA = 0.95;
+function tagsFromSearchQuery(q) {
+  const out = [];
+  if (typeof q !== "string") return out;
+  const lower = q.toLowerCase();
+  // Avoid double-counting the same tag from synonymous keywords
+  // (e.g. "iphone" and "apple" both → brand:apple).
+  const seen = new Set();
+  for (const [kw, tag] of Object.entries(SEARCH_KEYWORDS)) {
+    if (lower.includes(kw) && !seen.has(tag)) {
+      seen.add(tag);
+      out.push(tag);
+    }
+  }
+  return out;
+}
 
-// ---- Pure helpers ----------------------------------------------------------
+// ---- Tier inference --------------------------------------------------------
+//
+// `tier:<X>` tags are emitted when the phone's metadata implies a
+// tier (flagship / mid / budget) even if no `tier:<X>` was hard-coded
+// for the brand. Mirrors the original `inferTier` so legacy callers
+// that depend on these tags keep working.
+function inferTier(meta) {
+  if (!meta) return null;
+  const antutu =
+    typeof meta.antutuScore === "number" ? meta.antutuScore : null;
+  if (antutu == null) return null;
+  if (antutu >= 900_000) return "flagship";
+  if (antutu >= 500_000) return "mid";
+  return "budget";
+}
 
-// Apply exponential decay + delta to one score. Pure (no I/O).
+// Build the brand tag from a meta row. Returns null if no usable
+// brand name is present. Names are sanitized to a 40-char
+// [A-Za-z0-9_-] string so a malicious or malformed brand name
+// cannot pollute the tag space.
+function safeBrandName(meta) {
+  if (!meta || typeof meta.brandName !== "string") return null;
+  const safe = meta.brandName.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 40);
+  return safe || null;
+}
+
+// ---- Bounded decay helper --------------------------------------------------
 //
-//   score' = score * ALPHA + delta
+// `applyDecay` now sits on top of the config — it consults
+// `BEHAVIOR_CONFIG.score` for alpha, saturation tanh-k, positiveCap,
+// and negativeFloor. The shape of the helper is unchanged for test
+// stability: callers pass (prevScore, delta, optional alpha) and get
+// back the new score.
 //
-// Inputs:
-//   score   — the prior BehaviorScore.score (0 if no row yet)
-//   delta   — the contribution from the current event
-//   alpha   — decay multiplier; default 0.95 per the architecture doc
-//
-// Returns the new score, rounded to 4 decimal places to keep the table
-// tidy. Callers should clamp to ≥ 0 if they want a strictly positive
-// signal (negative interest is allowed so ignore events can pull tags
-// back below the neutral line).
-export function applyDecay(score, delta, alpha = ALPHA) {
+// Math:
+//   raw = prevScore * alpha + delta
+//   then apply smooth saturation so abs(raw) approaches the cap
+//   asymptotically:
+//     - For raw ≥ 0:    next = positiveCap * tanh(k * raw / positiveCap)
+//     - For raw < 0:    next = negativeFloor * tanh(|k * raw / negativeFloor|)
+//                       (always negative)
+export function applyDecay(score, delta, alpha) {
+  const cfg = BEHAVIOR_CONFIG.score;
   const s = Number.isFinite(score) ? score : 0;
   const d = Number.isFinite(delta) ? delta : 0;
-  const a = Number.isFinite(alpha) ? alpha : ALPHA;
+  const a =
+    Number.isFinite(alpha) && alpha > 0 && alpha <= 1
+      ? alpha
+      : cfg.alpha;
+  const raw = s * a + d;
+  const k = cfg.saturationTanhK;
+  let next;
+  if (raw >= 0) {
+    next = cfg.positiveCap * Math.tanh((k * raw) / cfg.positiveCap);
+  } else {
+    const absRaw = -raw;
+    const floor = -cfg.negativeFloor; // magnitude of the negative asymptote
+    next = -floor * Math.tanh((k * absRaw) / floor);
+  }
+  return Math.round(next * 10000) / 10000;
+}
+
+// Backwards-compatible plain-decay helper exposed for tests. Returns
+// the un-bounded pre-tanh value so unit tests can assert the raw
+// `s * a + d` formula without the saturation curve on top. Kept as
+// `__applyDecayRaw` so it's obviously an internal symbol.
+export function __applyDecayRaw(score, delta, alpha = BEHAVIOR_CONFIG.score.alpha) {
+  const s = Number.isFinite(score) ? score : 0;
+  const d = Number.isFinite(delta) ? delta : 0;
+  const a = Number.isFinite(alpha) ? alpha : BEHAVIOR_CONFIG.score.alpha;
   const next = s * a + d;
   return Math.round(next * 10000) / 10000;
 }
 
-// Look up the metadata deltas need for a single phone. Returns null when
-// the phoneId is missing or unknown — `extractTagsForEvent` then skips the
-// brand / tier / category deltas and emits only the bare-evidence ones.
+// ---- Diminishing returns ---------------------------------------------------
 //
-// Cached at module scope for the lifetime of the BE process. Phones don't
-// change brand often, so a small Map is plenty.
+// Counter per (userId, eventType, phoneId). Lives for the lifetime of
+// the BE process; seeded lazily on first use. A process restart
+// resets the counter so the *worst* case is the user gets one extra
+// full-weight bump after a redeploy — acceptable for the stability
+// guarantee.
+const phoneRepeatCounters = new Map(); // key: `${userId}::${eventType}::${phoneId}`
+
+export function diminishingMultiplier(repeatCount) {
+  const n = Number.isFinite(repeatCount) && repeatCount > 0 ? repeatCount : 1;
+  const cfg = BEHAVIOR_CONFIG.repeats;
+  return cfg.initial / (1 + cfg.curveK * (n - 1));
+}
+
+// Read & bump the per-phone repeat counter. Pure-ish (only touches
+// an in-memory Map). Returns the repeat count AFTER the bump.
+function bumpRepeatCounter(userId, eventType, phoneId) {
+  if (!userId || !eventType || !phoneId) return 1;
+  const key = `${userId}::${eventType}::${phoneId}`;
+  const prev = phoneRepeatCounters.get(key) || 0;
+  const next = prev + 1;
+  phoneRepeatCounters.set(key, next);
+  return next;
+}
+
+// Exposed for tests + ops debugging; never mutated by callers.
+export const __diminishingState = { phoneRepeatCounters };
+
+// ---- Phone metadata cache --------------------------------------------------
+//
+// Cached at module scope for the lifetime of the BE process. Phones
+// don't change specs often, so a small Map is plenty. We carry this
+// forward unchanged so the per-burst-of-clicks path is cheap.
 const phoneMetaCache = new Map();
 const PHONE_META_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
@@ -92,7 +226,12 @@ async function lookupPhoneMeta(phoneId) {
         batteryMah: true,
         brand: { select: { name: true } },
         specs: {
-          select: { chipset: true },
+          select: {
+            chipset: true,
+            mainCamera: true,
+            refreshRate: true,
+            displaySize: true,
+          },
         },
       },
     });
@@ -100,245 +239,202 @@ async function lookupPhoneMeta(phoneId) {
       phoneMetaCache.set(phoneId, { at: now, value: null });
       return null;
     }
+    const cameraText = phone.specs?.mainCamera || "";
+    const cameraMatch =
+      typeof cameraText === "string"
+        ? cameraText.match(/(\d+(?:\.\d+)?)\s*MP/i)
+        : null;
+    const mainCameraMp = cameraMatch ? Number(cameraMatch[1]) : null;
+
     const value = {
       modelName: phone.modelName || null,
       brandName: phone.brand?.name || null,
       chipset: phone.specs?.chipset || null,
       antutuScore: typeof phone.antutuScore === "number" ? phone.antutuScore : null,
       batteryMah: typeof phone.batteryMah === "number" ? phone.batteryMah : null,
+      refreshRate:
+        typeof phone.specs?.refreshRate === "number"
+          ? phone.specs.refreshRate
+          : null,
+      displaySize:
+        typeof phone.specs?.displaySize === "number"
+          ? phone.specs.displaySize
+          : null,
+      mainCameraMp: Number.isFinite(mainCameraMp) ? mainCameraMp : null,
     };
     phoneMetaCache.set(phoneId, { at: now, value });
     return value;
   } catch {
-    // Lookup failure is non-fatal — we just skip the phone-derived deltas.
     return null;
   }
 }
 
-// Heuristic mapping from free-form search query to tags. We don't run NLP
-// here; we grep for category / brand / tier keywords that exist in our
-// own seed data and return the matching delta tags.
+// ---- Reasons-LRU helpers (Phase 6) -----------------------------------------
 //
-// Keyed lower-case; values are the delta tags they trigger.
-const SEARCH_KEYWORDS = {
-  // categories
-  rog: "gaming",
-  gaming: "gaming",
-  gamer: "gaming",
-  camera: "category:camera",
-  photography: "category:camera",
-  battery: "category:battery",
-  battery_life: "category:battery",
-  // tiers / price
-  ultra: "tier:flagship",
-  flagship: "tier:flagship",
-  premium: "tier:flagship",
-  budget: "tier:budget",
-  midrange: "tier:mid",
-  lite: "tier:mid",
-  // brands (lower-case)
-  apple: "brand:apple",
-  iphone: "brand:apple",
-  samsung: "brand:samsung",
-  galaxy: "brand:samsung",
-  xiaomi: "brand:xiaomi",
-  redmi: "brand:xiaomi",
-  poco: "brand:xiaomi",
-  oneplus: "brand:oneplus",
-  google: "brand:google",
-  pixel: "brand:google",
-};
+// Each BehaviorScore row carries an LRU of the most recent reasons it
+// was updated. Shape (object form, plain JSONB):
+//
+//   { entries: [
+//       { dim, delta, reason, phoneId, phoneLabel, eventType, at } ],
+//     updatedAt: "2026-07-30T..." }
+//
+// `dim` is the user-readable tag name (e.g. "feature:gaming").
+// `reason` is the human-readable phrase ("Compared RedMagic 10 Pro").
+// `at` is the ISO timestamp; older entries are evicted past the
+// per-tag limit from BEHAVIOR_CONFIG.
 
-function tagsFromSearchQuery(q) {
-  const out = [];
-  if (typeof q !== "string") return out;
-  const lower = q.toLowerCase();
-  for (const [kw, tag] of Object.entries(SEARCH_KEYWORDS)) {
-    if (lower.includes(kw)) {
-      out.push(tag);
-    }
-  }
-  return out;
+const REASONS_EMPTY = Object.freeze({ entries: [], updatedAt: null });
+
+function pushReason(current, entry, limit) {
+  const cur =
+    current && typeof current === "object" && Array.isArray(current.entries)
+      ? current
+      : { entries: [], updatedAt: null };
+  const next = cur.entries.slice(0, limit - 1);
+  next.unshift(entry);
+  return {
+    entries: next,
+    updatedAt: new Date().toISOString(),
+  };
 }
 
-// Tier inference from a phone's antutu / battery / brand. Used when
-// extractTagsForEvent knows the phoneId but not a tier string. Returns
-// "flagship" | "mid" | "budget" | null.
-function inferTier(meta) {
-  if (!meta) return null;
-  const antutu = meta.antutuScore;
-  if (typeof antutu === "number" && antutu >= 900_000) return "flagship";
-  if (typeof antutu === "number" && antutu >= 500_000) return "mid";
-  if (typeof antutu === "number") return "budget";
-  return null;
-}
-
-// Convert a phone's metadata into the concrete `brand:<X>` / `tier:<X>`
-// tags (e.g. `brand:Samsung`, `tier:flagship`, `category:camera`) and
-// return as `Map<tag, delta>`. The bucket dict is per-event — `view` has
-// different deltas than `click` so we pass it in.
-function phoneMetaTags(meta, bucket) {
-  const out = new Map();
-  if (!meta) return out;
-  for (const [baseTag, delta] of Object.entries(bucket)) {
-    let finalTag = baseTag;
-    if (baseTag === "brand" && meta.brandName) {
-      const safe = String(meta.brandName).replace(/[^A-Za-z0-9_-]/g, "").slice(0, 40);
-      if (!safe) continue;
-      finalTag = `brand:${safe}`;
-    } else if (baseTag === "tier") {
-      const tier = inferTier(meta);
-      if (!tier) continue;
-      finalTag = `tier:${tier}`;
-    } else if (baseTag === "category") {
-      // "category" with no qualifier is a generic affinity bump — emit
-      // `category:camera` as a stand-in so the tag space stays nameable.
-      finalTag = "category:camera";
+function describeReason(meta, eventType, payload) {
+  // Compose a one-line human phrase from the cached phone meta + the
+  // event type. Caps at ~80 chars so the FE can render it on one line.
+  if (!meta) {
+    if (eventType === "search") {
+      const q = payload?.q || payload?.searchQuery;
+      if (typeof q === "string" && q.trim().length > 0) {
+        return `Searched "${q.trim().slice(0, 50)}"`;
+      }
     }
-    out.set(finalTag, (out.get(finalTag) || 0) + delta);
+    return `Action: ${eventType}`;
   }
-  return out;
+  const name = meta.modelName || meta.brandName || "this phone";
+  switch (eventType) {
+    case "view":
+      return `Viewed ${name}`;
+    case "click":
+      return `Opened ${name}`;
+    case "compare":
+      return `Compared ${name}`;
+    case "recommend":
+      return `Recommended ${name}`;
+    case "save":
+      return `Saved ${name}`;
+    case "search":
+      return `Searched "${(payload?.q || "").toString().slice(0, 40) || "phone"}"`;
+    case "ignore":
+      return `Dismissed ${name}`;
+    default:
+      return `Interaction with ${name}`;
+  }
 }
 
 // ---- Public API ------------------------------------------------------------
 
-// Map an incoming event to the per-tag deltas it should produce. Returns
-// a Map<tag, delta>. Pure (modulo the phoneId metadata lookup, which is
-// cached so a burst of clicks is cheap).
+// Map an incoming event to the per-tag deltas it should produce.
+// Returns `Map<tag, delta>` and a side-channel `Map<tag, reason>` that
+// the caller (recordEvent) writes onto the BehaviorScore row.
 //
 // Recognised eventTypes: "search" | "view" | "compare" | "click" |
-// "save" | "ignore" | "recommend". Any other type returns an empty Map —
-// caller is free to still log the Event row but no BehaviorScore bump
-// happens.
+// "save" | "ignore" | "recommend". Unknown types return empty maps.
 export async function extractTagsForEvent(eventType, phoneId, payload) {
-  const bucket = DELTAS[eventType];
-  if (!bucket) return new Map();
-
-  let meta = null;
-  if (phoneId) {
-    meta = await lookupPhoneMeta(phoneId);
+  const baseWeight = eventBaseWeight(eventType);
+  if (baseWeight === 0) {
+    return { deltas: new Map(), reasons: new Map() };
   }
 
   const deltas = new Map();
+  const reasons = new Map();
 
-  // 1. Base deltas from the event type — these include coarse tags like
-  //    "gaming" / "chipset". We only emit them when there's evidence
-  //    (phoneId-derived meta OR a search query that matches the keyword
-  //    table). Otherwise the behaviour-score table would fill up with
-  //    noise from background events.
+  // Resolve phone meta once — used by both delta derivation and the
+  // reason phraser. A failed lookup just means we emit fewer tags.
+  let meta = phoneId ? await lookupPhoneMeta(phoneId) : null;
+
+  // ----- Search path: keyword-based tags, weaker than a phoneId lookup
   if (eventType === "search") {
     const tags = tagsFromSearchQuery(payload?.q);
-    for (const t of tags) deltas.set(t, (deltas.get(t) || 0) + 1);
-  } else if (meta) {
-    // For non-search events we trust the phoneId lookup to materialise
-    // the right brand / category / tier tags.
-    for (const [tag, delta] of phoneMetaTags(meta, bucket)) {
-      deltas.set(tag, (deltas.get(tag) || 0) + delta);
+    if (tags.length === 0 && !meta) {
+      return { deltas, reasons };
     }
-    if (eventType === "compare" || eventType === "recommend") {
-      // Gaming buckets emit unconditionally for "structural" events that
-      // imply the user is comparing/looking at multi-result flows.
-      for (const [tag, delta] of Object.entries(bucket)) {
-        if (!["brand", "tier", "category"].includes(tag)) {
-          deltas.set(tag, (deltas.get(tag) || 0) + delta);
-        }
-      }
+    // Search evidence uses half the per-event weight — typing a
+    // keyword is weaker than viewing an actual phone. The 0.5 lives
+    // here, not in the config, because it only applies to search.
+    const searchScale = 0.5;
+    for (const tag of tags) {
+      deltas.set(tag, (deltas.get(tag) || 0) + baseWeight * searchScale);
     }
-  } else if (eventType === "compare" || eventType === "recommend") {
-    // phoneId not supplied (e.g. FE fired compare without IDs yet):
-    // still emit the structural deltas.
-    for (const [tag, delta] of Object.entries(bucket)) {
-      deltas.set(tag, (deltas.get(tag) || 0) + delta);
-    }
+    return {
+      deltas,
+      reasons: new Map(
+        tags.map((t) => [t, describeReason(meta, "search", payload)]),
+      ),
+    };
   }
 
-  return deltas;
+  // ----- Non-search path: per-phone feature profile + brand/tier
+  if (!meta) {
+    // No phoneId (or unknown phone). Nothing meaningful to emit.
+    return { deltas, reasons };
+  }
+
+  // Phase 2: per-dim feature deltas via the feature profile.
+  const tagDeltas = buildPhoneFeatureTagDeltas(meta, featureBaseWeight);
+  for (const [tag, delta] of tagDeltas.entries()) {
+    deltas.set(tag, (deltas.get(tag) || 0) + delta * baseWeight);
+    reasons.set(tag, describeReason(meta, eventType, payload));
+  }
+
+  // Brand bump — single tag, weighted by `featureWeight.brand`.
+  const brand = safeBrandName(meta);
+  if (brand) {
+    const brandTag = `brand:${brand}`;
+    const w = featureBaseWeight("brand");
+    deltas.set(
+      brandTag,
+      (deltas.get(brandTag) || 0) + baseWeight * w,
+    );
+    reasons.set(brandTag, describeReason(meta, eventType, payload));
+  }
+
+  // Tier bump — only if `inferTier` can derive one.
+  const tier = inferTier(meta);
+  if (tier) {
+    const tierTag = `tier:${tier}`;
+    const w = featureBaseWeight("tier");
+    deltas.set(
+      tierTag,
+      (deltas.get(tierTag) || 0) + baseWeight * w,
+    );
+    reasons.set(tierTag, describeReason(meta, eventType, payload));
+  }
+
+  return { deltas, reasons };
 }
 
-// The single entry point controllers should use. Writes the Event row
-// first (so the audit trail exists), then upserts every tag delta into
-// BehaviorScore with exponential decay. All in one transaction — either
-// the Event + tag rows exist together or none of them do.
-//
-// Returns:
-//   { eventId, tagsUpdated: string[], skipped?: 'duplicate' }
-//
-// Throws on DB error; callers wrap in try/catch (fire-and-forget).
-//
-// Dedup window: phoneId-bearing "click" / "view" /
-export async function recordEvent(userId, eventType, opts = {}) {
-  if (!userId) throw new Error("recordEvent requires a userId");
-  if (typeof eventType !== "string" || !eventType) {
-    throw new Error("recordEvent requires a non-empty eventType");
-  }
+// ---- Event → BehaviorScore write path --------------------------------------
 
-  const phoneId = typeof opts.phoneId === "string" ? opts.phoneId : null;
-  const payload =
-    opts.payload && typeof opts.payload === "object" ? opts.payload : null;
-
-  // PhoneId-bearing "click" / "view" / "compare" events dedup within a
-  // short window. The user's brief: "if i clicked a phone that is in
-  // recent 10 then don't update score and track or shows in profile."
-  // — we treat a same-(userId, eventType, phoneId) event within
-  // EVENT_DEDUP_WINDOW_MS as a duplicate and skip both the Event row
-  // and the BehaviorScore bump. Search / recommend / save / ignore are
-  // intentional distinct actions and pass through.
-  if (phoneId && EVENT_DEDUPABLE_EVENTS.has(eventType)) {
-    const dup = await isDuplicateEvent(userId, eventType, phoneId);
-    if (dup) {
-      return { eventId: null, tagsUpdated: [], skipped: "duplicate" };
+// Cheap fetcher for "how many events has this user already recorded?".
+// Used by the confidence ramp. Returns 0 on a read failure so a
+// transient blip degrades to "no history yet" rather than throwing.
+async function userEventCount(userId) {
+  if (!userId) return 0;
+  try {
+    return await prisma.event.count({ where: { userId } });
+  } catch (err) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn("[behaviorAnalyzer] userEventCount failed:", err?.message || err);
     }
+    return 0;
   }
-
-  // First pass: derive tags so we can return them in the response. This
-  // costs an extra read per call but it's < 1 ms with the cache above.
-  const tags = await extractTagsForEvent(eventType, phoneId, payload);
-  const tagsUpdated = Array.from(tags.keys());
-
-  return prisma.$transaction(async (tx) => {
-    const created = await tx.event.create({
-      data: {
-        userId,
-        eventType,
-        phoneId: phoneId || undefined,
-        payload: payload || undefined,
-      },
-      select: { eventId: true },
-    });
-
-    for (const [tag, delta] of tags.entries()) {
-      // Upsert with raw SQL so we can read-modify-write atomically inside
-      // the tx without a separate fetch.
-      const existing = await tx.behaviorScore.findUnique({
-        where: { userId_tag: { userId, tag } },
-        select: { score: true },
-      });
-      const prev = existing?.score || 0;
-      const next = applyDecay(prev, delta);
-      await tx.behaviorScore.upsert({
-        where: { userId_tag: { userId, tag } },
-        create: { userId, tag, score: next },
-        update: { score: next },
-      });
-    }
-
-    return { eventId: created.eventId, tagsUpdated };
-  });
 }
 
-// ---- Dedup support ---------------------------------------------------------
-//
-// The dedup window is short (30 s) and the index is
-// (user_id, event_type, phone_id, created_at DESC) — actually we read
-// the same (user_id, event_type, phone_id) combo and add a createdAt
-// filter for the window. The phone_id part of the existing
-// Event.index is `(phoneId)` only, so the dedup lookup filters in
-// user/event/phone in the WHERE clause but reads the latest one via
-// ORDER BY createdAt DESC. With the volume of events per user this is
-// cheap enough; we can add a covering index later if it shows up in
-// slow-query logs.
-const EVENT_DEDUPABLE_EVENTS = new Set(["click", "view", "compare"]);
-const EVENT_DEDUP_WINDOW_MS = 30 * 1000;
+// Hard-dedup: same (user, type, phoneId) within the dedup window is
+// dropped entirely. Outside the window the event is recorded, just
+// with a smaller weight from `diminishingMultiplier`.
+const EVENT_DEDUPABLE_EVENTS = new Set(BEHAVIOR_CONFIG.events.dedupableTypes);
+const EVENT_DEDUP_WINDOW_MS = BEHAVIOR_CONFIG.events.dedupWindowMs;
 
 async function isDuplicateEvent(userId, eventType, phoneId) {
   if (!userId || !eventType || !phoneId) return false;
@@ -356,8 +452,6 @@ async function isDuplicateEvent(userId, eventType, phoneId) {
     });
     return Boolean(prior);
   } catch (err) {
-    // On a read failure we err toward *not* dedup'd so the event still
-    // records. The worst case is one extra row, not lost data.
     if (process.env.NODE_ENV === "production") {
       console.warn(
         "[behaviorAnalyzer] isDuplicateEvent read failed:",
@@ -370,5 +464,162 @@ async function isDuplicateEvent(userId, eventType, phoneId) {
   }
 }
 
-// Re-export the lookup helper so tests can invalidate the cache.
+// Single entry point controllers should use. Writes the Event row
+// first (audit trail), then upserts every tag delta into BehaviorScore
+// with bounded decay + confidence scaling + repeating discount.
+//
+// Returns:
+//   { eventId, tagsUpdated: string[], skipped?: 'duplicate' }
+//
+// Throws on DB error; callers wrap in try/catch (fire-and-forget).
+export async function recordEvent(userId, eventType, opts = {}) {
+  if (!userId) throw new Error("recordEvent requires a userId");
+  if (typeof eventType !== "string" || !eventType) {
+    throw new Error("recordEvent requires a non-empty eventType");
+  }
+
+  const phoneId =
+    typeof opts.phoneId === "string" && opts.phoneId ? opts.phoneId : null;
+  const payload =
+    opts.payload && typeof opts.payload === "object" ? opts.payload : null;
+
+  // Hard-dedup: same (user, type, phoneId) within the window is a
+  // no-op. Outside the window we still write the row + a smaller bump.
+  if (phoneId && EVENT_DEDUPABLE_EVENTS.has(eventType)) {
+    const dup = await isDuplicateEvent(userId, eventType, phoneId);
+    if (dup) {
+      return { eventId: null, tagsUpdated: [], skipped: "duplicate" };
+    }
+  }
+
+  // Diminishing-returns: each repeat on the same phone+event adds
+  // less weight. The multiplier is computed BEFORE we know the
+  // per-event deltas, so it's a flat scalar per (user, type, phone).
+  let repeatScalar = 1.0;
+  if (phoneId && EVENT_DEDUPABLE_EVENTS.has(eventType)) {
+    const n = bumpRepeatCounter(userId, eventType, phoneId);
+    repeatScalar = diminishingMultiplier(n);
+  }
+
+  // Confidence ramp: scale the per-event bump by event count so a
+  // first-click user writes a smaller delta than a 30-event user.
+  // Reading the count is one indexed row-count query; cheap.
+  const eventCount = await userEventCount(userId);
+  const confidence =
+    isConfidenceSaturated(eventCount) ? 1.0 : computeConfidence(eventCount);
+
+  // Derive per-tag deltas (pure, cache-backed).
+  const { deltas, reasons } = await extractTagsForEvent(
+    eventType,
+    phoneId,
+    payload,
+  );
+  if (deltas.size === 0) {
+    // Still worth recording the Event row so the audit trail exists,
+    // even though no BehaviourScore bump is meaningful.
+    const created = await prisma.event.create({
+      data: {
+        userId,
+        eventType,
+        phoneId: phoneId || undefined,
+        payload: payload || undefined,
+      },
+      select: { eventId: true },
+    });
+    return { eventId: created.eventId, tagsUpdated: [] };
+  }
+
+  // Pre-multiply every delta by `repeatScalar * confidence` so the
+  // downstream upsert sees the final value. Pure (no side effects).
+  const effectiveDeltas = new Map();
+  for (const [tag, delta] of deltas.entries()) {
+    const scaled = delta * repeatScalar * confidence;
+    if (scaled !== 0) effectiveDeltas.set(tag, scaled);
+  }
+  const tagsUpdated = Array.from(effectiveDeltas.keys());
+
+  return prisma.$transaction(async (tx) => {
+    const created = await tx.event.create({
+      data: {
+        userId,
+        eventType,
+        phoneId: phoneId || undefined,
+        payload: payload || undefined,
+      },
+      select: { eventId: true },
+    });
+
+    for (const [tag, delta] of effectiveDeltas.entries()) {
+      const existing = await tx.behaviorScore.findUnique({
+        where: { userId_tag: { userId, tag } },
+        select: { score: true, reasons: true },
+      });
+      const prev = existing?.score || 0;
+      const next = applyDecay(prev, delta);
+
+      // Build the new reasons LRU. `reasons` is shape `{entries:[], updatedAt}`.
+      const prevReasons =
+        existing?.reasons && typeof existing.reasons === "object"
+          ? existing.reasons
+          : null;
+      const reasonEntry = reasons.get(tag);
+      const newReasons = reasonEntry
+        ? pushReason(
+            prevReasons,
+            {
+              dim: tag,
+              delta: Math.round(delta * 1000) / 1000,
+              reason: reasonEntry,
+              phoneId: phoneId || null,
+              eventType,
+              at: new Date().toISOString(),
+            },
+            BEHAVIOR_CONFIG.reasons.perTagLimit,
+          )
+        : prevReasons || null;
+
+      await tx.behaviorScore.upsert({
+        where: { userId_tag: { userId, tag } },
+        create: {
+          userId,
+          tag,
+          score: next,
+          reasons: newReasons || undefined,
+        },
+        update: {
+          score: next,
+          reasons: newReasons || undefined,
+        },
+      });
+    }
+
+    return { eventId: created.eventId, tagsUpdated };
+  });
+}
+
+// Re-export helper so tests can invalidate the cache.
 export const __test__ = { lookupPhoneMeta, phoneMetaCache };
+
+// ---- Behaviour-score reasons helper (read side) ---------------------------
+//
+// Read the per-tag reason LRU for a single tag. Used by the
+// `/api/events/behavior/me` route (or any future FE helper) to render
+// "Boosted by your activity → Gaming +2 (Compared RedMagic 10 Pro)".
+// Returns the empty-freeze constant when nothing is recorded yet.
+export function getReasonsForTag(reasonsColumn) {
+  if (!reasonsColumn || typeof reasonsColumn !== "object") {
+    return REASONS_EMPTY;
+  }
+  const entries = Array.isArray(reasonsColumn.entries)
+    ? reasonsColumn.entries
+    : [];
+  return {
+    entries,
+    updatedAt: reasonsColumn.updatedAt || null,
+  };
+}
+
+// Export the empty marker for tests + callers that want to compare
+// against "no reasons yet".
+export const __REASONS_EMPTY = REASONS_EMPTY;
+export { FEATURE_DIMS };

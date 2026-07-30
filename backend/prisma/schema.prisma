@@ -182,7 +182,7 @@ model Phones {
 
   // Recommendation relations
   recommendationHistory RecommendationHistory[]
-  recommendationLogs     RecommendationLog[]
+  recommendationLogs    RecommendationLog[]
   wishlist              Wishlist[]
   comparedAsA           ComparisonHistory[]     @relation("ComparisonPhoneA")
   comparedAsB           ComparisonHistory[]     @relation("ComparisonPhoneB")
@@ -465,7 +465,7 @@ model CustomerProfile {
   totalComparisons     Int @default(0) @map("total_comparisons")
   totalWishlist        Int @default(0) @map("total_wishlist")
 
-  lastUpdated DateTime @updatedAt @map("last_updated")
+  lastUpdated      DateTime  @updatedAt @map("last_updated")
   // Watermark for the modal aggregator (profileAggregator.mjs). Distinct
   // from `lastUpdated` because `lastUpdated` is auto-bumped on every
   // write (searchCount increments, persona changes, etc.), but the
@@ -544,11 +544,11 @@ model PaymentHistory {
 // catalog by FK — `searchQuery` is the raw CSV value, which can be a brand
 // name, a category tag, "Comparison", "New Arrivals", etc.
 model SearchHistory {
-  searchId     String    @id @default(uuid()) @map("search_id") @db.Uuid
-  userId       String    @map("user_id") @db.Uuid
-  searchQuery  String    @map("search_query") @db.VarChar(200)
-  searchedAt   DateTime? @map("searched_at") @db.Timestamp(6)
-  sourceLine   Int?      @map("source_line")
+  searchId    String    @id @default(uuid()) @map("search_id") @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  searchQuery String    @map("search_query") @db.VarChar(200)
+  searchedAt  DateTime? @map("searched_at") @db.Timestamp(6)
+  sourceLine  Int?      @map("source_line")
 
   createdAt DateTime @default(now()) @map("created_date")
   updatedAt DateTime @updatedAt @map("updated_date")
@@ -576,13 +576,13 @@ model SearchHistory {
 // model). The existing rows had `phoneId = null`; the dedup falls back
 // to `phoneLabel` for those.
 model BrowsingHistory {
-  browsingId  String    @id @default(uuid()) @map("browsing_id") @db.Uuid
-  userId      String    @map("user_id") @db.Uuid
-  phoneLabel  String    @map("phone_label") @db.VarChar(200)
-  phoneId     String?   @map("phone_id") @db.Uuid
-  brandName   String?   @map("brand_name") @db.VarChar(60)
-  viewedAt    DateTime? @map("viewed_at") @db.Timestamp(6)
-  sourceLine  Int?      @map("source_line")
+  browsingId String    @id @default(uuid()) @map("browsing_id") @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  phoneLabel String    @map("phone_label") @db.VarChar(200)
+  phoneId    String?   @map("phone_id") @db.Uuid
+  brandName  String?   @map("brand_name") @db.VarChar(60)
+  viewedAt   DateTime? @map("viewed_at") @db.Timestamp(6)
+  sourceLine Int?      @map("source_line")
 
   createdAt DateTime @default(now()) @map("created_date")
   updatedAt DateTime @updatedAt @map("updated_date")
@@ -653,9 +653,14 @@ model Event {
 
 model BehaviorScore {
   userId    String   @map("user_id") @db.Uuid
-  tag       String   @db.VarChar(60) // e.g. "gaming", "camera", "battery", "brand:Samsung", "tier:flagship"
+  tag       String   @db.VarChar(60) // e.g. "gaming", "camera", "battery", "brand:Samsung", "tier:flagship", "feature:gaming", "feature:camera"
   score     Float    @default(0)
   updatedAt DateTime @updatedAt @map("updated_at")
+  // Recent-reason tracker (Phase 6 — explainability). Newer events
+  // land at the head of the LRU; the oldest is evicted when the
+  // array exceeds `BEHAVIOR_CONFIG.reasons.perTagLimit` (default 5).
+  // Shape is documented in services/behaviorAnalyzer.mjs.
+  reasons   Json?    @map("reasons")
 
   user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
