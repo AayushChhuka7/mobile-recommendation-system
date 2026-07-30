@@ -762,16 +762,6 @@ function Dashboard() {
             <span>Recommend Me a Phone</span>
           </button>
 
-          <button
-            type="button"
-            className="icon-btn"
-            aria-label="Open questionnaire"
-            onClick={openRecommend}
-            title="Find my phone"
-          >
-            <SearchIcon />
-          </button>
-
           <div className="profile-menu" ref={profileRef}>
             <button
               type="button"
