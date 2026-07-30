@@ -32,3 +32,18 @@ export function formatPriceNpr(price) {
   const npr = roundToNearest5(n * EUR_TO_NPR);
   return `Rs ${npr.toLocaleString()}`;
 }
+
+/**
+ * Inverse of the display formatter — used right before sending a
+ * budget the user typed (in NPR) to the BE, which stores everything
+ * in EUR. Two decimal places so a sub-NPR rounding step (the
+ * `roundToNearest5` snap) doesn't leak into the BE.
+ *
+ * Returns `null` for missing / non-finite values so callers can
+ * silently skip the field instead of sending `NaN`.
+ */
+export function eurFromNpr(npr) {
+  const n = Number(npr);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return Math.round((n / EUR_TO_NPR) * 100) / 100;
+}

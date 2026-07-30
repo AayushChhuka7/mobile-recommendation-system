@@ -36,7 +36,7 @@ import {
   PASSWORD_MIN_LENGTH,
 } from "./AuthShared";
 import ComparePanel from "./ComparePanel.jsx";
-import { formatPriceNpr } from "../utils/formatPrice.js";
+import { eurFromNpr, formatPriceNpr } from "../utils/formatPrice.js";
 
 // function ThemeIcon() {
 //   return (
@@ -215,8 +215,8 @@ function Dashboard() {
     setWeightsTouched(false);
   }, []);
 
-  const [budgetMin, setBudgetMin] = useState("100");
-  const [budgetMax, setBudgetMax] = useState("1000");
+  const [budgetMin, setBudgetMin] = useState("10000");
+  const [budgetMax, setBudgetMax] = useState("200000");
 
   const [recs, setRecs] = useState(null);
   const [recsLoading, setRecsLoading] = useState(false);
@@ -295,12 +295,8 @@ function Dashboard() {
           setWeightsTouched(persona === "Custom");
         }
 
-        const maxBudget =
-          typeof bundle.preference?.maxBudget === "number"
-            ? bundle.preference.maxBudget
-            : null;
-        if (maxBudget !== null) setBudgetMax(String(maxBudget));
-
+        // Budget hydration disabled — saved values are stale EUR from
+        // before the switch to NPR. Defaults now drive the input.
         hydratedRef.current = true;
       } catch (err) {
         // Hydration is best-effort — silent fallback to defaults is
@@ -596,9 +592,13 @@ function Dashboard() {
       return;
     }
     const min = Number(budgetMin);
+    // BE stores budget in EUR — convert the NPR values the user
+    // typed before sending them across the wire.
+    const maxEur = eurFromNpr(max);
+    const minEur = eurFromNpr(min);
     const budget = {
-      max,
-      ...(Number.isFinite(min) && min >= 0 ? { min } : {}),
+      max: maxEur,
+      ...(minEur !== null ? { min: minEur } : {}),
     };
 
     setRecsLoading(true);
@@ -626,8 +626,8 @@ function Dashboard() {
       // disturb the rec result the user just received.
       saveMyPreferences({
         persona,
-        budgetMin: Number.isFinite(min) && min >= 0 ? min : "",
-        budgetMax: max,
+        budgetMin: minEur !== null ? minEur : "",
+        budgetMax: maxEur,
         weights: weightsTouched ? { ...weights } : undefined,
       }).catch((err) => {
         console.warn("Preferences save failed:", err?.message || err);
@@ -1554,7 +1554,7 @@ function Dashboard() {
 
             <div className="questionnaire-section" style={{ marginTop: 16 }}>
               <div className="questionnaire-hint" style={{ marginBottom: 8 }}>
-                Budget (EUR) — required
+                Budget (NPR) — required
               </div>
               <div className="filter-range">
                 <input
