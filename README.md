@@ -39,7 +39,7 @@ The platform is built around a strict layered architecture:
 - **FastAPI + XGBoost + SHAP** sidecar for ML ranking, scoring, predictions, and explanations
 - **Docker Compose** to orchestrate every service for local development
 
-> **Note:** The first `docker compose up` runs the `db-init` one-shot job that pushes the Prisma schema, seeds the RBAC roles, and bulk-imports the GSMArena CSV. **This takes several minutes** on the very first boot.
+> **Note:** The first `docker compose up` runs the `db-init` one-shot job that pushes the Prisma schema, seeds the RBAC roles, bulk-imports the **GSMArena** phone catalog, and bulk-imports the **customer activity** dataset (users + payment history + browsing + search history). **This takes several minutes** on the very first boot.
 
 ---
 
@@ -141,6 +141,11 @@ mobile-recommendation-system/
 │   │   ├── deep-verify.mjs       # Deep verification of imports
 │   │   ├── import-gsmarena-bulk.mjs  # Bulk CSV → DB importer (run by db-init)
 │   │   ├── verify-import.mjs     # Light import verification
+│   │   ├── imports/customer-csv/ # Customer activity CSV importer (run by db-init)
+│   │   │   ├── importCustomers.mjs
+│   │   │   ├── csvParser.mjs, customerGrouper.mjs, catalogCache.mjs,
+│   │   │   ├── budgetSegmentMapper.mjs, passwordHash.mjs, reporter.mjs
+│   │   │   └── README.md
 │   │   └── migrations/           # Prisma migration history
 │   ├── src/
 │   │   ├── config/               # prisma, email, ml singletons
@@ -159,7 +164,7 @@ mobile-recommendation-system/
 │   ├── seed.mjs                  # RBAC seed (Customer / Salesman / Admin)
 │   ├── prisma.config.ts          # Prisma config
 │   ├── Dockerfile                # 3-stage Node image
-│   ├── package.json              # dev, seed:rbac, seed:phones, db:init
+│   ├── package.json              # dev, seed:rbac, seed:phones, seed:customers, db:init
 │   └── .env.example              # Backend-local env vars
 │
 ├── frontend/                     # React + Vite SPA
@@ -259,6 +264,9 @@ Schema source: `backend/prisma/schema.prisma`. Models are normalized — phone p
 | `CustomerProfile`       | Running state: persona, totals, averages, `segmentConfidence`                                              |
 | `Wishlist`              | Per-user saved phones (`unique(userId, phoneId)`)                                                          |
 | `ComparisonHistory`     | Per-user comparison pairs                                                                                  |
+| `PaymentHistory`        | Per-purchase events (one row per CSV purchase: date, amount NPR, method, warranty, exchange history)       |
+| `SearchHistory`         | Per-search events (`search_query`, `searched_at`) — bulk-imported from the customer CSV                    |
+| `BrowsingHistory`       | Per-view events (`phone_label`, optional `brand_name`, `viewed_at`) — bulk-imported from the customer CSV   |
 | `AdminStatsCache`       | Denormalized snapshot: most-recommended, most-compared, most-viewed, persona popularity, avg compatibility |
 
 ### Notable Enums
@@ -527,7 +535,8 @@ Persona aliases accepted by the service: `gamer`, `camera`, `battery`, `allround
    - `npx prisma db push` → apply schema
    - `npm run seed:rbac` → system roles + customer backfill
    - `node ./prisma/import-gsmarena-bulk.mjs /seed/GSMArena_Cleaned_Dataset.csv` → bulk-import the phone catalog
-   - Bound-mounts `./dataset/GSMArena_Cleaned_Dataset.csv` → `/seed/...`
+   - `npm run seed:customers -- /seed/customer_dataset.csv` → bulk-import the customer activity dataset (creates users with `${customerId}@import.local` placeholder email, populates `user_profiles`, `user_preferences`, `customer_profiles`, `wishlist` against the existing catalog, and one row per CSV event in `payment_history`, `browsing_history`, and `search_history`)
+   - Bound-mounts both `./dataset/*.csv` → `/seed/...`
    - `restart: "no"` so a failure is visible, not silently retried
 3. **`ml-service`** — `ML Model/Dockerfile`
    - FastAPI / Uvicorn on port `8002`
@@ -596,7 +605,7 @@ If you want OTP / password-reset emails, also fill in `SMTP_HOST`, `SMTP_USER`, 
 docker compose up --build
 ```
 
-> **First startup** runs the `db-init` service which pushes the Prisma schema, seeds the RBAC roles, and bulk-imports the GSMArena CSV. **This takes several minutes** depending on your machine. Subsequent restarts reuse the existing `postgres_data` volume and skip the CSV import.
+> **First startup** runs the `db-init` service which pushes the Prisma schema, seeds the RBAC roles, bulk-imports the **GSMArena** phone catalog, and bulk-imports the **customer activity** dataset (users + payment / browsing / search history). **This takes several minutes** depending on your machine. Subsequent restarts reuse the existing `postgres_data` volume and skip both CSV imports.
 
 ---
 
@@ -664,12 +673,13 @@ docker compose ps
 
 **Backend `npm` scripts** (`backend/package.json`):
 
-| Script        | Command                                                      | Purpose                           |
-| ------------- | ------------------------------------------------------------ | --------------------------------- |
-| `dev`         | `nodemon ./src/index.mjs`                                    | Dev server with auto-reload       |
-| `seed:rbac`   | `node ./seed.mjs`                                            | Upsert roles + backfill customers |
-| `seed:phones` | `node ./prisma/import-gsmarena-bulk.mjs`                     | Bulk-import phones from CSV       |
-| `db:init`     | `prisma db push && npm run seed:rbac && npm run seed:phones` | Full local DB bootstrap           |
+| Script             | Command                                                                    | Purpose                                                                                     |
+| ------------------ | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `dev`              | `nodemon ./src/index.mjs`                                                  | Dev server with auto-reload                                                                 |
+| `seed:rbac`        | `node ./seed.mjs`                                                          | Upsert roles + backfill customers                                                           |
+| `seed:phones`      | `node ./prisma/import-gsmarena-bulk.mjs`                                   | Bulk-import the phone catalog from CSV                                                      |
+| `seed:customers`   | `node ./prisma/imports/customer-csv/importCustomers.mjs`                   | Bulk-import users + payment / browsing / search history from the customer CSV (optional CSV path arg) |
+| `db:init`          | `prisma db push --skip-generate && npm run seed:rbac && npm run seed:phones` | Full local DB bootstrap (host machine)                                                      |
 
 **Frontend `npm` scripts** (`frontend/package.json`):
 
@@ -704,7 +714,7 @@ Rebuild the image (`docker compose up --build ml-service`) after fixing the file
 
 ### `db-init` fails / takes forever
 
-- The CSV import is a single Node script that reads `dataset/GSMArena_Cleaned_Dataset.csv` and writes to Postgres. On a fresh DB this can take several minutes.
+- The initializer runs four sequential steps: `prisma db push`, `seed:rbac`, the GSMArena phone import, and the customer activity import. On a fresh DB this can take several minutes.
 - Inspect progress: `docker compose logs -f db-init`.
 
 ### `bcrypt` build errors on a custom Node image
@@ -733,7 +743,7 @@ It deletes the `postgres_data` named volume — **all data is lost**. The next `
 docker compose run --rm db-init
 ```
 
-This re-pushes the Prisma schema, re-seeds the RBAC roles, and re-imports the CSV.
+This re-pushes the Prisma schema, re-seeds the RBAC roles, re-imports the GSMArena phone CSV, and re-imports the customer activity CSV. The customer import is idempotent on `${customerId}@import.local` — existing users are skipped without touching their wishlist / payment / browsing / search history rows. To force a full re-import, run `docker compose down -v` first (destructive — drops the `postgres_data` volume).
 
 ### OTP emails never arrive
 

@@ -1,7 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../services/api";
-import { getRecommendations } from "../services/recommend";
+import {
+  getAutoRecommendations,
+  getRecommendations,
+} from "../services/recommend";
+import {
+  getMyPreferences,
+  getMyProfileBundle,
+  saveMyPreferences,
+} from "../services/profile";
 import { useAuth } from "../hooks/useAuth.jsx";
 import "./Login.css";
 import "./Dashboard.css";
@@ -26,8 +34,10 @@ import {
   PASSWORD_HINT,
   PASSWORD_RULES,
   PASSWORD_MIN_LENGTH,
+  EditIcon,
 } from "./AuthShared";
 import ComparePanel from "./ComparePanel.jsx";
+import { eurFromNpr, formatPriceNpr } from "../utils/formatPrice.js";
 
 // function ThemeIcon() {
 //   return (
@@ -101,6 +111,27 @@ const EMPTY_FILTERS = {
   hasOis: false,
 };
 
+// Resolve a persisted persona string back to the FE's PERSONA_WEIGHT_PRESETS
+// key. The backend may store either a category ("gamer", "camera", ...)
+// or "Custom" (when the user moved the sliders). Anything we don't
+// recognise is treated as "allrounder" (the safe default).
+const personaToCategory = (persona) => {
+  if (
+    persona === "gamer" ||
+    persona === "camera" ||
+    persona === "battery" ||
+    persona === "allrounder"
+  ) {
+    return persona;
+  }
+  return "allrounder";
+};
+
+// Filter/sort auto-save currently fires only on explicit user actions
+// (Apply button, sort dropdown change) — no debounce needed. A debounce
+// helper can be reintroduced here if a future continuous-input source
+// (e.g. live price slider) gets wired to auto-save.
+
 function buildPhonesQuery(filters, sort, extra = {}) {
   const params = { limit: 6, sort, ...extra };
   if (filters.brand) params.brand = filters.brand;
@@ -137,17 +168,21 @@ function unwrapPhones(res) {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const location = useLocation();
+  const { user, logout, setUser } = useAuth();
+
+  // The Compare interface is a side-docked overlay rendered below,
+  // not a separate page — the URL `/dashboard/compare` toggles its
+  // open state so back-nav from a clicked phone restores it (the
+  // bug the user originally reported).
+  const isCompareOpen = location.pathname === "/dashboard/compare";
+  const closeCompare = useCallback(() => navigate("/dashboard"), [navigate]);
 
   const [isProfileOpen, setProfileOpen] = useState(false);
-  const [isSearchOpen, setSearchOpen] = useState(false);
 
-  const [panelPhase, setPanelPhase] = useState("closed");
-  const closeAnimMs = 180;
-
-  const closeTimerRef = useRef(null);
-
-  const [isCompareOpen, setIsCompareOpen] = useState(false);
+  // `/dashboard/compare` and `/dashboard/recommend` are now real child
+  // routes — the modal/panel open state is driven by URL via
+  // `useLocation()` below, so there's no `useState` for them anymore.
 
   const [changePwPhase, setChangePwPhase] = useState("closed");
   const changePwCloseTimerRef = useRef(null);
@@ -157,6 +192,17 @@ function Dashboard() {
   const [changePwErrors, setChangePwErrors] = useState({});
   const [changePwSubmitError, setChangePwSubmitError] = useState("");
   const [isChangePwSubmitting, setIsChangePwSubmitting] = useState(false);
+
+  // Edit-profile modal state — mirrors `changePwPhase` so the same
+  // open/closing animation + CSS classes can be reused.
+  const [editProfilePhase, setEditProfilePhase] = useState("closed");
+  const editProfileCloseTimerRef = useRef(null);
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editProfileErrors, setEditProfileErrors] = useState({});
+  const [editProfileSubmitError, setEditProfileSubmitError] = useState("");
+  const [isEditProfileSubmitting, setIsEditProfileSubmitting] =
+    useState(false);
 
   const DARK_MODE_KEY = "dashboardDarkMode";
   const [isDarkMode, setIsDarkMode] = useState(
@@ -185,8 +231,8 @@ function Dashboard() {
     setWeightsTouched(false);
   }, []);
 
-  const [budgetMin, setBudgetMin] = useState("");
-  const [budgetMax, setBudgetMax] = useState("");
+  const [budgetMin, setBudgetMin] = useState("10000");
+  const [budgetMax, setBudgetMax] = useState("200000");
 
   const [recs, setRecs] = useState(null);
   const [recsLoading, setRecsLoading] = useState(false);
@@ -194,6 +240,14 @@ function Dashboard() {
   const [recsPersona, setRecsPersona] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  // Live-typeahead suggestions for the search bar. Reuses the same
+  // /phones/search endpoint that the ComparePanel autocomplete hits
+  // so the two surfaces always agree on what "matches" a query.
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
+  const [searchSuggestionsLoading, setSearchSuggestionsLoading] =
+    useState(false);
+  const searchSuggestionsRef = useRef(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [pendingFilters, setPendingFilters] = useState(EMPTY_FILTERS);
@@ -241,34 +295,61 @@ function Dashboard() {
     };
   }, []);
 
+  // Hydrate saved preferences + filter preset on mount. The whole
+  // payload is fetched with one round-trip so we don't bounce between
+  // /me/preferences and /me/filter-preset. If anything fails, the local
+  // state defaults (which already match `EMPTY_FILTERS` and
+  // `PERSONA_WEIGHT_PRESETS.gamer`) take over.
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    let ignore = false;
+    async function hydrate() {
+      try {
+        const [bundle] = await Promise.all([getMyProfileBundle()]);
+        if (ignore || !bundle || hydratedRef.current) return;
+
+        // 1. Restore the recommend modal state — persona + weights +
+        //    budget. If `recommendationPersona` is missing (fresh user)
+        //    keep the default `gamer` selection already in state.
+        const persona = bundle.customerProfile?.recommendationPersona || null;
+        if (persona) {
+          const cat = personaToCategory(persona);
+          setSelectedCategory(cat);
+          setWeights({ ...PERSONA_WEIGHT_PRESETS[cat] });
+          setWeightsTouched(persona === "Custom");
+        }
+
+        // Budget hydration disabled — saved values are stale EUR from
+        // before the switch to NPR. Defaults now drive the input.
+        hydratedRef.current = true;
+      } catch (err) {
+        // Hydration is best-effort — silent fallback to defaults is
+        // fine. Log only in dev.
+        console.warn("Profile hydration skipped:", err?.message || err);
+      }
+    }
+    hydrate();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
   // Profile fields (name, phoneNo) are hydrated by AuthProvider's
   // session-validation effect on app boot, so by the time the
   // dashboard mounts the auth context already has fresh data.
   // No on-mount fetch needed here.
-  const openRecommend = useCallback(() => {
-    if (closeTimerRef.current) {
-      clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = null;
-    }
-    setSearchOpen(true);
-    setPanelPhase("open");
-  }, []);
-
+  // Recommend modal close: just navigate back to the dashboard root.
+  // (Opening is handled by the header button → navigate("/dashboard/recommend").)
   const closeRecommend = useCallback(() => {
-    setSearchOpen(false);
-    setPanelPhase("closing");
-    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-    closeTimerRef.current = setTimeout(() => {
-      setPanelPhase("closed");
-      closeTimerRef.current = null;
-    }, closeAnimMs);
-  }, []);
+    navigate("/dashboard");
+  }, [navigate]);
 
   useEffect(() => {
     return () => {
-      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
       if (changePwCloseTimerRef.current)
         clearTimeout(changePwCloseTimerRef.current);
+      if (editProfileCloseTimerRef.current)
+        clearTimeout(editProfileCloseTimerRef.current);
     };
   }, []);
   useEffect(() => {
@@ -323,6 +404,66 @@ function Dashboard() {
     };
   }, [searchTerm, filters, sort, page, navigate, logout]);
 
+  // Auto-recommend — fire once on Dashboard mount so the user sees
+  // personalised picks without clicking anything. Reuses the existing
+  // `recs / recsLoading / recsError` state so the spinner + error UI
+  // + clear button all keep working unchanged.
+  //
+  // Skip conditions:
+  //   - no logged-in user (defensive; the route is auth-guarded but we
+  //     also don't want this to run during a /login redirect).
+  //   - recs already populated (preserve the user's picks across route
+  //     re-mounts within the same session; the explicit "Clear" button
+  //     resets state and the next mount will re-fetch).
+  //
+  // The BE reuses the same fusion pipeline as the click path — see
+  // `backend/src/services/recommendService.mjs::getAutoRecommendations`.
+  useEffect(() => {
+    // Accept either field name — login returns `id`, /users/me
+    // returns `userId`. Either is enough to prove we're
+    // authenticated; the BE identifies the caller by cookie anyway.
+    const uid = user?.userId || user?.id;
+    if (!user || !uid) return;
+    if (recs !== null) return;
+
+    let ignore = false;
+    setRecsLoading(true);
+    setRecsError("");
+
+    (async () => {
+      try {
+        const { results, defaultedAt } = await getAutoRecommendations();
+        if (ignore) return;
+        setRecs(results);
+        // Tag the persona in the recs header. If both defaulted, surface
+        // an explicit "auto" persona label so the user understands the
+        // system cold-started.
+        setRecsPersona(
+          defaultedAt.persona && defaultedAt.budget
+            ? "auto (cold start)"
+            : "auto",
+        );
+      } catch (err) {
+        if (ignore) return;
+        // Soft-fail. An auto-recommend failure should never block the
+        // listing or steer the user away — the explicit "Recommend Me"
+        // button is still wired up.
+        console.warn("[auto-recommend] failed:", err?.message || err);
+        setRecsError(
+          err?.response?.data?.message ||
+            "Couldn't auto-load recommendations. Use Recommend Me to retry.",
+        );
+      } finally {
+        if (!ignore) setRecsLoading(false);
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.userId, user?.id]);
+
   const handleSignOut = useCallback(async () => {
     try {
       await api.post("/auth/logout");
@@ -363,6 +504,102 @@ function Dashboard() {
       resetChangePwForm();
     }, closeAnimMs);
   }, [resetChangePwForm]);
+
+  // ---- Edit profile (username / phone) handlers ----
+  // Mirrors the change-password flow: phase machine drives the modal
+  // open/close animation, validation runs on submit, and the BE
+  // response is mirrored into AuthContext via setUser() so the
+  // dropdown value updates immediately without a refresh.
+  const openEditProfile = useCallback(() => {
+    if (editProfileCloseTimerRef.current) {
+      clearTimeout(editProfileCloseTimerRef.current);
+      editProfileCloseTimerRef.current = null;
+    }
+    setEditName(user?.name || "");
+    setEditPhone(user?.phoneNo || user?.phone || "");
+    setEditProfileErrors({});
+    setEditProfileSubmitError("");
+    setEditProfilePhase("open");
+    setProfileOpen(false);
+  }, [user]);
+
+  const resetEditProfileForm = useCallback(() => {
+    setEditName("");
+    setEditPhone("");
+    setEditProfileErrors({});
+    setEditProfileSubmitError("");
+    setIsEditProfileSubmitting(false);
+  }, []);
+
+  const closeEditProfile = useCallback(() => {
+    setEditProfilePhase("closing");
+    if (editProfileCloseTimerRef.current)
+      clearTimeout(editProfileCloseTimerRef.current);
+    editProfileCloseTimerRef.current = setTimeout(() => {
+      setEditProfilePhase("closed");
+      editProfileCloseTimerRef.current = null;
+      resetEditProfileForm();
+    }, closeAnimMs);
+  }, [resetEditProfileForm]);
+
+  const validateEditProfile = useCallback(() => {
+    const errs = {};
+    if (!editName || !editName.trim()) errs.name = "Username is required";
+    else if (editName.trim().length > 80)
+      errs.name = "Username is too long (max 80 characters)";
+    if (editPhone && editPhone.trim() && editPhone.trim().length < 6)
+      errs.phoneNo = "Phone number looks too short";
+    return errs;
+  }, [editName, editPhone]);
+
+  const handleEditProfileSubmit = useCallback(
+    async (e) => {
+      e?.preventDefault();
+      const errs = validateEditProfile();
+      setEditProfileErrors(errs);
+      if (Object.keys(errs).length) {
+        setEditProfileSubmitError("");
+        return;
+      }
+      setIsEditProfileSubmitting(true);
+      setEditProfileSubmitError("");
+      try {
+        // PATCH /users/me — sibling of the password patch endpoint.
+        // The BE persists `name` / `phoneNo` to the user row.
+        const res = await api.patch("/users/me", {
+          name: editName.trim(),
+          phoneNo: editPhone.trim(),
+        });
+        // Mirror the saved values back into AuthContext so the
+        // dropdown re-renders with the new display name + phone
+        // without a full page reload.
+        const saved =
+          res?.data?.data && typeof res.data.data === "object"
+            ? res.data.data
+            : { name: editName.trim(), phoneNo: editPhone.trim() };
+        setUser({
+          name: saved.name ?? editName.trim(),
+          phoneNo: saved.phoneNo ?? editPhone.trim(),
+        });
+        closeEditProfile();
+      } catch (err) {
+        const data = err?.response?.data;
+        setEditProfileSubmitError(
+          data?.message || "Couldn't update profile. Please try again.",
+        );
+      } finally {
+        setIsEditProfileSubmitting(false);
+      }
+    },
+    [
+      validateEditProfile,
+      editName,
+      editPhone,
+      closeEditProfile,
+      setUser,
+    ],
+  );
+
   const validateChangePw = useCallback(() => {
     const errs = {};
     if (!currentPassword) errs.currentPassword = "Current password is required";
@@ -393,8 +630,7 @@ function Dashboard() {
       else if (serverKey === "password") fieldErrors.newPassword = msg;
       else if (serverKey === "confirmPassword")
         fieldErrors.confirmPassword = msg;
-      else
-        bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
+      else bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
     }
     return { fieldErrors, bannerMessage };
   }, []);
@@ -427,13 +663,16 @@ function Dashboard() {
             currentPassword: data?.message || "Current password is incorrect",
           }));
         } else {
-          const { fieldErrors, bannerMessage } =
-            mapChangePwFieldErrors(data?.details);
+          const { fieldErrors, bannerMessage } = mapChangePwFieldErrors(
+            data?.details,
+          );
           if (Object.keys(fieldErrors).length) {
             setChangePwErrors((prev) => ({ ...prev, ...fieldErrors }));
           }
           setChangePwSubmitError(
-            bannerMessage || data?.message || "Couldn't change password. Please try again.",
+            bannerMessage ||
+              data?.message ||
+              "Couldn't change password. Please try again.",
           );
         }
       } finally {
@@ -461,9 +700,13 @@ function Dashboard() {
       return;
     }
     const min = Number(budgetMin);
+    // BE stores budget in EUR — convert the NPR values the user
+    // typed before sending them across the wire.
+    const maxEur = eurFromNpr(max);
+    const minEur = eurFromNpr(min);
     const budget = {
-      max,
-      ...(Number.isFinite(min) && min >= 0 ? { min } : {}),
+      max: maxEur,
+      ...(minEur !== null ? { min: minEur } : {}),
     };
 
     setRecsLoading(true);
@@ -479,9 +722,24 @@ function Dashboard() {
         persona,
         budget,
         preferences,
-        topN: 6,
+        // Issue 1 — render the full ranked catalog (up to 200) instead
+        // of the historical 6-picks slice. Same fusion pipeline; the BE
+        // returns phones in descending `matchScore` order.
+        topN: 200,
       });
       setRecs(results);
+
+      // Auto-save the persona + weights + budget that produced this
+      // recommendation. Fire-and-forget — a save failure must never
+      // disturb the rec result the user just received.
+      saveMyPreferences({
+        persona,
+        budgetMin: minEur !== null ? minEur : "",
+        budgetMax: maxEur,
+        weights: weightsTouched ? { ...weights } : undefined,
+      }).catch((err) => {
+        console.warn("Preferences save failed:", err?.message || err);
+      });
     } catch (err) {
       setRecsError(
         err.response?.data?.message ||
@@ -507,6 +765,17 @@ function Dashboard() {
     e.preventDefault();
     const term = searchInput.trim();
     setSearchTerm(term);
+    setShowSearchSuggestions(false);
+    // Drop the auto/explicit recs once the user starts searching so the
+    // "All Phones Ranked For You" block can't bury the search results.
+    // The user can hit "Clear recommendations" to bring them back, or
+    // simply clear the search box.
+    if (term && (recs || recsLoading)) {
+      setRecs(null);
+      setRecsError("");
+      setRecsLoading(false);
+      setRecsPersona(null);
+    }
     setShowFilters(false);
     setPage(1);
   };
@@ -514,8 +783,66 @@ function Dashboard() {
   const handleClearSearch = () => {
     setSearchInput("");
     setSearchTerm("");
+    setSearchSuggestions([]);
+    setShowSearchSuggestions(false);
     setPage(1);
   };
+
+  // Debounced search-suggestion fetch. Fires on every keystroke into
+  // the dashboard search bar; renders an inline dropdown under the
+  // input. Hits the same /phones/search endpoint the ComparePanel
+  // autocomplete uses so the matching semantics stay consistent.
+  const searchSuggestTimerRef = useRef(null);
+  const fetchSearchSuggestions = (value) => {
+    const q = (value || "").trim();
+    if (!q) {
+      setSearchSuggestions([]);
+      setShowSearchSuggestions(false);
+      return;
+    }
+    setSearchSuggestionsLoading(true);
+    api
+      .get("/phones/search", { params: { q, limit: 8 } })
+      .then((res) => {
+        setSearchSuggestions(res?.data?.data || []);
+        setShowSearchSuggestions(true);
+      })
+      .catch((err) => {
+        console.warn("[search-suggest] failed:", err?.message || err);
+        setSearchSuggestions([]);
+      })
+      .finally(() => setSearchSuggestionsLoading(false));
+  };
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    if (searchSuggestTimerRef.current)
+      clearTimeout(searchSuggestTimerRef.current);
+    searchSuggestTimerRef.current = setTimeout(
+      () => fetchSearchSuggestions(value),
+      300,
+    );
+  };
+  const handleSearchSuggestionClick = (phone) => {
+    setShowSearchSuggestions(false);
+    setSearchSuggestions([]);
+    setSearchInput("");
+    if (phone?.id) navigate(`/phones/${phone.id}`);
+  };
+  // Close the suggestion dropdown on outside click — same pattern the
+  // profile menu + filter popover use, just scoped to this ref.
+  useEffect(() => {
+    function handleOutside(e) {
+      if (
+        searchSuggestionsRef.current &&
+        !searchSuggestionsRef.current.contains(e.target)
+      ) {
+        setShowSearchSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, []);
   const openFilters = () => {
     setPendingFilters(filters);
     setShowFilters((s) => !s);
@@ -526,9 +853,21 @@ function Dashboard() {
   };
 
   const handleApplyFilters = () => {
+    const willHaveActiveFilters = Object.values(pendingFilters).some(Boolean);
     setFilters(pendingFilters);
     setShowFilters(false);
     setPage(1);
+    // Drop the auto/explicit recs once the user narrows the catalog so
+    // the "All Phones Ranked For You" block can't bury the filtered
+    // results. Mirrors the search-term behaviour above.
+    if (willHaveActiveFilters && (recs || recsLoading)) {
+      setRecs(null);
+      setRecsError("");
+      setRecsLoading(false);
+      setRecsPersona(null);
+    }
+    // Auto-save disabled — applying filters should not persist them
+    // across a page refresh.
   };
 
   const handleClearFilters = () => {
@@ -539,6 +878,8 @@ function Dashboard() {
   const handleSortChange = (nextSort) => {
     setSort(nextSort);
     setPage(1);
+    // Auto-save disabled — sort selection should not persist across
+    // a page refresh.
   };
 
   const displayName = user?.name || user?.username || "there";
@@ -569,10 +910,8 @@ function Dashboard() {
         <div className="dash-header-actions">
           <button
             type="button"
-            className={`btn btn-outline dash-compare-btn ${isCompareOpen ? "active" : ""}`}
-            onClick={() => setIsCompareOpen((o) => !o)}
-            aria-expanded={isCompareOpen}
-            aria-controls="dash-compare-panel"
+            className="btn btn-outline dash-compare-btn"
+            onClick={() => navigate("/dashboard/compare")}
             title="Compare two phones side by side"
           >
             <span>Compare</span>
@@ -580,22 +919,11 @@ function Dashboard() {
           <button
             type="button"
             className="btn btn-primary dash-recommend-btn"
-            onClick={openRecommend}
+            onClick={() => navigate("/dashboard/recommend")}
             aria-haspopup="dialog"
-            aria-expanded={isSearchOpen}
             title="Get personalized phone recommendations"
           >
             <span>Recommend Me a Phone</span>
-          </button>
-
-          <button
-            type="button"
-            className="icon-btn"
-            aria-label="Open questionnaire"
-            onClick={openRecommend}
-            title="Find my phone"
-          >
-            <SearchIcon />
           </button>
 
           <div className="profile-menu" ref={profileRef}>
@@ -629,6 +957,15 @@ function Dashboard() {
                     <span className="profile-field-value">
                       {displayName || "—"}
                     </span>
+                    <button
+                      type="button"
+                      className="profile-field-edit"
+                      onClick={openEditProfile}
+                      aria-label="Edit username and phone"
+                      title="Edit username & phone"
+                    >
+                      <EditIcon />
+                    </button>
                   </li>
                   <li className="profile-field">
                     <span className="profile-field-icon" aria-hidden="true">
@@ -643,6 +980,15 @@ function Dashboard() {
                     </span>
                     <span className="profile-field-label">Phone</span>
                     <span className="profile-field-value">{phone || "—"}</span>
+                    <button
+                      type="button"
+                      className="profile-field-edit"
+                      onClick={openEditProfile}
+                      aria-label="Edit username and phone"
+                      title="Edit username & phone"
+                    >
+                      <EditIcon />
+                    </button>
                   </li>
                 </ul>
                 <div className="profile-divider" />
@@ -682,6 +1028,22 @@ function Dashboard() {
                     <LockIcon />
                     Change password
                   </button>
+                  {user?.role === "Admin" && (
+                    <>
+                      <button
+                        type="button"
+                        className="change-password-btn admin-link-btn"
+                        onClick={() => {
+                          setProfileOpen(false);
+                          navigate("/admin/customer-profiles");
+                        }}
+                      >
+                        <SlidersIcon />
+                        Customer profiles
+                      </button>
+                      <div className="profile-divider" />
+                    </>
+                  )}
                   <button
                     type="button"
                     className="signout-btn"
@@ -705,7 +1067,7 @@ function Dashboard() {
             onSubmit={handleSearch}
             role="search"
           >
-            <div className="dash-search-input-wrapper">
+            <div className="dash-search-input-wrapper" ref={searchSuggestionsRef}>
               <span className="dash-search-input-icon" aria-hidden="true">
                 <SearchIcon />
               </span>
@@ -714,8 +1076,15 @@ function Dashboard() {
                 className="dash-search-input"
                 placeholder="Search phones by name or model..."
                 value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
+                onChange={handleSearchInputChange}
+                onFocus={() => {
+                  if (searchSuggestions.length > 0)
+                    setShowSearchSuggestions(true);
+                }}
                 aria-label="Search phones by name or model"
+                aria-autocomplete="list"
+                aria-expanded={showSearchSuggestions}
+                aria-controls="dash-search-suggestions"
               />
               {searchInput && (
                 <button
@@ -726,6 +1095,74 @@ function Dashboard() {
                 >
                   <CloseIcon />
                 </button>
+              )}
+              {showSearchSuggestions && (
+                <ul
+                  id="dash-search-suggestions"
+                  className="dash-search-suggestions"
+                  role="listbox"
+                >
+                  {searchSuggestionsLoading &&
+                    searchSuggestions.length === 0 && (
+                      <li className="dash-search-suggestion-empty">
+                        Searching…
+                      </li>
+                    )}
+                  {!searchSuggestionsLoading &&
+                    searchSuggestions.length === 0 && (
+                      <li className="dash-search-suggestion-empty">
+                        No phones found
+                      </li>
+                    )}
+                  {searchSuggestions.map((p) => (
+                    <li
+                      key={p.id}
+                      role="option"
+                      aria-selected="false"
+                      className="dash-search-suggestion"
+                      onMouseDown={(e) => {
+                        // mousedown (not click) so the input's blur
+                        // doesn't close the dropdown before the
+                        // navigation handler fires.
+                        e.preventDefault();
+                        handleSearchSuggestionClick(p);
+                      }}
+                    >
+                      <span
+                        className="dash-search-suggestion-thumb"
+                        aria-hidden="true"
+                      >
+                        {p.imageUrl ? (
+                          <img
+                            src={p.imageUrl}
+                            alt=""
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.parentElement.classList.add(
+                                "no-image",
+                              );
+                            }}
+                          />
+                        ) : (
+                          <span className="phone-card-emoji">📱</span>
+                        )}
+                      </span>
+                      <span className="dash-search-suggestion-info">
+                        <span className="dash-search-suggestion-name">
+                          {p.modelName}
+                        </span>
+                        <span className="dash-search-suggestion-brand">
+                          {p.brand?.name || "Unknown brand"}
+                        </span>
+                      </span>
+                      {p.cheapestVariant?.price && (
+                        <span className="dash-search-suggestion-price">
+                          {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
             <button type="submit" className="btn btn-primary dash-search-btn">
@@ -990,7 +1427,7 @@ function Dashboard() {
           </div>
         )}
 
-        {recs && !recsLoading && (
+        {recs && !recsLoading && !searchTerm && activeFilterCount === 0 && (
           <section
             className="dash-recs-section"
             aria-label="Recommended for you"
@@ -998,8 +1435,8 @@ function Dashboard() {
             <div className="dash-recs-header">
               <h2>
                 {recsPersona
-                  ? `Recommended for you · ${recsPersona}`
-                  : "Recommended for you"}
+                  ? `All phones ranked for you · ${recsPersona}`
+                  : "All phones ranked for you"}
               </h2>
               <button
                 type="button"
@@ -1016,87 +1453,128 @@ function Dashboard() {
               </p>
             ) : (
               <div className="phone-grid">
-                {recs.map((r) => (
-                  <div
-                    key={r.id || `${r.brand?.name}-${r.modelName}`}
-                    className="phone-card rec-card"
-                    onMouseEnter={() => r.id && setHoveredCard(r.id)}
-                    onMouseLeave={() => setHoveredCard(null)}
-                  >
-                    <div className="phone-card-top">
-                      <div className="phone-card-image">
-                        {r.imageUrl ? (
-                          <img
-                            src={r.imageUrl}
-                            alt={r.modelName}
-                            onError={(e) => {
-                              e.target.style.display = "none";
-                              e.target.parentElement.classList.add("no-image");
-                            }}
-                          />
-                        ) : (
-                          <span className="phone-card-emoji">📱</span>
+                {recs.map((r) => {
+                  const isClickable = r.id && r.inDatabase !== false;
+                  const handleRecClick = () => {
+                    if (isClickable) navigate(`/phones/${r.id}`);
+                  };
+                  const handleRecKeyDown = (e) => {
+                    if (!isClickable) return;
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleRecClick();
+                    }
+                  };
+                  return (
+                    <div
+                      key={r.id || `${r.brand?.name}-${r.modelName}`}
+                      className="phone-card rec-card"
+                      role={isClickable ? "button" : undefined}
+                      tabIndex={isClickable ? 0 : -1}
+                      aria-label={
+                        isClickable
+                          ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
+                          : undefined
+                      }
+                      onClick={handleRecClick}
+                      onKeyDown={handleRecKeyDown}
+                      onMouseEnter={() => r.id && setHoveredCard(r.id)}
+                      onMouseLeave={() => setHoveredCard(null)}
+                      style={{ cursor: isClickable ? "pointer" : "default" }}
+                    >
+                      <div className="phone-card-top">
+                        <div className="phone-card-image">
+                          {r.imageUrl ? (
+                            <img
+                              src={r.imageUrl}
+                              alt={r.modelName}
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                                e.target.parentElement.classList.add(
+                                  "no-image",
+                                );
+                              }}
+                            />
+                          ) : (
+                            <span className="phone-card-emoji">📱</span>
+                          )}
+                          {typeof r.matchScore === "number" && (
+                            <span
+                              className="rec-match-badge"
+                              title="Match score from the recommender"
+                            >
+                              {Math.min(
+                                100,
+                                Math.round(r.matchScore * 10) / 10,
+                              ).toFixed(1)}
+                              % match
+                            </span>
+                          )}
+                          {r.matchComponents?.search_history > 0.6 && (
+                            <span
+                              className="rec-boosted-badge"
+                              title="Ranked higher because of your recent searches & views"
+                            >
+                              Boosted by your activity
+                            </span>
+                          )}
+                        </div>
+                        <div className="phone-card-name">{r.modelName}</div>
+                        <div className="phone-card-tagline">
+                          {r.brand?.name || "Unknown brand"}
+                        </div>
+                      </div>
+
+                      <div className="phone-card-details">
+                        {r.keySpecs?.os && (
+                          <div className="phone-spec">
+                            <CpuIcon />
+                            <span>{r.keySpecs.os}</span>
+                          </div>
                         )}
-                        {typeof r.matchScore === "number" && (
-                          <span
-                            className="rec-match-badge"
-                            title="Match score from the recommender"
-                          >
-                            {Math.round(r.matchScore * 100)}% match
-                          </span>
+                        {r.keySpecs?.camera && (
+                          <div className="phone-spec">
+                            <CameraIcon />
+                            <span>{r.keySpecs.camera}</span>
+                          </div>
+                        )}
+                        {r.keySpecs?.battery && (
+                          <div className="phone-spec">
+                            <BatteryIcon />
+                            <span>{r.keySpecs.battery} mAh</span>
+                          </div>
+                        )}
+                        {r.cheapestVariant?.price && (
+                          <div className="phone-spec phone-price">
+                            <TagIcon />
+                            <span>
+                              {formatPriceNpr(r.cheapestVariant.price) ?? "—"}
+                              {r.cheapestVariant.ram &&
+                              r.cheapestVariant.storage
+                                ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
+                                : ""}
+                            </span>
+                          </div>
                         )}
                       </div>
-                      <div className="phone-card-name">{r.modelName}</div>
-                      <div className="phone-card-tagline">
-                        {r.brand?.name || "Unknown brand"}
-                      </div>
-                    </div>
 
-                    <div className="phone-card-details">
-                      {r.keySpecs?.os && (
-                        <div className="phone-spec">
-                          <CpuIcon />
-                          <span>{r.keySpecs.os}</span>
-                        </div>
+                      {Array.isArray(r.why) && r.why.length > 0 && (
+                        <ul
+                          className="rec-why-list"
+                          aria-label="Why this match"
+                        >
+                          {r.why.slice(0, 3).map((reason, idx) => (
+                            <li key={idx}>{reason}</li>
+                          ))}
+                        </ul>
                       )}
-                      {r.keySpecs?.camera && (
-                        <div className="phone-spec">
-                          <CameraIcon />
-                          <span>{r.keySpecs.camera}</span>
-                        </div>
-                      )}
-                      {r.keySpecs?.battery && (
-                        <div className="phone-spec">
-                          <BatteryIcon />
-                          <span>{r.keySpecs.battery} mAh</span>
-                        </div>
-                      )}
-                      {r.cheapestVariant?.price && (
-                        <div className="phone-spec phone-price">
-                          <TagIcon />
-                          <span>
-                            €{r.cheapestVariant.price}
-                            {r.cheapestVariant.ram && r.cheapestVariant.storage
-                              ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
-                              : ""}
-                          </span>
-                        </div>
+
+                      {r.inDatabase === false && (
+                        <div className="rec-not-in-db">Not in our catalog</div>
                       )}
                     </div>
-
-                    {Array.isArray(r.why) && r.why.length > 0 && (
-                      <ul className="rec-why-list" aria-label="Why this match">
-                        {r.why.slice(0, 3).map((reason, idx) => (
-                          <li key={idx}>{reason}</li>
-                        ))}
-                      </ul>
-                    )}
-
-                    {r.inDatabase === false && (
-                      <div className="rec-not-in-db">Not in our catalog</div>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </section>
@@ -1163,7 +1641,7 @@ function Dashboard() {
                     <div className="phone-spec phone-price">
                       <TagIcon />
                       <span>
-                        €{p.cheapestVariant.price}
+                        {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
                         {p.cheapestVariant.ram && p.cheapestVariant.storage
                           ? ` · ${p.cheapestVariant.ram}GB/${p.cheapestVariant.storage}GB`
                           : ""}
@@ -1229,13 +1707,13 @@ function Dashboard() {
         )}
       </main>
 
-      {panelPhase !== "closed" && (
+      {location.pathname === "/dashboard/recommend" && (
         <div
-          className={`search-overlay dash-recommend-overlay ${panelPhase === "closing" ? "closing" : ""}`}
+          className="search-overlay dash-recommend-overlay"
           onClick={closeRecommend}
         >
           <div
-            className={`search-modal dash-recommend-modal ${panelPhase === "closing" ? "closing" : ""}`}
+            className="search-modal dash-recommend-modal"
             role="dialog"
             aria-label="Phone recommendation"
             onClick={(e) => e.stopPropagation()}
@@ -1333,7 +1811,7 @@ function Dashboard() {
 
             <div className="questionnaire-section" style={{ marginTop: 16 }}>
               <div className="questionnaire-hint" style={{ marginBottom: 8 }}>
-                Budget (EUR) — required
+                Budget (NPR) — required
               </div>
               <div className="filter-range">
                 <input
@@ -1472,10 +1950,117 @@ function Dashboard() {
         </div>
       )}
 
-      <ComparePanel
-        open={isCompareOpen}
-        onClose={() => setIsCompareOpen(false)}
-      />
+      {editProfilePhase !== "closed" && (
+        <div
+          className={`search-overlay dash-edit-profile-overlay ${editProfilePhase === "closing" ? "closing" : ""}`}
+          onClick={closeEditProfile}
+        >
+          <div
+            className={`search-modal dash-edit-profile-modal ${editProfilePhase === "closing" ? "closing" : ""}`}
+            role="dialog"
+            aria-label="Edit profile"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="search-modal-header">
+              <div>
+                <div className="auth-title" style={{ marginBottom: 4 }}>
+                  Edit profile
+                </div>
+                <div className="auth-subtitle" style={{ marginBottom: 0 }}>
+                  Update your username and phone number.
+                </div>
+              </div>
+              <button
+                type="button"
+                className="icon-btn"
+                aria-label="Close edit profile"
+                onClick={closeEditProfile}
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <form
+              className="dash-edit-profile-body"
+              onSubmit={handleEditProfileSubmit}
+              noValidate
+            >
+              <label className="form-field-label" htmlFor="edit-profile-name">
+                Username
+              </label>
+              <input
+                id="edit-profile-name"
+                type="text"
+                className="form-input"
+                autoComplete="username"
+                placeholder="Your name"
+                value={editName}
+                onChange={(e) => {
+                  setEditName(e.target.value);
+                  if (editProfileErrors.name)
+                    setEditProfileErrors((prev) => ({ ...prev, name: "" }));
+                }}
+                aria-invalid={!!editProfileErrors.name}
+              />
+              {editProfileErrors.name && (
+                <div className="form-field-error" role="alert">
+                  {editProfileErrors.name}
+                </div>
+              )}
+
+              <label
+                className="form-field-label"
+                htmlFor="edit-profile-phone"
+                style={{ marginTop: 12 }}
+              >
+                Phone
+              </label>
+              <input
+                id="edit-profile-phone"
+                type="tel"
+                className="form-input"
+                autoComplete="tel"
+                placeholder="+977-..."
+                value={editPhone}
+                onChange={(e) => {
+                  setEditPhone(e.target.value);
+                  if (editProfileErrors.phoneNo)
+                    setEditProfileErrors((prev) => ({
+                      ...prev,
+                      phoneNo: "",
+                    }));
+                }}
+                aria-invalid={!!editProfileErrors.phoneNo}
+              />
+              {editProfileErrors.phoneNo && (
+                <div className="form-field-error" role="alert">
+                  {editProfileErrors.phoneNo}
+                </div>
+              )}
+
+              {editProfileSubmitError && (
+                <div className="form-submit-error" role="alert">
+                  {editProfileSubmitError}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="btn btn-primary w-full"
+                disabled={isEditProfileSubmitting}
+                style={{ marginTop: 16 }}
+              >
+                {isEditProfileSubmitting ? "Saving..." : "Save changes"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Compare panel — side-docked overlay. `open` is driven by the
+          URL so back-nav from a phone click keeps the panel visible.
+          The dashboard chrome stays mounted underneath. */}
+      <ComparePanel open={isCompareOpen} onClose={closeCompare} />
     </div>
   );
 }

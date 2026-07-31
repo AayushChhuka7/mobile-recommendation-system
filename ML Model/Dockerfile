@@ -82,6 +82,10 @@ COPY --from=builder /install/bin /usr/local/bin
 COPY pipeline/ ./pipeline/
 COPY artifacts/ ./artifacts/
 COPY After_EDA_and_Feature_ENginering.csv .
+# Step D — content-based similarity bundle. Lazy-loaded by
+# /similarity/score on first hit (not at startup), so the 566 MB cost
+# is paid only when the BE actually asks for content-based ranking.
+COPY similarity_bundle.joblib .
 
 EXPOSE 8002
 

@@ -18,7 +18,19 @@ export const getAllUser = asyncHandler(async (req, res) => {
     // design: out-of-range page = empty data, not a not-found error.
     throw notFound("No users found");
   }
-  return sendSuccess(res, users);
+  // Flatten the role relation to a plain string so the FE doesn't have
+  // to dig through `{ role: { roleName: "Admin" } }`. `userService`
+  // returns the relation; we project it here.
+  const flattened = users.map((u) => ({
+    userId: u.userId,
+    name: u.name,
+    email: u.email,
+    phoneNo: u.phoneNo,
+    isActive: u.isActive,
+    isVerified: u.isVerified,
+    role: u.role && u.role.roleName ? u.role.roleName : null,
+  }));
+  return sendSuccess(res, flattened);
 });
 
 export const getUserById = asyncHandler(async (req, res) => {
@@ -49,7 +61,22 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
 export const getOwnProfile = (req, res) => {
   const { userId, name, email, phoneNo, isActive, isVerified } = req.user;
-  return sendSuccess(res, { userId, name, email, phoneNo, isActive, isVerified });
+  // `role` is sourced from `req.auth.roleNames` (loaded by
+  // `loadUserContext` middleware from `findUserRoles`). The frontend
+  // uses it for admin-only route guards and conditional nav.
+  const role =
+    req.auth && Array.isArray(req.auth.roleNames) && req.auth.roleNames[0]
+      ? req.auth.roleNames[0]
+      : null;
+  return sendSuccess(res, {
+    userId,
+    name,
+    email,
+    phoneNo,
+    isActive,
+    isVerified,
+    role,
+  });
 };
 
 export const updateOwnProfile = asyncHandler(async (req, res) => {

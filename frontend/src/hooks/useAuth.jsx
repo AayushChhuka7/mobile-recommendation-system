@@ -72,13 +72,22 @@ export function AuthProvider({ children }) {
         const profile = res?.data?.data;
         if (profile) {
           // Merge fresh server fields onto whatever localStorage had.
-          // (e.g. login only returns id+email; /users/me adds name/phone.)
+          // (e.g. login only returns id+email; /users/me adds name/phone,
+          // role, and the real numeric userId.)
           const next = {
             ...stored,
-            id: profile.userId ?? stored.id,
+            // Mirror userId ↔ id so any caller referencing either
+            // name keeps working.
+            userId: profile.userId ?? stored.userId ?? stored.id,
+            id: profile.userId ?? stored.id ?? stored.userId,
             name: profile.name ?? stored.name,
             email: profile.email ?? stored.email,
             phoneNo: profile.phoneNo ?? stored.phoneNo,
+            // `role` is intentionally allowed to be null/cleared — if
+            // the backend returns no role (e.g. a future role-less
+            // user type) we want localStorage to reflect that and not
+            // keep a stale role from a previous login.
+            role: profile.role ?? null,
           };
           localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(next));
           setStoredUser(next);
@@ -104,14 +113,54 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback((userData) => {
-    if (userData) {
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userData));
+    // Normalise: the BE login endpoint returns `{ id, email }`, but
+    // other call-sites (Dashboard auto-recommend, profile hydration)
+    // reference `userId`. If we got `id` but no `userId`, mirror the
+    // value so the dashboard effect's guard can fire.
+    let normalized = userData;
+    if (userData && !userData.userId && userData.id) {
+      normalized = { ...userData, userId: userData.id };
+    }
+    if (normalized) {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(normalized));
     } else {
       localStorage.removeItem(AUTH_STORAGE_KEY);
     }
     // setState after localStorage so listeners that read from storage
     // in the same tick see the new value.
-    setStoredUser(userData);
+    setStoredUser(normalized);
+    // After login: hydrate fields that the login response doesn't
+    // include (name, phoneNo, role). The boot effect only runs once at
+    // AuthProvider mount, so a fresh login goes through here instead.
+    // Fire and forget — a refresh failure must not bounce the user
+    // out (the cookie-based session is still good for the API calls
+    // we're about to make).
+    (async () => {
+      try {
+        const userId = userData && (userData.userId || userData.id);
+        if (!userId) return;
+        const res = await api.get("/users/me");
+        const profile = res?.data?.data;
+        if (!profile) return;
+        setStoredUser((prev) => {
+          const next = {
+            ...(prev || {}),
+            // /users/me returns the numeric `userId`; mirror it onto
+            // `id` for any legacy caller still referencing the old
+            // field name.
+            userId: profile.userId ?? prev?.userId ?? prev?.id,
+            id: profile.userId ?? prev?.id ?? prev?.userId,
+            name: profile.name ?? prev?.name,
+            phoneNo: profile.phoneNo ?? prev?.phoneNo,
+            role: profile.role ?? null,
+          };
+          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(next));
+          return next;
+        });
+      } catch (err) {
+        console.warn("Post-login profile refresh failed:", err?.message || err);
+      }
+    })();
   }, []);
 
   // Merge a partial update into the existing stored user. Used to fill in

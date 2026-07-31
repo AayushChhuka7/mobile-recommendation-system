@@ -1,5 +1,8 @@
 import * as phoneService from "../services/phoneService.mjs";
 import {
+  safeRecordSearchEvent,
+} from "../services/profileService.mjs";
+import {
   formatPhoneListItem,
   formatPhoneDetail,
 } from "../serializers/phoneSerializer.mjs";
@@ -10,6 +13,38 @@ import { badRequest } from "../utils/ApiError.mjs";
 // GET /api/phones
 export const getAllPhones = catchAsync(async (req, res) => {
   const { phones, pagination } = await phoneService.getAllPhones(req.query);
+
+  // Implicit signal: log the search query / filter snapshot into
+  // SearchHistory. Fire-and-forget so analytics never breaks the
+  // listing response.
+  if (req.user && req.user.userId) {
+    const q = req.query;
+    const searchTerm =
+      typeof q.search === "string" && q.search.trim().length > 0
+        ? q.search.trim()
+        : null;
+    const filterKeys = [
+      "brand",
+      "minPrice",
+      "maxPrice",
+      "minRam",
+      "minBattery",
+      "os",
+      "has5G",
+      "hasNfc",
+      "hasOis",
+    ];
+    const filtersSnapshot = {};
+    for (const k of filterKeys) {
+      if (q[k] !== undefined && q[k] !== "") filtersSnapshot[k] = q[k];
+    }
+    if (searchTerm || Object.keys(filtersSnapshot).length > 0) {
+      safeRecordSearchEvent(req.user.userId, {
+        searchQuery: searchTerm,
+        filtersJson: filtersSnapshot,
+      });
+    }
+  }
 
   return sendPaginated(res, phones.map(formatPhoneListItem), pagination);
 });
@@ -23,6 +58,18 @@ export const getPhoneById = catchAsync(async (req, res) => {
   }
 
   const phone = await phoneService.getPhoneById(id);
+
+  // Implicit signal: the unified "view" event is fired by the FE via
+  // `useEventLogger("view", { phoneId: id })` (see PhoneDetail.jsx),
+  // which lands in the `Event` table + per-tag `BehaviorScore` upserts
+  // through behaviorAnalyzer.recordEvent. Step D (5-signal fusion)
+  // reads BehaviorScore for the 0.1053 search_history weight.
+  //
+  // Previously this handler ALSO called `safeRecordBrowseEvent`, which
+  // wrote a `BrowsingHistory` row AND re-fired the same view through
+  // `safeRecordBehaviorEvent` — producing 4-6+ history rows per click
+  // (and even more under React 18 StrictMode's dev-mode double-mount).
+  // Removed so the FE is the single source of truth for view tracking.
 
   return sendSuccess(res, formatPhoneDetail(phone), {
     message: "Phone retrieved successfully",

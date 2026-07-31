@@ -2,10 +2,12 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPhoneById } from "../services/phones";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { useEventLogger } from "../hooks/useEventLogger.jsx";
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneDetail.css";
 import { ChevronLeftIcon } from "./AuthShared";
+import { formatPriceNpr } from "../utils/formatPrice.js";
 
 // ---- Field-label maps ----
 // Each entry: { key in payload → human label + optional renderer }.
@@ -136,19 +138,46 @@ function formatValue(value) {
 }
 
 function formatPrice(price) {
-  if (typeof price !== "number" || price <= 0) return null;
-  return `€${price.toLocaleString()}`;
+  // Thin shim that keeps the existing call sites unchanged — it now
+  // delegates to the shared helper so every page shows the same NPR
+  // value (rounded to nearest 5) for a given EUR input.
+  return formatPriceNpr(price);
 }
 
 function PhoneDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { logout } = useAuth();
+  // Step B — log a "view" event once when the detail page mounts so
+  // the per-tag BehaviourScore accumulates. The hook swallows errors,
+  // and we only fire when `id` is a plausible UUID (string with some
+  // length) so we don't pollute the table with garbage from a typo'd
+  // URL.
+  const logEvent = useEventLogger();
 
   const [phone, setPhone] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // 'not-found' | 'generic'
   const [reloadKey, setReloadKey] = useState(0);
+
+  // The dark-mode toggle lives in the Dashboard's profile menu and is
+  // persisted to localStorage. The PhoneDetail route is rendered
+  // outside `.dashboard-page`, so we read the flag ourselves and stamp
+  // a class on our own root so the PhoneDetail-specific dark overrides
+  // apply. We also listen for `storage` events so a toggle in another
+  // tab (or a future in-page toggle) is picked up without a reload.
+  const DARK_MODE_KEY = "dashboardDarkMode";
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => localStorage.getItem(DARK_MODE_KEY) === "true",
+  );
+  useEffect(() => {
+    function handleStorageChange() {
+      setIsDarkMode(localStorage.getItem(DARK_MODE_KEY) === "true");
+    }
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+  const pageClass = `phone-detail-page ${isDarkMode ? "phone-detail-dark" : ""}`;
 
   useEffect(() => {
     let ignore = false;
@@ -189,6 +218,15 @@ function PhoneDetail() {
     };
   }, [id, reloadKey, navigate, logout]);
 
+  // Step B — fire one "view" event per detail-page mount. We only fire
+  // for UUID-shaped `id` so a stray edit doesn't push junk into the
+  // Event table. The hook swallows errors so this is purely additive.
+  useEffect(() => {
+    if (!id) return;
+    if (typeof id !== "string" || id.length < 32) return;
+    logEvent("view", { phoneId: id });
+  }, [id, logEvent]);
+
   const handleBack = useCallback(() => {
     if (window.history.length > 1) {
       navigate(-1);
@@ -201,9 +239,12 @@ function PhoneDetail() {
 
   if (loading) {
     return (
-      <div className="phone-detail-page">
+      <div className={pageClass}>
         <TopBar onBack={handleBack} />
-        <p className="dash-status" style={{ marginTop: 40, textAlign: "center" }}>
+        <p
+          className="dash-status"
+          style={{ marginTop: 40, textAlign: "center" }}
+        >
           Loading phone…
         </p>
       </div>
@@ -212,7 +253,7 @@ function PhoneDetail() {
 
   if (error === "not-found") {
     return (
-      <div className="phone-detail-page">
+      <div className={pageClass}>
         <TopBar onBack={handleBack} />
         <div className="phone-detail-empty">
           <h1>Phone not found</h1>
@@ -234,11 +275,13 @@ function PhoneDetail() {
 
   if (error === "generic") {
     return (
-      <div className="phone-detail-page">
+      <div className={pageClass}>
         <TopBar onBack={handleBack} />
         <div className="phone-detail-error">
           <h1>Couldn't load this phone</h1>
-          <p>Something went wrong while fetching the details. Please try again.</p>
+          <p>
+            Something went wrong while fetching the details. Please try again.
+          </p>
           <button
             type="button"
             className="btn btn-primary"
@@ -254,7 +297,7 @@ function PhoneDetail() {
   if (!phone) return null;
 
   return (
-    <div className="phone-detail-page">
+    <div className={pageClass}>
       <TopBar onBack={handleBack} />
       <PhoneDetailView phone={phone} />
     </div>
@@ -342,7 +385,9 @@ export function PhoneDetailView({ phone }) {
             {status && (
               <span
                 className={`phone-detail-pill ${
-                  /available|released|coming/i.test(status) ? "success" : "muted"
+                  /available|released|coming/i.test(status)
+                    ? "success"
+                    : "muted"
                 }`}
               >
                 {status}
@@ -373,10 +418,7 @@ export function PhoneDetailView({ phone }) {
 
       {/* Pricing */}
       {(cheapestText || range?.min || range?.max) && (
-        <section
-          className="phone-detail-pricing"
-          aria-label="Pricing"
-        >
+        <section className="phone-detail-pricing" aria-label="Pricing">
           <span className="phone-detail-price-label">From</span>
           {cheapestText ? (
             <span className="phone-detail-price-value">{cheapestText}</span>
@@ -390,7 +432,7 @@ export function PhoneDetailView({ phone }) {
           {range && (range.min || range.max) && (
             <span className="phone-detail-price-range">
               Range: {formatPrice(range.min) || "—"} –{" "}
-              {formatPrice(range.max) || "—"} {range.currency || "EUR"}
+              {formatPrice(range.max) || "—"}
             </span>
           )}
         </section>
@@ -413,11 +455,7 @@ export function PhoneDetailView({ phone }) {
                   <span className="phone-detail-row-label">{label}</span>
                   <span
                     className={`phone-detail-row-value${
-                      isBool
-                        ? raw
-                          ? " boolean-yes"
-                          : " boolean-no"
-                        : ""
+                      isBool ? (raw ? " boolean-yes" : " boolean-no") : ""
                     }`}
                   >
                     {display}

@@ -357,7 +357,22 @@
 }
 
 /* Dark-mode overrides — only override the colors that change. */
-.dashboard-page.dash-dark .phone-detail-page {
+/* The PhoneDetail route renders outside `.dashboard-page`, so the page
+   itself stamps `.phone-detail-dark` when localStorage dark mode is on.
+   The `.dashboard-page.dash-dark` selector is retained as a no-op in
+   case the view is ever embedded back into the dashboard shell.
+   We must redefine the CSS variables here too — `PhoneDetail.css`
+   relies on `--bg / --white / --border / --text / --text-muted / --shadow-md`,
+   all of which only get dark values when the selector above is dark. */
+.dashboard-page.dash-dark .phone-detail-page,
+.phone-detail-dark.phone-detail-page {
+  --bg: #0f172a;
+  --white: #1f2937;
+  --border: #374151;
+  --text: #f3f4f6;
+  --text-muted: #9ca3af;
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+    0 2px 4px -1px rgba(0, 0, 0, 0.3);
   background: var(--bg);
 }
 
@@ -366,12 +381,19 @@
 .dashboard-page.dash-dark .phone-detail-pricing,
 .dashboard-page.dash-dark .phone-detail-variant,
 .dashboard-page.dash-dark .phone-detail-empty,
-.dashboard-page.dash-dark .phone-detail-error {
+.dashboard-page.dash-dark .phone-detail-error,
+.phone-detail-dark .phone-detail-topbar,
+.phone-detail-dark .phone-detail-section,
+.phone-detail-dark .phone-detail-pricing,
+.phone-detail-dark .phone-detail-variant,
+.phone-detail-dark .phone-detail-empty,
+.phone-detail-dark .phone-detail-error {
   background: #1f2937;
   border-color: #374151;
 }
 
-.dashboard-page.dash-dark .phone-detail-back {
+.dashboard-page.dash-dark .phone-detail-back,
+.phone-detail-dark .phone-detail-back {
   background: transparent;
   border-color: #374151;
   color: #e5e7eb;
@@ -383,7 +405,14 @@
 .dashboard-page.dash-dark .phone-detail-variants h2,
 .dashboard-page.dash-dark .phone-detail-row-value,
 .dashboard-page.dash-dark .phone-detail-variant-spec,
-.dashboard-page.dash-dark .phone-detail-variant-price {
+.dashboard-page.dash-dark .phone-detail-variant-price,
+.phone-detail-dark .phone-detail-model,
+.phone-detail-dark .phone-detail-price-value,
+.phone-detail-dark .phone-detail-section h2,
+.phone-detail-dark .phone-detail-variants h2,
+.phone-detail-dark .phone-detail-row-value,
+.phone-detail-dark .phone-detail-variant-spec,
+.phone-detail-dark .phone-detail-variant-price {
   color: #f3f4f6;
 }
 
@@ -394,11 +423,20 @@
 .dashboard-page.dash-dark .phone-detail-price-range,
 .dashboard-page.dash-dark .phone-detail-empty p,
 .dashboard-page.dash-dark .phone-detail-error p,
-.dashboard-page.dash-dark .phone-detail-variant-storage {
+.dashboard-page.dash-dark .phone-detail-variant-storage,
+.phone-detail-dark .phone-detail-row-label,
+.phone-detail-dark .phone-detail-brand,
+.phone-detail-dark .phone-detail-breadcrumb,
+.phone-detail-dark .phone-detail-price-label,
+.phone-detail-dark .phone-detail-price-range,
+.phone-detail-dark .phone-detail-empty p,
+.phone-detail-dark .phone-detail-error p,
+.phone-detail-dark .phone-detail-variant-storage {
   color: #9ca3af;
 }
 
-.dashboard-page.dash-dark .phone-detail-image {
+.dashboard-page.dash-dark .phone-detail-image,
+.phone-detail-dark .phone-detail-image {
   background: #111827;
   border-color: #374151;
 }
