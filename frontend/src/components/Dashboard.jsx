@@ -238,6 +238,8 @@ function Dashboard() {
   const [recsLoading, setRecsLoading] = useState(false);
   const [recsError, setRecsError] = useState("");
   const [recsPersona, setRecsPersona] = useState(null);
+  // Recs render at most 30, defaulting to 9. Toggled by "See more".
+  const [recsExpanded, setRecsExpanded] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   // Live-typeahead suggestions for the search bar. Reuses the same
@@ -760,6 +762,7 @@ function Dashboard() {
     setRecs(null);
     setRecsError("");
     setRecsPersona(null);
+    setRecsExpanded(false);
   }, []);
   const handleSearch = (e) => {
     e.preventDefault();
@@ -1427,17 +1430,20 @@ function Dashboard() {
           </div>
         )}
 
-        {recs && !recsLoading && !searchTerm && activeFilterCount === 0 && (
+        {recs && !recsLoading && page === 1 && (
           <section
             className="dash-recs-section"
-            aria-label="Recommended for you"
+            aria-label="Top phones for you"
           >
             <div className="dash-recs-header">
-              <h2>
-                {recsPersona
-                  ? `All phones ranked for you · ${recsPersona}`
-                  : "All phones ranked for you"}
-              </h2>
+              <div className="dash-recs-title">
+                <h2>Top phones for you</h2>
+                {recsPersona && (
+                  <span className="dash-recs-eyebrow">
+                    Tuned for your {recsPersona.toLowerCase()} persona
+                  </span>
+                )}
+              </div>
               <button
                 type="button"
                 className="btn btn-outline btn-small"
@@ -1452,8 +1458,9 @@ function Dashboard() {
                 budget or picking a different category.
               </p>
             ) : (
-              <div className="phone-grid">
-                {recs.map((r) => {
+              <>
+                <div className="phone-grid">
+                  {recs.slice(0, recsExpanded ? 30 : 9).map((r) => {
                   const isClickable = r.id && r.inDatabase !== false;
                   const handleRecClick = () => {
                     if (isClickable) navigate(`/phones/${r.id}`);
@@ -1567,7 +1574,20 @@ function Dashboard() {
                     </div>
                   );
                 })}
-              </div>
+                </div>
+                {recs.length > 10 && (
+                  <div className="dash-recs-see-more">
+                    <button
+                      type="button"
+                      className="btn btn-outline"
+                      onClick={() => setRecsExpanded((v) => !v)}
+                      aria-expanded={recsExpanded}
+                    >
+                      {recsExpanded ? "Show fewer" : "See more"}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </section>
         )}
@@ -1579,8 +1599,12 @@ function Dashboard() {
         )}
 
         {!isLoading && !error && phones.length > 0 && (
-          <div className="phone-grid">
-            {phones.map((p) => (
+          <section className="dash-browse-section" aria-label="Browse other phones">
+            <div className="dash-browse-header">
+              <h2>Browse other phones</h2>
+            </div>
+            <div className="phone-grid">
+              {(page === 1 ? phones.slice(0, 5) : phones).map((p) => (
               <div
                 key={p.id}
                 className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
@@ -1644,6 +1668,7 @@ function Dashboard() {
               </div>
             ))}
           </div>
+          </section>
         )}
 
         {/* Pagination — only when there is more than one page */}
