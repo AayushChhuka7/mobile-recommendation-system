@@ -1510,14 +1510,6 @@ function Dashboard() {
                               % match
                             </span>
                           )}
-                          {r.matchComponents?.search_history > 0.6 && (
-                            <span
-                              className="rec-boosted-badge"
-                              title="Ranked higher because of your recent searches & views"
-                            >
-                              Boosted by your activity
-                            </span>
-                          )}
                         </div>
                         <div className="phone-card-name">{r.modelName}</div>
                         <div className="phone-card-tagline">
