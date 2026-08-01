@@ -1520,6 +1520,32 @@ function Dashboard() {
                                 % match
                               </span>
                             )}
+                            {r.id && (
+                              <button
+                                type="button"
+                                className="phone-card-favorite"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setFavorites((fav) => ({
+                                    ...fav,
+                                    [r.id]: !fav[r.id],
+                                  }));
+                                }}
+                                aria-label={
+                                  favorites[r.id]
+                                    ? "Remove from favorites"
+                                    : "Add to favorites"
+                                }
+                                aria-pressed={!!favorites[r.id]}
+                                title={
+                                  favorites[r.id]
+                                    ? "Favorited"
+                                    : "Add to favorites"
+                                }
+                              >
+                                <HeartIcon filled={!!favorites[r.id]} />
+                              </button>
+                            )}
                           </div>
                           <div className="phone-card-name">{r.modelName}</div>
                         </div>

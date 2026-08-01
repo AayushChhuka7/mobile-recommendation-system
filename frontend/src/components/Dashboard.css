@@ -1678,7 +1678,7 @@
 .rec-match-badge {
   position: absolute;
   top: 8px;
-  right: 8px;
+  left: 8px;
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
   color: #fff;
   font-size: 0.7rem;
@@ -1687,6 +1687,15 @@
   border-radius: 999px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   letter-spacing: 0.02em;
+  z-index: 1;
+}
+
+/* Rec cards don't have the lavender .phone-card-hero wrapper, so the
+   heart sits inside .phone-card-image. The match badge claims the top-left
+   corner; the heart keeps its default top-right slot from the shared
+   .phone-card-favorite styles. */
+.rec-card .phone-card-favorite {
+  z-index: 1;
 }
 
 .phone-card-image {
