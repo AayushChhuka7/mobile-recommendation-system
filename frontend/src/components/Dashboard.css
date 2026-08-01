@@ -1,13 +1,24 @@
 .dashboard-page {
   width: 100%;
   min-height: 100vh;
-  background: var(--bg);
+  background:
+    radial-gradient(
+      1200px 600px at 10% -100px,
+      rgba(99, 102, 241, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 100% 200px,
+      rgba(16, 185, 129, 0.06),
+      transparent 60%
+    ),
+    var(--bg);
 }
 
 .dash-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 16px 40px;
   background: var(--white);
   border-bottom: 1px solid var(--border);
@@ -272,7 +283,7 @@
 }
 
 .dash-main {
-  max-width: 1100px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 28px 40px 80px;
 }
@@ -290,9 +301,25 @@
   margin: 0 0 32px 0;
 }
 
+.dash-banner {
+  width: 100%;
+  margin: 0 0 28px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.dash-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+  object-fit: cover;
+}
+
 .phone-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
 }
 

@@ -38,6 +38,7 @@ import {
 } from "./AuthShared";
 import ComparePanel from "./ComparePanel.jsx";
 import { eurFromNpr, formatPriceNpr } from "../utils/formatPrice.js";
+import bannerImg from "../assets/banner.jpg";
 
 // function ThemeIcon() {
 //   return (
@@ -201,8 +202,7 @@ function Dashboard() {
   const [editPhone, setEditPhone] = useState("");
   const [editProfileErrors, setEditProfileErrors] = useState({});
   const [editProfileSubmitError, setEditProfileSubmitError] = useState("");
-  const [isEditProfileSubmitting, setIsEditProfileSubmitting] =
-    useState(false);
+  const [isEditProfileSubmitting, setIsEditProfileSubmitting] = useState(false);
 
   const DARK_MODE_KEY = "dashboardDarkMode";
   const [isDarkMode, setIsDarkMode] = useState(
@@ -593,13 +593,7 @@ function Dashboard() {
         setIsEditProfileSubmitting(false);
       }
     },
-    [
-      validateEditProfile,
-      editName,
-      editPhone,
-      closeEditProfile,
-      setUser,
-    ],
+    [validateEditProfile, editName, editPhone, closeEditProfile, setUser],
   );
 
   const validateChangePw = useCallback(() => {
@@ -900,16 +894,6 @@ function Dashboard() {
   return (
     <div className={`dashboard-page ${isDarkMode ? "dash-dark" : ""}`}>
       <header className="dash-header">
-        <div className="login-brand">
-          <div className="brand-icon" style={{ color: "#fff" }}>
-            M
-          </div>
-          <div>
-            <div className="dash-brand-title">Mobile Recommender</div>
-            <div className="dash-brand-sub">Find your perfect phone</div>
-          </div>
-        </div>
-
         <div className="dash-header-actions">
           <button
             type="button"
@@ -1070,7 +1054,10 @@ function Dashboard() {
             onSubmit={handleSearch}
             role="search"
           >
-            <div className="dash-search-input-wrapper" ref={searchSuggestionsRef}>
+            <div
+              className="dash-search-input-wrapper"
+              ref={searchSuggestionsRef}
+            >
               <span className="dash-search-input-icon" aria-hidden="true">
                 <SearchIcon />
               </span>
@@ -1141,9 +1128,7 @@ function Dashboard() {
                             alt=""
                             onError={(e) => {
                               e.target.style.display = "none";
-                              e.target.parentElement.classList.add(
-                                "no-image",
-                              );
+                              e.target.parentElement.classList.add("no-image");
                             }}
                           />
                         ) : (
@@ -1384,15 +1369,10 @@ function Dashboard() {
 
         <div className="dash-welcome">
           <h1>Welcome back, {firstName}</h1>
-          <p>
-            {recs
-              ? `Personalized picks for the ${recsPersona} persona`
-              : searchTerm
-                ? `Results for "${searchTerm}"`
-                : activeFilterCount > 0
-                  ? "Phones matching your filters"
-                  : "Phones recommended to you"}
-          </p>
+        </div>
+
+        <div className="dash-banner">
+          <img src={bannerImg} alt="Shop the latest smartphones" />
         </div>
 
         {isLoading && <p className="dash-status">Loading phones…</p>}
@@ -1460,120 +1440,122 @@ function Dashboard() {
             ) : (
               <>
                 <div className="phone-grid">
-                  {recs.slice(0, recsExpanded ? 30 : 9).map((r) => {
-                  const isClickable = r.id && r.inDatabase !== false;
-                  const handleRecClick = () => {
-                    if (isClickable) navigate(`/phones/${r.id}`);
-                  };
-                  const handleRecKeyDown = (e) => {
-                    if (!isClickable) return;
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleRecClick();
-                    }
-                  };
-                  return (
-                    <div
-                      key={r.id || `${r.brand?.name}-${r.modelName}`}
-                      className="phone-card rec-card"
-                      role={isClickable ? "button" : undefined}
-                      tabIndex={isClickable ? 0 : -1}
-                      aria-label={
-                        isClickable
-                          ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
-                          : undefined
+                  {recs.slice(0, recsExpanded ? 32 : 8).map((r) => {
+                    const isClickable = r.id && r.inDatabase !== false;
+                    const handleRecClick = () => {
+                      if (isClickable) navigate(`/phones/${r.id}`);
+                    };
+                    const handleRecKeyDown = (e) => {
+                      if (!isClickable) return;
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleRecClick();
                       }
-                      onClick={handleRecClick}
-                      onKeyDown={handleRecKeyDown}
-                      onMouseEnter={() => r.id && setHoveredCard(r.id)}
-                      onMouseLeave={() => setHoveredCard(null)}
-                      style={{ cursor: isClickable ? "pointer" : "default" }}
-                    >
-                      <div className="phone-card-top">
-                        <div className="phone-card-image">
-                          {r.imageUrl ? (
-                            <img
-                              src={r.imageUrl}
-                              alt={r.modelName}
-                              onError={(e) => {
-                                e.target.style.display = "none";
-                                e.target.parentElement.classList.add(
-                                  "no-image",
-                                );
-                              }}
-                            />
-                          ) : (
-                            <span className="phone-card-emoji">📱</span>
+                    };
+                    return (
+                      <div
+                        key={r.id || `${r.brand?.name}-${r.modelName}`}
+                        className="phone-card rec-card"
+                        role={isClickable ? "button" : undefined}
+                        tabIndex={isClickable ? 0 : -1}
+                        aria-label={
+                          isClickable
+                            ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
+                            : undefined
+                        }
+                        onClick={handleRecClick}
+                        onKeyDown={handleRecKeyDown}
+                        onMouseEnter={() => r.id && setHoveredCard(r.id)}
+                        onMouseLeave={() => setHoveredCard(null)}
+                        style={{ cursor: isClickable ? "pointer" : "default" }}
+                      >
+                        <div className="phone-card-top">
+                          <div className="phone-card-image">
+                            {r.imageUrl ? (
+                              <img
+                                src={r.imageUrl}
+                                alt={r.modelName}
+                                onError={(e) => {
+                                  e.target.style.display = "none";
+                                  e.target.parentElement.classList.add(
+                                    "no-image",
+                                  );
+                                }}
+                              />
+                            ) : (
+                              <span className="phone-card-emoji">📱</span>
+                            )}
+                            {typeof r.matchScore === "number" && (
+                              <span
+                                className="rec-match-badge"
+                                title="Match score from the recommender"
+                              >
+                                {Math.min(
+                                  100,
+                                  Math.round(r.matchScore * 10) / 10,
+                                ).toFixed(1)}
+                                % match
+                              </span>
+                            )}
+                          </div>
+                          <div className="phone-card-name">{r.modelName}</div>
+                          <div className="phone-card-tagline">
+                            {r.brand?.name || "Unknown brand"}
+                          </div>
+                        </div>
+
+                        <div className="phone-card-details">
+                          {r.keySpecs?.os && (
+                            <div className="phone-spec">
+                              <CpuIcon />
+                              <span>{r.keySpecs.os}</span>
+                            </div>
                           )}
-                          {typeof r.matchScore === "number" && (
-                            <span
-                              className="rec-match-badge"
-                              title="Match score from the recommender"
-                            >
-                              {Math.min(
-                                100,
-                                Math.round(r.matchScore * 10) / 10,
-                              ).toFixed(1)}
-                              % match
-                            </span>
+                          {r.keySpecs?.camera && (
+                            <div className="phone-spec">
+                              <CameraIcon />
+                              <span>{r.keySpecs.camera}</span>
+                            </div>
+                          )}
+                          {r.keySpecs?.battery && (
+                            <div className="phone-spec">
+                              <BatteryIcon />
+                              <span>{r.keySpecs.battery} mAh</span>
+                            </div>
+                          )}
+                          {r.cheapestVariant?.price && (
+                            <div className="phone-spec phone-price">
+                              <TagIcon />
+                              <span>
+                                {formatPriceNpr(r.cheapestVariant.price) ?? "—"}
+                                {r.cheapestVariant.ram &&
+                                r.cheapestVariant.storage
+                                  ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
+                                  : ""}
+                              </span>
+                            </div>
                           )}
                         </div>
-                        <div className="phone-card-name">{r.modelName}</div>
-                        <div className="phone-card-tagline">
-                          {r.brand?.name || "Unknown brand"}
-                        </div>
-                      </div>
 
-                      <div className="phone-card-details">
-                        {r.keySpecs?.os && (
-                          <div className="phone-spec">
-                            <CpuIcon />
-                            <span>{r.keySpecs.os}</span>
-                          </div>
+                        {Array.isArray(r.why) && r.why.length > 0 && (
+                          <ul
+                            className="rec-why-list"
+                            aria-label="Why this match"
+                          >
+                            {r.why.slice(0, 3).map((reason, idx) => (
+                              <li key={idx}>{reason}</li>
+                            ))}
+                          </ul>
                         )}
-                        {r.keySpecs?.camera && (
-                          <div className="phone-spec">
-                            <CameraIcon />
-                            <span>{r.keySpecs.camera}</span>
-                          </div>
-                        )}
-                        {r.keySpecs?.battery && (
-                          <div className="phone-spec">
-                            <BatteryIcon />
-                            <span>{r.keySpecs.battery} mAh</span>
-                          </div>
-                        )}
-                        {r.cheapestVariant?.price && (
-                          <div className="phone-spec phone-price">
-                            <TagIcon />
-                            <span>
-                              {formatPriceNpr(r.cheapestVariant.price) ?? "—"}
-                              {r.cheapestVariant.ram &&
-                              r.cheapestVariant.storage
-                                ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
-                                : ""}
-                            </span>
+
+                        {r.inDatabase === false && (
+                          <div className="rec-not-in-db">
+                            Not in our catalog
                           </div>
                         )}
                       </div>
-
-                      {Array.isArray(r.why) && r.why.length > 0 && (
-                        <ul
-                          className="rec-why-list"
-                          aria-label="Why this match"
-                        >
-                          {r.why.slice(0, 3).map((reason, idx) => (
-                            <li key={idx}>{reason}</li>
-                          ))}
-                        </ul>
-                      )}
-
-                      {r.inDatabase === false && (
-                        <div className="rec-not-in-db">Not in our catalog</div>
-                      )}
-                    </div>
-                  );
-                })}
+                    );
+                  })}
                 </div>
                 {recs.length > 10 && (
                   <div className="dash-recs-see-more">
@@ -1599,75 +1581,78 @@ function Dashboard() {
         )}
 
         {!isLoading && !error && phones.length > 0 && (
-          <section className="dash-browse-section" aria-label="Browse other phones">
+          <section
+            className="dash-browse-section"
+            aria-label="Browse other phones"
+          >
             <div className="dash-browse-header">
               <h2>Browse other phones</h2>
             </div>
             <div className="phone-grid">
               {(page === 1 ? phones.slice(0, 5) : phones).map((p) => (
-              <div
-                key={p.id}
-                className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
-                onMouseEnter={() => setHoveredCard(p.id)}
-                onMouseLeave={() => setHoveredCard(null)}
-                onClick={() => p.id && navigate(`/phones/${p.id}`)}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="phone-card-top">
-                  <div className="phone-card-image">
-                    {p.imageUrl ? (
-                      <img
-                        src={p.imageUrl}
-                        alt={p.modelName}
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                          e.target.parentElement.classList.add("no-image");
-                        }}
-                      />
-                    ) : (
-                      <span className="phone-card-emoji">📱</span>
+                <div
+                  key={p.id}
+                  className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
+                  onMouseEnter={() => setHoveredCard(p.id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  onClick={() => p.id && navigate(`/phones/${p.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="phone-card-top">
+                    <div className="phone-card-image">
+                      {p.imageUrl ? (
+                        <img
+                          src={p.imageUrl}
+                          alt={p.modelName}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            e.target.parentElement.classList.add("no-image");
+                          }}
+                        />
+                      ) : (
+                        <span className="phone-card-emoji">📱</span>
+                      )}
+                    </div>
+                    <div className="phone-card-name">{p.modelName}</div>
+                    <div className="phone-card-tagline">
+                      {p.brand?.name || "Unknown brand"}
+                    </div>
+                  </div>
+
+                  <div className="phone-card-details">
+                    {p.keySpecs?.os && (
+                      <div className="phone-spec">
+                        <CpuIcon />
+                        <span>{p.keySpecs.os}</span>
+                      </div>
+                    )}
+                    {p.keySpecs?.camera && (
+                      <div className="phone-spec">
+                        <CameraIcon />
+                        <span>{p.keySpecs.camera}</span>
+                      </div>
+                    )}
+                    {p.keySpecs?.battery && (
+                      <div className="phone-spec">
+                        <BatteryIcon />
+                        <span>{p.keySpecs.battery} mAh</span>
+                      </div>
+                    )}
+                    {p.cheapestVariant?.price && (
+                      <div className="phone-spec phone-price">
+                        <TagIcon />
+                        <span>
+                          {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
+                          {p.cheapestVariant.ram && p.cheapestVariant.storage
+                            ? ` · ${p.cheapestVariant.ram}GB/${p.cheapestVariant.storage}GB`
+                            : ""}
+                        </span>
+                      </div>
                     )}
                   </div>
-                  <div className="phone-card-name">{p.modelName}</div>
-                  <div className="phone-card-tagline">
-                    {p.brand?.name || "Unknown brand"}
-                  </div>
                 </div>
-
-                <div className="phone-card-details">
-                  {p.keySpecs?.os && (
-                    <div className="phone-spec">
-                      <CpuIcon />
-                      <span>{p.keySpecs.os}</span>
-                    </div>
-                  )}
-                  {p.keySpecs?.camera && (
-                    <div className="phone-spec">
-                      <CameraIcon />
-                      <span>{p.keySpecs.camera}</span>
-                    </div>
-                  )}
-                  {p.keySpecs?.battery && (
-                    <div className="phone-spec">
-                      <BatteryIcon />
-                      <span>{p.keySpecs.battery} mAh</span>
-                    </div>
-                  )}
-                  {p.cheapestVariant?.price && (
-                    <div className="phone-spec phone-price">
-                      <TagIcon />
-                      <span>
-                        {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
-                        {p.cheapestVariant.ram && p.cheapestVariant.storage
-                          ? ` · ${p.cheapestVariant.ram}GB/${p.cheapestVariant.storage}GB`
-                          : ""}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
           </section>
         )}
 
