@@ -1750,17 +1750,16 @@ function Dashboard() {
                   </div>
 
                   <div className="phone-card-body">
-                    <div className="phone-card-tags">
-                      {(p.brand?.name || "Unknown").slice(0, 3).toUpperCase()}
-                      {p.keySpecs?.os && (
-                        <span className="phone-card-tag">
-                          {p.keySpecs.os}
-                        </span>
-                      )}
-                    </div>
+                    <div className="phone-card-tags" aria-hidden="true" />
                     <div className="phone-card-name">{p.modelName}</div>
 
                     <div className="phone-card-details">
+                      {p.keySpecs?.os && (
+                        <div className="phone-spec">
+                          <CpuIcon />
+                          <span>{p.keySpecs.os}</span>
+                        </div>
+                      )}
                       {p.keySpecs?.camera && (
                         <div className="phone-spec">
                           <CameraIcon />

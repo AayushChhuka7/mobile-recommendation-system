@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../hooks/useAuth.jsx";
 import { useEventLogger } from "../hooks/useEventLogger.jsx";
-import { formatPriceNpr } from "../utils/formatPrice.js";
+import { formatPriceNpr, eurFromNpr } from "../utils/formatPrice.js";
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneListing.css";
@@ -91,8 +91,13 @@ function PhoneListing() {
       const params = { page, limit: 12, sort };
 
       if (selectedBrand) params.brand = selectedBrand;
-      if (minPrice) params.minPrice = minPrice;
-      if (maxPrice) params.maxPrice = maxPrice;
+      // Filter price inputs are in NPR; the BE stores everything in EUR,
+      // so convert before sending. `eurFromNpr` returns `null` for empty
+      // / non-numeric input — we drop those to keep the query clean.
+      const minPriceEur = minPrice ? eurFromNpr(minPrice) : null;
+      const maxPriceEur = maxPrice ? eurFromNpr(maxPrice) : null;
+      if (minPriceEur !== null) params.minPrice = minPriceEur;
+      if (maxPriceEur !== null) params.maxPrice = maxPriceEur;
       if (minRam) params.minRam = minRam;
       if (has5G) params.has5G = "true";
       if (hasNfc) params.hasNfc = "true";
@@ -382,9 +387,11 @@ function PhoneListing() {
               </select>
             </div>
 
-            {/* Price Range */}
+            {/* Price Range
+                The field accepts NPR; the backend stores EUR, so we
+                convert via `eurFromNpr` before the request goes out. */}
             <div className="filter-group">
-              <label className="filter-label">Price (EUR)</label>
+              <label className="filter-label">Price (NPR)</label>
               <div className="filter-range">
                 <input
                   type="number"

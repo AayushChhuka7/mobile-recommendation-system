@@ -159,11 +159,6 @@ function formatScore(v) {
   return Number(v).toFixed(1);
 }
 
-function formatMlPrice(price) {
-  if (price == null || Number.isNaN(Number(price))) return "—";
-  return formatPriceNpr(price) ?? "—";
-}
-
 // ---- Full-detail panel for a single phone (uses GET /phones/:id) ----
 function PhoneFullDetailPanel({ phone, index, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -479,7 +474,7 @@ function Compare() {
                     {compareResult.Phone_A}
                   </span>
                   <span className="compare-ml-side-price">
-                    {formatMlPrice(compareResult.Price_A)}
+                    {formatPriceNpr(compareResult.Price_A) ?? "—"}
                   </span>
                 </div>
                 <div className="compare-ml-headline-vs">VS</div>
@@ -488,7 +483,7 @@ function Compare() {
                     {compareResult.Phone_B}
                   </span>
                   <span className="compare-ml-side-price">
-                    {formatMlPrice(compareResult.Price_B)}
+                    {formatPriceNpr(compareResult.Price_B) ?? "—"}
                   </span>
                 </div>
               </div>

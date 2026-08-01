@@ -396,11 +396,6 @@ function ComparePanel({ open, onClose }) {
   const formatMlScore = (v) =>
     v == null || Number.isNaN(Number(v)) ? "—" : Number(v).toFixed(1);
 
-  const formatMlPrice = (price) =>
-    price == null || Number.isNaN(Number(price))
-      ? "—"
-      : formatPriceNpr(price) ?? "—";
-
   // Map the ML "Winner" string to a UI side key.
   const overallWinnerName = compareResult?.Overall_Winner || null;
   const overallWinnerKey = !compareResult
@@ -525,11 +520,11 @@ function ComparePanel({ open, onClose }) {
                     <div className="cmp-result-price">
                       <TagIcon />
                       <span>
-                        {formatMlPrice(
+                        {formatPriceNpr(
                           idx === 0
                             ? compareResult?.Price_A
                             : compareResult?.Price_B,
-                        )}
+                        ) ?? "—"}
                       </span>
                     </div>
                     <div className="cmp-result-specs">
