@@ -30,9 +30,12 @@
 
 body {
   font-family:
-    "Inter",
-    system-ui,
     -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
     sans-serif;
   background: var(--bg);
   color: var(--text);
@@ -63,4 +66,97 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Dashboard + Compare + ComparePanel + PhoneListing + PhoneDetail all
+ * render inside `.dashboard-page`, so a single font rule here applies
+ * to every sub-component without touching their own CSS files.
+ *
+ * Type scale (from the design spec):
+ *   --heading:    28px / 700 / #1a1a1a / 1.3
+ *   --subheading: 15px / 400 / #6b7280
+ *   --product:    17px / 600 / #1a1a1a / 1.4
+ *   --price:      19px / 700 / #1a1a1a
+ */
+.dashboard-page {
+  --font-app: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-heading-size: 36px;
+  --font-heading-weight: 600;
+  --font-heading-color: #1a1a1a;
+  --font-heading-lh: 1.3;
+
+  --font-subheading-size: 18px;
+  --font-subheading-weight: 600;
+  --font-subheading-color: #1a1a1a;
+
+  --font-product-size: 19px;
+  --font-product-weight: 600;
+  --font-product-color: #1a1a1a;
+  --font-product-lh: 1.4;
+
+  --font-price-size: 19px;
+  --font-price-weight: 600;
+  --font-price-color: #1a1a1a;
+
+  font-family: var(--font-app);
+}
+
+/* Heading — applied uniformly to the section titles so "Welcome back",
+ * "Top phones for you", and "Browse other phones" all render at the
+ * same size. .dash-welcome h1 and .dash-recs-header h2 carry
+ * component-scoped font-size rules that would otherwise win; the
+ * !important here keeps the spec heading size authoritative across
+ * the dashboard. */
+.dashboard-page .dash-welcome h1,
+.dashboard-page .dash-recs-header h2,
+.dashboard-page .dash-browse-header h2,
+.dashboard-page h1,
+.dashboard-page h2,
+.dashboard-page .dash-brand-title,
+.dashboard-page .compare-page-header h1 {
+  font-family: var(--font-app);
+  font-size: var(--font-heading-size) !important;
+  font-weight: var(--font-heading-weight);
+  color: var(--font-heading-color);
+  line-height: var(--font-heading-lh);
+}
+
+/* Slightly smaller h3 — keep the heading family/weight but step the
+ * size down so it doesn't out-shout product cards. */
+.dashboard-page h3 {
+  font-family: var(--font-app);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--font-heading-color);
+  line-height: 1.4;
+}
+
+/* Subheading — paragraphs/captions under a heading. */
+.dashboard-page p,
+.dashboard-page .dash-brand-sub,
+.dashboard-page .compare-page-header p,
+.dashboard-page .phone-card-tagline,
+.dashboard-page .questionnaire-hint,
+.dashboard-page .profile-field-label,
+.dashboard-page .profile-field-value {
+  font-size: var(--font-subheading-size);
+  font-weight: var(--font-subheading-weight);
+  color: var(--font-subheading-color);
+}
+
+/* Product name — phone model on cards. */
+.dashboard-page .phone-card-name {
+  font-family: var(--font-app);
+  font-size: var(--font-product-size);
+  font-weight: var(--font-product-weight);
+  color: var(--font-product-color);
+  line-height: var(--font-product-lh);
+}
+
+/* Price — rendered inside phone-card-details as the .phone-price span. */
+.dashboard-page .phone-price {
+  font-size: var(--font-price-size);
+  font-weight: var(--font-price-weight);
+  color: var(--font-price-color);
 }
