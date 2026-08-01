@@ -133,6 +133,9 @@ const personaToCategory = (persona) => {
 // helper can be reintroduced here if a future continuous-input source
 // (e.g. live price slider) gets wired to auto-save.
 
+// Browse-page sizes: page 1 shows 8 phones, later pages show 16.
+// `limit` is propagated from `extra` so the caller can pick the size
+// per page; `buildPhonesQuery` itself stays limit-agnostic.
 function buildPhonesQuery(filters, sort, extra = {}) {
   const params = { limit: 6, sort, ...extra };
   if (filters.brand) params.brand = filters.brand;
@@ -361,7 +364,15 @@ function Dashboard() {
       setIsLoading(true);
       setError(null);
       try {
-        const extra = { page };
+        const extra = {
+          page,
+          // Page 1 requests 8 phones; every subsequent page requests
+          // 16. The BE derives skip from `(page - 1) * limit`, so the
+          // effective skip shifts accordingly on later pages (rows
+          // appear consistently forward but FE page 2 starts at row
+          // 17, not row 9 — accepted trade-off to stay frontend-only).
+          limit: page === 1 ? 8 : 16,
+        };
         if (searchTerm) extra.search = searchTerm;
 
         const params = buildPhonesQuery(filters, sort, extra);
@@ -851,7 +862,21 @@ function Dashboard() {
 
   const handleApplyFilters = () => {
     const willHaveActiveFilters = Object.values(pendingFilters).some(Boolean);
-    setFilters(pendingFilters);
+    // The user typed NPR prices — convert them back to EUR (the
+    // storage currency of the BE) the same way the recommend flow does,
+    // so `buildPhonesQuery` keeps sending EUR over the wire.
+    const filtersToApply = {
+      ...pendingFilters,
+      minPrice:
+        pendingFilters.minPrice === ""
+          ? ""
+          : eurFromNpr(pendingFilters.minPrice) ?? "",
+      maxPrice:
+        pendingFilters.maxPrice === ""
+          ? ""
+          : eurFromNpr(pendingFilters.maxPrice) ?? "",
+    };
+    setFilters(filtersToApply);
     setShowFilters(false);
     setPage(1);
     // Drop the auto/explicit recs once the user narrows the catalog so
@@ -1212,7 +1237,7 @@ function Dashboard() {
 
                     {/* Price range */}
                     <div className="filter-group">
-                      <label className="filter-label">Price (EUR)</label>
+                      <label className="filter-label">Price (NPR)</label>
                       <div className="filter-range">
                         <input
                           type="number"
@@ -1269,25 +1294,6 @@ function Dashboard() {
                         {BATTERY_OPTIONS.map((opt) => (
                           <option key={opt.value} value={opt.value}>
                             {opt.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* OS */}
-                    <div className="filter-group">
-                      <label className="filter-label">Operating system</label>
-                      <select
-                        className="filter-select"
-                        value={pendingFilters.os}
-                        onChange={(e) =>
-                          handlePendingChange("os", e.target.value)
-                        }
-                      >
-                        <option value="">Any</option>
-                        {osOptions.map((o) => (
-                          <option key={o} value={o}>
-                            {o}
                           </option>
                         ))}
                       </select>
@@ -1589,7 +1595,7 @@ function Dashboard() {
               <h2>Browse other phones</h2>
             </div>
             <div className="phone-grid">
-              {(page === 1 ? phones.slice(0, 5) : phones).map((p) => (
+              {(page === 1 ? phones.slice(0, 8) : phones).map((p) => (
                 <div
                   key={p.id}
                   className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
