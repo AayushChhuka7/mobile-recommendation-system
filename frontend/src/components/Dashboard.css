@@ -1507,6 +1507,17 @@
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
   --shadow-md:
     0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+
+  /* Headings + product names + prices — these CSS vars are defined in
+     index.css inside .dashboard-page (not .dash-dark), so their hard-coded
+     dark values win over --text in dark mode unless we override them
+     here. Without this, the "Browse other phones" heading, every phone
+     model name on a card, and the price text stay #1a1a1a on a dark
+     background and disappear. */
+  --font-heading-color: #e2e8f0;
+  --font-subheading-color: #cbd5e1;
+  --font-product-color: #e2e8f0;
+  --font-price-color: #e2e8f0;
 }
 
 .dashboard-page.dash-dark .phone-card-image {
