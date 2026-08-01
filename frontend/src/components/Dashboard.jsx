@@ -57,6 +57,22 @@ import bannerImg from "../assets/banner.jpg";
 //   );
 // }
 
+const HeartIcon = ({ filled = false }) => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill={filled ? "currentColor" : "none"}
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  </svg>
+);
+
 const CATEGORY_OPTIONS = [
   { key: "gamer", label: "Gamer", Icon: GamerIcon },
   { key: "camera", label: "Camera lover", Icon: CameraIcon },
@@ -264,6 +280,7 @@ function Dashboard() {
   const [osOptions, setOsOptions] = useState([]);
 
   const [phones, setPhones] = useState([]);
+  const [favorites, setFavorites] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -1505,9 +1522,6 @@ function Dashboard() {
                             )}
                           </div>
                           <div className="phone-card-name">{r.modelName}</div>
-                          <div className="phone-card-tagline">
-                            {r.brand?.name || "Unknown brand"}
-                          </div>
                         </div>
 
                         <div className="phone-card-details">
@@ -1530,7 +1544,7 @@ function Dashboard() {
                             </div>
                           )}
                           {r.cheapestVariant?.price && (
-                            <div className="phone-spec phone-price">
+                            <div className="phone-spec rec-price">
                               <TagIcon />
                               <span>
                                 {formatPriceNpr(r.cheapestVariant.price) ?? "—"}
@@ -1604,7 +1618,7 @@ function Dashboard() {
                   onClick={() => p.id && navigate(`/phones/${p.id}`)}
                   style={{ cursor: "pointer" }}
                 >
-                  <div className="phone-card-top">
+                  <div className="phone-card-hero">
                     <div className="phone-card-image">
                       {p.imageUrl ? (
                         <img
@@ -1619,42 +1633,65 @@ function Dashboard() {
                         <span className="phone-card-emoji">📱</span>
                       )}
                     </div>
-                    <div className="phone-card-name">{p.modelName}</div>
-                    <div className="phone-card-tagline">
-                      {p.brand?.name || "Unknown brand"}
-                    </div>
+                    <button
+                      type="button"
+                      className="phone-card-favorite"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFavorites((fav) => ({
+                          ...fav,
+                          [p.id]: !fav[p.id],
+                        }));
+                      }}
+                      aria-label={
+                        favorites[p.id] ? "Remove from favorites" : "Add to favorites"
+                      }
+                      aria-pressed={!!favorites[p.id]}
+                      title={favorites[p.id] ? "Favorited" : "Add to favorites"}
+                    >
+                      <HeartIcon filled={!!favorites[p.id]} />
+                    </button>
                   </div>
 
-                  <div className="phone-card-details">
-                    {p.keySpecs?.os && (
-                      <div className="phone-spec">
-                        <CpuIcon />
-                        <span>{p.keySpecs.os}</span>
-                      </div>
-                    )}
-                    {p.keySpecs?.camera && (
-                      <div className="phone-spec">
-                        <CameraIcon />
-                        <span>{p.keySpecs.camera}</span>
-                      </div>
-                    )}
-                    {p.keySpecs?.battery && (
-                      <div className="phone-spec">
-                        <BatteryIcon />
-                        <span>{p.keySpecs.battery} mAh</span>
-                      </div>
-                    )}
-                    {p.cheapestVariant?.price && (
-                      <div className="phone-spec phone-price">
-                        <TagIcon />
-                        <span>
-                          {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
-                          {p.cheapestVariant.ram && p.cheapestVariant.storage
-                            ? ` · ${p.cheapestVariant.ram}GB/${p.cheapestVariant.storage}GB`
-                            : ""}
+                  <div className="phone-card-body">
+                    <div className="phone-card-tags">
+                      {(p.brand?.name || "Unknown").slice(0, 3).toUpperCase()}
+                      {p.keySpecs?.os && (
+                        <span className="phone-card-tag">
+                          {p.keySpecs.os}
                         </span>
-                      </div>
-                    )}
+                      )}
+                    </div>
+                    <div className="phone-card-name">{p.modelName}</div>
+
+                    <div className="phone-card-details">
+                      {p.keySpecs?.camera && (
+                        <div className="phone-spec">
+                          <CameraIcon />
+                          <span>{p.keySpecs.camera}</span>
+                        </div>
+                      )}
+                      {p.keySpecs?.battery && (
+                        <div className="phone-spec">
+                          <BatteryIcon />
+                          <span>{p.keySpecs.battery} mAh</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="phone-card-footer">
+                      {p.cheapestVariant?.price && (
+                        <div className="phone-price">
+                          <span className="phone-price-label">Price</span>
+                          <span className="phone-price-value">
+                            {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
+                            {p.cheapestVariant.ram && p.cheapestVariant.storage
+                              ? ` · ${p.cheapestVariant.ram}/${p.cheapestVariant.storage}GB`
+                              : ""}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -1708,10 +1745,7 @@ function Dashboard() {
             >
               Last »
             </button>
-            <span className="pagination-info">
-              Page {page} of {totalPages} ({total} phones)
-            </span>
-          </div>
+            </div>
         )}
       </main>
 

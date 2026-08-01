@@ -166,7 +166,7 @@
 
 .profile-field-value {
   color: var(--text);
-  font-weight: 500;
+  font-weight: 400;
   text-align: right;
   white-space: nowrap;
   overflow: hidden;
@@ -326,10 +326,13 @@
 .phone-card {
   background: var(--white);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px 20px;
+  border-radius: 16px;
+  padding: 0;
   box-shadow: var(--shadow-md);
   cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   transition:
     transform var(--transition),
     border-color var(--transition),
@@ -340,15 +343,18 @@
 .phone-card.expanded {
   transform: translateY(-4px);
   border-color: var(--primary);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
 }
 
-.phone-card-top {
-  text-align: center;
-}
-
-.phone-card-icon {
-  font-size: 34px;
-  margin-bottom: 10px;
+/* Hero image area — soft lavender panel mirroring the reference. Sits
+   above the white card body and houses the favorite heart. */
+.phone-card-hero {
+  position: relative;
+  background: linear-gradient(135deg, #c7b6e0 0%, #e7dcf3 100%);
+  padding: 22px 18px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .phone-card-image {
@@ -357,16 +363,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
-  border-radius: 8px;
   overflow: hidden;
-  margin-bottom: 12px;
 }
 
 .phone-card-image img {
-  max-width: 80%;
-  max-height: 80%;
+  max-width: 78%;
+  max-height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 12px 18px rgba(15, 23, 42, 0.18));
 }
 
 .phone-card-image.no-image::after {
@@ -378,11 +382,85 @@
   font-size: 48px;
 }
 
+/* Heart toggle anchored top-right of the hero. Muted by default so it
+   blends with the lavender, fills on toggle, lifts to danger-red. */
+.phone-card-favorite {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--slate-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+.phone-card-favorite:hover {
+  background: var(--white);
+  color: var(--danger, #ef4444);
+  transform: scale(1.06);
+}
+
+.phone-card-favorite[aria-pressed="true"] {
+  background: var(--white);
+  color: var(--danger, #ef4444);
+}
+
+/* White card body underneath the hero. */
+.phone-card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.phone-card-icon {
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+/* Eyebrow row — brand uppercase + OS pill, like EU38 / BLACK-WHITE tags. */
+.phone-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.phone-card-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #eef2f7;
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .phone-card-name {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 4px;
+  line-height: 1.25;
+  /* Single-line clamp so card heights stay even across the grid. */
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .phone-card-tagline {
@@ -391,33 +469,21 @@
   color: var(--font-heading-color, #1a1a1a);
 }
 
+/* Spec list — always visible. Used to be hover-reveal; we ditched that
+   because the reference card shows body content unconditionally. */
 .phone-card-details {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition:
-    max-height 0.35s ease,
-    opacity 0.25s ease,
-    margin-top 0.35s ease;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 0;
-}
-
-.phone-card.expanded .phone-card-details {
-  max-height: 220px;
-  opacity: 1;
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid var(--border);
+  gap: 8px;
+  margin-top: 6px;
+  padding-left: 8px;
 }
 
 .phone-spec {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--slate-dark);
 }
 
@@ -426,13 +492,60 @@
   flex-shrink: 0;
 }
 
-.phone-price {
-  font-weight: 700;
-  color: var(--text);
+/* Footer row — price on the left, primary button on the right. */
+.phone-card-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.phone-price svg {
-  color: var(--success);
+.phone-price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.phone-price-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--slate-light);
+  text-transform: uppercase;
+}
+
+.phone-price-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.phone-card-cta {
+  flex-shrink: 0;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    filter var(--transition);
+}
+
+.phone-card-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(91, 33, 182, 0.28);
+  filter: brightness(1.05);
 }
 
 .search-overlay {
@@ -1578,6 +1691,44 @@
 
 .phone-card-image {
   position: relative;
+}
+
+/* Rec cards still use the old .phone-card-top markup (no hero/body
+   split). Restored these rules so the recommendations section doesn't
+   collapse after the browse-card redesign. */
+.rec-card .phone-card-top {
+  text-align: left;
+  padding: 22px 18px 4px;
+}
+
+.rec-card .phone-card-image {
+  height: 150px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+/* Rec cards put the price on its own line with a tag icon. Render
+   it as a single horizontal row (icon next to price) instead of the
+   stacked column-flex that .phone-price uses in the browse cards.
+   Keep the success-tinted tag icon. */
+.rec-card .rec-price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.rec-card .rec-price svg {
+  color: var(--success);
+}
+
+.rec-card .rec-price > span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
 }
 
 .rec-why-list {
