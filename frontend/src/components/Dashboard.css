@@ -1099,6 +1099,42 @@
   line-height: 1;
 }
 
+/* Count chip on the "Your favourites" header button — same shape as
+   the filter badge but tinted danger-red so hearted phones stand out
+   against the purple primary chrome. */
+.dash-favorites-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.dash-favorites-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.dash-favorites-btn.active {
+  background: var(--danger-light);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 .dash-filter-popover {
   position: absolute;
   top: calc(100% + 10px);

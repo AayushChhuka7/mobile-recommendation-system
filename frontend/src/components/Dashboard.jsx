@@ -37,6 +37,7 @@ import {
   EditIcon,
 } from "./AuthShared";
 import ComparePanel from "./ComparePanel.jsx";
+import FavoritesPanel from "./FavoritesPanel.jsx";
 import { eurFromNpr, formatPriceNpr } from "../utils/formatPrice.js";
 import bannerImg from "../assets/banner.jpg";
 
@@ -198,6 +199,11 @@ function Dashboard() {
   const isCompareOpen = location.pathname === "/dashboard/compare";
   const closeCompare = useCallback(() => navigate("/dashboard"), [navigate]);
 
+  // Same URL-driven pattern for the "Your favourites" panel: a side-docked
+  // overlay that re-hydrates on back-nav from a phone detail click.
+  const isFavoritesOpen = location.pathname === "/dashboard/favorites";
+  const closeFavorites = useCallback(() => navigate("/dashboard"), [navigate]);
+
   const [isProfileOpen, setProfileOpen] = useState(false);
 
   // `/dashboard/compare` and `/dashboard/recommend` are now real child
@@ -280,9 +286,51 @@ function Dashboard() {
   const [osOptions, setOsOptions] = useState([]);
 
   const [phones, setPhones] = useState([]);
-  const [favorites, setFavorites] = useState({});
+  // Favourites map keyed by phone id, value is the full phone object so
+  // the "Your favourites" popup can render the browse-style card without
+  // re-fetching. Hydrated from localStorage on mount (see effect below).
+  const FAVORITES_STORAGE_KEY = "dashboard.favorites.v1";
+  // Lazy initialiser — reads localStorage synchronously on mount so the
+  // popup renders with the persisted list on the first paint instead of
+  // an empty map that briefly flickers to the right state. Wrapped in
+  // try/catch because private-mode browsers and quota-exceeded errors
+  // both throw here.
+  const [favorites, setFavorites] = useState(() => {
+    try {
+      const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        return {};
+      }
+      // Drop any entries that aren't shaped like a phone object — a
+      // stale entry from before the storage format was full phones
+      // (previously it was `{ [id]: true }`) shouldn't crash the UI.
+      return Object.fromEntries(
+        Object.entries(parsed).filter(
+          ([, v]) => v && typeof v === "object" && v.id,
+        ),
+      );
+    } catch (err) {
+      console.warn("Favourites hydrate skipped:", err?.message || err);
+      return {};
+    }
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Persist favourites to localStorage on every change. Empty map
+  // serialises to `{}` — fine, the lazy init above ignores it.
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        FAVORITES_STORAGE_KEY,
+        JSON.stringify(favorites),
+      );
+    } catch (err) {
+      console.warn("Favourites persist skipped:", err?.message || err);
+    }
+  }, [favorites]);
 
   const profileRef = useRef(null);
   const filterRef = useRef(null);
@@ -939,6 +987,20 @@ function Dashboard() {
         <div className="dash-header-actions">
           <button
             type="button"
+            className="btn btn-outline dash-favorites-btn"
+            onClick={() => navigate("/dashboard/favorites")}
+            aria-haspopup="dialog"
+            title="View your favourited phones"
+          >
+            <span>Your favourites</span>
+            {Object.keys(favorites).length > 0 && (
+              <span className="dash-favorites-badge">
+                {Object.keys(favorites).length}
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
             className="btn btn-outline dash-compare-btn"
             onClick={() => navigate("/dashboard/compare")}
             title="Compare two phones side by side"
@@ -1526,10 +1588,14 @@ function Dashboard() {
                                 className="phone-card-favorite"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setFavorites((fav) => ({
-                                    ...fav,
-                                    [r.id]: !fav[r.id],
-                                  }));
+                                  setFavorites((fav) => {
+                                    if (fav[r.id]) {
+                                      const next = { ...fav };
+                                      delete next[r.id];
+                                      return next;
+                                    }
+                                    return { ...fav, [r.id]: r };
+                                  });
                                 }}
                                 aria-label={
                                   favorites[r.id]
@@ -1664,10 +1730,14 @@ function Dashboard() {
                       className="phone-card-favorite"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setFavorites((fav) => ({
-                          ...fav,
-                          [p.id]: !fav[p.id],
-                        }));
+                        setFavorites((fav) => {
+                          if (fav[p.id]) {
+                            const next = { ...fav };
+                            delete next[p.id];
+                            return next;
+                          }
+                          return { ...fav, [p.id]: p };
+                        });
                       }}
                       aria-label={
                         favorites[p.id] ? "Remove from favorites" : "Add to favorites"
@@ -2129,6 +2199,23 @@ function Dashboard() {
           URL so back-nav from a phone click keeps the panel visible.
           The dashboard chrome stays mounted underneath. */}
       <ComparePanel open={isCompareOpen} onClose={closeCompare} />
+
+      {/* Favourites panel — same side-docked overlay pattern as Compare.
+          Render-prop removal goes through the dashboard's setFavorites so
+          both the popup and the underlying phone cards stay in sync. */}
+      <FavoritesPanel
+        open={isFavoritesOpen}
+        onClose={closeFavorites}
+        favorites={favorites}
+        onRemoveFavorite={(id) => {
+          setFavorites((fav) => {
+            if (!fav[id]) return fav;
+            const next = { ...fav };
+            delete next[id];
+            return next;
+          });
+        }}
+      />
     </div>
   );
 }

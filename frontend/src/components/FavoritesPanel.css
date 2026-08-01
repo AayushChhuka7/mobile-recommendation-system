@@ -1,0 +1,144 @@
+/* ---- Favourites Panel ---- */
+/* A side-docked overlay on the right, mirroring the ComparePanel layout
+   but wider so it can fit a 2-column grid of phone cards comfortably.
+   Collapses to the bottom on narrow viewports, same as Compare. */
+
+.fav-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(820px, 92vw);
+  max-width: 100vw;
+  height: 100vh;
+  background: var(--white);
+  border-left: 1px solid var(--border);
+  box-shadow: -8px 0 24px rgba(15, 15, 20, 0.08);
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.fav-panel.open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.fav-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--white);
+  flex-shrink: 0;
+}
+
+.fav-panel-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.fav-panel-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.fav-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 20px 24px;
+}
+
+/* Reuses the dashboard's .phone-grid for column layout but caps the
+   column count so the panel always shows the same shape — independent
+   of the main-grid breakpoint cascade. */
+.fav-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.fav-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  gap: 6px;
+}
+
+.fav-empty-icon {
+  font-size: 38px;
+  color: var(--danger);
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.fav-empty-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.fav-empty-sub {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.4;
+}
+
+/* ---- Dark mode ---- */
+.dashboard-page.dash-dark .fav-panel {
+  background: var(--white);
+  border-left-color: var(--border);
+}
+
+.dashboard-page.dash-dark .fav-panel-header {
+  background: var(--white);
+  border-bottom-color: var(--border);
+}
+
+/* ---- Responsive: dock to bottom on narrow viewports ---- */
+@media (max-width: 900px) {
+  .fav-panel {
+    top: auto;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 80vh;
+    max-height: 80vh;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    transform: translateY(100%);
+    box-shadow: 0 -8px 24px rgba(15, 15, 20, 0.12);
+  }
+
+  .fav-panel.open {
+    transform: translateY(0);
+  }
+
+  .fav-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .fav-panel-header {
+    padding: 14px 16px;
+  }
+
+  .fav-panel-body {
+    padding: 14px 16px 20px;
+  }
+}
