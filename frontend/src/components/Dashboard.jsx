@@ -1560,7 +1560,7 @@ function Dashboard() {
           </div>
         )}
 
-        {globalRecs && !globalRecsLoading && page === 1 && (
+        {globalRecs && !globalRecsLoading && page === 1 && !searchTerm && (
           <section
             className="dash-recs-section"
             aria-label="Top phones for you"
@@ -1764,17 +1764,33 @@ function Dashboard() {
 
         {!isLoading && !error && phones.length === 0 && (
           <p className="dash-status">
-            No phones found. Try adjusting your search or filters.
+            {searchTerm
+              ? `No phones found for "${searchTerm}".`
+              : "No phones found. Try adjusting your search or filters."}
           </p>
         )}
 
         {!isLoading && !error && phones.length > 0 && (
           <section
             className="dash-browse-section"
-            aria-label="Browse other phones"
+            aria-label={searchTerm ? `Search results for ${searchTerm}` : "Browse other phones"}
           >
             <div className="dash-browse-header">
-              <h2>Browse other phones</h2>
+              <h2>
+                {searchTerm
+                  ? `Search results for "${searchTerm}"`
+                  : "Browse other phones"}
+              </h2>
+              {searchTerm && (
+                <button
+                  type="button"
+                  className="btn btn-outline btn-small"
+                  onClick={handleClearSearch}
+                  style={{ marginLeft: 12 }}
+                >
+                  Clear search
+                </button>
+              )}
             </div>
             <div className="phone-grid">
               {(page === 1 ? phones.slice(0, 8) : phones).map((p) => (
