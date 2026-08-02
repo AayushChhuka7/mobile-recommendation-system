@@ -259,12 +259,32 @@ function Dashboard() {
   const [budgetMin, setBudgetMin] = useState("10000");
   const [budgetMax, setBudgetMax] = useState("200000");
 
-  const [recs, setRecs] = useState(null);
-  const [recsLoading, setRecsLoading] = useState(false);
-  const [recsError, setRecsError] = useState("");
-  const [recsPersona, setRecsPersona] = useState(null);
+  // Global behavior-based recommendations — back the "Top phones for you"
+  // section on the dashboard. These are derived from the user's stored
+  // profile + accumulated BehaviorScore rows (search / view / compare /
+  // recommend events) and refreshed via GET /api/recommend/auto. They
+  // are intentionally SEPARATE from the modal-local recommendations
+  // below — see long-form comment above the recommend modal.
+  const [globalRecs, setGlobalRecs] = useState(null);
+  const [globalRecsLoading, setGlobalRecsLoading] = useState(false);
+  const [globalRecsError, setGlobalRecsError] = useState("");
+  const [globalRecsPersona, setGlobalRecsPersona] = useState(null);
   // Recs render at most 30, defaulting to 9. Toggled by "See more".
-  const [recsExpanded, setRecsExpanded] = useState(false);
+  const [globalRecsExpanded, setGlobalRecsExpanded] = useState(false);
+
+  // Modal-local parameter-based recommendations — back the
+  // "Recommend Me a Phone" modal. These are an ISOLATED tool whose
+  // output depends ONLY on the persona + budget + slider weights the
+  // user typed in the modal. They do NOT inherit any behavioural
+  // state from "Top phones for you" and they do NOT overwrite it.
+  // The modal's submission is logged on the backend as a `recommend`
+  // event (see backend/src/services/profileService.mjs ::
+  // safeRecordRecommendationEvent), which contributes ONE behavioural
+  // signal to the next auto-recommend — it never replaces the global
+  // list outright.
+  const [modalRecs, setModalRecs] = useState(null);
+  const [modalRecsLoading, setModalRecsLoading] = useState(false);
+  const [modalRecsError, setModalRecsError] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   // Live-typeahead suggestions for the search bar. Reuses the same
@@ -482,65 +502,74 @@ function Dashboard() {
     };
   }, [searchTerm, filters, sort, page, navigate, logout]);
 
-  // Auto-recommend — fire once on Dashboard mount so the user sees
-  // personalised picks without clicking anything. Reuses the existing
-  // `recs / recsLoading / recsError` state so the spinner + error UI
-  // + clear button all keep working unchanged.
+  // Auto-recommend — fetch the user's behavior-based picks from
+  // GET /api/recommend/auto. The BE reads the stored persona + budget
+  // and runs the full buildFusedWeights → FastAPI → fusionRank pipeline
+  // against the latest BehaviorScore rows (so prior searches, views,
+  // compares, and recommend-me-a-phone calls all contribute as long
+  // as the user has hit "Refresh" after the events).
   //
   // Skip conditions:
   //   - no logged-in user (defensive; the route is auth-guarded but we
   //     also don't want this to run during a /login redirect).
-  //   - recs already populated (preserve the user's picks across route
-  //     re-mounts within the same session; the explicit "Clear" button
-  //     resets state and the next mount will re-fetch).
+  //   - globalRecs already populated (preserve the user's picks across
+  //     route re-mounts within the same session; the explicit "Clear"
+  //     button resets state and the next mount will re-fetch).
   //
-  // The BE reuses the same fusion pipeline as the click path — see
-  // `backend/src/services/recommendService.mjs::getAutoRecommendations`.
-  useEffect(() => {
-    // Accept either field name — login returns `id`, /users/me
-    // returns `userId`. Either is enough to prove we're
-    // authenticated; the BE identifies the caller by cookie anyway.
+  // The fetch is extracted into a useCallback so the user can re-trigger
+  // it via the "Refresh" button after they do something that should
+  // contribute to the global picks (search, compare, view, or use the
+  // modal). Ignored via the `ignoreRef` so a stale response can't
+  // overwrite a fresher one.
+  const autoRecIgnoreRef = useRef(0);
+  const fetchGlobalRecs = useCallback(async () => {
     const uid = user?.userId || user?.id;
     if (!user || !uid) return;
-    if (recs !== null) return;
 
-    let ignore = false;
-    setRecsLoading(true);
-    setRecsError("");
+    const ticket = ++autoRecIgnoreRef.current;
+    setGlobalRecsLoading(true);
+    setGlobalRecsError("");
 
-    (async () => {
-      try {
-        const { results, defaultedAt } = await getAutoRecommendations();
-        if (ignore) return;
-        setRecs(results);
-        // Tag the persona in the recs header. If both defaulted, surface
-        // an explicit "auto" persona label so the user understands the
-        // system cold-started.
-        setRecsPersona(
-          defaultedAt.persona && defaultedAt.budget
-            ? "auto (cold start)"
-            : "auto",
-        );
-      } catch (err) {
-        if (ignore) return;
-        // Soft-fail. An auto-recommend failure should never block the
-        // listing or steer the user away — the explicit "Recommend Me"
-        // button is still wired up.
-        console.warn("[auto-recommend] failed:", err?.message || err);
-        setRecsError(
-          err?.response?.data?.message ||
-            "Couldn't auto-load recommendations. Use Recommend Me to retry.",
-        );
-      } finally {
-        if (!ignore) setRecsLoading(false);
+    try {
+      const { results, defaultedAt } = await getAutoRecommendations();
+      if (ticket !== autoRecIgnoreRef.current) return;
+      setGlobalRecs(results);
+      // Tag the persona in the recs header. If both defaulted, surface
+      // an explicit "auto" persona label so the user understands the
+      // system cold-started.
+      setGlobalRecsPersona(
+        defaultedAt.persona && defaultedAt.budget
+          ? "auto (cold start)"
+          : "auto",
+      );
+    } catch (err) {
+      if (ticket !== autoRecIgnoreRef.current) return;
+      // Soft-fail. An auto-recommend failure should never block the
+      // listing or steer the user away — the explicit "Recommend Me"
+      // button is still wired up.
+      console.warn("[auto-recommend] failed:", err?.message || err);
+      setGlobalRecsError(
+        err?.response?.data?.message ||
+          "Couldn't auto-load recommendations. Use Recommend Me to retry.",
+      );
+    } finally {
+      if (ticket === autoRecIgnoreRef.current) {
+        setGlobalRecsLoading(false);
       }
-    })();
-
-    return () => {
-      ignore = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, [user?.userId, user?.id]);
+
+  // Fire once on Dashboard mount so the user sees personalised picks
+  // without clicking anything. Subsequent re-fetches happen only when
+  // the user explicitly hits "Refresh" — auto-recommend is not
+  // re-triggered on every search / compare / view, so the user keeps
+  // a stable view of "Top phones for you" until they opt in to refresh.
+  useEffect(() => {
+    const uid = user?.userId || user?.id;
+    if (!user || !uid) return;
+    if (globalRecs !== null) return;
+    fetchGlobalRecs();
+  }, [user?.userId, user?.id, globalRecs, fetchGlobalRecs]);
 
   const handleSignOut = useCallback(async () => {
     try {
@@ -768,7 +797,7 @@ function Dashboard() {
   const handleFindPhone = useCallback(async () => {
     const max = Number(budgetMax);
     if (!Number.isFinite(max) || max <= 0) {
-      setRecsError("Please enter a maximum budget before finding your phone.");
+      setModalRecsError("Please enter a maximum budget before finding your phone.");
       return;
     }
     const min = Number(budgetMin);
@@ -781,11 +810,23 @@ function Dashboard() {
       ...(minEur !== null ? { min: minEur } : {}),
     };
 
-    setRecsLoading(true);
-    setRecsError("");
-    setRecs(null);
-    setRecsPersona(selectedCategory);
-    closeRecommend();
+    // The modal is an ISOLATED, parameter-only tool. Its results
+    // depend strictly on the persona + budget + slider weights the user
+    // typed here — no behavioural history, no auto-recs carry-over.
+    // We deliberately do NOT call closeRecommend() so the modal stays
+    // open and the user can see the results inline; and we do NOT
+    // touch globalRecs at all so "Top phones for you" is unaffected.
+    //
+    // The submission is logged on the backend as a `recommend` event
+    // (see backend/src/services/profileService.mjs ::
+    // safeRecordRecommendationEvent). That bumps the per-tag
+    // BehaviorScore rows by a small amount, so the next auto-recommend
+    // fold them in as one behavioural signal — but never as a wholesale
+    // replacement for the global picks.
+    setModalRecsLoading(true);
+    setModalRecsError("");
+    setModalRecs(null);
+
     const persona = weightsTouched ? "Custom" : selectedCategory;
     const preferences = weightsTouched ? { ...weights } : undefined;
 
@@ -799,11 +840,14 @@ function Dashboard() {
         // returns phones in descending `matchScore` order.
         topN: 200,
       });
-      setRecs(results);
+      setModalRecs(results);
 
       // Auto-save the persona + weights + budget that produced this
       // recommendation. Fire-and-forget — a save failure must never
-      // disturb the rec result the user just received.
+      // disturb the rec result the user just received. This persists
+      // explicit preferences for next time; the per-event behaviour
+      // score (which feeds the next auto-recommend) is written by the
+      // BE controller, not here.
       saveMyPreferences({
         persona,
         budgetMin: minEur !== null ? minEur : "",
@@ -813,12 +857,12 @@ function Dashboard() {
         console.warn("Preferences save failed:", err?.message || err);
       });
     } catch (err) {
-      setRecsError(
-        err.response?.data?.message ||
+      setModalRecsError(
+        err?.response?.data?.message ||
           "Couldn't get recommendations right now. Please try again.",
       );
     } finally {
-      setRecsLoading(false);
+      setModalRecsLoading(false);
     }
   }, [
     budgetMin,
@@ -826,28 +870,41 @@ function Dashboard() {
     selectedCategory,
     weights,
     weightsTouched,
-    closeRecommend,
   ]);
-  const handleClearRecommendations = useCallback(() => {
-    setRecs(null);
-    setRecsError("");
-    setRecsPersona(null);
-    setRecsExpanded(false);
+
+  // Clear / refresh the global behavior-based recommendations only.
+  // The modal's results are independent — they are not touched here.
+  const handleClearGlobalRecs = useCallback(() => {
+    setGlobalRecs(null);
+    setGlobalRecsError("");
+    setGlobalRecsPersona(null);
+    setGlobalRecsExpanded(false);
   }, []);
+
+  // Re-fetch the global behavior-based recommendations. The user
+  // presses this after they have searched, viewed, compared, or used
+  // the "Recommend Me a Phone" modal and want their behavioural
+  // signals folded into the global picks. The fetch path is the same
+  // one used on mount (see fetchGlobalRecs).
+  const handleRefreshGlobalRecs = useCallback(() => {
+    fetchGlobalRecs();
+  }, [fetchGlobalRecs]);
   const handleSearch = (e) => {
     e.preventDefault();
     const term = searchInput.trim();
     setSearchTerm(term);
     setShowSearchSuggestions(false);
-    // Drop the auto/explicit recs once the user starts searching so the
-    // "All Phones Ranked For You" block can't bury the search results.
-    // The user can hit "Clear recommendations" to bring them back, or
-    // simply clear the search box.
-    if (term && (recs || recsLoading)) {
-      setRecs(null);
-      setRecsError("");
-      setRecsLoading(false);
-      setRecsPersona(null);
+    // Drop the global behavior-based recs once the user starts
+    // searching so the "All Phones Ranked For You" block can't bury
+    // the search results. We touch ONLY the global slice — the modal
+    // results are independent and stay put (the modal isn't visible
+    // during search anyway). The user can hit "Refresh" later to
+    // re-fetch the global picks.
+    if (term && (globalRecs || globalRecsLoading)) {
+      setGlobalRecs(null);
+      setGlobalRecsError("");
+      setGlobalRecsLoading(false);
+      setGlobalRecsPersona(null);
     }
     setShowFilters(false);
     setPage(1);
@@ -944,14 +1001,16 @@ function Dashboard() {
     setFilters(filtersToApply);
     setShowFilters(false);
     setPage(1);
-    // Drop the auto/explicit recs once the user narrows the catalog so
-    // the "All Phones Ranked For You" block can't bury the filtered
-    // results. Mirrors the search-term behaviour above.
-    if (willHaveActiveFilters && (recs || recsLoading)) {
-      setRecs(null);
-      setRecsError("");
-      setRecsLoading(false);
-      setRecsPersona(null);
+    // Drop the global behavior-based recs once the user narrows the
+    // catalog so the "All Phones Ranked For You" block can't bury the
+    // filtered results. Mirrors the search-term behaviour above and
+    // touches ONLY the global slice — the modal's results are
+    // independent and stay put.
+    if (willHaveActiveFilters && (globalRecs || globalRecsLoading)) {
+      setGlobalRecs(null);
+      setGlobalRecsError("");
+      setGlobalRecsLoading(false);
+      setGlobalRecsPersona(null);
     }
     // Auto-save disabled — applying filters should not persist them
     // across a page refresh.
@@ -1476,18 +1535,24 @@ function Dashboard() {
           </div>
         )}
 
-        {/* ---- ML recommendations (from POST /api/recommend/recommend) ----
-            Sits above the standard /phones grid. The standard grid still
-            renders below, so the user always has a fallback view. */}
-        {recsLoading && <p className="dash-status">Finding phones for you…</p>}
+        {/* ---- Global behavior-based recommendations ----
+            Backed by GET /api/recommend/auto. The render target is the
+            "Top phones for you" section. The standard /phones grid still
+            renders below, so the user always has a fallback view, and
+            the modal's parameter-only results are independent (see the
+            param-only results are independent — see the inline phone
+            card list inside the modal). */}
+        {globalRecsLoading && (
+          <p className="dash-status">Finding phones for you…</p>
+        )}
 
-        {recsError && (
+        {globalRecsError && (
           <div className="dash-status dash-status-error">
-            <p>{recsError}</p>
+            <p>{globalRecsError}</p>
             <button
               type="button"
               className="btn btn-small"
-              onClick={handleClearRecommendations}
+              onClick={handleClearGlobalRecs}
               style={{ marginTop: 8 }}
             >
               Dismiss
@@ -1495,7 +1560,7 @@ function Dashboard() {
           </div>
         )}
 
-        {recs && !recsLoading && page === 1 && (
+        {globalRecs && !globalRecsLoading && page === 1 && (
           <section
             className="dash-recs-section"
             aria-label="Top phones for you"
@@ -1503,21 +1568,32 @@ function Dashboard() {
             <div className="dash-recs-header">
               <div className="dash-recs-title">
                 <h2>Top phones for you</h2>
-                {recsPersona && (
+                {globalRecsPersona && (
                   <span className="dash-recs-eyebrow">
-                    Tuned for your {recsPersona.toLowerCase()} persona
+                    Tuned for your {globalRecsPersona.toLowerCase()} persona
                   </span>
                 )}
               </div>
-              <button
-                type="button"
-                className="btn btn-outline btn-small"
-                onClick={handleClearRecommendations}
-              >
-                Clear recommendations
-              </button>
+              <div className="dash-recs-header-actions">
+                <button
+                  type="button"
+                  className="btn btn-outline btn-small"
+                  onClick={handleRefreshGlobalRecs}
+                  disabled={globalRecsLoading}
+                  title="Re-fetch picks from your latest search, view, compare, and recommend activity"
+                >
+                  Refresh
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline btn-small"
+                  onClick={handleClearGlobalRecs}
+                >
+                  Clear recommendations
+                </button>
+              </div>
             </div>
-            {recs.length === 0 ? (
+            {globalRecs.length === 0 ? (
               <p className="dash-status">
                 No matches for the chosen persona and budget. Try widening your
                 budget or picking a different category.
@@ -1525,7 +1601,7 @@ function Dashboard() {
             ) : (
               <>
                 <div className="phone-grid">
-                  {recs.slice(0, recsExpanded ? 32 : 8).map((r) => {
+                  {globalRecs.slice(0, globalRecsExpanded ? 32 : 8).map((r) => {
                     const isClickable = r.id && r.inDatabase !== false;
                     const handleRecClick = () => {
                       if (isClickable) navigate(`/phones/${r.id}`);
@@ -1669,15 +1745,15 @@ function Dashboard() {
                     );
                   })}
                 </div>
-                {recs.length > 10 && (
+                {globalRecs.length > 10 && (
                   <div className="dash-recs-see-more">
                     <button
                       type="button"
                       className="btn btn-outline"
-                      onClick={() => setRecsExpanded((v) => !v)}
-                      aria-expanded={recsExpanded}
+                      onClick={() => setGlobalRecsExpanded((v) => !v)}
+                      aria-expanded={globalRecsExpanded}
                     >
-                      {recsExpanded ? "Show fewer" : "See more"}
+                      {globalRecsExpanded ? "Show fewer" : "See more"}
                     </button>
                   </div>
                 )}
@@ -1850,7 +1926,9 @@ function Dashboard() {
           onClick={closeRecommend}
         >
           <div
-            className="search-modal dash-recommend-modal"
+            className={`search-modal dash-recommend-modal ${
+              modalRecs && !modalRecsLoading ? "dash-recommend-modal-results" : ""
+            }`}
             role="dialog"
             aria-label="Phone recommendation"
             onClick={(e) => e.stopPropagation()}
@@ -1858,129 +1936,333 @@ function Dashboard() {
             <div className="search-modal-header">
               <div>
                 <div className="auth-title" style={{ marginBottom: 4 }}>
-                  Find your phone
+                  {modalRecs && !modalRecsLoading
+                    ? "Your matches"
+                    : "Find your phone"}
                 </div>
                 <div className="auth-subtitle" style={{ marginBottom: 0 }}>
-                  Tell us what matters most and we'll find your match.
+                  {modalRecs && !modalRecsLoading
+                    ? `${Math.min(modalRecs.length, 20)} parameter-based picks — close to refine again.`
+                    : "Tell us what matters most and we'll find your match."}
                 </div>
               </div>
-              <button
-                type="button"
-                className="icon-btn"
-                aria-label="Close recommendation panel"
-                onClick={closeRecommend}
-              >
-                <CloseIcon />
-              </button>
-            </div>
-
-            <div className="usage-options" style={{ marginTop: 20 }}>
-              {CATEGORY_OPTIONS.map((opt) => {
-                const Icon = opt.Icon;
-                return (
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                {modalRecs && !modalRecsLoading && (
                   <button
                     type="button"
-                    key={opt.key}
-                    className={`usage-chip ${selectedCategory === opt.key ? "selected" : ""}`}
-                    onClick={() => handleCategorySelect(opt.key)}
+                    className="btn btn-outline btn-small"
+                    onClick={() => setModalRecs(null)}
                   >
-                    <Icon />
-                    {opt.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="questionnaire-section" style={{ marginTop: 20 }}>
-              <button
-                type="button"
-                className="dash-weights-toggle"
-                onClick={() => setWeightsOpen((o) => !o)}
-                aria-expanded={weightsOpen}
-                aria-controls="dash-weights-body"
-              >
-                <span className="dash-weights-title">
-                  <SlidersIcon />
-                  Customize weights
-                </span>
-                <ChevronIcon open={weightsOpen} />
-              </button>
-              <div className="questionnaire-hint">
-                {weightsTouched
-                  ? "Custom weights active — these will be sent to the recommender."
-                  : "Fine-tune how much each factor matters to you"}
-              </div>
-
-              <div
-                id="dash-weights-body"
-                className={`dash-weights-body ${weightsOpen ? "open" : ""}`}
-              >
-                {Object.entries(weights).map(([key, value]) => (
-                  <div className="weight-row" key={key}>
-                    <div className="weight-row-label">
-                      <span>{key.charAt(0).toUpperCase() + key.slice(1)}</span>
-                      <span className="weight-value">{value}/5</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="1"
-                      max="5"
-                      value={value}
-                      onChange={(e) => handleWeightChange(key, e.target.value)}
-                      className="weight-slider"
-                    />
-                  </div>
-                ))}
-                {weightsTouched && (
-                  <button
-                    type="button"
-                    className="btn btn-outline btn-small weight-reset-btn"
-                    onClick={() => handleCategorySelect(selectedCategory)}
-                  >
-                    Reset to{" "}
-                    {CATEGORY_OPTIONS.find((o) => o.key === selectedCategory)
-                      ?.label || "persona"}{" "}
-                    defaults
+                    Refine
                   </button>
                 )}
+                <button
+                  type="button"
+                  className="icon-btn"
+                  aria-label="Close recommendation panel"
+                  onClick={closeRecommend}
+                >
+                  <CloseIcon />
+                </button>
               </div>
             </div>
 
-            <div className="questionnaire-section" style={{ marginTop: 16 }}>
-              <div className="questionnaire-hint" style={{ marginBottom: 8 }}>
-                Budget (NPR) — required
-              </div>
-              <div className="filter-range">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="Min"
-                  className="filter-input"
-                  value={budgetMin}
-                  onChange={(e) => setBudgetMin(e.target.value)}
-                  aria-label="Minimum budget"
-                />
-                <span className="filter-range-sep">–</span>
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="Max"
-                  className="filter-input"
-                  value={budgetMax}
-                  onChange={(e) => setBudgetMax(e.target.value)}
-                  aria-label="Maximum budget"
-                />
-              </div>
-            </div>
+            {/* Scrollable body. When results are present we hide the
+                form so the popup is dominated by phone cards; when no
+                results yet, the form fills the popup. */}
+            <div className="dash-modal-body">
+              {(!modalRecs || modalRecsLoading) && (
+                <>
+                  <div className="usage-options" style={{ marginTop: 20 }}>
+                    {CATEGORY_OPTIONS.map((opt) => {
+                      const Icon = opt.Icon;
+                      return (
+                        <button
+                          type="button"
+                          key={opt.key}
+                          className={`usage-chip ${selectedCategory === opt.key ? "selected" : ""}`}
+                          onClick={() => handleCategorySelect(opt.key)}
+                        >
+                          <Icon />
+                          {opt.label}
+                        </button>
+                      );
+                    })}
+                  </div>
 
-            <button
-              type="button"
-              className="btn btn-primary w-full"
-              onClick={handleFindPhone}
-              disabled={recsLoading}
-            >
-              {recsLoading ? "Finding…" : "Find my phone →"}
-            </button>
+                  <div className="questionnaire-section" style={{ marginTop: 20 }}>
+                    <button
+                      type="button"
+                      className="dash-weights-toggle"
+                      onClick={() => setWeightsOpen((o) => !o)}
+                      aria-expanded={weightsOpen}
+                      aria-controls="dash-weights-body"
+                    >
+                      <span className="dash-weights-title">
+                        <SlidersIcon />
+                        Customize weights
+                      </span>
+                      <ChevronIcon open={weightsOpen} />
+                    </button>
+                    <div className="questionnaire-hint">
+                      {weightsTouched
+                        ? "Custom weights active — these will be sent to the recommender."
+                        : "Fine-tune how much each factor matters to you"}
+                    </div>
+
+                    <div
+                      id="dash-weights-body"
+                      className={`dash-weights-body ${weightsOpen ? "open" : ""}`}
+                    >
+                      {Object.entries(weights).map(([key, value]) => (
+                        <div className="weight-row" key={key}>
+                          <div className="weight-row-label">
+                            <span>
+                              {key.charAt(0).toUpperCase() + key.slice(1)}
+                            </span>
+                            <span className="weight-value">{value}/5</span>
+                          </div>
+                          <input
+                            type="range"
+                            min="1"
+                            max="5"
+                            value={value}
+                            onChange={(e) =>
+                              handleWeightChange(key, e.target.value)
+                            }
+                            className="weight-slider"
+                          />
+                        </div>
+                      ))}
+                      {weightsTouched && (
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-small weight-reset-btn"
+                          onClick={() =>
+                            handleCategorySelect(selectedCategory)
+                          }
+                        >
+                          Reset to{" "}
+                          {CATEGORY_OPTIONS.find(
+                            (o) => o.key === selectedCategory,
+                          )?.label || "persona"}{" "}
+                          defaults
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="questionnaire-section" style={{ marginTop: 16 }}>
+                    <div
+                      className="questionnaire-hint"
+                      style={{ marginBottom: 8 }}
+                    >
+                      Budget (NPR) — required
+                    </div>
+                    <div className="filter-range">
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="Min"
+                        className="filter-input"
+                        value={budgetMin}
+                        onChange={(e) => setBudgetMin(e.target.value)}
+                        aria-label="Minimum budget"
+                      />
+                      <span className="filter-range-sep">–</span>
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="Max"
+                        className="filter-input"
+                        value={budgetMax}
+                        onChange={(e) => setBudgetMax(e.target.value)}
+                        aria-label="Maximum budget"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="btn btn-primary w-full"
+                    onClick={handleFindPhone}
+                    disabled={modalRecsLoading}
+                  >
+                    {modalRecsLoading ? "Finding…" : "Find my phone →"}
+                  </button>
+                </>
+              )}
+
+            {/* ---- Modal-local results (POST /api/recommend/recommend) ----
+                Rendered inline inside the modal so the user can see their
+                parameter-based picks without the modal closing. The slice
+                is COMPLETELY independent of `globalRecs` above — these
+                results are derived strictly from the persona + budget +
+                slider weights the user typed, never from behavior. The
+                submission is logged on the BE as a `recommend` event so
+                it contributes one signal toward the next auto-recommend
+                (see backend/src/services/profileService.mjs ::
+                safeRecordRecommendationEvent). It never replaces the
+                global picks outright. */}
+            {modalRecsLoading && (
+              <p
+                className="dash-status"
+                style={{ marginTop: 16, textAlign: "center" }}
+              >
+                Finding your matches…
+              </p>
+            )}
+
+            {modalRecsError && (
+              <div
+                className="dash-status dash-status-error"
+                style={{ marginTop: 16 }}
+                role="alert"
+              >
+                <p>{modalRecsError}</p>
+              </div>
+            )}
+
+            {modalRecs && !modalRecsLoading && (
+              <div
+                className="dash-modal-recs"
+                aria-label="Your parameter-based picks"
+              >
+                <div className="dash-modal-recs-header">
+                  <h3>Your matches</h3>
+                  <span className="dash-modal-recs-hint">
+                    Based only on the parameters above — not on your activity
+                    history.
+                  </span>
+                </div>
+                {modalRecs.length === 0 ? (
+                  <p className="dash-status">
+                    No matches for the chosen persona and budget. Try widening
+                    your budget or picking a different category.
+                  </p>
+                ) : (
+                  <div className="phone-grid dash-modal-recs-grid">
+                    {modalRecs.slice(0, 20).map((r) => {
+                      const isClickable = r.id && r.inDatabase !== false;
+                      const handleModalRecClick = () => {
+                        if (isClickable) navigate(`/phones/${r.id}`);
+                      };
+                      const handleModalRecKeyDown = (e) => {
+                        if (!isClickable) return;
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleModalRecClick();
+                        }
+                      };
+                      return (
+                        <div
+                          key={r.id || `${r.brand?.name}-${r.modelName}`}
+                          className="phone-card rec-card"
+                          role={isClickable ? "button" : undefined}
+                          tabIndex={isClickable ? 0 : -1}
+                          aria-label={
+                            isClickable
+                              ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
+                              : undefined
+                          }
+                          onClick={handleModalRecClick}
+                          onKeyDown={handleModalRecKeyDown}
+                          onMouseEnter={() => r.id && setHoveredCard(r.id)}
+                          onMouseLeave={() => setHoveredCard(null)}
+                          style={{
+                            cursor: isClickable ? "pointer" : "default",
+                          }}
+                        >
+                          <div className="phone-card-top">
+                            <div className="phone-card-image">
+                              {r.imageUrl ? (
+                                <img
+                                  src={r.imageUrl}
+                                  alt={r.modelName}
+                                  onError={(e) => {
+                                    e.target.style.display = "none";
+                                    e.target.parentElement.classList.add(
+                                      "no-image",
+                                    );
+                                  }}
+                                />
+                              ) : (
+                                <span className="phone-card-emoji">📱</span>
+                              )}
+                              {typeof r.matchScore === "number" && (
+                                <span
+                                  className="rec-match-badge"
+                                  title="Match score from the recommender"
+                                >
+                                  {Math.min(
+                                    100,
+                                    Math.round(r.matchScore * 10) / 10,
+                                  ).toFixed(1)}
+                                  % match
+                                </span>
+                              )}
+                            </div>
+                            <div className="phone-card-name">{r.modelName}</div>
+                          </div>
+
+                          <div className="phone-card-details">
+                            {r.keySpecs?.os && (
+                              <div className="phone-spec">
+                                <CpuIcon />
+                                <span>{r.keySpecs.os}</span>
+                              </div>
+                            )}
+                            {r.keySpecs?.camera && (
+                              <div className="phone-spec">
+                                <CameraIcon />
+                                <span>{r.keySpecs.camera}</span>
+                              </div>
+                            )}
+                            {r.keySpecs?.battery && (
+                              <div className="phone-spec">
+                                <BatteryIcon />
+                                <span>{r.keySpecs.battery} mAh</span>
+                              </div>
+                            )}
+                            {r.cheapestVariant?.price && (
+                              <div className="phone-spec rec-price">
+                                <TagIcon />
+                                <span>
+                                  {formatPriceNpr(r.cheapestVariant.price) ??
+                                    "—"}
+                                  {r.cheapestVariant.ram &&
+                                  r.cheapestVariant.storage
+                                    ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
+                                    : ""}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {Array.isArray(r.why) && r.why.length > 0 && (
+                            <ul
+                              className="rec-why-list"
+                              aria-label="Why this match"
+                            >
+                              {r.why.slice(0, 3).map((reason, idx) => (
+                                <li key={idx}>{reason}</li>
+                              ))}
+                            </ul>
+                          )}
+
+                          {r.inDatabase === false && (
+                            <div className="rec-not-in-db">
+                              Not in our catalog
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+            </div>
           </div>
         </div>
       )}

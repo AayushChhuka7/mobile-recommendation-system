@@ -629,8 +629,21 @@
 }
 
 .dash-recommend-modal {
+  /* Default size: the form modal stays at the original narrow width
+     (inherited from `.search-modal`'s max-width: 460px). When results
+     are present the popup grows to ~80% of the viewport, with a
+     scrollable body so up to 20 phone cards fit naturally. */
   animation: dash-recommend-pop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform-origin: center;
+}
+
+.dash-recommend-modal.dash-recommend-modal-results {
+  width: 100%;
+  max-width: min(80vw, 1100px);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .dash-recommend-modal.closing {
@@ -1694,6 +1707,13 @@
   color: var(--text);
 }
 
+.dash-recs-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .dash-recs-eyebrow {
   font-size: 0.8rem;
   color: var(--text-muted);
@@ -1704,6 +1724,53 @@
   display: flex;
   justify-content: center;
   margin-top: 18px;
+}
+
+/* ---- Modal-local recommendations ("Recommend Me a Phone") ----
+   Rendered inline inside the recommend modal. Independent from the
+   "Top phones for you" section above — strictly parameter-driven. */
+
+/* Scrollable wrapper that holds the whole modal body. Once results
+   arrive, the user can scroll through all 20 cards inside the modal
+   without the modal itself growing past ~80vh. */
+.dash-modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.dash-modal-recs {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.dash-modal-recs-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dash-modal-recs-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.dash-modal-recs-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.dash-modal-recs-grid {
+  /* Modal's recommendation grid. The phone grid utility handles the
+     columns responsively; we let the .dash-modal-body wrapper own the
+     vertical scroll so the modal itself stays at ~80vh. */
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }
 
 .dash-browse-section {
