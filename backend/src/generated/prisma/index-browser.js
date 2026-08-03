@@ -406,7 +406,8 @@ exports.Prisma.BehaviorScoreScalarFieldEnum = {
   userId: 'userId',
   tag: 'tag',
   score: 'score',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  reasons: 'reasons'
 };
 
 exports.Prisma.SortOrder = {

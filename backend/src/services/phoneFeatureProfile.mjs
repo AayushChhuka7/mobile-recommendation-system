@@ -170,6 +170,30 @@ export function phoneFeatureTag(dim) {
   return `feature:${dim}`;
 }
 
+export function phoneMetaFromRow(phone) {
+  if (!phone || typeof phone !== "object") return null;
+  const specs =
+    phone.specs && typeof phone.specs === "object" ? phone.specs : {};
+  const cameraText =
+    typeof specs.mainCamera === "string" ? specs.mainCamera : "";
+  const cameraMatch = cameraText.match(/(\d+(?:\.\d+)?)\s*MP/i);
+  const mainCameraMp = cameraMatch ? Number(cameraMatch[1]) : null;
+  return {
+    modelName: phone.modelName || null,
+    brandName: phone.brand?.name || null,
+    chipset: specs.chipset || null,
+    antutuScore:
+      typeof phone.antutuScore === "number" ? phone.antutuScore : null,
+    batteryMah: typeof phone.batteryMah === "number" ? phone.batteryMah : null,
+    refreshRate:
+      typeof specs.refreshRate === "number" ? specs.refreshRate : null,
+    displaySize:
+      typeof specs.displaySize === "number" ? specs.displaySize : null,
+    mainCameraMp: Number.isFinite(mainCameraMp) ? mainCameraMp : null,
+  };
+}
+
+
 // Convenience: build the `Map<tag, delta>` mapping for a phone's
 // feature profile. Unlike `buildPhoneFeatureProfile`, this multiplies
 // by the supplied feature weight and emits tags not dim names.

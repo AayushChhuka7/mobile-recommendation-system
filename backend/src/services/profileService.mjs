@@ -26,6 +26,8 @@
 import { prisma } from "../config/prisma.mjs";
 import { recordEvent as recordBehaviorEvent } from "./behaviorAnalyzer.mjs";
 import { safeAggregateAfterRecommendation } from "./profileAggregator.mjs";
+import { phoneMetaFromRow } from "./phoneFeatureProfile.mjs";
+
 
 // ---------------------------------------------------------------------------
 // Domain mappings — FE persona/weight payload → DB enums/counters
@@ -920,6 +922,12 @@ export const safeRecordCompareEvent = async (
   ) {
     return;
   }
+  // Declared outside the try block so the Step B emit code below can
+  // reference them even if the legacy write path throws. Both are
+  // re-assigned inside the try; the Step B block is skipped on any
+  // throw by the inner safeRecordBehaviorEvent try/catch.
+  let phoneA = null;
+  let phoneB = null;
   try {
     const phones = await prisma.phones.findMany({
       where: {
@@ -932,10 +940,10 @@ export const safeRecordCompareEvent = async (
       select: { phoneId: true, modelName: true },
     });
 
-    const phoneA = phones.find(
+    phoneA = phones.find(
       (p) => p.modelName.toLowerCase() === modelNameA.toLowerCase(),
     );
-    const phoneB = phones.find(
+    phoneB = phones.find(
       (p) => p.modelName.toLowerCase() === modelNameB.toLowerCase(),
     );
 
@@ -964,25 +972,59 @@ export const safeRecordCompareEvent = async (
     }
   }
 
-  // Step B — one "compare" event per call. The +3 gaming delta is the
-  // strongest "I'm shopping seriously" signal in the taxonomy. We pick
-  // phoneA as the canonical phoneId (if resolved) for the Event row;
-  // the analyzer falls back to skip-if-unknown regardless.
-  const resolvedFirst = (() => {
-    const lower = (s) => (typeof s === "string" ? s.toLowerCase() : null);
-    const A = lower(modelNameA);
-    const B = lower(modelNameB);
-    // We re-fetch inside the safeRecord wrapper; a duplicate phones.find
-    // is fine here because the helper ignores unknown phoneIds.
-    return null;
-  })();
-  void resolvedFirst; // (suppress unused; analyzer caches the lookup anyway)
-  await safeRecordBehaviorEvent(userId, "compare", {
-    payload: {
-      modelNameA: modelNameA.slice(0, 120),
-      modelNameB: modelNameB.slice(0, 120),
-    },
-  });
+  // Step B — emit compare behaviour events so the behaviour analyzer
+  // can derive per-phone feature / brand / tier deltas. Previously
+  // this call passed no `phoneId`, which caused
+  // `extractTagsForEvent` to short-circuit on null meta and write no
+  // deltas — making repeated compare events invisible to the
+  // personalization pipeline.
+  //
+  // Phase 3 (compare redesign):
+  //   - We emit one event PER side (phoneA, phoneB) so each compared
+  //     phone's tags accumulate.
+  //   - Each payload now carries `pairKey` (sorted "phoneA::phoneB")
+  //     and `opponentPhoneId`, so the analyzer can dedup at the pair
+  //     level and ramp on UNIQUE PAIR COUNT rather than raw event
+  //     count. Without pairKey the analyzer falls back to per-phone
+  //     dedup + global ramp, which is what made 3 compares register
+  //     as only 0.48 ramp strength.
+  //   - The phone-level dedup gate inside behaviorAnalyzer is also
+  //     intentionally bypassed for compare (compare was removed
+  //     from `EVENT_DEDUPABLE_EVENTS`); pair dedup replaces it.
+  //   - The diminishing-returns scalar still bounds repeat bumps
+  //     (pair-based: first sight of a pair = 1.0, second = 0.45).
+  //
+  // safeRecordBehaviorEvent swallows every error internally, so this
+  // block can never throw back into the catchAsync route — the
+  // compare response always reaches the FE.
+  if (phoneA && phoneA.phoneId) {
+    await safeRecordBehaviorEvent(userId, "compare", {
+      phoneId: phoneA.phoneId,
+      payload: {
+        side: "A",
+        pairKey: phoneB?.phoneId
+          ? [phoneA.phoneId, phoneB.phoneId].sort().join("::")
+          : null,
+        opponentPhoneId: phoneB?.phoneId || null,
+        modelNameA: modelNameA.slice(0, 120),
+        modelNameB: modelNameB.slice(0, 120),
+      },
+    });
+  }
+  if (phoneB && phoneB.phoneId) {
+    await safeRecordBehaviorEvent(userId, "compare", {
+      phoneId: phoneB.phoneId,
+      payload: {
+        side: "B",
+        pairKey: phoneA?.phoneId
+          ? [phoneA.phoneId, phoneB.phoneId].sort().join("::")
+          : null,
+        opponentPhoneId: phoneA?.phoneId || null,
+        modelNameA: modelNameA.slice(0, 120),
+        modelNameB: modelNameB.slice(0, 120),
+      },
+    });
+  }
 };
 
 // ---------------------------------------------------------------------------
@@ -1019,6 +1061,66 @@ export const loadBehaviorScoreMap = async (userId) => {
     return null;
   }
 };
+
+export const getRecentEvents = async (userId, limit = 25) => {
+  if (!userId) return [];
+  try {
+    const rows = await prisma.event.findMany({
+      where: { userId, phoneId: { not: null } },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      select: { eventType: true, phoneId: true },
+    });
+    return Array.isArray(rows) ? rows : [];
+  } catch (err) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn("[profile] getRecentEvents failed:", err?.message || err);
+    } else {
+      console.error("[profile] getRecentEvents failed:", err);
+    }
+    return [];
+  }
+};
+
+export const loadPhoneMetaMap = async (phoneIds) => {
+  const ids = Array.from(
+    new Set((phoneIds || []).filter((id) => typeof id === "string" && id)),
+  );
+  const out = new Map();
+  if (ids.length === 0) return out;
+  try {
+    const rows = await prisma.phones.findMany({
+      where: { phoneId: { in: ids } },
+      select: {
+        phoneId: true,
+        modelName: true,
+        antutuScore: true,
+        batteryMah: true,
+        brand: { select: { name: true } },
+        specs: {
+          select: {
+            chipset: true,
+            mainCamera: true,
+            refreshRate: true,
+            displaySize: true,
+          },
+        },
+      },
+    });
+    for (const row of rows) {
+      out.set(row.phoneId, phoneMetaFromRow(row));
+    }
+    return out;
+  } catch (err) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn("[profile] loadPhoneMetaMap failed:", err?.message || err);
+    } else {
+      console.error("[profile] loadPhoneMetaMap failed:", err);
+    }
+    return out;
+  }
+};
+
 
 // Fire-and-forget write into RecommendationLog. One row per served
 // candidate — used for future segmentation clustering (the same

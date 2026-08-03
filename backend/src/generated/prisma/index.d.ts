@@ -28299,6 +28299,7 @@ export namespace Prisma {
     tag: number
     score: number
     updatedAt: number
+    reasons: number
     _all: number
   }
 
@@ -28330,6 +28331,7 @@ export namespace Prisma {
     tag?: true
     score?: true
     updatedAt?: true
+    reasons?: true
     _all?: true
   }
 
@@ -28424,6 +28426,7 @@ export namespace Prisma {
     tag: string
     score: number
     updatedAt: Date
+    reasons: JsonValue | null
     _count: BehaviorScoreCountAggregateOutputType | null
     _avg: BehaviorScoreAvgAggregateOutputType | null
     _sum: BehaviorScoreSumAggregateOutputType | null
@@ -28450,6 +28453,7 @@ export namespace Prisma {
     tag?: boolean
     score?: boolean
     updatedAt?: boolean
+    reasons?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["behaviorScore"]>
 
@@ -28458,6 +28462,7 @@ export namespace Prisma {
     tag?: boolean
     score?: boolean
     updatedAt?: boolean
+    reasons?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["behaviorScore"]>
 
@@ -28466,6 +28471,7 @@ export namespace Prisma {
     tag?: boolean
     score?: boolean
     updatedAt?: boolean
+    reasons?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["behaviorScore"]>
 
@@ -28474,9 +28480,10 @@ export namespace Prisma {
     tag?: boolean
     score?: boolean
     updatedAt?: boolean
+    reasons?: boolean
   }
 
-  export type BehaviorScoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "tag" | "score" | "updatedAt", ExtArgs["result"]["behaviorScore"]>
+  export type BehaviorScoreOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "tag" | "score" | "updatedAt" | "reasons", ExtArgs["result"]["behaviorScore"]>
   export type BehaviorScoreInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
   }
@@ -28497,6 +28504,7 @@ export namespace Prisma {
       tag: string
       score: number
       updatedAt: Date
+      reasons: Prisma.JsonValue | null
     }, ExtArgs["result"]["behaviorScore"]>
     composites: {}
   }
@@ -28925,6 +28933,7 @@ export namespace Prisma {
     readonly tag: FieldRef<"BehaviorScore", 'String'>
     readonly score: FieldRef<"BehaviorScore", 'Float'>
     readonly updatedAt: FieldRef<"BehaviorScore", 'DateTime'>
+    readonly reasons: FieldRef<"BehaviorScore", 'Json'>
   }
     
 
@@ -29707,7 +29716,8 @@ export namespace Prisma {
     userId: 'userId',
     tag: 'tag',
     score: 'score',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    reasons: 'reasons'
   };
 
   export type BehaviorScoreScalarFieldEnum = (typeof BehaviorScoreScalarFieldEnum)[keyof typeof BehaviorScoreScalarFieldEnum]
@@ -31800,6 +31810,7 @@ export namespace Prisma {
     tag?: StringFilter<"BehaviorScore"> | string
     score?: FloatFilter<"BehaviorScore"> | number
     updatedAt?: DateTimeFilter<"BehaviorScore"> | Date | string
+    reasons?: JsonNullableFilter<"BehaviorScore">
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
   }
 
@@ -31808,6 +31819,7 @@ export namespace Prisma {
     tag?: SortOrder
     score?: SortOrder
     updatedAt?: SortOrder
+    reasons?: SortOrderInput | SortOrder
     user?: UsersOrderByWithRelationInput
   }
 
@@ -31820,6 +31832,7 @@ export namespace Prisma {
     tag?: StringFilter<"BehaviorScore"> | string
     score?: FloatFilter<"BehaviorScore"> | number
     updatedAt?: DateTimeFilter<"BehaviorScore"> | Date | string
+    reasons?: JsonNullableFilter<"BehaviorScore">
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
   }, "userId_tag">
 
@@ -31828,6 +31841,7 @@ export namespace Prisma {
     tag?: SortOrder
     score?: SortOrder
     updatedAt?: SortOrder
+    reasons?: SortOrderInput | SortOrder
     _count?: BehaviorScoreCountOrderByAggregateInput
     _avg?: BehaviorScoreAvgOrderByAggregateInput
     _max?: BehaviorScoreMaxOrderByAggregateInput
@@ -31843,6 +31857,7 @@ export namespace Prisma {
     tag?: StringWithAggregatesFilter<"BehaviorScore"> | string
     score?: FloatWithAggregatesFilter<"BehaviorScore"> | number
     updatedAt?: DateTimeWithAggregatesFilter<"BehaviorScore"> | Date | string
+    reasons?: JsonNullableWithAggregatesFilter<"BehaviorScore">
   }
 
   export type RolesCreateInput = {
@@ -33905,6 +33920,7 @@ export namespace Prisma {
     tag: string
     score?: number
     updatedAt?: Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
     user: UsersCreateNestedOneWithoutBehaviorScoresInput
   }
 
@@ -33913,12 +33929,14 @@ export namespace Prisma {
     tag: string
     score?: number
     updatedAt?: Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type BehaviorScoreUpdateInput = {
     tag?: StringFieldUpdateOperationsInput | string
     score?: FloatFieldUpdateOperationsInput | number
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
     user?: UsersUpdateOneRequiredWithoutBehaviorScoresNestedInput
   }
 
@@ -33927,6 +33945,7 @@ export namespace Prisma {
     tag?: StringFieldUpdateOperationsInput | string
     score?: FloatFieldUpdateOperationsInput | number
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type BehaviorScoreCreateManyInput = {
@@ -33934,12 +33953,14 @@ export namespace Prisma {
     tag: string
     score?: number
     updatedAt?: Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type BehaviorScoreUpdateManyMutationInput = {
     tag?: StringFieldUpdateOperationsInput | string
     score?: FloatFieldUpdateOperationsInput | number
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type BehaviorScoreUncheckedUpdateManyInput = {
@@ -33947,6 +33968,7 @@ export namespace Prisma {
     tag?: StringFieldUpdateOperationsInput | string
     score?: FloatFieldUpdateOperationsInput | number
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type UuidFilter<$PrismaModel = never> = {
@@ -35722,6 +35744,7 @@ export namespace Prisma {
     tag?: SortOrder
     score?: SortOrder
     updatedAt?: SortOrder
+    reasons?: SortOrder
   }
 
   export type BehaviorScoreAvgOrderByAggregateInput = {
@@ -38279,12 +38302,14 @@ export namespace Prisma {
     tag: string
     score?: number
     updatedAt?: Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type BehaviorScoreUncheckedCreateWithoutUserInput = {
     tag: string
     score?: number
     updatedAt?: Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type BehaviorScoreCreateOrConnectWithoutUserInput = {
@@ -38765,6 +38790,7 @@ export namespace Prisma {
     tag?: StringFilter<"BehaviorScore"> | string
     score?: FloatFilter<"BehaviorScore"> | number
     updatedAt?: DateTimeFilter<"BehaviorScore"> | Date | string
+    reasons?: JsonNullableFilter<"BehaviorScore">
   }
 
   export type RecommendationLogUpsertWithWhereUniqueWithoutUserInput = {
@@ -42649,6 +42675,7 @@ export namespace Prisma {
     tag: string
     score?: number
     updatedAt?: Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type RecommendationLogCreateManyUserInput = {
@@ -42918,18 +42945,21 @@ export namespace Prisma {
     tag?: StringFieldUpdateOperationsInput | string
     score?: FloatFieldUpdateOperationsInput | number
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type BehaviorScoreUncheckedUpdateWithoutUserInput = {
     tag?: StringFieldUpdateOperationsInput | string
     score?: FloatFieldUpdateOperationsInput | number
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type BehaviorScoreUncheckedUpdateManyWithoutUserInput = {
     tag?: StringFieldUpdateOperationsInput | string
     score?: FloatFieldUpdateOperationsInput | number
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type RecommendationLogUpdateWithoutUserInput = {

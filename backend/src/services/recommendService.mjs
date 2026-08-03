@@ -2,14 +2,18 @@ import { ML_BASE_URL } from "../config/ml.mjs";
 import { badRequest, internal } from "../utils/ApiError.mjs";
 import { prisma } from "../config/prisma.mjs";
 import { buildFusedWeights } from "./profileFusion.mjs";
-import { fusionRank } from "./fusionRanker.mjs";
+import { fusionRank, personalizedRank } from "./fusionRanker.mjs";
 import { fetchContentSimilarity } from "./similarityClient.mjs";
 import { phoneToTags } from "./searchHistoryScore.mjs";
+import { buildShortTermInterest } from "./shortTermInterest.mjs";
 import {
   getProfileBundle,
   loadBehaviorScoreMap,
+  getRecentEvents,
+  loadPhoneMetaMap,
   safeRecordRecommendationLog,
 } from "./profileService.mjs";
+
 
 const TIMEOUT_MS = 8000;
 
@@ -165,15 +169,24 @@ export const checkHealth = async () => {
   return mlFetch("/health");
 };
 
-export const getRecommendations = async (body, userId) => {
+export const getRecommendations = async (body, userId, opts = {}) => {
   const { persona, budget, preferences, topN } = body || {};
+  // `source` is forwarded by the controller to flag the call origin.
+  // The auto-recommendation flow passes "auto" so the
+  // `safeRecordRecommendationLog` impression write at the bottom of
+  // this function is suppressed (Dashboard auto-recommendations are
+  // read-only and must not pollute the personalization pipeline).
+  // Any other value (or undefined) keeps the legacy behaviour of
+  // logging impressions — the explicit "Recommend Me a Phone" path
+  // intentionally continues to log them.
+  const source = opts && typeof opts.source === "string" ? opts.source : null;
 
   // Two-stage pipeline trigger: the "Recommend Me a Phone" click flow
   // passes topN=5 to switch off the 5-signal fusionRank and onto the
   // rule-based → content-based → top-5 pipeline. Any other topN keeps
   // the legacy full-fusion behaviour (auto-recommend, future callers).
   if (topN === STAGE2_FINAL_TOP_N) {
-    return getRecommendationsTwoStage(body, userId);
+    return getRecommendationsTwoStage(body, userId, { source });
   }
 
   if (!persona) throw badRequest("persona is required");
@@ -296,9 +309,42 @@ export const getRecommendations = async (body, userId) => {
     ? await loadBehaviorScoreMap(userId)
     : null;
 
-  // Step D — final 5-signal fusion. Ranker is pure; returns a new list
-  // with `finalScore` and `components` attached.
-  const ranked = fusionRank(enriched, behaviorScoresMap);
+  // Step E — short-term interest vector. Built from the user's most
+  // recent events (exponential recency decay) so the ranking visibly
+  // evolves after EVERY interaction, not just after the long-term
+  // BehaviorScore saturates. The candidate meta map lets the ranker
+  // score each candidate against that recency vector. Both reads are
+  // best-effort: on any failure they resolve empty and the ranker
+  // falls back to plain 5-signal fusion (cold-start behaviour).
+  let interestVec = new Map();
+  let candidateMetaMap = new Map();
+  if (userId) {
+    const recentEvents = await getRecentEvents(userId);
+    if (Array.isArray(recentEvents) && recentEvents.length > 0) {
+      // Meta for the *interacted* phones (to build the interest vector)
+      // and for the *candidate* phones (to score them). One combined
+      // lookup keeps it to a single query.
+      const interactedIds = recentEvents.map((e) => e.phoneId).filter(Boolean);
+      const candidateIds = enriched.map((c) => c.id).filter(Boolean);
+      candidateMetaMap = await loadPhoneMetaMap([
+        ...interactedIds,
+        ...candidateIds,
+      ]);
+      interestVec = buildShortTermInterest(recentEvents, candidateMetaMap);
+    }
+  }
+
+  // Step E — personalized fusion. Runs the pure 5-signal base fusion,
+  // then folds in the bounded short-term boost. Falls back to the exact
+  // fusionRank ordering when `interestVec` is empty (new users), so no
+  // regression for cold-start.
+  const ranked = personalizedRank(
+    enriched,
+    behaviorScoresMap,
+    interestVec,
+    candidateMetaMap,
+  );
+
 
   // Re-shape for the FE. The existing `matchScore` (0..100) is
   // overwritten with the fused score so the "% match" UI keeps working
@@ -330,7 +376,20 @@ export const getRecommendations = async (body, userId) => {
   //
   // Log from the post-dedup list so the analytics table never sees
   // duplicate impressions for the same phone on one call.
-  if (userId && Array.isArray(finalRankedUnique) && finalRankedUnique.length > 0) {
+  //
+  // Behaviour tracking policy (2026-08): when this call originated
+  // from the Dashboard auto-recommendation flow (`source === "auto"`,
+  // forwarded by the controller) the impression log is suppressed
+  // alongside the controller-level `safeRecordRecommendationEvent` /
+  // `safeRecordRecommendationCall` writes. The user did not ask for
+  // these phones explicitly, so they must not feed the
+  // personalization pipeline.
+  if (
+    userId &&
+    source !== "auto" &&
+    Array.isArray(finalRankedUnique) &&
+    finalRankedUnique.length > 0
+  ) {
     const topLogged = finalRankedUnique.slice(0, REC_LOG_WRITE_CAP);
     void safeRecordRecommendationLog(
       userId,
@@ -370,8 +429,16 @@ export const getRecommendations = async (body, userId) => {
 // Backward compatibility: triggered only when the FE passes topN === 5.
 // Any other topN continues to use `getRecommendations` above.
 // ---------------------------------------------------------------------------
-export const getRecommendationsTwoStage = async (body, userId) => {
+export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
   const { persona, budget, preferences } = body || {};
+  // `source` is forwarded by the caller to flag the call origin. The
+  // auto-recommendation flow passes "auto" so the
+  // `safeRecordRecommendationLog` impression write at the bottom of
+  // this function is suppressed. The two-stage path is currently only
+  // triggered by the explicit "Recommend Me a Phone" click flow
+  // (topN === 5), but we still honour the flag for symmetry with the
+  // legacy path and to be defensive against future callers.
+  const source = opts && typeof opts.source === "string" ? opts.source : null;
 
   if (!persona) throw badRequest("persona is required");
   if (!budget || typeof budget.max !== "number")
@@ -519,7 +586,14 @@ export const getRecommendationsTwoStage = async (body, userId) => {
   // Top-5 impression log (fire-and-forget, same as the legacy path).
   // We never log more than STAGE2_FINAL_TOP_N rows here because that's
   // the contract.
-  if (userId && shaped.length > 0) {
+  //
+  // Behaviour tracking policy (2026-08): when this call originated
+  // from the auto-recommendation flow (`source === "auto"`) the
+  // impression log is suppressed. Currently the two-stage path is
+  // only triggered by the explicit "Recommend Me a Phone" click
+  // (topN === 5), but the flag is honoured for symmetry with the
+  // legacy path and to be defensive against future callers.
+  if (userId && source !== "auto" && shaped.length > 0) {
     void safeRecordRecommendationLog(
       userId,
       shaped.map((c, i) => ({
@@ -550,7 +624,7 @@ export const getRecommendationsTwoStage = async (body, userId) => {
 //   - Either fallback fires a `defaultedAt` flag so the FE can show
 //     "showing cold-start picks" UX if it wants to.
 // ---------------------------------------------------------------------------
-export const getAutoRecommendations = async (userId) => {
+export const getAutoRecommendations = async (userId, opts = {}) => {
   if (!userId) return { results: [], defaultedAt: { persona: false, budget: false } };
 
   // Single read; buildFusedWeights inside getRecommendations will also
@@ -579,11 +653,19 @@ export const getAutoRecommendations = async (userId) => {
 
   // Skip the explicit-prefs layer in the click flow — auto-recommend
   // is offline-of-the-moment, so fused weights do all the work.
+  //
+  // Behaviour tracking policy (2026-08): we forward `source: "auto"`
+  // to the underlying `getRecommendations` so its internal impression
+  // log (`safeRecordRecommendationLog`) is also suppressed. The
+  // controller-level recommendation/RecommendationCall writes were
+  // already removed for this path; this completes the cut so the
+  // auto flow is fully silent on the analytics side.
   let results = [];
   try {
     results = await getRecommendations(
       { persona, budget, topN: FULL_LIST_TOP_N },
       userId,
+      { source: "auto" },
     );
   } catch (err) {
     // Don't bubble the error up to the route — the FE will simply show

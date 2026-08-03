@@ -78,6 +78,16 @@ export const postCompareML = catchAsync(async (req, res) => {
 // (Step A explicit preferences) and lets Profile Fusion (Step C) +
 // Ranking (Step D) do the rest. Returns the same per-candidate shape
 // as `POST /recommend`, so the FE renders identically.
+//
+// Behaviour tracking policy (2026-08):
+//   Dashboard auto-recommendations are READ-ONLY. The user did NOT
+//   ask for them explicitly, so they must not pollute the
+//   personalization pipeline. No `RecommendationHistory` rows, no
+//   `RecommendationCall` snapshot, no `RecommendationLog` impressions,
+//   no `Event` row, no `BehaviorScore` updates. The phones still
+//   render identically in the UI — only the analytics side is silent.
+//   The explicit "Recommend Me a Phone" click flow (handled by
+//   `postRecommend` below) is the sole driver of behaviour updates.
 export const getAutoRecommend = catchAsync(async (req, res) => {
   const userId = req.user && req.user.userId ? req.user.userId : null;
   if (!userId) {
@@ -89,25 +99,19 @@ export const getAutoRecommend = catchAsync(async (req, res) => {
     });
   }
 
-  const { results, defaultedAt } = await recommendService.getAutoRecommendations(userId);
+  // `source: "auto"` is threaded into the service layer so the
+  // internal `safeRecordRecommendationLog` impression write (which
+  // lives inside `recommendService.getRecommendations`) is also
+  // suppressed. Otherwise the auto flow would still leak impression
+  // rows into `recommendation_logs` even though the controller-level
+  // recommendation/RecommendationCall writes are gone.
+  const { results, defaultedAt } = await recommendService.getAutoRecommendations(userId, {
+    source: "auto",
+  });
 
-  // Implicit signal: log the auto-recommend as a recommendation event.
-  // Same shape as the click flow so the persona + budget + count are
-  // captured in RecommendationHistory. Fire-and-forget.
-  if (results.length > 0) {
-    safeRecordRecommendationEvent(userId, {
-      persona: "auto",
-      budget: { auto: true, defaultedAt },
-      results,
-    });
-    // Also write the per-call snapshot so the admin panel can show
-    // what the dashboard auto-recommender served most recently.
-    safeRecordRecommendationCall(userId, {
-      persona: "auto",
-      budget: { auto: true, defaultedAt },
-      results,
-    });
-  }
+  // Intentionally NO `safeRecordRecommendationEvent` and NO
+  // `safeRecordRecommendationCall` here. Auto-recommendations are
+  // passive and must not feed the personalization pipeline.
 
   return sendSuccess(res, { results, defaultedAt }, {
     message: `Auto-recommend complete (${results.length} picks)`,

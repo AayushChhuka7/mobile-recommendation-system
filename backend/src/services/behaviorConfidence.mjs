@@ -61,3 +61,63 @@ export function isConfidenceSaturated(eventCount) {
   // moves the dial by < 5% of the ceiling-floor span."
   return eventCount / cfg.rampEvents >= Math.log(20);
 }
+
+// ---------------------------------------------------------------------------
+// Compare-specific confidence ramp (Phase 3 — pair-count, not event-count).
+// ---------------------------------------------------------------------------
+//
+// Compare events fire as TWO event rows per compare (one per side), so the
+// global ramp `computeConfidence(eventCount)` would ramp a 3-compare user
+// as if they had 6 events. That starves compare-driven learning early in
+// the user's history. Instead, we count UNIQUE PAIRS the user has compared
+// and feed that into a separate ramp curve that lives under
+// `BEHAVIOR_CONFIG.compare.confidence`.
+//
+// Properties of the compare ramp:
+//   - floor = 0.40  — even the very first unique compare contributes 40%
+//                     of its full per-event weight. Compare is the
+//                     strongest explicit shopping signal we capture, so
+//                     we deliberately under-deliver the cold-start
+//                     damping the global ramp applies to a single click.
+//   - rampUniquePairs = 3  — three distinct pairs saturate the curve.
+//                            At 1 pair → ~0.69, at 2 → ~0.83, at 3 → ~0.91.
+//   - ceiling = 1.0  — same asymptote as the global ramp.
+//
+// Implementation note: the curve has the SAME shape as `computeConfidence`
+// (a floor + range·(1 − exp(−x/k)) ramp) so behaviour feels consistent
+// across event types — only the k, floor, and input unit differ.
+
+const COMPARE_CFG = BEHAVIOR_CONFIG.compare.confidence;
+
+/**
+ * Compute the compare-confidence multiplier in [floor, ceiling] from a
+ * count of UNIQUE compare pairs the user has fired.
+ *
+ * @param {number} uniquePairCount  — number of distinct (phoneA, phoneB)
+ *                                    pairs the user has compared. Negative
+ *                                    or non-numeric input is coerced to 0.
+ * @returns {number}                  multiplier ∈ [floor, ceiling].
+ */
+export function computeCompareConfidence(uniquePairCount) {
+  const n =
+    Number.isFinite(uniquePairCount) && uniquePairCount > 0
+      ? uniquePairCount
+      : 0;
+  const factor = 1 - Math.exp(-n / COMPARE_CFG.rampUniquePairs);
+  return COMPARE_CFG.floor +
+    (COMPARE_CFG.ceiling - COMPARE_CFG.floor) * factor;
+}
+
+/**
+ * Saturated-check sibling for compare events. Same shape as
+ * `isConfidenceSaturated` so callers can use them interchangeably.
+ *
+ * @param {number} uniquePairCount
+ * @returns {boolean}
+ */
+export function isCompareConfidenceSaturated(uniquePairCount) {
+  if (!Number.isFinite(uniquePairCount) || uniquePairCount <= 0) return false;
+  return (
+    uniquePairCount / COMPARE_CFG.rampUniquePairs >= Math.log(20)
+  );
+}

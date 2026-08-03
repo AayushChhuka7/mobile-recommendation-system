@@ -96,16 +96,113 @@ export const BEHAVIOR_CONFIG = Object.freeze({
     perTagLimit: 5,
   }),
 
+  // Compare-specific learning knobs. Compare events are the strongest
+  // explicit shopping intent we capture, but the original behaviour
+  // pipeline suppressed them in two ways: (a) per-phone dedup dropped
+  // rapid back-to-back compares of the same focal phone, and (b) the
+  // global confidence ramp keyed on raw event count, so a single
+  // compare (which fires 2 events — side A + side B) counted as 2
+  // toward saturation. This block switches compares to a *pair-keyed*
+  // model so 3 unique pairings produce strong affinity without any
+  // spam abuse.
+  compare: Object.freeze({
+    // Pair dedup window. (userId, "compare", pairKey) within this
+    // window is a hard no-op. Pair key is
+    // `sorted(phoneA_id, phoneB_id).join("::")`, so comparing
+    // {iPhone 17e, iPhone 17} twice in 5 seconds writes only once.
+    pairDedupWindowMs: 30 * 1000,
+
+    // Diminishing returns per (user, compare, pairKey). Same curve
+    // shape as the global `repeats` table but starting at the 2nd
+    // sighting of the *pair* (not the phone). For curveK = 0.55:
+    //   n=1 → 1.000   (first sight, full weight)
+    //   n=2 → 0.645
+    //   n=3 → 0.476
+    //   n=4 → 0.385
+    //   n=5 → 0.323
+    // A spam-loop hitting the same pair keeps shrinking toward 0;
+    // genuine exploration of N distinct pairs gets full weight on
+    // every first sight.
+    diminishing: Object.freeze({
+      initial: 1.0,
+      curveK: 0.55,
+    }),
+
+    // Confidence ramp keyed on UNIQUE PAIRS, not raw event count.
+    // Compare events should ramp faster than clicks/searches because
+    // they are explicit shopping intent. Curve:
+    //   floor + (ceiling - floor) * (1 - exp(-uniquePairs / rampPairs))
+    // Defaults:
+    //   1 unique pair → 0.40 + 0.60·(1−e⁻¹ᐟ³)  ≈ 0.69
+    //   2 unique pairs → 0.83
+    //   3 unique pairs → 0.91
+    //   5 unique pairs → 0.97
+    // A user who fires 3 unique compares is essentially at full
+    // confidence, whereas the old per-event ramp would only be at
+    // ~0.48 with 6 raw events.
+    confidence: Object.freeze({
+      floor: 0.40,
+      ceiling: 1.0,
+      rampUniquePairs: 3,
+    }),
+
+    // Brand gate. The `brand:<X>` lift only fires after the user has
+    // touched at least this many distinct phones of brand X. With
+    // `distinctPhonesRequired = 3`, comparing {iPhone 17e vs Samsung}
+    // alone does NOT push brand:Apple (only 1 distinct Apple phone
+    // seen), but comparing {iPhone 17e vs iPhone 17} three times
+    // against three different Apple opponents opens the gate.
+    // Pre-gate compares still emit a small "seed" delta so the row
+    // exists in BehaviorScore for admin-UI introspection.
+    brandGate: Object.freeze({
+      distinctPhonesRequired: 3,
+      seedDelta: 0.05,
+    }),
+
+    // In-memory counter TTL. comparePairCounters entries older than
+    // this are dropped on read to bound memory growth on a long-
+    // running BE process. Set generously above the dedup window so
+    // the diminishing curve still applies within a session.
+    counterTtlMs: 10 * 60 * 1000,
+  }),
+
+  // Affinity weight table. Used by `customerPreferenceFor` inside
+  // `fusionRanker.mjs` to fold per-tag BehaviourScore rows into the
+  // single `customer_preference` sub-score (which now owns affinity,
+  // model, brand, tier, and feature lift — `search_history` is the
+  // pure keyword path).
+  //
+  // Numbers are tuned so a single compare contributes the largest
+  // jump from `affinity:<phoneId>`, with `model:<hash>` and
+  // `brand:<X>` lifting related phones nearby, and `feature:<dim>`
+  // carrying the existing per-feature signal.
+  affinity: Object.freeze({
+    phoneAffinity: 0.85,     // affinity:<phoneId>  — direct
+    modelAffinity: 0.55,     // model:<hash>        — same model cluster
+    brandGatedAffinity: 0.60,// brand:<X>           — gated; only fires
+                             //                     after ≥3 distinct phones
+                             //                     of brand X
+    tierAffinity: 0.40,      // tier:<T>
+    featureAffinity: 0.65,   // average of feature:<dim> rows on the phone
+  }),
+
   // Event-dedup: hard-deduplicate repeats inside this window so a
   // double-click doesn't write two audit rows. Events outside the
   // window are kept, just with diminishing weight (see `repeats`
   // above + `diminishingMultiplier`).
+  //
+  // Compare events have their OWN pair-keyed dedup path (see
+  // `compare.pairDedupWindowMs`); keeping `compare` in this list
+  // would also run per-phone dedup on top of pair dedup, which is
+  // redundant. Compare is therefore NOT in `dedupableTypes` —
+  // `recordEvent` branches on eventType and routes compare to its
+  // pair dedup helper, while click/view/save fall through to the
+  // per-phone dedup helper below.
   events: Object.freeze({
     dedupWindowMs: 30 * 1000,
     dedupableTypes: Object.freeze([
       "click",
       "view",
-      "compare",
       "save",
     ]),
   }),
