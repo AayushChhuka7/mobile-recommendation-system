@@ -135,8 +135,21 @@ const personaToCategory = (persona) => {
 function buildPhonesQuery(filters, sort, extra = {}) {
   const params = { limit: 6, sort, ...extra };
   if (filters.brand) params.brand = filters.brand;
-  if (filters.minPrice) params.minPrice = filters.minPrice;
-  if (filters.maxPrice) params.maxPrice = filters.maxPrice;
+  // The dashboard's phone cards display prices in NPR (see
+  // `formatPriceNpr`) but the backend stores `phoneVariants.price`
+  // in EUR. The filter inputs accept the value the user sees on
+  // the card (NPR), so convert NPR → EUR right before sending —
+  // reusing `eurFromNpr` (the inverse of `formatPriceNpr`). Without
+  // this, a user typing the on-screen NPR max sees results unchanged
+  // because the backend runs `price <= 135720` against a EUR column.
+  if (filters.minPrice) {
+    const eur = eurFromNpr(filters.minPrice);
+    if (eur !== null) params.minPrice = eur;
+  }
+  if (filters.maxPrice) {
+    const eur = eurFromNpr(filters.maxPrice);
+    if (eur !== null) params.maxPrice = eur;
+  }
   if (filters.minRam) params.minRam = filters.minRam;
   if (filters.minBattery) params.minBattery = filters.minBattery;
   if (filters.os) params.os = filters.os;
@@ -238,6 +251,13 @@ function Dashboard() {
   const [recsLoading, setRecsLoading] = useState(false);
   const [recsError, setRecsError] = useState("");
   const [recsPersona, setRecsPersona] = useState(null);
+  // Tracks which flow produced the currently-displayed recommendations:
+  //   "auto"   → from the on-mount `getAutoRecommendations` call
+  //   "manual" → from the "Recommend Me a Phone" click handler
+  //   null     → no recs displayed (or the user just hit "Clear")
+  // Used purely to gate three small UI fragments (Match Score, Clear
+  // button, Boosted badge) — never to alter the recommendation pipeline.
+  const [recommendationSource, setRecommendationSource] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   // Live-typeahead suggestions for the search bar. Reuses the same
@@ -424,7 +444,13 @@ function Dashboard() {
     // authenticated; the BE identifies the caller by cookie anyway.
     const uid = user?.userId || user?.id;
     if (!user || !uid) return;
-    if (recs !== null) return;
+    // Skip when any recommendations are already on screen. The flag
+    // covers both auto (re-mount during the same session) and manual
+    // (user clicked "Recommend Me" and we don't want to clobber their
+    // picks). The Clear Recommendation button flips this back to
+    // null, which makes this effect re-eligible to run and re-fetch
+    // the auto-recommendation list — same flow as on initial mount.
+    if (recommendationSource !== null) return;
 
     let ignore = false;
     setRecsLoading(true);
@@ -435,6 +461,9 @@ function Dashboard() {
         const { results, defaultedAt } = await getAutoRecommendations();
         if (ignore) return;
         setRecs(results);
+        // Tag the persona + mark the source as "auto" so the three
+        // UI gates (Match Score / Clear button / Boosted badge) hide.
+        setRecommendationSource("auto");
         // Tag the persona in the recs header. If both defaulted, surface
         // an explicit "auto" persona label so the user understands the
         // system cold-started.
@@ -462,7 +491,7 @@ function Dashboard() {
       ignore = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.userId, user?.id]);
+  }, [user?.userId, user?.id, recommendationSource]);
 
   const handleSignOut = useCallback(async () => {
     try {
@@ -712,6 +741,12 @@ function Dashboard() {
     setRecsLoading(true);
     setRecsError("");
     setRecs(null);
+    // Mark this as a manual request so the UI gates (Match Score,
+    // Clear button, Boosted badge) flip to their manual behaviour
+    // for the duration of the call. The auto-recommend effect
+    // bails out on `recommendationSource !== null`, so this also
+    // prevents the on-mount fetch from racing us.
+    setRecommendationSource("manual");
     setRecsPersona(selectedCategory);
     closeRecommend();
     const persona = weightsTouched ? "Custom" : selectedCategory;
@@ -722,10 +757,12 @@ function Dashboard() {
         persona,
         budget,
         preferences,
-        // Issue 1 — render the full ranked catalog (up to 200) instead
-        // of the historical 6-picks slice. Same fusion pipeline; the BE
-        // returns phones in descending `matchScore` order.
-        topN: 200,
+        // Two-stage pipeline trigger. The BE detects topN === 5 and
+        // switches off the 5-signal fusionRank and onto the
+        // rule-based → content-based → top-5 pipeline. The
+        // auto-recommend path on dashboard mount still hits
+        // GET /recommend/auto and is unaffected.
+        topN: 5,
       });
       setRecs(results);
 
@@ -760,6 +797,11 @@ function Dashboard() {
     setRecs(null);
     setRecsError("");
     setRecsPersona(null);
+    // Flip the source back to null so the auto-recommend effect
+    // re-eligible to run and re-fetch the automatic list. This
+    // restores the dashboard to the same auto-recommendation state
+    // it had on initial mount — same cards, same hidden UI elements.
+    setRecommendationSource(null);
   }, []);
   const handleSearch = (e) => {
     e.preventDefault();
@@ -1224,7 +1266,7 @@ function Dashboard() {
 
                     {/* Price range */}
                     <div className="filter-group">
-                      <label className="filter-label">Price (EUR)</label>
+                      <label className="filter-label">Price (NPR)</label>
                       <div className="filter-range">
                         <input
                           type="number"
@@ -1432,20 +1474,33 @@ function Dashboard() {
             className="dash-recs-section"
             aria-label="Recommended for you"
           >
-            <div className="dash-recs-header">
-              <h2>
-                {recsPersona
-                  ? `All phones ranked for you · ${recsPersona}`
-                  : "All phones ranked for you"}
-              </h2>
-              <button
-                type="button"
-                className="btn btn-outline btn-small"
-                onClick={handleClearRecommendations}
-              >
-                Clear recommendations
-              </button>
-            </div>
+            {/*
+              Auto-rec cards are rendered "just like the non-recommended
+              phone list" — i.e. no "All phones ranked for you" header
+              banner above them, no Clear button, no `rec-card`
+              wrapper class. Only the manual path keeps the original
+              ranked-for-you header chrome.
+            */}
+            {recommendationSource === "manual" && (
+              <div className="dash-recs-header">
+                <h2>
+                  {recsPersona
+                    ? `All phones ranked for you · ${recsPersona}`
+                    : "All phones ranked for you"}
+                </h2>
+                {/* Clear button is only shown for manual recommendations.
+                    Automatic recommendations get their Clear button hidden
+                    — the dashboard already re-fetches auto-recommendations
+                    on mount and the user didn't request them explicitly. */}
+                <button
+                  type="button"
+                  className="btn btn-outline btn-small"
+                  onClick={handleClearRecommendations}
+                >
+                  Clear recommendations
+                </button>
+              </div>
+            )}
             {recs.length === 0 ? (
               <p className="dash-status">
                 No matches for the chosen persona and budget. Try widening your
@@ -1465,10 +1520,33 @@ function Dashboard() {
                       handleRecClick();
                     }
                   };
+                  // For automatic recommendations the wrapper uses
+                  // exactly the same `phone-card` class as the
+                  // regular non-recommended phone list — no extra
+                  // `rec-card` modifier — so the card renders
+                  // identically (same border, padding, hover, layout).
+                  // Manual recommendations keep the historical
+                  // `rec-card` class so any future rec-specific
+                  // styling can be reintroduced without re-touching
+                  // this site.
+                  //
+                  // The `expanded` modifier is appended whenever the
+                  // shared `hoveredCard` state points at this card —
+                  // same hover-to-reveal pattern used by the regular
+                  // phone grid below. This drives the existing
+                  // `.phone-card.expanded .phone-card-details` CSS
+                  // rule so the spec panel (OS, camera, battery,
+                  // price + RAM/Storage) is revealed on hover,
+                  // matching what the non-recommended cards do.
+                  const isExpanded = r.id && hoveredCard === r.id;
+                  const wrapperClass =
+                    recommendationSource === "auto"
+                      ? `phone-card${isExpanded ? " expanded" : ""}`
+                      : `phone-card rec-card${isExpanded ? " expanded" : ""}`;
                   return (
                     <div
                       key={r.id || `${r.brand?.name}-${r.modelName}`}
-                      className="phone-card rec-card"
+                      className={wrapperClass}
                       role={isClickable ? "button" : undefined}
                       tabIndex={isClickable ? 0 : -1}
                       aria-label={
@@ -1498,26 +1576,34 @@ function Dashboard() {
                           ) : (
                             <span className="phone-card-emoji">📱</span>
                           )}
-                          {typeof r.matchScore === "number" && (
-                            <span
-                              className="rec-match-badge"
-                              title="Match score from the recommender"
-                            >
-                              {Math.min(
-                                100,
-                                Math.round(r.matchScore * 10) / 10,
-                              ).toFixed(1)}
-                              % match
-                            </span>
-                          )}
-                          {r.matchComponents?.search_history > 0.6 && (
-                            <span
-                              className="rec-boosted-badge"
-                              title="Ranked higher because of your recent searches & views"
-                            >
-                              Boosted by your activity
-                            </span>
-                          )}
+                          {/* Match Score badge: hidden for automatic
+                              recommendations, shown for manual. */}
+                          {typeof r.matchScore === "number" &&
+                            recommendationSource === "manual" && (
+                              <span
+                                className="rec-match-badge"
+                                title="Match score from the recommender"
+                              >
+                                {Math.min(
+                                  100,
+                                  Math.round(r.matchScore * 10) / 10,
+                                ).toFixed(1)}
+                                % match
+                              </span>
+                            )}
+                          {/* Boosted badge: hidden per current UI spec for
+                              both auto AND manual recommendations. The
+                              JSX is preserved so the path can be
+                              re-enabled by flipping the source check. */}
+                          {r.matchComponents?.search_history > 0.6 &&
+                            recommendationSource === "manual" && (
+                              <span
+                                className="rec-boosted-badge"
+                                title="Ranked higher because of your recent searches & views"
+                              >
+                                Boosted by your activity
+                              </span>
+                            )}
                         </div>
                         <div className="phone-card-name">{r.modelName}</div>
                         <div className="phone-card-tagline">
@@ -1558,16 +1644,29 @@ function Dashboard() {
                         )}
                       </div>
 
-                      {Array.isArray(r.why) && r.why.length > 0 && (
-                        <ul
-                          className="rec-why-list"
-                          aria-label="Why this match"
-                        >
-                          {r.why.slice(0, 3).map((reason, idx) => (
-                            <li key={idx}>{reason}</li>
-                          ))}
-                        </ul>
-                      )}
+                      {/*
+                        Explainable-AI (SHAP) "why" list — only shown for
+                        manual recommendations. For automatic
+                        recommendations we deliberately suppress this
+                        block so the auto-rec card renders the phone's
+                        normal specs (OS, camera, battery, price,
+                        RAM/Storage) only — identical to a regular
+                        non-recommended phone card. Same
+                        `recommendationSource` flag already gates the
+                        Match Score / Boosted / Clear UI elsewhere.
+                      */}
+                      {Array.isArray(r.why) &&
+                        r.why.length > 0 &&
+                        recommendationSource === "manual" && (
+                          <ul
+                            className="rec-why-list"
+                            aria-label="Why this match"
+                          >
+                            {r.why.slice(0, 3).map((reason, idx) => (
+                              <li key={idx}>{reason}</li>
+                            ))}
+                          </ul>
+                        )}
 
                       {r.inDatabase === false && (
                         <div className="rec-not-in-db">Not in our catalog</div>
