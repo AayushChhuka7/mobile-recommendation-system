@@ -296,6 +296,15 @@ exports.Prisma.RecommendationLogScalarFieldEnum = {
   clicked: 'clicked'
 };
 
+exports.Prisma.RecommendationCallScalarFieldEnum = {
+  callId: 'callId',
+  userId: 'userId',
+  persona: 'persona',
+  budget: 'budget',
+  topResults: 'topResults',
+  servedAt: 'servedAt'
+};
+
 exports.Prisma.CustomerProfileScalarFieldEnum = {
   profileId: 'profileId',
   userId: 'userId',
@@ -318,7 +327,8 @@ exports.Prisma.CustomerProfileScalarFieldEnum = {
   totalRecommendations: 'totalRecommendations',
   totalComparisons: 'totalComparisons',
   totalWishlist: 'totalWishlist',
-  lastUpdated: 'lastUpdated'
+  lastUpdated: 'lastUpdated',
+  lastAggregatedAt: 'lastAggregatedAt'
 };
 
 exports.Prisma.WishlistScalarFieldEnum = {
@@ -363,6 +373,7 @@ exports.Prisma.BrowsingHistoryScalarFieldEnum = {
   browsingId: 'browsingId',
   userId: 'userId',
   phoneLabel: 'phoneLabel',
+  phoneId: 'phoneId',
   brandName: 'brandName',
   viewedAt: 'viewedAt',
   sourceLine: 'sourceLine',
@@ -395,7 +406,8 @@ exports.Prisma.BehaviorScoreScalarFieldEnum = {
   userId: 'userId',
   tag: 'tag',
   score: 'score',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  reasons: 'reasons'
 };
 
 exports.Prisma.SortOrder = {
@@ -481,6 +493,7 @@ exports.Prisma.ModelName = {
   UserPreference: 'UserPreference',
   RecommendationHistory: 'RecommendationHistory',
   RecommendationLog: 'RecommendationLog',
+  RecommendationCall: 'RecommendationCall',
   CustomerProfile: 'CustomerProfile',
   Wishlist: 'Wishlist',
   ComparisonHistory: 'ComparisonHistory',

@@ -25,13 +25,27 @@ import { getExplicitPreferences } from "./profileService.mjs";
 export const FUSION_DIMS = ["gaming", "camera", "battery", "display"];
 
 // Map a Step B `BehaviorScore.tag` onto one of the 4 fusion dims.
-// Behaviour tags produced by `behaviorAnalyzer.DELTAS` are:
-//   "gaming" | "chipset" | "brand" | "tier" | "category"
-//   "category:camera" | "category:battery" | "brand:<X>" | "tier:<X>"
+// Behaviour tags produced by `behaviorAnalyzer` today are:
+//   "feature:gaming" | "feature:camera" | "feature:battery"
+//   "feature:performance" | "feature:display"
+//   "brand:<X>" | "tier:<X>"
+// Search-query events additionally emit:
+//   "category:gaming" | "category:camera" | "category:battery"
 //
-// Only the "structural" tags survive fusion. The brand:<X> / tier:<X>
-// tags are intentionally skipped (see plan §"Tag fallback").
+// The `feature:*` tags are the dominant signal for view / compare /
+// recommend events. Before these aliases existed they were silently
+// dropped at the `if (!dim) continue` guard in `loadBehaviorScores`,
+// so behaviour never reached the fused Custom weights. We now translate
+// them onto the 4-dim fusion space. `feature:performance` has no
+// dedicated fusion dim, so it folds into `gaming` — the same rationale
+// the legacy `chipset → gaming` alias uses ("cares about raw
+// performance").
+//
+// The brand:<X> / tier:<X> tags are still intentionally skipped here —
+// brand / tier affinity is a phone-level signal that belongs in Step D's
+// re-ranker (searchHistoryScore), not in the 4-dim preference vector.
 const DIM_ALIASES = {
+  // Canonical short tags (kept for backwards-compat with any legacy rows).
   gaming: "gaming",
   camera: "camera",
   battery: "battery",
@@ -40,6 +54,14 @@ const DIM_ALIASES = {
                      //  cares about performance" signal we have
   category: "camera", // generic "category" tag → camera stand-in (mirrors
                       // behaviorAnalyzer.phoneMetaTags behaviour)
+  // Feature-profile tags — the vocabulary the analyser actually writes.
+  "feature:gaming": "gaming",
+  "feature:camera": "camera",
+  "feature:battery": "battery",
+  "feature:performance": "gaming", // no fusion dim for perf → fold into gaming
+  "feature:display": "display",
+  // Search-query category tags.
+  "category:gaming": "gaming",
   "category:camera": "camera",
   "category:battery": "battery",
 };

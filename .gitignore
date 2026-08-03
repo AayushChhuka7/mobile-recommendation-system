@@ -74,3 +74,4 @@ ML Model/similarity_bundle.joblib
 **/*.pkl
 !ML Model/.venv/**/*.pkl
 !ML Model/.venv/**/*.joblib
+ML Model/similarity_bundle.joblib

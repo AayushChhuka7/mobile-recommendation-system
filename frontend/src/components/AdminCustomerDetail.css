@@ -127,6 +127,12 @@
   font-size: 13px;
 }
 
+.admin-subsection-hint {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .admin-timeline {
   list-style: none;
   padding: 0;
