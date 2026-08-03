@@ -19,14 +19,23 @@
 //   - `customer_preference` widens from 0.2105 → 0.2632 to absorb the
 //     new per-phone affinity (`affinity:<phoneId>`), per-model
 //     cluster (`model:<hash>`), gated brand lift (`brand:<X>` after
-//     ≥3 distinct phones), tier (`tier:<T>`) and feature vector
-//     (`feature:<dim>`). Behaviour now contributes ±0.27 of the final
-//     score (was ±0.21).
-//   - `search_history` shrinks from 0.1053 → 0.0526 to fund the
-//     widening. `search_history` is now keyword/legacy-overlap only;
-//     brand/feature/affinity no longer leak through it (a deliberate
-//     deduplication — they live in `customer_preference`).
-//   - `compatibility`, `content_similarity`, `value` unchanged.
+//     ≥2 distinct phones), tier (`tier:<T>`) and feature vector
+//     (`feature:<dim>`).
+//
+// Step 2 rebalance (config-only):
+//   - `compatibility` shrinks from 0.4211 → 0.32 (-24%). Persona/budget
+//     scoring from FastAPI is still the largest single weight but no
+//     longer dominates the blend.
+//   - `customer_preference` widens 0.2632 → 0.31 (+18%). Behaviour
+//     now sits just below `compatibility` as a near-co-equal slot, so
+//     a strong compare history can override a slightly better FastAPI
+//     score.
+//   - `content_similarity` 0.1579 → 0.18, `search_history` 0.0526
+//     → 0.08, `value` 0.1053 → 0.11 — small bumps to absorb the freed
+//     `compatibility` weight. Sum stays exactly 1.0.
+//   - `SHORT_TERM_BLEND_ALPHA` raises 0.18 → 0.26 so recency has
+//     more visible influence in the personalizedRank blend while
+//     remaining bounded.
 
 import { searchHistoryScore } from "./searchHistoryScore.mjs";
 import { shortTermMatch } from "./shortTermInterest.mjs";
@@ -40,11 +49,11 @@ import { hashModelName } from "./behaviorAnalyzer.mjs";
 // w * 0.95 (so the original 0.05 popularity slot becomes available),
 // then add `popularity: 0.05` to the table.
 export const FUSION_WEIGHTS = Object.freeze({
-  compatibility:        0.4211,
-  customer_preference:  0.2632,
-  content_similarity:   0.1579,
-  search_history:       0.0526,
-  value:                0.1053,
+  compatibility:        0.32,
+  customer_preference:  0.31,
+  content_similarity:   0.18,
+  search_history:       0.08,
+  value:                0.11,
 });
 
 // Reserved slot — not consumed today. Exported so a future step
@@ -271,12 +280,14 @@ export function fusionRank(candidates, behaviorScores) {
 //
 //   personalizedScore = (1 - α) * baseFinalScore + α * shortTermMatch
 //
-// α = 0.18 is chosen so the boost band (±0.18) is ~3.5x wider than the
-// old ±0.05 behaviour swing — enough that adjacent phones actually swap
-// after one event — while still small enough that a phone with a much
-// higher base score won't be leap-frogged by an unrelated candidate.
-// This is the single knob that trades "movement" against "stability".
-export const SHORT_TERM_BLEND_ALPHA = 0.18;
+// α = 0.26 (Step 2 rebalance, was 0.18) widens the boost band so
+// repeated compares of the same brand produce a clearly larger
+// recency bump — enough that adjacent phones swap after one or two
+// recent events — while still small enough that a phone with a much
+// higher base score (e.g. FastAPI persona+budget match) won't be
+// leap-frogged by an unrelated candidate. This is the single knob
+// that trades "movement" against "stability".
+export const SHORT_TERM_BLEND_ALPHA = 0.26;
 
 // Personalized ranking: runs the pure 5-signal fusion, then folds in the
 // short-term interest match as an additive, bounded boost. Falls back to

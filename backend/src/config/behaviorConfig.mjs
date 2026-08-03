@@ -31,7 +31,11 @@ export const BEHAVIOR_CONFIG = Object.freeze({
     view:      0.40,   // glancing at a card — very light
     click:     0.65,   // opened the detail page
     search:    0.90,   // typed a query — explicit intent
-    compare:   2.00,   // side-by-side comparison — strong shopping intent
+    compare:   2.80,   // side-by-side comparison — strong shopping intent
+                          // (Step 2 rebalance: raised from 2.00 so a single
+                          //  compare writes a stronger per-tag delta; the
+                          //  pair-level dedup + pair diminishing curve still
+                          //  bound spam, so the higher ceiling is safe.)
     recommend: 3.00,   // "Recommend Me" button — strongest explicit ask
     save:      2.40,   // bookmarked
     ignore:   -0.55,   // dismissed / scrolled past
@@ -132,31 +136,31 @@ export const BEHAVIOR_CONFIG = Object.freeze({
     // Compare events should ramp faster than clicks/searches because
     // they are explicit shopping intent. Curve:
     //   floor + (ceiling - floor) * (1 - exp(-uniquePairs / rampPairs))
-    // Defaults:
-    //   1 unique pair → 0.40 + 0.60·(1−e⁻¹ᐟ³)  ≈ 0.69
-    //   2 unique pairs → 0.83
-    //   3 unique pairs → 0.91
-    //   5 unique pairs → 0.97
-    // A user who fires 3 unique compares is essentially at full
+    // Defaults (Step 2 rebalance — floor 0.40 → 0.55, rampPairs 3 → 2):
+    //   1 unique pair → 0.55 + 0.45·(1−e⁻¹ᐟ²)  ≈ 0.86
+    //   2 unique pairs → 0.55 + 0.45·(1−e⁻¹)    ≈ 0.97
+    //   3 unique pairs → ≈0.99
+    // A user who fires 2 unique compares is essentially at full
     // confidence, whereas the old per-event ramp would only be at
     // ~0.48 with 6 raw events.
     confidence: Object.freeze({
-      floor: 0.40,
+      floor: 0.55,
       ceiling: 1.0,
-      rampUniquePairs: 3,
+      rampUniquePairs: 2,
     }),
 
     // Brand gate. The `brand:<X>` lift only fires after the user has
     // touched at least this many distinct phones of brand X. With
-    // `distinctPhonesRequired = 3`, comparing {iPhone 17e vs Samsung}
-    // alone does NOT push brand:Apple (only 1 distinct Apple phone
-    // seen), but comparing {iPhone 17e vs iPhone 17} three times
-    // against three different Apple opponents opens the gate.
-    // Pre-gate compares still emit a small "seed" delta so the row
-    // exists in BehaviorScore for admin-UI introspection.
+    // `distinctPhonesRequired = 2`, comparing {iPhone 17e vs iPhone 17}
+    // already opens the gate; the third distinct phone adds no further
+    // trigger. Pre-gate compares still emit a small "seed" delta so the
+    // row exists in BehaviorScore for admin-UI introspection. (Step 2
+    // rebalance: threshold 3 → 2, seed 0.05 → 0.20 — 2 distinct phones
+    // is the realistic "I like this brand" signal; the gate was too
+    // conservative at 3.)
     brandGate: Object.freeze({
-      distinctPhonesRequired: 3,
-      seedDelta: 0.05,
+      distinctPhonesRequired: 2,
+      seedDelta: 0.20,
     }),
 
     // In-memory counter TTL. comparePairCounters entries older than
@@ -177,10 +181,18 @@ export const BEHAVIOR_CONFIG = Object.freeze({
   // `brand:<X>` lifting related phones nearby, and `feature:<dim>`
   // carrying the existing per-feature signal.
   affinity: Object.freeze({
-    phoneAffinity: 0.85,     // affinity:<phoneId>  — direct
+    // Step 2 rebalance — lifted from the previous values so a user
+    // who has touched a phone/brand/model repeatedly gets a
+    // noticeably stronger per-tag lift in `customer_preference`
+    // (which now owns 32% of the final score, up from 26.32%). The
+    // model/tier/feature rows are kept at their existing values
+    // because the existing per-dim feature pipeline already
+    // converges through `searchHistoryScore` plus the boosted
+    // `customer_preference` slot.
+    phoneAffinity: 1.10,     // affinity:<phoneId>  — direct
     modelAffinity: 0.55,     // model:<hash>        — same model cluster
-    brandGatedAffinity: 0.60,// brand:<X>           — gated; only fires
-                             //                     after ≥3 distinct phones
+    brandGatedAffinity: 1.10,// brand:<X>           — gated; only fires
+                             //                     after ≥2 distinct phones
                              //                     of brand X
     tierAffinity: 0.40,      // tier:<T>
     featureAffinity: 0.65,   // average of feature:<dim> rows on the phone
