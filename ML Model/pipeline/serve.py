@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
@@ -520,6 +520,103 @@ def similarity_score(req: SimilarityRequest) -> Dict[str, Any]:
         "total": len(req.candidates),
     }
 
+
+
+# ---------------------------------------------------------------------------
+# Single-seed "phones similar to this one" lookup (Related Phones section
+# on the FE phone-details page).
+#
+# Reuses the EXACT same bundle and name_index as /similarity/score — no new
+# algorithm, no recomputation. The bundle's NxN cosine matrix already has
+# every pair-wise similarity pre-computed; we just pull the seed's row,
+# argsort descending, and slice the top-K (skipping the seed itself which
+# sits at index 0 with similarity=1.0 to itself).
+#
+# Strictly content-based — no collaborative filtering, no hybrid, no
+# persona, no popularity, no browsing history. Pure item-item cosine
+# lookup against the bundle built by `Content_based_recomaendation.ipynb`.
+# ---------------------------------------------------------------------------
+class SimilarPhoneRow(BaseModel):
+    brand: str
+    modelName: str
+    similarity: float  # cosine to the seed, in [0, 1]
+
+
+class SimilarPhonesResponse(BaseModel):
+    seed: SimilarPhoneRow
+    matches: List[SimilarPhoneRow]
+    matched: int
+    total: int  # how many bundle rows we considered before slicing
+
+
+@app.get("/similarity/similar", response_model=SimilarPhonesResponse)
+def similarity_similar(
+    brand: str = Query(..., min_length=1, max_length=80),
+    modelName: str = Query(..., min_length=1, max_length=120),
+    limit: int = Query(12, ge=1, le=50),
+) -> Dict[str, Any]:
+    bundle = _load_similarity_bundle()
+    if bundle is None:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                f"similarity_bundle unavailable: "
+                f"{_similarity_bundle_error or 'unknown error'}"
+            ),
+        )
+
+    df = bundle["df"]
+    sim_matrix = bundle["similarity_matrix"]
+    name_index = df.set_index(["Brand", "Model_Name"])
+
+    seed_key = (brand, modelName)
+    try:
+        idx = name_index.index.get_loc(seed_key)
+        # .index.get_loc returns int or slice; collapse slice→first row.
+        if isinstance(idx, slice):
+            seed_idx = int(idx.start)
+        else:
+            seed_idx = int(idx)
+    except KeyError:
+        # Seed phone isn't in the content-bundle's df — return an empty
+        # response so the FE simply hides the related-phones section
+        # rather than throwing a 404 on the detail page.
+        return {
+            "seed": {"brand": brand, "modelName": modelName, "similarity": 0.0},
+            "matches": [],
+            "matched": 0,
+            "total": 0,
+        }
+
+    # Pull the seed's pre-computed similarity row and sort descending.
+    # Index 0 is the seed itself (sim=1.0) — skip it.
+    row = np.asarray(sim_matrix[seed_idx], dtype=np.float64)
+    order = np.argsort(-row, kind="stable")
+
+    matches: List[Dict[str, Any]] = []
+    # `df` is the bundle's underlying frame (Brand/Model_Name are its index
+    # after .set_index above, but iloc still works on the original positions).
+    for i in order:
+        if int(i) == seed_idx:
+            continue  # skip self — always top-1
+        sim = float(row[int(i)])
+        # Look up the brand/model via iloc on the ORIGINAL df (which still
+        # has Brand/Model_Name as columns).
+        row_data = df.iloc[int(i)]
+        matches.append({
+            "brand": str(row_data["Brand"]),
+            "modelName": str(row_data["Model_Name"]),
+            "similarity": round(sim, 4),
+        })
+        if len(matches) >= limit:
+            break
+
+    return {
+        "seed": {"brand": brand, "modelName": modelName, "similarity": 1.0},
+        "matches": matches,
+        "matched": len(matches),
+        "total": len(order),
+    }
 
 
 @app.post("/recommend")
