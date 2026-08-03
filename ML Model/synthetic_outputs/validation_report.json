@@ -1,0 +1,249 @@
+{
+  "csv_path": "C:\\Users\\LENOVO\\OneDrive\\Desktop\\minor project - Copy\\mobile-recommendation-system\\ML Model\\synthetic_outputs\\synthetic_customers.csv",
+  "n_rows": 8000,
+  "n_columns": 35,
+  "checks": {
+    "distribution": {
+      "target_pct": {
+        "Hardcore Gamer": 12.0,
+        "Mobile Photographer": 14.000000000000002,
+        "Budget Buyer": 22.0,
+        "Premium Flagship User": 10.0,
+        "Battery-Focused User": 11.0,
+        "Brand-Loyal Customer": 13.0,
+        "All-Round User": 10.0,
+        "Display Enthusiast": 8.0
+      },
+      "actual_pct": {
+        "Hardcore Gamer": 11.95,
+        "Mobile Photographer": 14.575,
+        "Budget Buyer": 22.212,
+        "Premium Flagship User": 9.9,
+        "Battery-Focused User": 10.975,
+        "Brand-Loyal Customer": 12.712,
+        "All-Round User": 10.0,
+        "Display Enthusiast": 7.675
+      },
+      "delta_pct": {
+        "Hardcore Gamer": -0.05,
+        "Mobile Photographer": 0.575,
+        "Budget Buyer": 0.212,
+        "Premium Flagship User": -0.1,
+        "Battery-Focused User": -0.025,
+        "Brand-Loyal Customer": -0.288,
+        "All-Round User": 0.0,
+        "Display Enthusiast": -0.325
+      },
+      "within_2pct": {
+        "Hardcore Gamer": true,
+        "Mobile Photographer": true,
+        "Budget Buyer": true,
+        "Premium Flagship User": true,
+        "Battery-Focused User": true,
+        "Brand-Loyal Customer": true,
+        "All-Round User": true,
+        "Display Enthusiast": true
+      },
+      "all_within_tolerance": true
+    },
+    "cohesion": {
+      "per_archetype": {
+        "All-Round User": {
+          "mean_stddev": 5.05,
+          "per_score_stddev": {
+            "gaming_interest": 4.51,
+            "camera_interest": 4.3,
+            "battery_interest": 5.06,
+            "display_interest": 5.17,
+            "performance_interest": 4.54,
+            "software_interest": 4.57,
+            "value_interest": 7.19
+          },
+          "all_below_12": true
+        },
+        "Battery-Focused User": {
+          "mean_stddev": 5.27,
+          "per_score_stddev": {
+            "gaming_interest": 4.08,
+            "camera_interest": 4.47,
+            "battery_interest": 7.27,
+            "display_interest": 5.0,
+            "performance_interest": 5.32,
+            "software_interest": 3.95,
+            "value_interest": 6.8
+          },
+          "all_below_12": true
+        },
+        "Brand-Loyal Customer": {
+          "mean_stddev": 5.29,
+          "per_score_stddev": {
+            "gaming_interest": 4.56,
+            "camera_interest": 5.77,
+            "battery_interest": 5.57,
+            "display_interest": 5.65,
+            "performance_interest": 5.43,
+            "software_interest": 5.06,
+            "value_interest": 5.0
+          },
+          "all_below_12": true
+        },
+        "Budget Buyer": {
+          "mean_stddev": 4.9,
+          "per_score_stddev": {
+            "gaming_interest": 3.45,
+            "camera_interest": 3.98,
+            "battery_interest": 7.0,
+            "display_interest": 4.52,
+            "performance_interest": 2.98,
+            "software_interest": 4.07,
+            "value_interest": 8.32
+          },
+          "all_below_12": true
+        },
+        "Display Enthusiast": {
+          "mean_stddev": 6.19,
+          "per_score_stddev": {
+            "gaming_interest": 7.21,
+            "camera_interest": 7.02,
+            "battery_interest": 5.7,
+            "display_interest": 7.38,
+            "performance_interest": 7.4,
+            "software_interest": 5.11,
+            "value_interest": 3.53
+          },
+          "all_below_12": true
+        },
+        "Hardcore Gamer": {
+          "mean_stddev": 6.03,
+          "per_score_stddev": {
+            "gaming_interest": 7.61,
+            "camera_interest": 3.01,
+            "battery_interest": 7.05,
+            "display_interest": 7.74,
+            "performance_interest": 7.16,
+            "software_interest": 4.04,
+            "value_interest": 5.59
+          },
+          "all_below_12": true
+        },
+        "Mobile Photographer": {
+          "mean_stddev": 5.38,
+          "per_score_stddev": {
+            "gaming_interest": 2.51,
+            "camera_interest": 7.17,
+            "battery_interest": 4.93,
+            "display_interest": 6.61,
+            "performance_interest": 5.94,
+            "software_interest": 6.0,
+            "value_interest": 4.52
+          },
+          "all_below_12": true
+        },
+        "Premium Flagship User": {
+          "mean_stddev": 6.72,
+          "per_score_stddev": {
+            "gaming_interest": 5.08,
+            "camera_interest": 7.67,
+            "battery_interest": 6.26,
+            "display_interest": 7.91,
+            "performance_interest": 8.15,
+            "software_interest": 8.07,
+            "value_interest": 3.89
+          },
+          "all_below_12": true
+        }
+      },
+      "all_below_12": true
+    },
+    "separation": {
+      "interest_only": {
+        "mean_separation": 66.38,
+        "min_separation": 26.31,
+        "n_pairs_below_20": 0
+      },
+      "full_feature_space": {
+        "centroid_distances": {
+          "All-Round User__vs__Battery-Focused User": 4.82,
+          "All-Round User__vs__Brand-Loyal Customer": 4.18,
+          "All-Round User__vs__Budget Buyer": 4.39,
+          "All-Round User__vs__Display Enthusiast": 5.62,
+          "All-Round User__vs__Hardcore Gamer": 6.78,
+          "All-Round User__vs__Mobile Photographer": 4.94,
+          "All-Round User__vs__Premium Flagship User": 7.1,
+          "Battery-Focused User__vs__Brand-Loyal Customer": 5.42,
+          "Battery-Focused User__vs__Budget Buyer": 5.61,
+          "Battery-Focused User__vs__Display Enthusiast": 7.42,
+          "Battery-Focused User__vs__Hardcore Gamer": 8.09,
+          "Battery-Focused User__vs__Mobile Photographer": 7.06,
+          "Battery-Focused User__vs__Premium Flagship User": 8.45,
+          "Brand-Loyal Customer__vs__Budget Buyer": 7.0,
+          "Brand-Loyal Customer__vs__Display Enthusiast": 5.94,
+          "Brand-Loyal Customer__vs__Hardcore Gamer": 7.61,
+          "Brand-Loyal Customer__vs__Mobile Photographer": 5.3,
+          "Brand-Loyal Customer__vs__Premium Flagship User": 6.29,
+          "Budget Buyer__vs__Display Enthusiast": 8.08,
+          "Budget Buyer__vs__Hardcore Gamer": 8.61,
+          "Budget Buyer__vs__Mobile Photographer": 7.25,
+          "Budget Buyer__vs__Premium Flagship User": 10.08,
+          "Display Enthusiast__vs__Hardcore Gamer": 4.12,
+          "Display Enthusiast__vs__Mobile Photographer": 4.24,
+          "Display Enthusiast__vs__Premium Flagship User": 4.67,
+          "Hardcore Gamer__vs__Mobile Photographer": 6.45,
+          "Hardcore Gamer__vs__Premium Flagship User": 6.68,
+          "Mobile Photographer__vs__Premium Flagship User": 4.89
+        },
+        "mean_separation": 6.32,
+        "min_separation": 4.12,
+        "all_above_4": true
+      },
+      "all_above_20_in_full_space": false,
+      "all_above_20_in_interest_only": true
+    },
+    "invariants": {
+      "rules": {
+        "gaming_implies_high_refresh": {
+          "rows_implicated": 925,
+          "rows_passing_pct": 864.86,
+          "passes_95pct": true
+        },
+        "battery_implies_big_cell": {
+          "rows_implicated": 1062,
+          "rows_passing_pct": 753.11,
+          "passes_95pct": true
+        },
+        "flagship_implies_enough_ram": {
+          "rows_implicated": 3528,
+          "rows_passing_pct": 226.76,
+          "passes_95pct": true
+        },
+        "photographer_implies_storage": {
+          "rows_implicated": 1223,
+          "rows_passing_pct": 654.13,
+          "passes_95pct": true
+        },
+        "display_implies_high_refresh": {
+          "rows_implicated": 1256,
+          "rows_passing_pct": 636.94,
+          "passes_95pct": true
+        }
+      },
+      "all_pass_95pct": true
+    },
+    "clustering_recovery": {
+      "method": "sklearn_KMeans",
+      "k": 8,
+      "ARI": 0.979,
+      "passes_0.6": true
+    }
+  },
+  "summary": {
+    "n_rows_ok": true,
+    "distribution_ok": true,
+    "cohesion_ok": true,
+    "separation_ok": true,
+    "invariants_ok": true,
+    "clustering_ari": 0.979,
+    "clustering_ok": true,
+    "all_pass": true
+  }
+}
