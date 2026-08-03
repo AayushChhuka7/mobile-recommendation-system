@@ -1,8 +1,8 @@
 {
-  "csvPath": "D:\\mobile-recommendation-system\\dataset\\customer_dataset.csv",
-  "startedAt": "2026-07-26T03:47:33.750Z",
-  "finishedAt": "2026-07-26T03:59:37.171Z",
-  "durationMs": 724023,
+  "csvPath": "F:\\sus transfer\\BCT resources\\6th semester\\Minor_Project\\mobile-recommendation-system\\dataset\\customer_dataset.csv",
+  "startedAt": "2026-08-03T09:09:28.966Z",
+  "finishedAt": "2026-08-03T09:20:26.988Z",
+  "durationMs": 658795,
   "totalRows": 16608,
   "invalidCustomerRows": 0,
   "rowWarnings": 0,
