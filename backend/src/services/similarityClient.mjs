@@ -98,3 +98,43 @@ export async function fetchContentSimilarity(candidates) {
     return neutralScores(candidates);
   }
 }
+
+// ---------------------------------------------------------------------------
+// GET /similarity/similar — single-seed "phones similar to this one"
+// lookup. Used by the BE controller for `GET /api/phones/:id/similar`
+// (the Related Phones section on the FE phone-details page).
+//
+// Reuses the SAME bundle + algorithm as fetchContentSimilarity — no
+// new model, no fusion, no collaborative filtering, no persona. Pure
+// content-based cosine lookup on the pre-computed NxN similarity
+// matrix in similarity_bundle.joblib.
+//
+// Returns the parsed FastAPI response on success, or `null` on any
+// transport / bundle failure so the caller can hide the related-phones
+// section instead of surfacing an error to the user. The detail-page
+// flow already has its own soft-fail wrapper.
+// ---------------------------------------------------------------------------
+export async function fetchSimilarPhones({ brand, modelName, limit = 12 }) {
+  if (!brand || !modelName) return null;
+  const clampedLimit = Math.max(1, Math.min(50, Number(limit) || 12));
+
+  const params = new URLSearchParams({
+    brand: String(brand),
+    modelName: String(modelName),
+    limit: String(clampedLimit),
+  });
+
+  try {
+    const res = await similarityFetch(`/similarity/similar?${params}`, {
+      method: "GET",
+    });
+    if (!res || !Array.isArray(res.matches)) return null;
+    return res;
+  } catch (err) {
+    console.warn(
+      "[similar] similar-phones fetch failed, returning null:",
+      err?.message || err,
+    );
+    return null;
+  }
+}
