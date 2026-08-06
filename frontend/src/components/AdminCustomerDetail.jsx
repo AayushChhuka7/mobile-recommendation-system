@@ -13,6 +13,7 @@ import {
   getCustomerProfileById,
   getCustomerBehavior,
 } from "../services/adminProfiles";
+import { formatPriceNpr } from "../utils/formatPrice.js";
 import { ChevronIcon } from "./AuthShared";
 import "./AdminCustomerDetail.css";
 
@@ -33,6 +34,14 @@ function formatNumber(value) {
     return Number.isFinite(value) ? String(value) : "—";
   }
   return String(value);
+}
+
+// All budget fields on the customer profile come back from the BE in
+// EUR. The rest of the app renders them as NPR (×175, snap to 0/5), so
+// the admin view should match — keeps the surface consistent for the
+// person comparing a customer's preferred budget against the catalog.
+function formatBudgetEurAsNpr(value) {
+  return formatPriceNpr(value) ?? "—";
 }
 
 function AdminCustomerDetail() {
@@ -193,11 +202,11 @@ function AdminCustomerDetail() {
               </dd>
               <dt>Budget</dt>
               <dd>
-                {formatNumber(bundle.preference?.maxBudget)}
+                {formatBudgetEurAsNpr(bundle.preference?.maxBudget)}
                 {bundle.customerProfile?.avgBudget ? (
                   <span className="admin-muted">
                     {" "}
-                    · avg {formatNumber(bundle.customerProfile.avgBudget)}
+                    · avg {formatBudgetEurAsNpr(bundle.customerProfile.avgBudget)}
                   </span>
                 ) : null}
               </dd>
@@ -240,7 +249,7 @@ function AdminCustomerDetail() {
               <dt>Recommendation persona</dt>
               <dd>{bundle.customerProfile?.recommendationPersona || "—"}</dd>
               <dt>Avg budget</dt>
-              <dd>{formatNumber(bundle.customerProfile?.avgBudget)}</dd>
+              <dd>{formatBudgetEurAsNpr(bundle.customerProfile?.avgBudget)}</dd>
               <dt>Searches</dt>
               <dd>{formatNumber(bundle.customerProfile?.searchCount)}</dd>
               <dt>Recommendations</dt>
@@ -301,7 +310,7 @@ function AdminCustomerDetail() {
                   <dt>Persona</dt>
                   <dd>{bundle.lastRecommendation.persona || "—"}</dd>
                   <dt>Budget</dt>
-                  <dd>{formatNumber(bundle.lastRecommendation.budget)}</dd>
+                  <dd>{formatBudgetEurAsNpr(bundle.lastRecommendation.budget)}</dd>
                   <dt>Served at</dt>
                   <dd>{formatDate(bundle.lastRecommendation.servedAt)}</dd>
                 </dl>

@@ -237,14 +237,14 @@
 }
 
 .auth-title {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 700;
   color: var(--text);
   margin-bottom: 8px;
 }
 
 .auth-subtitle {
-  font-size: 15px;
+  font-size: 17px;
   color: var(--text-muted);
   margin-bottom: 24px;
 }
@@ -256,7 +256,7 @@
 .auth-footer {
   text-align: center;
   margin-top: 20px;
-  font-size: 14.5px;
+  font-size: 16px;
   color: var(--text-muted);
 }
 
@@ -276,7 +276,7 @@
 
 .input-label {
   display: block;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--slate-dark);
   margin-bottom: 6px;
@@ -287,7 +287,7 @@
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 17px;
   color: var(--text);
   background: var(--white);
   transition:
@@ -305,13 +305,13 @@
 }
 
 .input-error {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--danger);
   margin-top: 4px;
 }
 
 .input-hint {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted, #6b7280);
   margin-top: 4px;
   line-height: 1.4;
@@ -359,7 +359,7 @@
   gap: 6px;
   padding: 9px 16px;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 500;
   transition:
     background var(--transition),
@@ -388,7 +388,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 16px;
   margin-bottom: 16px;
 }
 select.input-field {
@@ -404,7 +404,7 @@ select.input-field {
 
 .role-select-group label {
   display: block;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--slate-dark);
   margin-bottom: 6px;
@@ -415,7 +415,7 @@ select.input-field {
   padding: 10px 36px 10px 12px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 17px;
   color: var(--text);
   background-color: var(--white);
   cursor: pointer;
@@ -442,6 +442,7 @@ select.input-field {
   gap: 6px;
   color: var(--slate-dark);
   cursor: pointer;
+  font-size: 16px;
 }
 
 .remember-me input {
@@ -491,7 +492,7 @@ select.input-field {
 
 .success-hint {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .result-panel {
@@ -537,13 +538,13 @@ select.input-field {
 
 .result-hint {
   color: var(--text-muted);
-  font-size: 13.5px;
+  font-size: 15px;
 }
 
 .form-submit-error {
   text-align: center;
   color: var(--danger);
-  font-size: 13px;
+  font-size: 15px;
   margin: 4px 0 16px;
 }
 
@@ -683,7 +684,7 @@ select.input-field {
 }
 
 .field-error {
-  font-size: 12px;
+  font-size: 14px;
   color: #dc2626;
   margin-top: 4px;
 }
@@ -726,7 +727,7 @@ select.input-field {
 .otp-error {
   text-align: center;
   color: var(--danger);
-  font-size: 13px;
+  font-size: 15px;
   margin-top: 10px;
 }
 
@@ -738,7 +739,7 @@ select.input-field {
 .otp-resend {
   text-align: center;
   margin-top: 16px;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text-muted);
 }
 

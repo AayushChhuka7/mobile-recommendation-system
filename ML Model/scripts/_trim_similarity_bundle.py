@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, r'C:\Users\LENOVO\OneDrive\Desktop\minor project - Copy\mobile-recommendation-system\ML Model')
+sys.path.insert(0, r'C:\Users\ASUS\OneDrive\Desktop\frontedn\mobile-recommendation-system\ML Model')
 import joblib, numpy as np
 src, dst = sys.argv[1], sys.argv[2]
 bundle = joblib.load(src)

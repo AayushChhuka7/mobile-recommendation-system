@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../services/api";
+import { eurFromNpr } from "../utils/formatPrice.js";
 import "./Login.css";
 import {
   MailIcon,
@@ -54,8 +55,11 @@ function Registration({ onLogin }) {
   // fields in the single POST /auth/register call from step 2.
   const [prefData, setPrefData] = useState({
     persona: "allrounder",
+    // Defaults in NPR — the user-facing currency. Converted to EUR
+    // (÷174) right before the BE call. 250,000 NPR ≈ 1,437 EUR; a
+    // sensible upper bound for a mid-range shopping intent.
     budgetMin: 0,
-    budgetMax: 1500,
+    budgetMax: 250000,
     preferredBrands: [],
   });
   const [prefErrors, setPrefErrors] = useState({});
@@ -215,8 +219,6 @@ function Registration({ onLogin }) {
       const body = buildRegisterBody();
       if (includePrefs) {
         body.persona = prefData.persona;
-        body.budgetMin = Number(prefData.budgetMin);
-        body.budgetMax = Number(prefData.budgetMax);
         if (Array.isArray(prefData.preferredBrands) && prefData.preferredBrands.length > 0) {
           body.preferredBrands = prefData.preferredBrands;
         }
@@ -224,6 +226,17 @@ function Registration({ onLogin }) {
 
       setRegisterLoading(true);
       try {
+        // The user typed budget in NPR; the BE stores it in EUR. Convert
+        // right before the call so the persisted value lands in the
+        // already-documented EUR store. `eurFromNpr` returns `null` for
+        // empty / non-numeric input — we treat that as "skip this field"
+        // so a partially-typed value doesn't push NaN to the BE.
+        if (includePrefs) {
+          const minEur = eurFromNpr(prefData.budgetMin);
+          const maxEur = eurFromNpr(prefData.budgetMax);
+          if (minEur !== null) body.budgetMin = minEur;
+          if (maxEur !== null) body.budgetMax = maxEur;
+        }
         await api.post("/auth/register", body);
         setResendCooldown(RESEND_COOLDOWN_SECONDS);
         navigate("/register/otp");
@@ -644,7 +657,7 @@ function Registration({ onLogin }) {
             </div>
 
             <div className="input-group">
-              <label className="input-label">Budget range (EUR)</label>
+              <label className="input-label">Budget range (NPR)</label>
               <div
                 style={{
                   display: "grid",
@@ -667,7 +680,7 @@ function Registration({ onLogin }) {
                   type="number"
                   inputMode="numeric"
                   name="budgetMax"
-                  placeholder="1500"
+                  placeholder="250000"
                   value={prefData.budgetMax}
                   onChange={(e) => updatePref("budgetMax", e.target.value)}
                   error={prefErrors.budgetMax}

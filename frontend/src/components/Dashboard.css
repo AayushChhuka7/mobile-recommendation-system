@@ -1,13 +1,24 @@
 .dashboard-page {
   width: 100%;
   min-height: 100vh;
-  background: var(--bg);
+  background:
+    radial-gradient(
+      1200px 600px at 10% -100px,
+      rgba(99, 102, 241, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 100% 200px,
+      rgba(16, 185, 129, 0.06),
+      transparent 60%
+    ),
+    var(--bg);
 }
 
 .dash-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 16px 40px;
   background: var(--white);
   border-bottom: 1px solid var(--border);
@@ -37,8 +48,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   border-radius: 8px;
   border: 1px solid var(--border);
   background: var(--white);
@@ -155,7 +166,7 @@
 
 .profile-field-value {
   color: var(--text);
-  font-weight: 500;
+  font-weight: 400;
   text-align: right;
   white-space: nowrap;
   overflow: hidden;
@@ -272,7 +283,7 @@
 }
 
 .dash-main {
-  max-width: 1100px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 28px 40px 80px;
 }
@@ -290,19 +301,38 @@
   margin: 0 0 32px 0;
 }
 
+.dash-banner {
+  width: 100%;
+  margin: 0 0 28px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.dash-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+  object-fit: cover;
+}
+
 .phone-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
 }
 
 .phone-card {
   background: var(--white);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px 20px;
+  border-radius: 16px;
+  padding: 0;
   box-shadow: var(--shadow-md);
   cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   transition:
     transform var(--transition),
     border-color var(--transition),
@@ -313,15 +343,18 @@
 .phone-card.expanded {
   transform: translateY(-4px);
   border-color: var(--primary);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
 }
 
-.phone-card-top {
-  text-align: center;
-}
-
-.phone-card-icon {
-  font-size: 34px;
-  margin-bottom: 10px;
+/* Hero image area — soft lavender panel mirroring the reference. Sits
+   above the white card body and houses the favorite heart. */
+.phone-card-hero {
+  position: relative;
+  background: linear-gradient(135deg, #c7b6e0 0%, #e7dcf3 100%);
+  padding: 22px 18px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .phone-card-image {
@@ -330,16 +363,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
-  border-radius: 8px;
   overflow: hidden;
-  margin-bottom: 12px;
 }
 
 .phone-card-image img {
-  max-width: 80%;
-  max-height: 80%;
+  max-width: 78%;
+  max-height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 12px 18px rgba(15, 23, 42, 0.18));
 }
 
 .phone-card-image.no-image::after {
@@ -351,45 +382,108 @@
   font-size: 48px;
 }
 
+/* Heart toggle anchored top-right of the hero. Muted by default so it
+   blends with the lavender, fills on toggle, lifts to danger-red. */
+.phone-card-favorite {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--slate-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    transform var(--transition);
+}
+
+.phone-card-favorite:hover {
+  background: var(--white);
+  color: var(--danger, #ef4444);
+  transform: scale(1.06);
+}
+
+.phone-card-favorite[aria-pressed="true"] {
+  background: var(--white);
+  color: var(--danger, #ef4444);
+}
+
+/* White card body underneath the hero. */
+.phone-card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.phone-card-icon {
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+/* Eyebrow row — brand uppercase + OS pill, like EU38 / BLACK-WHITE tags. */
+.phone-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.phone-card-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #eef2f7;
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .phone-card-name {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 4px;
+  line-height: 1.25;
+  /* Single-line clamp so card heights stay even across the grid. */
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .phone-card-tagline {
-  font-size: 13px;
-  color: var(--text-muted);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--font-heading-color, #1a1a1a);
 }
 
+/* Spec list — always visible. Used to be hover-reveal; we ditched that
+   because the reference card shows body content unconditionally. */
 .phone-card-details {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition:
-    max-height 0.35s ease,
-    opacity 0.25s ease,
-    margin-top 0.35s ease;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 0;
-}
-
-.phone-card.expanded .phone-card-details {
-  max-height: 220px;
-  opacity: 1;
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid var(--border);
+  gap: 8px;
+  margin-top: 6px;
+  padding-left: 8px;
 }
 
 .phone-spec {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--slate-dark);
 }
 
@@ -398,13 +492,60 @@
   flex-shrink: 0;
 }
 
-.phone-price {
-  font-weight: 700;
-  color: var(--text);
+/* Footer row — price on the left, primary button on the right. */
+.phone-card-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.phone-price svg {
-  color: var(--success);
+.phone-price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.phone-price-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--slate-light);
+  text-transform: uppercase;
+}
+
+.phone-price-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.phone-card-cta {
+  flex-shrink: 0;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    filter var(--transition);
+}
+
+.phone-card-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(91, 33, 182, 0.28);
+  filter: brightness(1.05);
 }
 
 .search-overlay {
@@ -442,14 +583,18 @@
   gap: 8px;
 }
 
-.dash-recommend-btn {
+/* These three rule sets override the generic .btn padding/font-size set later
+   in this file. They use a chained .btn.dash-* selector so they outrank the
+   bare .btn rule on specificity (0,0,2,0 vs 0,0,1,0) regardless of source
+   order. */
+.btn.dash-recommend-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 14px;
-  font-size: 14px;
+  padding: 11px 18px;
+  font-size: 16px;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 10px;
   white-space: nowrap;
 }
 
@@ -457,14 +602,14 @@
   flex-shrink: 0;
 }
 
-.dash-compare-btn {
+.btn.dash-compare-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 14px;
-  font-size: 14px;
+  padding: 11px 18px;
+  font-size: 16px;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 10px;
   white-space: nowrap;
 }
 
@@ -484,8 +629,21 @@
 }
 
 .dash-recommend-modal {
+  /* Default size: the form modal stays at the original narrow width
+     (inherited from `.search-modal`'s max-width: 460px). When results
+     are present the popup grows to ~80% of the viewport, with a
+     scrollable body so up to 20 phone cards fit naturally. */
   animation: dash-recommend-pop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform-origin: center;
+}
+
+.dash-recommend-modal.dash-recommend-modal-results {
+  width: 100%;
+  max-width: min(80vw, 1100px);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .dash-recommend-modal.closing {
@@ -763,10 +921,10 @@
 
 .dash-search-input {
   width: 100%;
-  padding: 12px 40px 12px 42px;
+  padding: 14px 44px 14px 46px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--text);
   background: var(--white);
   transition:
@@ -815,7 +973,7 @@
 }
 
 .dash-search-btn {
-  padding: 11px 22px;
+  padding: 12px 24px;
   border-radius: 999px;
   font-weight: 600;
   box-shadow: var(--shadow);
@@ -931,7 +1089,7 @@
 .dash-filter-btn {
   position: relative;
   border-radius: 999px;
-  padding: 10px 18px;
+  padding: 11px 20px;
   font-weight: 500;
   gap: 6px;
 }
@@ -956,6 +1114,42 @@
   font-size: 11px;
   font-weight: 600;
   line-height: 1;
+}
+
+/* Count chip on the "Your favourites" header button — same shape as
+   the filter badge but tinted danger-red so hearted phones stand out
+   against the purple primary chrome. */
+.dash-favorites-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.btn.dash-favorites-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.dash-favorites-btn.active {
+  background: var(--danger-light);
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .dash-filter-popover {
@@ -1213,7 +1407,7 @@
     width: 240px;
   }
 
-  .dash-recommend-btn {
+  .btn.dash-recommend-btn {
     padding: 8px 10px;
     font-size: 13px;
   }
@@ -1330,6 +1524,17 @@
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
   --shadow-md:
     0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+
+  /* Headings + product names + prices — these CSS vars are defined in
+     index.css inside .dashboard-page (not .dash-dark), so their hard-coded
+     dark values win over --text in dark mode unless we override them
+     here. Without this, the "Browse other phones" heading, every phone
+     model name on a card, and the price text stay #1a1a1a on a dark
+     background and disappear. */
+  --font-heading-color: #e2e8f0;
+  --font-subheading-color: #cbd5e1;
+  --font-product-color: #e2e8f0;
+  --font-price-color: #e2e8f0;
 }
 
 .dashboard-page.dash-dark .phone-card-image {
@@ -1488,6 +1693,13 @@
   margin: 0 0 12px;
 }
 
+.dash-recs-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
 .dash-recs-header h2 {
   margin: 0;
   font-size: 1.1rem;
@@ -1495,10 +1707,96 @@
   color: var(--text);
 }
 
+.dash-recs-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.dash-recs-eyebrow {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
+}
+
+.dash-recs-see-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+/* ---- Modal-local recommendations ("Recommend Me a Phone") ----
+   Rendered inline inside the recommend modal. Independent from the
+   "Top phones for you" section above — strictly parameter-driven. */
+
+/* Scrollable wrapper that holds the whole modal body. Once results
+   arrive, the user can scroll through all 20 cards inside the modal
+   without the modal itself growing past ~80vh. */
+.dash-modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.dash-modal-recs {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.dash-modal-recs-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dash-modal-recs-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.dash-modal-recs-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.dash-modal-recs-grid {
+  /* Modal's recommendation grid. The phone grid utility handles the
+     columns responsively; we let the .dash-modal-body wrapper own the
+     vertical scroll so the modal itself stays at ~80vh. */
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.dash-browse-section {
+  margin-top: 8px;
+}
+
+.dash-browse-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.dash-browse-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
 .rec-match-badge {
   position: absolute;
   top: 8px;
-  right: 8px;
+  left: 8px;
   background: linear-gradient(135deg, #4f46e5, #7c3aed);
   color: #fff;
   font-size: 0.7rem;
@@ -1507,29 +1805,57 @@
   border-radius: 999px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   letter-spacing: 0.02em;
+  z-index: 1;
 }
 
-/* Step D — "Boosted by your activity" badge. Stack under the match-score
-   badge on phones whose search-history sub-score crossed the neutral
-   threshold (> 0.6). Same pill shape; subtle accent so it reads as a
-   hint, not a primary CTA. */
-.rec-boosted-badge {
-  position: absolute;
-  top: 38px;
-  right: 8px;
-  background: rgba(79, 70, 229, 0.12);
-  color: #4f46e5;
-  border: 1px solid rgba(79, 70, 229, 0.3);
-  font-size: 0.65rem;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 999px;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
+/* Rec cards don't have the lavender .phone-card-hero wrapper, so the
+   heart sits inside .phone-card-image. The match badge claims the top-left
+   corner; the heart keeps its default top-right slot from the shared
+   .phone-card-favorite styles. */
+.rec-card .phone-card-favorite {
+  z-index: 1;
 }
 
 .phone-card-image {
   position: relative;
+}
+
+/* Rec cards still use the old .phone-card-top markup (no hero/body
+   split). Restored these rules so the recommendations section doesn't
+   collapse after the browse-card redesign. */
+.rec-card .phone-card-top {
+  text-align: left;
+  padding: 22px 18px 4px;
+}
+
+.rec-card .phone-card-image {
+  height: 150px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+/* Rec cards put the price on its own line with a tag icon. Render
+   it as a single horizontal row (icon next to price) instead of the
+   stacked column-flex that .phone-price uses in the browse cards.
+   Keep the success-tinted tag icon. */
+.rec-card .rec-price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.rec-card .rec-price svg {
+  color: var(--success);
+}
+
+.rec-card .rec-price > span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
 }
 
 .rec-why-list {
@@ -1537,7 +1863,8 @@
   padding: 10px 12px 14px;
   margin: 0;
   border-top: 1px solid var(--border);
-  font-size: 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 400;
   color: var(--text);
   display: flex;
   flex-direction: column;
@@ -1547,16 +1874,19 @@
 .rec-why-list li {
   position: relative;
   padding-left: 16px;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .rec-why-list li::before {
-  content: "✓";
+  content: "";
   position: absolute;
-  left: 0;
-  top: 0;
-  color: #16a34a;
-  font-weight: 700;
+  left: 4px;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
 }
 
 .rec-not-in-db {

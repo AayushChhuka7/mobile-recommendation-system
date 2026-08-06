@@ -143,13 +143,6 @@ function formatValue(value) {
   return String(value);
 }
 
-function formatPrice(price) {
-  // Thin shim that keeps the existing call sites unchanged — it now
-  // delegates to the shared helper so every page shows the same NPR
-  // value (rounded to nearest 5) for a given EUR input.
-  return formatPriceNpr(price);
-}
-
 function PhoneDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -406,7 +399,7 @@ export function PhoneDetailView({ phone }) {
   const announced = specs.metadata?.announced;
   const status = specs.metadata?.status;
 
-  const cheapestText = formatPrice(cheapest?.price);
+  const cheapestText = formatPriceNpr(cheapest?.price);
 
   return (
     <>
@@ -498,8 +491,8 @@ export function PhoneDetailView({ phone }) {
           )}
           {range && (range.min || range.max) && (
             <span className="phone-detail-price-range">
-              Range: {formatPrice(range.min) || "—"} –{" "}
-              {formatPrice(range.max) || "—"}
+              Range: {formatPriceNpr(range.min) || "—"} –{" "}
+              {formatPriceNpr(range.max) || "—"}
             </span>
           )}
         </section>
@@ -550,7 +543,7 @@ export function PhoneDetailView({ phone }) {
           <h2>Variants</h2>
           <div className="phone-detail-variant-grid">
             {variants.map((v) => {
-              const priceText = formatPrice(v.price);
+              const priceText = formatPriceNpr(v.price);
               if (!priceText && !v.ram && !v.storage) return null;
               return (
                 <div
