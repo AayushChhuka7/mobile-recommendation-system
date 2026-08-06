@@ -109,6 +109,80 @@ export const userCreationValidation = checkSchema({
       },
     },
   },
+  // ---- Issue 2 — onboarding fields ----------------------------------------
+  // All optional. The FE collects them on the new /register/preferences
+  // step and forwards them in the same POST /auth/register body so the
+  // user + OTP + preferences land atomically in one transaction.
+  persona: {
+    in: ["body"],
+    optional: { options: { checkFalsy: true } },
+    isIn: {
+      options: [["gamer", "camera", "battery", "allrounder"]],
+      errorMessage: "persona must be one of: gamer, camera, battery, allrounder",
+    },
+  },
+  budgetMin: {
+    in: ["body"],
+    optional: { options: { checkFalsy: true } },
+    isFloat: {
+      options: { min: 0, max: 100000 },
+      errorMessage: "budgetMin must be a number between 0 and 100000",
+    },
+    toFloat: true,
+  },
+  budgetMax: {
+    in: ["body"],
+    optional: { options: { checkFalsy: true } },
+    isFloat: {
+      options: { min: 1, max: 100000 },
+      errorMessage: "budgetMax must be a number between 1 and 100000",
+    },
+    toFloat: true,
+  },
+  preferredBrands: {
+    in: ["body"],
+    optional: { options: { checkFalsy: true } },
+    isArray: {
+      options: { max: 20 },
+      errorMessage: "preferredBrands must be an array of brand names (max 20)",
+    },
+  },
+  "weights.gaming": {
+    in: ["body"],
+    optional: { options: { checkFalsy: true } },
+    isInt: {
+      options: { min: 1, max: 5 },
+      errorMessage: "weights.gaming must be an integer 1..5",
+    },
+    toInt: true,
+  },
+  "weights.camera": {
+    in: ["body"],
+    optional: { options: { checkFalsy: true } },
+    isInt: {
+      options: { min: 1, max: 5 },
+      errorMessage: "weights.camera must be an integer 1..5",
+    },
+    toInt: true,
+  },
+  "weights.battery": {
+    in: ["body"],
+    optional: { options: { checkFalsy: true } },
+    isInt: {
+      options: { min: 1, max: 5 },
+      errorMessage: "weights.battery must be an integer 1..5",
+    },
+    toInt: true,
+  },
+  "weights.display": {
+    in: ["body"],
+    optional: { options: { checkFalsy: true } },
+    isInt: {
+      options: { min: 1, max: 5 },
+      errorMessage: "weights.display must be an integer 1..5",
+    },
+    toInt: true,
+  },
 });
 
 export const userUpdateValidation = checkSchema({

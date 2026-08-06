@@ -46,7 +46,21 @@ authRoutes.post(
   "/register",
   validationWith(
     userCreationValidation,
-    ["name", "email", "password", "confirmPassword", "phoneNo", "roleName"],
+    [
+      "name",
+      "email",
+      "password",
+      "confirmPassword",
+      "phoneNo",
+      "roleName",
+      // Issue 2 — onboarding fields forwarded in the same POST body so
+      // the user + OTP + preferences land in one atomic transaction.
+      "persona",
+      "budgetMin",
+      "budgetMax",
+      "preferredBrands",
+      "weights",
+    ],
   ),
   registerUser,
 );

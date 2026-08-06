@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../hooks/useAuth.jsx";
+import { useEventLogger } from "../hooks/useEventLogger.jsx";
+import { formatPriceNpr, eurFromNpr } from "../utils/formatPrice.js";
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneListing.css";
@@ -39,6 +41,10 @@ function unwrapPhones(res) {
 function PhoneListing() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  // Step B — fire-and-forget hook for behaviour events. Used for
+  // search submit, filter apply, and phone-card click. The hook
+  // swallows errors so it can never break a user-facing interaction.
+  const logEvent = useEventLogger();
 
   const [phones, setPhones] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -85,8 +91,13 @@ function PhoneListing() {
       const params = { page, limit: 12, sort };
 
       if (selectedBrand) params.brand = selectedBrand;
-      if (minPrice) params.minPrice = minPrice;
-      if (maxPrice) params.maxPrice = maxPrice;
+      // Filter price inputs are in NPR; the BE stores everything in EUR,
+      // so convert before sending. `eurFromNpr` returns `null` for empty
+      // / non-numeric input — we drop those to keep the query clean.
+      const minPriceEur = minPrice ? eurFromNpr(minPrice) : null;
+      const maxPriceEur = maxPrice ? eurFromNpr(maxPrice) : null;
+      if (minPriceEur !== null) params.minPrice = minPriceEur;
+      if (maxPriceEur !== null) params.maxPrice = maxPriceEur;
       if (minRam) params.minRam = minRam;
       if (has5G) params.has5G = "true";
       if (hasNfc) params.hasNfc = "true";
@@ -174,6 +185,11 @@ function PhoneListing() {
     setSearchMode(true);
     setPage(1);
     setShowFilters(false);
+    // Step B — record the search signal so the per-tag BehaviourScore
+    // sees gaming/chipset/brand interest over time.
+    logEvent("search", {
+      payload: { q: term, mode: "query" },
+    });
   };
 
   const handleClearSearch = () => {
@@ -186,6 +202,25 @@ function PhoneListing() {
   const handleApplyFilters = () => {
     setShowFilters(false);
     setPage(1);
+    // Step B — a filter-only "I'm looking for X" signal. The BE
+    // filter logger already records the SearchHistory row server-side;
+    // we just mirror it into the unified event log here so the FE
+    // hook is the single source-of-truth for these signals.
+    logEvent("search", {
+      payload: {
+        mode: "filters",
+        filters: {
+          brand: selectedBrand || null,
+          minPrice: minPrice || null,
+          maxPrice: maxPrice || null,
+          minRam: minRam || null,
+          minBattery: minBattery || null,
+          has5G: !!has5G,
+          hasNfc: !!hasNfc,
+        },
+        sort,
+      },
+    });
   };
 
   const handleClearFilters = () => {
@@ -352,9 +387,11 @@ function PhoneListing() {
               </select>
             </div>
 
-            {/* Price Range */}
+            {/* Price Range
+                The field accepts NPR; the backend stores EUR, so we
+                convert via `eurFromNpr` before the request goes out. */}
             <div className="filter-group">
-              <label className="filter-label">Price (EUR)</label>
+              <label className="filter-label">Price (NPR)</label>
               <div className="filter-range">
                 <input
                   type="number"
@@ -478,7 +515,12 @@ function PhoneListing() {
                   <div
                     key={p.id}
                     className="phone-card"
-                    onClick={() => navigate(`/phones/${p.id}`)}
+                    onClick={() => {
+                      // Step B — log the click signal before navigation
+                      // so the BehaviorScore sees the brand/category bump.
+                      logEvent("click", { phoneId: p.id });
+                      navigate(`/phones/${p.id}`);
+                    }}
                     style={{ cursor: "pointer" }}
                   >
                     <div className="phone-card-top">
@@ -523,7 +565,7 @@ function PhoneListing() {
                       {p.cheapestVariant?.price && (
                         <div className="phone-spec phone-price">
                           <TagIcon />
-                          <span>€{p.cheapestVariant.price}</span>
+                          <span>{formatPriceNpr(p.cheapestVariant.price) ?? "—"}</span>
                         </div>
                       )}
                     </div>

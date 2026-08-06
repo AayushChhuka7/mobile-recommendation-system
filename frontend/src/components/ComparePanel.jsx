@@ -1,7 +1,16 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { postCompareMl } from "../services/recommend";
-import { CloseIcon, SearchIcon, CameraIcon, BatteryIcon, CpuIcon, TagIcon } from "./AuthShared";
+import { formatPriceNpr } from "../utils/formatPrice.js";
+import {
+  CloseIcon,
+  SearchIcon,
+  CameraIcon,
+  BatteryIcon,
+  CpuIcon,
+  TagIcon,
+} from "./AuthShared";
 import "./ComparePanel.css";
 
 // ---- Debounce helper ----
@@ -108,7 +117,8 @@ function PhoneAutocomplete({ label, selectedPhone, onSelect, placeholder }) {
           value={selectedPhone ? selectedPhone.modelName : query}
           onChange={handleInputChange}
           onFocus={() => {
-            if (suggestions.length > 0 || query.length >= 1) setShowDropdown(true);
+            if (suggestions.length > 0 || query.length >= 1)
+              setShowDropdown(true);
           }}
         />
         {isLoading && <span className="cmp-spinner">⟳</span>}
@@ -153,18 +163,21 @@ function PhoneAutocomplete({ label, selectedPhone, onSelect, placeholder }) {
                 </div>
                 {p.cheapestVariant?.price && (
                   <span className="cmp-suggestion-price">
-                    €{p.cheapestVariant.price}
+                    {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
                   </span>
                 )}
               </li>
             ))}
           </ul>
         )}
-        {showDropdown && !isLoading && suggestions.length === 0 && query.length >= 1 && (
-          <ul className="cmp-dropdown" role="listbox">
-            <li className="cmp-no-results">No phones found</li>
-          </ul>
-        )}
+        {showDropdown &&
+          !isLoading &&
+          suggestions.length === 0 &&
+          query.length >= 1 && (
+            <ul className="cmp-dropdown" role="listbox">
+              <li className="cmp-no-results">No phones found</li>
+            </ul>
+          )}
       </div>
     </div>
   );
@@ -211,31 +224,116 @@ function getWinner(val1, val2, higherIsBetter = true) {
   }
   if (val2 == null || val2 === "" || val2 === 0) return "phone1";
   if (val1 === val2) return "tie";
-  return higherIsBetter ? (val1 > val2 ? "phone1" : "phone2") : val1 < val2 ? "phone1" : "phone2";
+  return higherIsBetter
+    ? val1 > val2
+      ? "phone1"
+      : "phone2"
+    : val1 < val2
+      ? "phone1"
+      : "phone2";
 }
 
 // ---- Main Compare Panel Component ----
+//
+// State persistence
+// -----------------
+// The user selects two phones, clicks one to view its spec page, hits
+// browser Back, and expects the panel to come back with both phones
+// still selected. Because the dashboard unmounts during the
+// `/phones/:id` detour (App.jsx routes that path to <PhoneDetail />,
+// not <Dashboard />), the panel's React state is lost across the
+// trip. We mirror phone1/phone2/compareResult into sessionStorage
+// and re-hydrate on (re)mount + on every open transition. Storage
+// is cleared only when the user explicitly clicks "Compare different
+// phones" — clicking the X to close the panel keeps the storage
+// alive so a later reopen restores the same selections.
+const CMP_STORAGE_KEYS = {
+  phone1: "compare.phone1",
+  phone2: "compare.phone2",
+  result: "compare.result",
+};
+
+function readCmpStorage(key) {
+  try {
+    const raw = sessionStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCmpStorage(key, value) {
+  try {
+    if (value == null) sessionStorage.removeItem(key);
+    else sessionStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* sessionStorage unavailable — ignore */
+  }
+}
+
+function clearCmpStorage() {
+  try {
+    sessionStorage.removeItem(CMP_STORAGE_KEYS.phone1);
+    sessionStorage.removeItem(CMP_STORAGE_KEYS.phone2);
+    sessionStorage.removeItem(CMP_STORAGE_KEYS.result);
+  } catch {
+    /* ignore */
+  }
+}
+
 function ComparePanel({ open, onClose }) {
-  const [phone1, setPhone1] = useState(null);
-  const [phone2, setPhone2] = useState(null);
-  const [compareResult, setCompareResult] = useState(null);
+  const navigate = useNavigate();
+  const [phone1, setPhone1] = useState(() =>
+    readCmpStorage(CMP_STORAGE_KEYS.phone1),
+  );
+  const [phone2, setPhone2] = useState(() =>
+    readCmpStorage(CMP_STORAGE_KEYS.phone2),
+  );
+  const [compareResult, setCompareResult] = useState(() =>
+    readCmpStorage(CMP_STORAGE_KEYS.result),
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [validationError, setValidationError] = useState("");
 
-  // Reset state when panel is closed so reopening starts fresh
+  // Persist the selections + ML result so they survive the
+  // `/phones/:id` → Back round-trip. Each effect only writes when the
+  // corresponding state actually changes; `null` clears the storage
+  // entry so a deliberate single-phone clear (autocomplete X button)
+  // is reflected.
   useEffect(() => {
-    if (!open) {
-      // Slight delay so the close animation doesn't flash new content
-      const t = setTimeout(() => {
-        setPhone1(null);
-        setPhone2(null);
-        setCompareResult(null);
-        setError("");
-        setValidationError("");
-      }, 250);
-      return () => clearTimeout(t);
+    writeCmpStorage(CMP_STORAGE_KEYS.phone1, phone1);
+  }, [phone1]);
+  useEffect(() => {
+    writeCmpStorage(CMP_STORAGE_KEYS.phone2, phone2);
+  }, [phone2]);
+  useEffect(() => {
+    writeCmpStorage(CMP_STORAGE_KEYS.result, compareResult);
+  }, [compareResult]);
+
+  // React to the panel's open/closed transitions. On open we pull
+  // the latest values out of sessionStorage (handles the case where
+  // the user closed the panel with X and later reopens it — without
+  // this the closed-state cleanup below would wipe the visible
+  // selections on the way back). On close we wipe React state after
+  // the slide-out animation, but deliberately keep the storage so
+  // the next open can re-hydrate from it. The cleanup clears the
+  // pending timeout if the panel re-opens within the 250ms window.
+  useEffect(() => {
+    if (open) {
+      setPhone1(readCmpStorage(CMP_STORAGE_KEYS.phone1));
+      setPhone2(readCmpStorage(CMP_STORAGE_KEYS.phone2));
+      setCompareResult(readCmpStorage(CMP_STORAGE_KEYS.result));
+      return;
     }
+    const t = setTimeout(() => {
+      setPhone1(null);
+      setPhone2(null);
+      setCompareResult(null);
+      setError("");
+      setValidationError("");
+    }, 250);
+    return () => clearTimeout(t);
   }, [open]);
 
   const handleCompare = useCallback(async () => {
@@ -281,6 +379,9 @@ function ComparePanel({ open, onClose }) {
     setCompareResult(null);
     setError("");
     setValidationError("");
+    // User explicitly asked to start over — drop the persisted
+    // selections too so a future reopen starts from a blank panel.
+    clearCmpStorage();
   };
 
   // Derive per-dimension rows + overall winner from the ML response.
@@ -295,21 +396,15 @@ function ComparePanel({ open, onClose }) {
   const formatMlScore = (v) =>
     v == null || Number.isNaN(Number(v)) ? "—" : Number(v).toFixed(1);
 
-  const formatMlPrice = (price) =>
-    price == null || Number.isNaN(Number(price))
-      ? "—"
-      : `€${Number(price).toLocaleString()}`;
-
   // Map the ML "Winner" string to a UI side key.
   const overallWinnerName = compareResult?.Overall_Winner || null;
-  const overallWinnerKey =
-    !compareResult
-      ? null
-      : overallWinnerName === compareResult.Phone_A
-        ? "phone1"
-        : overallWinnerName === compareResult.Phone_B
-          ? "phone2"
-          : null; // "Tie" or missing
+  const overallWinnerKey = !compareResult
+    ? null
+    : overallWinnerName === compareResult.Phone_A
+      ? "phone1"
+      : overallWinnerName === compareResult.Phone_B
+        ? "phone2"
+        : null; // "Tie" or missing
   const isOverallTie = overallWinnerName === "Tie";
 
   return (
@@ -384,10 +479,26 @@ function ComparePanel({ open, onClose }) {
                 if (!phone) return null;
                 const phoneKey = idx === 0 ? "phone1" : "phone2";
                 const isOverallWinner = overallWinnerKey === phoneKey;
+                const handleCardClick = () => {
+                  if (phone.id) navigate(`/phones/${phone.id}`);
+                };
+                const handleCardKeyDown = (e) => {
+                  if (!phone.id) return;
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleCardClick();
+                  }
+                };
                 return (
                   <div
                     key={phone.id}
                     className={`cmp-result-card ${isOverallWinner ? "winner" : ""}`}
+                    role="button"
+                    tabIndex={phone.id ? 0 : -1}
+                    aria-label={`View ${phone.modelName || "phone"} details`}
+                    onClick={handleCardClick}
+                    onKeyDown={handleCardKeyDown}
+                    style={{ cursor: phone.id ? "pointer" : "default" }}
                   >
                     {isOverallWinner && !isOverallTie && (
                       <span className="cmp-overall-badge">🏆 ML Pick</span>
@@ -409,9 +520,11 @@ function ComparePanel({ open, onClose }) {
                     <div className="cmp-result-price">
                       <TagIcon />
                       <span>
-                        {formatMlPrice(
-                          idx === 0 ? compareResult?.Price_A : compareResult?.Price_B,
-                        )}
+                        {formatPriceNpr(
+                          idx === 0
+                            ? compareResult?.Price_A
+                            : compareResult?.Price_B,
+                        ) ?? "—"}
                       </span>
                     </div>
                     <div className="cmp-result-specs">
@@ -462,7 +575,13 @@ function ComparePanel({ open, onClose }) {
                   );
                 })
               ) : (
-                <p style={{ fontSize: 12.5, color: "var(--text-muted)", margin: 0 }}>
+                <p
+                  style={{
+                    fontSize: 12.5,
+                    color: "var(--text-muted)",
+                    margin: 0,
+                  }}
+                >
                   No per-dimension scores returned.
                 </p>
               )}
@@ -476,9 +595,7 @@ function ComparePanel({ open, onClose }) {
                 <h4 className="cmp-categories-title">Why these scores?</h4>
                 <div className="cmp-shap-grid">
                   <div>
-                    <div className="cmp-shap-name">
-                      {compareResult.Phone_A}
-                    </div>
+                    <div className="cmp-shap-name">{compareResult.Phone_A}</div>
                     <ul className="cmp-shap-list">
                       {(compareResult.SHAP_A || []).map((s) => (
                         <li key={s.feature}>
@@ -497,9 +614,7 @@ function ComparePanel({ open, onClose }) {
                     </ul>
                   </div>
                   <div>
-                    <div className="cmp-shap-name">
-                      {compareResult.Phone_B}
-                    </div>
+                    <div className="cmp-shap-name">{compareResult.Phone_B}</div>
                     <ul className="cmp-shap-list">
                       {(compareResult.SHAP_B || []).map((s) => (
                         <li key={s.feature}>

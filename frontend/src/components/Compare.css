@@ -114,6 +114,22 @@
   min-width: 0;
 }
 
+.compare-ml-headline-card {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  transition: box-shadow 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+
+.compare-ml-headline-card:hover,
+.compare-ml-headline-card:focus-visible {
+  outline: none;
+  background: #f8fafc;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.12);
+  transform: translateY(-1px);
+}
+
 .compare-ml-headline-side:nth-child(3) {
   align-items: flex-end;
   text-align: right;

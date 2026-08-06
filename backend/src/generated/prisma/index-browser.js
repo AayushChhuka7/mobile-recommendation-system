@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.8.0
- * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
+ * Prisma Client JS version: 7.9.0
+ * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
  */
 Prisma.prismaVersion = {
-  client: "7.8.0",
-  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
+  client: "7.9.0",
+  engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -260,6 +260,7 @@ exports.Prisma.UserPreferenceScalarFieldEnum = {
   cameraPreference: 'cameraPreference',
   usageType: 'usageType',
   preferredBrandId: 'preferredBrandId',
+  preferredBrands: 'preferredBrands',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -285,6 +286,25 @@ exports.Prisma.RecommendationHistoryScalarFieldEnum = {
   purchased: 'purchased'
 };
 
+exports.Prisma.RecommendationLogScalarFieldEnum = {
+  logId: 'logId',
+  userId: 'userId',
+  phoneId: 'phoneId',
+  finalScore: 'finalScore',
+  rank: 'rank',
+  shownAt: 'shownAt',
+  clicked: 'clicked'
+};
+
+exports.Prisma.RecommendationCallScalarFieldEnum = {
+  callId: 'callId',
+  userId: 'userId',
+  persona: 'persona',
+  budget: 'budget',
+  topResults: 'topResults',
+  servedAt: 'servedAt'
+};
+
 exports.Prisma.CustomerProfileScalarFieldEnum = {
   profileId: 'profileId',
   userId: 'userId',
@@ -307,7 +327,8 @@ exports.Prisma.CustomerProfileScalarFieldEnum = {
   totalRecommendations: 'totalRecommendations',
   totalComparisons: 'totalComparisons',
   totalWishlist: 'totalWishlist',
-  lastUpdated: 'lastUpdated'
+  lastUpdated: 'lastUpdated',
+  lastAggregatedAt: 'lastAggregatedAt'
 };
 
 exports.Prisma.WishlistScalarFieldEnum = {
@@ -325,6 +346,41 @@ exports.Prisma.ComparisonHistoryScalarFieldEnum = {
   comparedDate: 'comparedDate'
 };
 
+exports.Prisma.PaymentHistoryScalarFieldEnum = {
+  paymentId: 'paymentId',
+  userId: 'userId',
+  purchaseDate: 'purchaseDate',
+  purchaseAmountNpr: 'purchaseAmountNpr',
+  paymentMethod: 'paymentMethod',
+  warrantyOpted: 'warrantyOpted',
+  exchangeHistory: 'exchangeHistory',
+  phoneLabel: 'phoneLabel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SearchHistoryScalarFieldEnum = {
+  searchId: 'searchId',
+  userId: 'userId',
+  searchQuery: 'searchQuery',
+  searchedAt: 'searchedAt',
+  sourceLine: 'sourceLine',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BrowsingHistoryScalarFieldEnum = {
+  browsingId: 'browsingId',
+  userId: 'userId',
+  phoneLabel: 'phoneLabel',
+  phoneId: 'phoneId',
+  brandName: 'brandName',
+  viewedAt: 'viewedAt',
+  sourceLine: 'sourceLine',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.AdminStatsCacheScalarFieldEnum = {
   statId: 'statId',
   computedDate: 'computedDate',
@@ -335,6 +391,23 @@ exports.Prisma.AdminStatsCacheScalarFieldEnum = {
   avgUserBudget: 'avgUserBudget',
   mostPopularPersona: 'mostPopularPersona',
   avgCompatibility: 'avgCompatibility'
+};
+
+exports.Prisma.EventScalarFieldEnum = {
+  eventId: 'eventId',
+  userId: 'userId',
+  eventType: 'eventType',
+  phoneId: 'phoneId',
+  payload: 'payload',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.BehaviorScoreScalarFieldEnum = {
+  userId: 'userId',
+  tag: 'tag',
+  score: 'score',
+  updatedAt: 'updatedAt',
+  reasons: 'reasons'
 };
 
 exports.Prisma.SortOrder = {
@@ -419,10 +492,17 @@ exports.Prisma.ModelName = {
   UserProfile: 'UserProfile',
   UserPreference: 'UserPreference',
   RecommendationHistory: 'RecommendationHistory',
+  RecommendationLog: 'RecommendationLog',
+  RecommendationCall: 'RecommendationCall',
   CustomerProfile: 'CustomerProfile',
   Wishlist: 'Wishlist',
   ComparisonHistory: 'ComparisonHistory',
-  AdminStatsCache: 'AdminStatsCache'
+  PaymentHistory: 'PaymentHistory',
+  SearchHistory: 'SearchHistory',
+  BrowsingHistory: 'BrowsingHistory',
+  AdminStatsCache: 'AdminStatsCache',
+  Event: 'Event',
+  BehaviorScore: 'BehaviorScore'
 };
 
 /**

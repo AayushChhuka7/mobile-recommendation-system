@@ -1,0 +1,51 @@
+{
+  "csvPath": "D:\\mobile-recommendation-system\\dataset\\customer_dataset.csv",
+  "startedAt": "2026-07-26T03:47:33.750Z",
+  "finishedAt": "2026-07-26T03:59:37.171Z",
+  "durationMs": 724023,
+  "totalRows": 16608,
+  "invalidCustomerRows": 0,
+  "rowWarnings": 0,
+  "totalCustomers": 4557,
+  "usersCreated": 4557,
+  "usersSkippedExisting": 0,
+  "usersWithZeroBudget": 0,
+  "wishlistItemsSeen": 49675,
+  "wishlistItemsImported": 49494,
+  "wishlistItemsSkippedUnknownBrand": 0,
+  "wishlistItemsSkippedUnknownPhone": 0,
+  "wishlistItemsSkippedDuplicate": 181,
+  "wishlistItemsSkippedInvalid": 0,
+  "purchasesSeen": 16608,
+  "purchasesImported": 16608,
+  "purchasesSkippedInvalid": 0,
+  "paymentRecordsCreated": 16608,
+  "browseEventsSeen": 138189,
+  "browseEventsImported": 138189,
+  "browseEventsSkippedInvalid": 0,
+  "searchEventsSeen": 138189,
+  "searchEventsImported": 138189,
+  "searchEventsSkippedInvalid": 0,
+  "errors": 0,
+  "errorMessages": [],
+  "preferredBrandsUnmatched": [],
+  "budgetSegmentStats": {
+    "mapped": 1666,
+    "skipped": 2891,
+    "byValue": {
+      "mid-range": 402,
+      "budget": 414,
+      "premium mid-range": 423,
+      "flagship": 427
+    }
+  },
+  "unmappedBudgetCategories": {
+    "battery-focused": 424,
+    "gaming": 403,
+    "foldable": 413,
+    "compact phones": 384,
+    "5g phones": 408,
+    "rugged": 445,
+    "camera-centric": 414
+  }
+}
