@@ -1,0 +1,66 @@
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Page of Approval}{ii}{chapter*.1}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Copyright}{iii}{chapter*.2}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Acknowledgements}{iv}{chapter*.3}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Abstract}{v}{chapter*.4}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Contents}{viii}{chapter*.5}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Figures}{ix}{chapter*.6}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{x}{chapter*.7}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Abbreviations}{xi}{chapter*.8}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.9}%
+\contentsline {section}{\numberline {1.1}Background}{1}{section.10}%
+\contentsline {section}{\numberline {1.2}Problem Statement}{2}{section.11}%
+\contentsline {section}{\numberline {1.3}Aim and Objectives}{3}{section.12}%
+\contentsline {section}{\numberline {1.4}Scope}{3}{section.17}%
+\contentsline {chapter}{\numberline {2}Literature Review}{4}{chapter.18}%
+\contentsline {section}{\numberline {2.1}Related Work}{4}{section.19}%
+\contentsline {section}{\numberline {2.2}Related Theory}{7}{section.20}%
+\contentsline {subsection}{\numberline {2.2.1}Gradient Boosting}{7}{subsection.21}%
+\contentsline {subsection}{\numberline {2.2.2}XGBoost}{7}{subsection.22}%
+\contentsline {subsection}{\numberline {2.2.3}SHAP (SHapley Additive exPlanations)}{8}{subsection.23}%
+\contentsline {subsection}{\numberline {2.2.4}K-Means Clustering}{8}{subsection.24}%
+\contentsline {chapter}{\numberline {3}Methodology}{9}{chapter.25}%
+\contentsline {section}{\numberline {3.1}System Flowchart}{9}{section.26}%
+\contentsline {section}{\numberline {3.2}Block Diagram of the System}{11}{section.28}%
+\contentsline {subsection}{\numberline {3.2.1}Data Collection}{11}{subsection.30}%
+\contentsline {subsubsection}{Phone Specifications}{12}{subsubsection*.32}%
+\contentsline {subsubsection}{Benchmark Scores}{13}{subsubsection*.33}%
+\contentsline {subsubsection}{Customer Transaction Data}{13}{subsubsection*.34}%
+\contentsline {section}{\numberline {3.3}Data Preprocessing}{13}{section.35}%
+\contentsline {subsection}{\numberline {3.3.1}Phone Dataset Preprocessing}{14}{subsection.37}%
+\contentsline {subsection}{\numberline {3.3.2}Customer Dataset Preprocessing}{15}{subsection.38}%
+\contentsline {subsection}{\numberline {3.3.3}Feature Engineering}{15}{subsection.39}%
+\contentsline {subsection}{\numberline {3.3.4}Scaling, Outlier Handling, and Train Test Preparation}{15}{subsection.40}%
+\contentsline {section}{\numberline {3.4}Methods and Algorithms}{16}{section.41}%
+\contentsline {subsection}{\numberline {3.4.1}XGBoost Algorithm}{16}{subsection.42}%
+\contentsline {subsection}{\numberline {3.4.2}K-Means Clustering for Customer Segmentation}{17}{subsection.47}%
+\contentsline {section}{\numberline {3.5}Evaluation Metrics}{19}{section.50}%
+\contentsline {subsection}{\numberline {3.5.1}Metrics for the Regressor}{19}{subsection.51}%
+\contentsline {subsection}{\numberline {3.5.2}Metrics for the Segmentation}{22}{subsection.59}%
+\contentsline {subsection}{\numberline {3.5.3}Metrics for the Recommendation Engine}{22}{subsection.61}%
+\contentsline {chapter}{\numberline {4}Hardware Configuration / Experimental Setup}{24}{chapter.64}%
+\contentsline {section}{\numberline {4.1}Software and Tools}{24}{section.65}%
+\contentsline {section}{\numberline {4.2}Hardware Configuration}{24}{section.66}%
+\contentsline {chapter}{\numberline {5}System Design}{26}{chapter.67}%
+\contentsline {section}{\numberline {5.1}Requirement Specification}{26}{section.68}%
+\contentsline {subsection}{\numberline {5.1.1}Functional Requirements}{26}{subsection.69}%
+\contentsline {subsection}{\numberline {5.1.2}Non-Functional Requirements}{26}{subsection.76}%
+\contentsline {section}{\numberline {5.2}System Architecture}{27}{section.82}%
+\contentsline {section}{\numberline {5.3}Use Case Diagram}{29}{section.84}%
+\contentsline {section}{\numberline {5.4}Data Flow Diagram}{30}{section.86}%
+\contentsline {section}{\numberline {5.5}Iterative Development Model}{32}{section.89}%
+\contentsline {section}{\numberline {5.6}Project Work Plan}{33}{section.91}%
+\contentsline {chapter}{\numberline {6}Results \& Discussion}{34}{chapter.93}%
+\contentsline {section}{\numberline {6.1}Experiment Setup}{34}{section.94}%
+\contentsline {section}{\numberline {6.2}Data Preparation Results}{34}{section.95}%
+\contentsline {section}{\numberline {6.3}Machine Learning Results}{35}{section.98}%
+\contentsline {section}{\numberline {6.4}Recommendation System Output}{39}{section.104}%
+\contentsline {section}{\numberline {6.5}Software Development Approach}{39}{section.105}%
+\contentsline {section}{\numberline {6.6}Model Deployment}{40}{section.106}%
+\contentsline {section}{\numberline {6.7}User Interface and Backend}{40}{section.107}%
+\contentsline {section}{\numberline {6.8}Testing, Evaluation, and Validation}{40}{section.109}%
+\contentsline {chapter}{\numberline {7}Conclusions}{42}{chapter.110}%
+\contentsline {chapter}{\numberline {8}Limitations and Future Enhancement}{43}{chapter.111}%
+\contentsline {section}{\numberline {8.1}Limitations}{43}{section.112}%
+\contentsline {section}{\numberline {8.2}Future Enhancement}{43}{section.118}%
+\contentsline {section}{References}{43}{Item.123}%
+\contentsline {section}{Appendices}{46}{chapter*.125}%
