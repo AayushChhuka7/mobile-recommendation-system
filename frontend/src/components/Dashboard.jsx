@@ -156,8 +156,21 @@ const personaToCategory = (persona) => {
 function buildPhonesQuery(filters, sort, extra = {}) {
   const params = { limit: 6, sort, ...extra };
   if (filters.brand) params.brand = filters.brand;
-  if (filters.minPrice) params.minPrice = filters.minPrice;
-  if (filters.maxPrice) params.maxPrice = filters.maxPrice;
+  // The dashboard's phone cards display prices in NPR (see
+  // `formatPriceNpr`) but the backend stores `phoneVariants.price`
+  // in EUR. The filter inputs accept the value the user sees on
+  // the card (NPR), so convert NPR → EUR right before sending —
+  // reusing `eurFromNpr` (the inverse of `formatPriceNpr`). Without
+  // this, a user typing the on-screen NPR max sees results unchanged
+  // because the backend runs `price <= 135720` against a EUR column.
+  if (filters.minPrice) {
+    const eur = eurFromNpr(filters.minPrice);
+    if (eur !== null) params.minPrice = eur;
+  }
+  if (filters.maxPrice) {
+    const eur = eurFromNpr(filters.maxPrice);
+    if (eur !== null) params.maxPrice = eur;
+  }
   if (filters.minRam) params.minRam = filters.minRam;
   if (filters.minBattery) params.minBattery = filters.minBattery;
   if (filters.os) params.os = filters.os;
@@ -285,6 +298,13 @@ function Dashboard() {
   const [modalRecs, setModalRecs] = useState(null);
   const [modalRecsLoading, setModalRecsLoading] = useState(false);
   const [modalRecsError, setModalRecsError] = useState("");
+  // Tracks which flow produced the currently-displayed recommendations:
+  //   "auto"   → from the on-mount `getAutoRecommendations` call
+  //   "manual" → from the "Recommend Me a Phone" click handler
+  //   null     → no recs displayed (or the user just hit "Clear")
+  // Used purely to gate three small UI fragments (Match Score, Clear
+  // button, Boosted badge) — never to alter the recommendation pipeline.
+  const [recommendationSource, setRecommendationSource] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   // Live-typeahead suggestions for the search bar. Reuses the same
@@ -343,10 +363,7 @@ function Dashboard() {
   // serialises to `{}` — fine, the lazy init above ignores it.
   useEffect(() => {
     try {
-      localStorage.setItem(
-        FAVORITES_STORAGE_KEY,
-        JSON.stringify(favorites),
-      );
+      localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites));
     } catch (err) {
       console.warn("Favourites persist skipped:", err?.message || err);
     }
@@ -534,6 +551,9 @@ function Dashboard() {
       const { results, defaultedAt } = await getAutoRecommendations();
       if (ticket !== autoRecIgnoreRef.current) return;
       setGlobalRecs(results);
+      // Tag the persona + mark the source as "auto" so the three
+      // UI gates (Match Score / Clear button / Boosted badge) hide.
+      setRecommendationSource("auto");
       // Tag the persona in the recs header. If both defaulted, surface
       // an explicit "auto" persona label so the user understands the
       // system cold-started.
@@ -557,7 +577,7 @@ function Dashboard() {
         setGlobalRecsLoading(false);
       }
     }
-  }, [user?.userId, user?.id]);
+  }, [user?.userId, user?.id, recommendationSource]);
 
   // Fire once on Dashboard mount so the user sees personalised picks
   // without clicking anything. Subsequent re-fetches happen only when
@@ -797,7 +817,9 @@ function Dashboard() {
   const handleFindPhone = useCallback(async () => {
     const max = Number(budgetMax);
     if (!Number.isFinite(max) || max <= 0) {
-      setModalRecsError("Please enter a maximum budget before finding your phone.");
+      setModalRecsError(
+        "Please enter a maximum budget before finding your phone.",
+      );
       return;
     }
     const min = Number(budgetMin);
@@ -835,10 +857,12 @@ function Dashboard() {
         persona,
         budget,
         preferences,
-        // Issue 1 — render the full ranked catalog (up to 200) instead
-        // of the historical 6-picks slice. Same fusion pipeline; the BE
-        // returns phones in descending `matchScore` order.
-        topN: 200,
+        // Two-stage pipeline trigger. The BE detects topN === 5 and
+        // switches off the 5-signal fusionRank and onto the
+        // rule-based → content-based → top-5 pipeline. The
+        // auto-recommend path on dashboard mount still hits
+        // GET /recommend/auto and is unaffected.
+        topN: 5,
       });
       setModalRecs(results);
 
@@ -864,13 +888,7 @@ function Dashboard() {
     } finally {
       setModalRecsLoading(false);
     }
-  }, [
-    budgetMin,
-    budgetMax,
-    selectedCategory,
-    weights,
-    weightsTouched,
-  ]);
+  }, [budgetMin, budgetMax, selectedCategory, weights, weightsTouched]);
 
   // Clear / refresh the global behavior-based recommendations only.
   // The modal's results are independent — they are not touched here.
@@ -879,6 +897,11 @@ function Dashboard() {
     setGlobalRecsError("");
     setGlobalRecsPersona(null);
     setGlobalRecsExpanded(false);
+    // Flip the source back to null so the auto-recommend effect
+    // re-eligible to run and re-fetch the automatic list. This
+    // restores the dashboard to the same auto-recommendation state
+    // it had on initial mount — same cards, same hidden UI elements.
+    setRecommendationSource(null);
   }, []);
 
   // Re-fetch the global behavior-based recommendations. The user
@@ -992,11 +1015,11 @@ function Dashboard() {
       minPrice:
         pendingFilters.minPrice === ""
           ? ""
-          : eurFromNpr(pendingFilters.minPrice) ?? "",
+          : (eurFromNpr(pendingFilters.minPrice) ?? ""),
       maxPrice:
         pendingFilters.maxPrice === ""
           ? ""
-          : eurFromNpr(pendingFilters.maxPrice) ?? "",
+          : (eurFromNpr(pendingFilters.maxPrice) ?? ""),
     };
     setFilters(filtersToApply);
     setShowFilters(false);
@@ -1560,207 +1583,231 @@ function Dashboard() {
           </div>
         )}
 
-        {globalRecs && !globalRecsLoading && page === 1 && !searchTerm && activeFilterCount === 0 && (
-          <section
-            className="dash-recs-section"
-            aria-label="Top phones for you"
-          >
-            <div className="dash-recs-header">
-              <div className="dash-recs-title">
-                <h2>Top phones for you</h2>
-                {globalRecsPersona && (
-                  <span className="dash-recs-eyebrow">
-                    Tuned for your {globalRecsPersona.toLowerCase()} persona
-                  </span>
-                )}
-              </div>
-              <div className="dash-recs-header-actions">
-                <button
-                  type="button"
-                  className="btn btn-outline btn-small"
-                  onClick={handleRefreshGlobalRecs}
-                  disabled={globalRecsLoading}
-                  title="Re-fetch picks from your latest search, view, compare, and recommend activity"
-                >
-                  Refresh
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline btn-small"
-                  onClick={handleClearGlobalRecs}
-                >
-                  Clear recommendations
-                </button>
-              </div>
-            </div>
-            {globalRecs.length === 0 ? (
-              <p className="dash-status">
-                No matches for the chosen persona and budget. Try widening your
-                budget or picking a different category.
-              </p>
-            ) : (
-              <>
-                <div className="phone-grid">
-                  {globalRecs.slice(0, globalRecsExpanded ? 32 : 8).map((r) => {
-                    const isClickable = r.id && r.inDatabase !== false;
-                    const handleRecClick = () => {
-                      if (isClickable) navigate(`/phones/${r.id}`);
-                    };
-                    const handleRecKeyDown = (e) => {
-                      if (!isClickable) return;
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleRecClick();
-                      }
-                    };
-                    return (
-                      <div
-                        key={r.id || `${r.brand?.name}-${r.modelName}`}
-                        className="phone-card rec-card"
-                        role={isClickable ? "button" : undefined}
-                        tabIndex={isClickable ? 0 : -1}
-                        aria-label={
-                          isClickable
-                            ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
-                            : undefined
-                        }
-                        onClick={handleRecClick}
-                        onKeyDown={handleRecKeyDown}
-                        onMouseEnter={() => r.id && setHoveredCard(r.id)}
-                        onMouseLeave={() => setHoveredCard(null)}
-                        style={{ cursor: isClickable ? "pointer" : "default" }}
-                      >
-                        <div className="phone-card-top">
-                          <div className="phone-card-image">
-                            {r.imageUrl ? (
-                              <img
-                                src={r.imageUrl}
-                                alt={r.modelName}
-                                onError={(e) => {
-                                  e.target.style.display = "none";
-                                  e.target.parentElement.classList.add(
-                                    "no-image",
-                                  );
-                                }}
-                              />
-                            ) : (
-                              <span className="phone-card-emoji">📱</span>
-                            )}
-                            {typeof r.matchScore === "number" && (
-                              <span
-                                className="rec-match-badge"
-                                title="Match score from the recommender"
-                              >
-                                {Math.min(
-                                  100,
-                                  Math.round(r.matchScore * 10) / 10,
-                                ).toFixed(1)}
-                                % match
-                              </span>
-                            )}
-                            {r.id && (
-                              <button
-                                type="button"
-                                className="phone-card-favorite"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setFavorites((fav) => {
-                                    if (fav[r.id]) {
-                                      const next = { ...fav };
-                                      delete next[r.id];
-                                      return next;
-                                    }
-                                    return { ...fav, [r.id]: r };
-                                  });
-                                }}
-                                aria-label={
-                                  favorites[r.id]
-                                    ? "Remove from favorites"
-                                    : "Add to favorites"
-                                }
-                                aria-pressed={!!favorites[r.id]}
-                                title={
-                                  favorites[r.id]
-                                    ? "Favorited"
-                                    : "Add to favorites"
-                                }
-                              >
-                                <HeartIcon filled={!!favorites[r.id]} />
-                              </button>
-                            )}
-                          </div>
-                          <div className="phone-card-name">{r.modelName}</div>
-                        </div>
-
-                        <div className="phone-card-details">
-                          {r.keySpecs?.os && (
-                            <div className="phone-spec">
-                              <CpuIcon />
-                              <span>{r.keySpecs.os}</span>
-                            </div>
-                          )}
-                          {r.keySpecs?.camera && (
-                            <div className="phone-spec">
-                              <CameraIcon />
-                              <span>{r.keySpecs.camera}</span>
-                            </div>
-                          )}
-                          {r.keySpecs?.battery && (
-                            <div className="phone-spec">
-                              <BatteryIcon />
-                              <span>{r.keySpecs.battery} mAh</span>
-                            </div>
-                          )}
-                          {r.cheapestVariant?.price && (
-                            <div className="phone-spec rec-price">
-                              <TagIcon />
-                              <span>
-                                {formatPriceNpr(r.cheapestVariant.price) ?? "—"}
-                                {r.cheapestVariant.ram &&
-                                r.cheapestVariant.storage
-                                  ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
-                                  : ""}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        {Array.isArray(r.why) && r.why.length > 0 && (
-                          <ul
-                            className="rec-why-list"
-                            aria-label="Why this match"
-                          >
-                            {r.why.slice(0, 3).map((reason, idx) => (
-                              <li key={idx}>{reason}</li>
-                            ))}
-                          </ul>
-                        )}
-
-                        {r.inDatabase === false && (
-                          <div className="rec-not-in-db">
-                            Not in our catalog
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+        {globalRecs &&
+          !globalRecsLoading &&
+          page === 1 &&
+          !searchTerm &&
+          activeFilterCount === 0 && (
+            <section
+              className="dash-recs-section"
+              aria-label="Top phones for you"
+            >
+              <div className="dash-recs-header">
+                <div className="dash-recs-title">
+                  <h2>Top phones for you</h2>
+                  {globalRecsPersona && (
+                    <span className="dash-recs-eyebrow">
+                      Tuned for your {globalRecsPersona.toLowerCase()} persona
+                    </span>
+                  )}
                 </div>
-                {globalRecs.length > 10 && (
-                  <div className="dash-recs-see-more">
-                    <button
-                      type="button"
-                      className="btn btn-outline"
-                      onClick={() => setGlobalRecsExpanded((v) => !v)}
-                      aria-expanded={globalRecsExpanded}
-                    >
-                      {globalRecsExpanded ? "Show fewer" : "See more"}
-                    </button>
+                <div className="dash-recs-header-actions">
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-small"
+                    onClick={handleRefreshGlobalRecs}
+                    disabled={globalRecsLoading}
+                    title="Re-fetch picks from your latest search, view, compare, and recommend activity"
+                  >
+                    Refresh
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-outline btn-small"
+                    onClick={handleClearGlobalRecs}
+                  >
+                    Clear recommendations
+                  </button>
+                </div>
+              </div>
+              {globalRecs.length === 0 ? (
+                <p className="dash-status">
+                  No matches for the chosen persona and budget. Try widening
+                  your budget or picking a different category.
+                </p>
+              ) : (
+                <>
+                  <div className="phone-grid">
+                    {globalRecs
+                      .slice(0, globalRecsExpanded ? 32 : 8)
+                      .map((r) => {
+                        const isClickable = r.id && r.inDatabase !== false;
+                        const handleRecClick = () => {
+                          if (isClickable) navigate(`/phones/${r.id}`);
+                        };
+                        const handleRecKeyDown = (e) => {
+                          if (!isClickable) return;
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleRecClick();
+                          }
+                        };
+                        return (
+                          <div
+                            key={r.id || `${r.brand?.name}-${r.modelName}`}
+                            className="phone-card rec-card"
+                            role={isClickable ? "button" : undefined}
+                            tabIndex={isClickable ? 0 : -1}
+                            aria-label={
+                              isClickable
+                                ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
+                                : undefined
+                            }
+                            onClick={handleRecClick}
+                            onKeyDown={handleRecKeyDown}
+                            onMouseEnter={() => r.id && setHoveredCard(r.id)}
+                            onMouseLeave={() => setHoveredCard(null)}
+                            style={{
+                              cursor: isClickable ? "pointer" : "default",
+                            }}
+                          >
+                            <div className="phone-card-top">
+                              <div className="phone-card-image">
+                                {r.imageUrl ? (
+                                  <img
+                                    src={r.imageUrl}
+                                    alt={r.modelName}
+                                    onError={(e) => {
+                                      e.target.style.display = "none";
+                                      e.target.parentElement.classList.add(
+                                        "no-image",
+                                      );
+                                    }}
+                                  />
+                                ) : (
+                                  <span className="phone-card-emoji">📱</span>
+                                )}
+                                {typeof r.matchScore === "number" && (
+                                  <span
+                                    className="rec-match-badge"
+                                    title="Match score from the recommender"
+                                  >
+                                    {Math.min(
+                                      100,
+                                      Math.round(r.matchScore * 10) / 10,
+                                    ).toFixed(1)}
+                                    % match
+                                  </span>
+                                )}
+                                {r.id && (
+                                  <button
+                                    type="button"
+                                    className="phone-card-favorite"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setFavorites((fav) => {
+                                        if (fav[r.id]) {
+                                          const next = { ...fav };
+                                          delete next[r.id];
+                                          return next;
+                                        }
+                                        return { ...fav, [r.id]: r };
+                                      });
+                                    }}
+                                    aria-label={
+                                      favorites[r.id]
+                                        ? "Remove from favorites"
+                                        : "Add to favorites"
+                                    }
+                                    aria-pressed={!!favorites[r.id]}
+                                    title={
+                                      favorites[r.id]
+                                        ? "Favorited"
+                                        : "Add to favorites"
+                                    }
+                                  >
+                                    <HeartIcon filled={!!favorites[r.id]} />
+                                  </button>
+                                )}
+                              </div>
+                              <div className="phone-card-name">
+                                {r.modelName}
+                              </div>
+                            </div>
+
+                            <div className="phone-card-details">
+                              {r.keySpecs?.os && (
+                                <div className="phone-spec">
+                                  <CpuIcon />
+                                  <span>{r.keySpecs.os}</span>
+                                </div>
+                              )}
+                              {r.keySpecs?.camera && (
+                                <div className="phone-spec">
+                                  <CameraIcon />
+                                  <span>{r.keySpecs.camera}</span>
+                                </div>
+                              )}
+                              {r.keySpecs?.battery && (
+                                <div className="phone-spec">
+                                  <BatteryIcon />
+                                  <span>{r.keySpecs.battery} mAh</span>
+                                </div>
+                              )}
+                              {r.cheapestVariant?.price && (
+                                <div className="phone-spec rec-price">
+                                  <TagIcon />
+                                  <span>
+                                    {formatPriceNpr(r.cheapestVariant.price) ??
+                                      "—"}
+                                    {r.cheapestVariant.ram &&
+                                    r.cheapestVariant.storage
+                                      ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
+                                      : ""}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/*
+                        Explainable-AI (SHAP) "why" list — only shown for
+                        manual recommendations. For automatic
+                        recommendations we deliberately suppress this
+                        block so the auto-rec card renders the phone's
+                        normal specs (OS, camera, battery, price,
+                        RAM/Storage) only — identical to a regular
+                        non-recommended phone card. Same
+                        `recommendationSource` flag already gates the
+                        Match Score / Boosted / Clear UI elsewhere.
+                      */}
+                            {Array.isArray(r.why) &&
+                              r.why.length > 0 &&
+                              recommendationSource === "manual" && (
+                                <ul
+                                  className="rec-why-list"
+                                  aria-label="Why this match"
+                                >
+                                  {r.why.slice(0, 3).map((reason, idx) => (
+                                    <li key={idx}>{reason}</li>
+                                  ))}
+                                </ul>
+                              )}
+
+                            {r.inDatabase === false && (
+                              <div className="rec-not-in-db">
+                                Not in our catalog
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
-                )}
-              </>
-            )}
-          </section>
-        )}
+                  {globalRecs.length > 10 && (
+                    <div className="dash-recs-see-more">
+                      <button
+                        type="button"
+                        className="btn btn-outline"
+                        onClick={() => setGlobalRecsExpanded((v) => !v)}
+                        aria-expanded={globalRecsExpanded}
+                      >
+                        {globalRecsExpanded ? "Show fewer" : "See more"}
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </section>
+          )}
 
         {!isLoading && !error && phones.length === 0 && (
           <p className="dash-status">
@@ -1851,7 +1898,9 @@ function Dashboard() {
                         });
                       }}
                       aria-label={
-                        favorites[p.id] ? "Remove from favorites" : "Add to favorites"
+                        favorites[p.id]
+                          ? "Remove from favorites"
+                          : "Add to favorites"
                       }
                       aria-pressed={!!favorites[p.id]}
                       title={favorites[p.id] ? "Favorited" : "Add to favorites"}
@@ -1951,7 +2000,7 @@ function Dashboard() {
             >
               Last »
             </button>
-            </div>
+          </div>
         )}
       </main>
 
@@ -1962,7 +2011,9 @@ function Dashboard() {
         >
           <div
             className={`search-modal dash-recommend-modal ${
-              modalRecs && !modalRecsLoading ? "dash-recommend-modal-results" : ""
+              modalRecs && !modalRecsLoading
+                ? "dash-recommend-modal-results"
+                : ""
             }`}
             role="dialog"
             aria-label="Phone recommendation"
@@ -2025,7 +2076,10 @@ function Dashboard() {
                     })}
                   </div>
 
-                  <div className="questionnaire-section" style={{ marginTop: 20 }}>
+                  <div
+                    className="questionnaire-section"
+                    style={{ marginTop: 20 }}
+                  >
                     <button
                       type="button"
                       className="dash-weights-toggle"
@@ -2073,9 +2127,7 @@ function Dashboard() {
                         <button
                           type="button"
                           className="btn btn-outline btn-small weight-reset-btn"
-                          onClick={() =>
-                            handleCategorySelect(selectedCategory)
-                          }
+                          onClick={() => handleCategorySelect(selectedCategory)}
                         >
                           Reset to{" "}
                           {CATEGORY_OPTIONS.find(
@@ -2087,7 +2139,10 @@ function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="questionnaire-section" style={{ marginTop: 16 }}>
+                  <div
+                    className="questionnaire-section"
+                    style={{ marginTop: 16 }}
+                  >
                     <div
                       className="questionnaire-hint"
                       style={{ marginBottom: 8 }}
@@ -2128,7 +2183,7 @@ function Dashboard() {
                 </>
               )}
 
-            {/* ---- Modal-local results (POST /api/recommend/recommend) ----
+              {/* ---- Modal-local results (POST /api/recommend/recommend) ----
                 Rendered inline inside the modal so the user can see their
                 parameter-based picks without the modal closing. The slice
                 is COMPLETELY independent of `globalRecs` above — these
@@ -2139,164 +2194,166 @@ function Dashboard() {
                 (see backend/src/services/profileService.mjs ::
                 safeRecordRecommendationEvent). It never replaces the
                 global picks outright. */}
-            {modalRecsLoading && (
-              <p
-                className="dash-status"
-                style={{ marginTop: 16, textAlign: "center" }}
-              >
-                Finding your matches…
-              </p>
-            )}
+              {modalRecsLoading && (
+                <p
+                  className="dash-status"
+                  style={{ marginTop: 16, textAlign: "center" }}
+                >
+                  Finding your matches…
+                </p>
+              )}
 
-            {modalRecsError && (
-              <div
-                className="dash-status dash-status-error"
-                style={{ marginTop: 16 }}
-                role="alert"
-              >
-                <p>{modalRecsError}</p>
-              </div>
-            )}
-
-            {modalRecs && !modalRecsLoading && (
-              <div
-                className="dash-modal-recs"
-                aria-label="Your parameter-based picks"
-              >
-                <div className="dash-modal-recs-header">
-                  <h3>Your matches</h3>
-                  <span className="dash-modal-recs-hint">
-                    Based only on the parameters above — not on your activity
-                    history.
-                  </span>
+              {modalRecsError && (
+                <div
+                  className="dash-status dash-status-error"
+                  style={{ marginTop: 16 }}
+                  role="alert"
+                >
+                  <p>{modalRecsError}</p>
                 </div>
-                {modalRecs.length === 0 ? (
-                  <p className="dash-status">
-                    No matches for the chosen persona and budget. Try widening
-                    your budget or picking a different category.
-                  </p>
-                ) : (
-                  <div className="phone-grid dash-modal-recs-grid">
-                    {modalRecs.slice(0, 20).map((r) => {
-                      const isClickable = r.id && r.inDatabase !== false;
-                      const handleModalRecClick = () => {
-                        if (isClickable) navigate(`/phones/${r.id}`);
-                      };
-                      const handleModalRecKeyDown = (e) => {
-                        if (!isClickable) return;
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          handleModalRecClick();
-                        }
-                      };
-                      return (
-                        <div
-                          key={r.id || `${r.brand?.name}-${r.modelName}`}
-                          className="phone-card rec-card"
-                          role={isClickable ? "button" : undefined}
-                          tabIndex={isClickable ? 0 : -1}
-                          aria-label={
-                            isClickable
-                              ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
-                              : undefined
-                          }
-                          onClick={handleModalRecClick}
-                          onKeyDown={handleModalRecKeyDown}
-                          onMouseEnter={() => r.id && setHoveredCard(r.id)}
-                          onMouseLeave={() => setHoveredCard(null)}
-                          style={{
-                            cursor: isClickable ? "pointer" : "default",
-                          }}
-                        >
-                          <div className="phone-card-top">
-                            <div className="phone-card-image">
-                              {r.imageUrl ? (
-                                <img
-                                  src={r.imageUrl}
-                                  alt={r.modelName}
-                                  onError={(e) => {
-                                    e.target.style.display = "none";
-                                    e.target.parentElement.classList.add(
-                                      "no-image",
-                                    );
-                                  }}
-                                />
-                              ) : (
-                                <span className="phone-card-emoji">📱</span>
-                              )}
-                              {typeof r.matchScore === "number" && (
-                                <span
-                                  className="rec-match-badge"
-                                  title="Match score from the recommender"
-                                >
-                                  {Math.min(
-                                    100,
-                                    Math.round(r.matchScore * 10) / 10,
-                                  ).toFixed(1)}
-                                  % match
-                                </span>
-                              )}
-                            </div>
-                            <div className="phone-card-name">{r.modelName}</div>
-                          </div>
+              )}
 
-                          <div className="phone-card-details">
-                            {r.keySpecs?.os && (
-                              <div className="phone-spec">
-                                <CpuIcon />
-                                <span>{r.keySpecs.os}</span>
-                              </div>
-                            )}
-                            {r.keySpecs?.camera && (
-                              <div className="phone-spec">
-                                <CameraIcon />
-                                <span>{r.keySpecs.camera}</span>
-                              </div>
-                            )}
-                            {r.keySpecs?.battery && (
-                              <div className="phone-spec">
-                                <BatteryIcon />
-                                <span>{r.keySpecs.battery} mAh</span>
-                              </div>
-                            )}
-                            {r.cheapestVariant?.price && (
-                              <div className="phone-spec rec-price">
-                                <TagIcon />
-                                <span>
-                                  {formatPriceNpr(r.cheapestVariant.price) ??
-                                    "—"}
-                                  {r.cheapestVariant.ram &&
-                                  r.cheapestVariant.storage
-                                    ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
-                                    : ""}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-
-                          {Array.isArray(r.why) && r.why.length > 0 && (
-                            <ul
-                              className="rec-why-list"
-                              aria-label="Why this match"
-                            >
-                              {r.why.slice(0, 3).map((reason, idx) => (
-                                <li key={idx}>{reason}</li>
-                              ))}
-                            </ul>
-                          )}
-
-                          {r.inDatabase === false && (
-                            <div className="rec-not-in-db">
-                              Not in our catalog
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+              {modalRecs && !modalRecsLoading && (
+                <div
+                  className="dash-modal-recs"
+                  aria-label="Your parameter-based picks"
+                >
+                  <div className="dash-modal-recs-header">
+                    <h3>Your matches</h3>
+                    <span className="dash-modal-recs-hint">
+                      Based only on the parameters above — not on your activity
+                      history.
+                    </span>
                   </div>
-                )}
-              </div>
-            )}
+                  {modalRecs.length === 0 ? (
+                    <p className="dash-status">
+                      No matches for the chosen persona and budget. Try widening
+                      your budget or picking a different category.
+                    </p>
+                  ) : (
+                    <div className="phone-grid dash-modal-recs-grid">
+                      {modalRecs.slice(0, 20).map((r) => {
+                        const isClickable = r.id && r.inDatabase !== false;
+                        const handleModalRecClick = () => {
+                          if (isClickable) navigate(`/phones/${r.id}`);
+                        };
+                        const handleModalRecKeyDown = (e) => {
+                          if (!isClickable) return;
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleModalRecClick();
+                          }
+                        };
+                        return (
+                          <div
+                            key={r.id || `${r.brand?.name}-${r.modelName}`}
+                            className="phone-card rec-card"
+                            role={isClickable ? "button" : undefined}
+                            tabIndex={isClickable ? 0 : -1}
+                            aria-label={
+                              isClickable
+                                ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
+                                : undefined
+                            }
+                            onClick={handleModalRecClick}
+                            onKeyDown={handleModalRecKeyDown}
+                            onMouseEnter={() => r.id && setHoveredCard(r.id)}
+                            onMouseLeave={() => setHoveredCard(null)}
+                            style={{
+                              cursor: isClickable ? "pointer" : "default",
+                            }}
+                          >
+                            <div className="phone-card-top">
+                              <div className="phone-card-image">
+                                {r.imageUrl ? (
+                                  <img
+                                    src={r.imageUrl}
+                                    alt={r.modelName}
+                                    onError={(e) => {
+                                      e.target.style.display = "none";
+                                      e.target.parentElement.classList.add(
+                                        "no-image",
+                                      );
+                                    }}
+                                  />
+                                ) : (
+                                  <span className="phone-card-emoji">📱</span>
+                                )}
+                                {typeof r.matchScore === "number" && (
+                                  <span
+                                    className="rec-match-badge"
+                                    title="Match score from the recommender"
+                                  >
+                                    {Math.min(
+                                      100,
+                                      Math.round(r.matchScore * 10) / 10,
+                                    ).toFixed(1)}
+                                    % match
+                                  </span>
+                                )}
+                              </div>
+                              <div className="phone-card-name">
+                                {r.modelName}
+                              </div>
+                            </div>
+
+                            <div className="phone-card-details">
+                              {r.keySpecs?.os && (
+                                <div className="phone-spec">
+                                  <CpuIcon />
+                                  <span>{r.keySpecs.os}</span>
+                                </div>
+                              )}
+                              {r.keySpecs?.camera && (
+                                <div className="phone-spec">
+                                  <CameraIcon />
+                                  <span>{r.keySpecs.camera}</span>
+                                </div>
+                              )}
+                              {r.keySpecs?.battery && (
+                                <div className="phone-spec">
+                                  <BatteryIcon />
+                                  <span>{r.keySpecs.battery} mAh</span>
+                                </div>
+                              )}
+                              {r.cheapestVariant?.price && (
+                                <div className="phone-spec rec-price">
+                                  <TagIcon />
+                                  <span>
+                                    {formatPriceNpr(r.cheapestVariant.price) ??
+                                      "—"}
+                                    {r.cheapestVariant.ram &&
+                                    r.cheapestVariant.storage
+                                      ? ` · ${r.cheapestVariant.ram}GB/${r.cheapestVariant.storage}GB`
+                                      : ""}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            {Array.isArray(r.why) && r.why.length > 0 && (
+                              <ul
+                                className="rec-why-list"
+                                aria-label="Why this match"
+                              >
+                                {r.why.slice(0, 3).map((reason, idx) => (
+                                  <li key={idx}>{reason}</li>
+                                ))}
+                              </ul>
+                            )}
+
+                            {r.inDatabase === false && (
+                              <div className="rec-not-in-db">
+                                Not in our catalog
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

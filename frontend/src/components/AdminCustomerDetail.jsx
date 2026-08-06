@@ -210,17 +210,26 @@ function AdminCustomerDetail() {
                   </span>
                 ) : null}
               </dd>
+              {/* Storage / RAM are derived from the user's modal
+                * recommendation rows by profileAggregator. Until the
+                * user has triggered at least MIN_NEW_ROWS=5
+                * recommendations the values stay null and we surface
+                * a "Not tracked yet" hint rather than a bare "—". */}
               <dt>Storage</dt>
               <dd>
-                <span className="admin-muted">Not tracked</span>
+                {bundle.customerProfile?.preferredStorageGb != null
+                  ? `${formatNumber(bundle.customerProfile.preferredStorageGb)} GB`
+                  : <span className="admin-muted">Not tracked yet</span>}
               </dd>
               <dt>RAM</dt>
               <dd>
-                <span className="admin-muted">Not tracked</span>
+                {bundle.customerProfile?.preferredRamGb != null
+                  ? `${formatNumber(bundle.customerProfile.preferredRamGb)} GB`
+                  : <span className="admin-muted">Not tracked yet</span>}
               </dd>
               <dt>Battery</dt>
               <dd>
-                <span className="admin-muted">Not tracked</span>
+                <span className="admin-muted">Not tracked yet</span>
               </dd>
               <dt>Camera</dt>
               <dd>{bundle.preference?.cameraPreference || "—"}</dd>
@@ -310,14 +319,36 @@ function AdminCustomerDetail() {
                     <div className="admin-subsection">
                       <h3 className="admin-subsection-title">Top results</h3>
                       <ul className="admin-list-clean">
-                        {bundle.lastRecommendation.topResults.map((r, i) => (
-                          <li key={r.phoneId || i}>
-                            <code className="admin-mono">{r.phoneId}</code>
-                            <span className="admin-muted">
-                              {formatDate(r.searchDate)}
-                            </span>
-                          </li>
-                        ))}
+                        {bundle.lastRecommendation.topResults.map((r, i) => {
+                          // Resolve phoneId → "Brand · Model" — the
+                          // backend already joins Phones on the
+                          // per-call RecommendationCall row so we
+                          // just render what we get. If the phone was
+                          // deleted between serving and reading we
+                          // fall back to "Unknown phone" so the admin
+                          // still sees *that* something was served.
+                          const label =
+                            r.brand && r.modelName
+                              ? `${r.brand} · ${r.modelName}`
+                              : r.modelName ||
+                                (r.phoneId ? "Unknown phone" : "—");
+                          return (
+                            <li key={r.phoneId || i}>
+                              <span className="admin-timeline-what">
+                                <strong>{label}</strong>
+                                {r.score != null ? (
+                                  <span className="admin-muted">
+                                    {" "}
+                                    · {Math.round(Number(r.score))}% match
+                                  </span>
+                                ) : null}
+                              </span>
+                              <span className="admin-muted">
+                                {formatDate(r.servedAt || bundle.lastRecommendation.servedAt)}
+                              </span>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   )}
@@ -329,16 +360,17 @@ function AdminCustomerDetail() {
 
           {/* RECENT SIGNALS — combined timeline.
             *
-            * The backend exposes searches and browses as two separate
-            * lists. We render them in their own subsections so admins
-            * can tell the signal type at a glance. If both are empty
-            * we show a single "No recent activity." line per the
-            * feature spec. */}
+            * The backend exposes searches, browses and comparisons as
+            * three separate lists (each capped at the last 5). We render
+            * each in its own subsection so admins can tell the signal
+            * type at a glance. If all three are empty we show a single
+            * "No recent activity." line per the feature spec. */}
           <section className="admin-card admin-card-wide">
             <h2 className="admin-card-title">Recent signals</h2>
 
             {(!bundle.lastSearches || bundle.lastSearches.length === 0) &&
-            (!bundle.lastBrowses || bundle.lastBrowses.length === 0) ? (
+            (!bundle.lastBrowses || bundle.lastBrowses.length === 0) &&
+            (!bundle.lastComparisons || bundle.lastComparisons.length === 0) ? (
               <p className="admin-muted">No recent activity.</p>
             ) : (
               <>
@@ -365,6 +397,16 @@ function AdminCustomerDetail() {
 
                 <div className="admin-subsection">
                   <h3 className="admin-subsection-title">Browses</h3>
+                  <p className="admin-muted admin-subsection-hint">
+                    Each row is a phone-detail view. We keep at most
+                    the last 10 unique phones the customer touched —
+                    re-clicking an already-tracked phone is a no-op and
+                    does not bump any score. The label is the raw
+                    phone name as it appears on the catalog; we
+                    intentionally don't FK-resolve here because the
+                    original browse signal can be a fictional or
+                    pre-release phone.
+                  </p>
                   {Array.isArray(bundle.lastBrowses) &&
                   bundle.lastBrowses.length > 0 ? (
                     <ul className="admin-timeline">
@@ -387,6 +429,38 @@ function AdminCustomerDetail() {
                     </ul>
                   ) : (
                     <p className="admin-muted">No browses yet.</p>
+                  )}
+                </div>
+
+                <div className="admin-subsection">
+                  <h3 className="admin-subsection-title">Comparisons</h3>
+                  {Array.isArray(bundle.lastComparisons) &&
+                  bundle.lastComparisons.length > 0 ? (
+                    <ul className="admin-timeline">
+                      {bundle.lastComparisons.map((c, i) => {
+                        // "Brand Model vs Brand Model"
+                        const fmt = (p) =>
+                          p && (p.brand || p.modelName)
+                            ? `${p.brand ? p.brand + " · " : ""}${p.modelName || ""}`.trim()
+                            : p && p.phoneId
+                              ? "Unknown phone"
+                              : "—";
+                        return (
+                          <li key={i}>
+                            <span className="admin-timeline-when">
+                              {formatDate(c.comparedDate)}
+                            </span>
+                            <span className="admin-timeline-what">
+                              <strong>{fmt(c.phoneA)}</strong>
+                              <span className="admin-muted"> vs </span>
+                              <strong>{fmt(c.phoneB)}</strong>
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="admin-muted">No comparisons yet.</p>
                   )}
                 </div>
               </>

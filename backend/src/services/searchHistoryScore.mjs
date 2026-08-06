@@ -104,10 +104,40 @@ export function phoneToTags(phone) {
     else if (phone.antutuScore >= 500_000) out.push("tier:mid");
     else out.push("tier:budget");
   }
-  const chipset = phone.specs && phone.specs.chipset;
+
+  // Feature tags MUST match the vocabulary the analyser writes to
+  // `BehaviorScore.tag` (see behaviorAnalyzer `feature:<dim>`), otherwise
+  // the exact-string overlap in `searchHistoryScore` never fires and the
+  // user's feature affinity (gaming / camera / battery / display) is lost
+  // from the Step D re-ranker. Previously this emitted a bare "gaming"
+  // tag that could never match the stored "feature:gaming" score.
+  const specs = (phone.specs && typeof phone.specs === "object") ? phone.specs : {};
+
+  const chipset = specs.chipset;
   if (chipset && /snapdragon|dimensity|exynos|kirin|helio|rog/i.test(String(chipset))) {
-    out.push("gaming");
+    out.push("feature:gaming");
+    out.push("feature:performance");
   }
+
+  // Camera affinity — a high-MP main camera is our proxy for a
+  // camera-focused phone (mirrors the analyser's feature bucketing).
+  const cameraMp = parseInt(String(specs.mainCamera || "").match(/(\d+)\s*MP/i)?.[1] || "", 10);
+  if (Number.isFinite(cameraMp) && cameraMp >= 48) {
+    out.push("feature:camera");
+  }
+
+  // Battery affinity — a large cell is the battery-focused proxy.
+  const battery = Number(specs.batteryMah);
+  if (Number.isFinite(battery) && battery >= 5000) {
+    out.push("feature:battery");
+  }
+
+  // Display affinity — a high refresh rate is the display-focused proxy.
+  const refresh = Number(specs.refreshRate);
+  if (Number.isFinite(refresh) && refresh >= 120) {
+    out.push("feature:display");
+  }
+
   return out;
 }
 

@@ -3,7 +3,7 @@ import { Strategy } from "passport-local";
 import { prisma } from "../config/prisma.mjs";
 import { findUserByEmail } from "../services/userService.mjs";
 import { verifyPassword } from "../utils/crypto.mjs";
-import { invalidCredentials, unauthorized } from "../utils/ApiError.mjs";
+import { invalidCredentials } from "../utils/ApiError.mjs";
 
 passport.serializeUser((user, done) => {
   done(null, user.userId);
@@ -25,9 +25,16 @@ passport.deserializeUser(async (id, done) => {
     });
     
     if (!findUser) {
-      throw unauthorized('User not found');
+      // Stale-session guard: if the cookie carries a userId that no longer
+      // exists (DB reseed, account deleted, wrong environment), do NOT
+      // throw — that aborts the current request before the route handler
+      // can do anything. Return `done(null, false)` so Passport treats the
+      // user as unauthenticated, lets the request proceed, and lets the
+      // login flow overwrite the session with a fresh valid userId via
+      // `req.login()` inside `roleGuard`.
+      return done(null, false);
     }
-    
+
     done(null, findUser);
   } catch (error) {
     done(error, null);

@@ -1,4 +1,5 @@
 import * as phoneService from "../services/phoneService.mjs";
+import * as similarPhonesService from "../services/similarPhonesService.mjs";
 import {
   safeRecordSearchEvent,
 } from "../services/profileService.mjs";
@@ -73,6 +74,39 @@ export const getPhoneById = catchAsync(async (req, res) => {
 
   return sendSuccess(res, formatPhoneDetail(phone), {
     message: "Phone retrieved successfully",
+  });
+});
+
+// GET /api/phones/:id/similar
+// Content-Based "Related Phones" lookup for the FE phone-details page.
+// Returns up to 12 phones most similar to the seed phone, sourced
+// exclusively from the existing NxN cosine-similarity matrix in
+// similarity_bundle.joblib (no collaborative filtering, no hybrid,
+// no popularity, no persona, no history). The seed phone is always
+// excluded. The FE renders this as the "Related Phones" section.
+//
+// Soft-fail by design: any failure (FastAPI down, bundle missing,
+// seed not in bundle, DB lookup empty) yields an empty 200 response
+// so the FE simply hides the section — the page above still works.
+export const getSimilarPhones = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id || id.length < 10) {
+    throw badRequest("Invalid phone ID");
+  }
+
+  // Honor an explicit ?limit=N (1..50), default 12. The FE never
+  // sends one today, but exposing the param lets us reuse the route
+  // from future surfaces without a contract change.
+  const requestedLimit = parseInt(req.query.limit, 10);
+  const limit = Number.isFinite(requestedLimit)
+    ? Math.max(1, Math.min(50, requestedLimit))
+    : 12;
+
+  const phones = await similarPhonesService.getSimilarPhones(id, limit);
+
+  return sendSuccess(res, phones.map(formatPhoneListItem), {
+    message: "Related phones retrieved successfully",
   });
 });
 

@@ -1,12 +1,18 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getPhoneById } from "../services/phones";
+import { getPhoneById, getSimilarPhones } from "../services/phones";
 import { useAuth } from "../hooks/useAuth.jsx";
 import { useEventLogger } from "../hooks/useEventLogger.jsx";
 import "./Login.css";
 import "./Dashboard.css";
 import "./PhoneDetail.css";
-import { ChevronLeftIcon } from "./AuthShared";
+import {
+  ChevronLeftIcon,
+  CameraIcon,
+  BatteryIcon,
+  CpuIcon,
+  TagIcon,
+} from "./AuthShared";
 import { formatPriceNpr } from "../utils/formatPrice.js";
 
 // ---- Field-label maps ----
@@ -321,6 +327,67 @@ function TopBar({ onBack }) {
  * `/phones/:id` route page and the Compare page's expandable panels.
  */
 export function PhoneDetailView({ phone }) {
+  // Hooks must be called unconditionally — place them before the
+  // `if (!phone) return null` early return so React's hook order stays
+  // stable across renders.
+  const navigate = useNavigate();
+
+  // ---- Related Phones state ----
+  // The list is sourced EXCLUSIVELY from the existing Content-Based
+  // ML cosine-similarity matrix (similarity_bundle.joblib) via the
+  // backend's `GET /api/phones/:id/similar` endpoint. No
+  // collaborative filtering, no hybrid, no persona, no popularity,
+  // no browsing history, no wishlist, no purchase history, no
+  // customer segmentation. The seed phone is excluded server-side.
+  // Soft-fail (network/bundle error) hides the section; the phone
+  // details above are unaffected.
+  const [relatedPhones, setRelatedPhones] = useState([]);
+  const [relatedLoading, setRelatedLoading] = useState(true);
+  const [relatedError, setRelatedError] = useState(null);
+  const [relatedHoveredId, setRelatedHoveredId] = useState(null);
+
+  useEffect(() => {
+    if (!phone?.id) return;
+    // Reset on phone change so we don't briefly show the previous phone's
+    // related list while the new one loads.
+    setRelatedPhones([]);
+    setRelatedLoading(true);
+    setRelatedError(null);
+
+    let ignore = false;
+    (async () => {
+      try {
+        // Content-Based lookup — the BE proxies FastAPI's
+        // GET /similarity/similar against the pre-computed NxN
+        // cosine matrix. Limit 12 (the BE clamps 1..50).
+        const list = await getSimilarPhones(phone.id, 12);
+        if (ignore) return;
+        // Defensive: drop any rows that somehow resolved to the
+        // seed phone (the BE already excludes it, but keep the
+        // client-side guard so a future BE change can't slip the
+        // seed back into the grid).
+        const filtered = (Array.isArray(list) ? list : [])
+          .filter((p) => p && p.id !== phone.id)
+          .slice(0, 12);
+        setRelatedPhones(filtered);
+      } catch (err) {
+        if (ignore) return;
+        // Soft-fail — the related section is decorative; the phone
+        // details above must still render fine.
+        setRelatedError(
+          err?.response?.data?.message ||
+            "Couldn't load related phones right now.",
+        );
+      } finally {
+        if (!ignore) setRelatedLoading(false);
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
+  }, [phone?.id]);
+
   if (!phone) return null;
 
   const brand = phone.brand || {};
@@ -524,6 +591,120 @@ export function PhoneDetailView({ phone }) {
           </span>
         </section>
       )}
+
+      {/* ---- Related Phones ----
+          Reuses the existing GET /phones endpoint (same one the Dashboard
+          already hits) — no new API. Renders exactly 12 cards in the same
+          .phone-grid layout the dashboard uses, so styling, hover animation
+          and card shadow are all inherited from Dashboard.css. The current
+          phone is filtered out if it happens to appear in the response. */}
+      <section
+        className="related-phones-section"
+        aria-label="Related phones"
+      >
+        <header className="related-phones-header">
+          <h2>Related Phones</h2>
+          <p className="related-phones-subtitle">
+            Phones similar to this one
+          </p>
+        </header>
+
+        {relatedLoading && (
+          <p className="dash-status">Loading related phones…</p>
+        )}
+
+        {relatedError && !relatedLoading && (
+          <p className="dash-status dash-status-error">{relatedError}</p>
+        )}
+
+        {!relatedLoading && !relatedError && relatedPhones.length > 0 && (
+          <div className="phone-grid related-phones-grid">
+            {relatedPhones.map((p) => {
+              const isHovered = relatedHoveredId === p.id;
+              const wrapperClass = `phone-card related-phone-card${
+                isHovered ? " expanded" : ""
+              }`;
+              const goToPhone = () => {
+                if (p.id) navigate(`/phones/${p.id}`);
+              };
+              const handleKeyDown = (e) => {
+                if (!p.id) return;
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  goToPhone();
+                }
+              };
+              return (
+                <div
+                  key={p.id}
+                  className={wrapperClass}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View ${p.brand?.name || ""} ${p.modelName || "phone"} details`}
+                  onClick={goToPhone}
+                  onKeyDown={handleKeyDown}
+                  onMouseEnter={() => setRelatedHoveredId(p.id)}
+                  onMouseLeave={() => setRelatedHoveredId(null)}
+                >
+                  <div className="phone-card-top">
+                    <div className="phone-card-image">
+                      {p.imageUrl ? (
+                        <img
+                          src={p.imageUrl}
+                          alt={p.modelName}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            e.target.parentElement.classList.add("no-image");
+                          }}
+                        />
+                      ) : (
+                        <span className="phone-card-emoji">📱</span>
+                      )}
+                    </div>
+                    <div className="phone-card-name">{p.modelName}</div>
+                    <div className="phone-card-tagline">
+                      {p.brand?.name || "Unknown brand"}
+                    </div>
+                  </div>
+
+                  <div className="phone-card-details">
+                    {p.keySpecs?.os && (
+                      <div className="phone-spec">
+                        <CpuIcon />
+                        <span>{p.keySpecs.os}</span>
+                      </div>
+                    )}
+                    {p.keySpecs?.camera && (
+                      <div className="phone-spec">
+                        <CameraIcon />
+                        <span>{p.keySpecs.camera}</span>
+                      </div>
+                    )}
+                    {p.keySpecs?.battery && (
+                      <div className="phone-spec">
+                        <BatteryIcon />
+                        <span>{p.keySpecs.battery} mAh</span>
+                      </div>
+                    )}
+                    {p.cheapestVariant?.price && (
+                      <div className="phone-spec phone-price">
+                        <TagIcon />
+                        <span>
+                          {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
+                          {p.cheapestVariant.ram &&
+                          p.cheapestVariant.storage
+                            ? ` · ${p.cheapestVariant.ram}GB/${p.cheapestVariant.storage}GB`
+                            : ""}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
     </>
   );
 }
