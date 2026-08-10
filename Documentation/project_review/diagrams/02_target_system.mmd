@@ -1,0 +1,56 @@
+%% 02 — Target System Architecture
+%% See project_review/02_architecture_review.md and 05_mlops_production_readiness.md.
+
+flowchart TB
+    subgraph Client
+        UI[React/Vite SPA<br/>port 5173]
+    end
+
+    subgraph Gateway
+        NG[Express API<br/>port 4000<br/>Helmet + CORS]
+    end
+
+    subgraph MLOps[ML Platform]
+        FA[FastAPI<br/>:8002]
+        MR[(Model Registry<br/>MLflow)]
+        FE[Feature Store<br/>Parquet + dbt]
+        DRIFT[(Drift Detector<br/>Evidently)]
+        SHAP[(SHAP Explainer<br/>cached)]
+    end
+
+    subgraph Models[Model Zoo]
+        XGB_SCORE[AnTuTu Predictor]
+        XGB_RANK[LambdaMART Ranker]
+        XGB_CAM[Camera-Tier Classifier]
+        XGB_CHURN[Churn Predictor]
+        XGB_LTV[LTV Regressor]
+        KMEANS[K-Means Segmentation]
+    end
+
+    subgraph Database
+        PG[(PostgreSQL 16<br/>+ segment tables<br/>+ rec_log<br/>+ drift_log)]
+    end
+
+    UI -->|HTTPS| NG
+    NG -->|Prisma| PG
+    NG -->|/predict| FA
+    FA --> XGB_SCORE
+    FA --> XGB_RANK
+    FA --> XGB_CAM
+    FA --> XGB_CHURN
+    FA --> XGB_LTV
+    FA --> KMEANS
+    FA -->|load artifact| MR
+    FA -->|read features| FE
+    FA -->|log batch| DRIFT
+    FA -->|SHAP values| SHAP
+    SHAP -->|force plot JSON| NG
+    NG -->|enriched JSON| UI
+    MR -.->|version pin| FA
+    FE -.->|fresh features| FA
+    DRIFT -.->|alert| NG
+
+    style MR fill:#dbeafe
+    style FE fill:#dbeafe
+    style DRIFT fill:#dbeafe
+    style SHAP fill:#dbeafe

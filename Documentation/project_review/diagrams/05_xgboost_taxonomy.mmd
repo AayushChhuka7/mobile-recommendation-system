@@ -1,0 +1,33 @@
+%% 05 — XGBoost Taxonomy
+%% See project_review/03_xgboost_opportunities.md.
+
+flowchart TB
+    XGB[XGBoost in this project] --> R[Regression]
+    XGB --> C[Classification]
+    XGB --> LTR[Learning-to-Rank]
+    XGB --> TS[Time-Series]
+    XGB --> U[Unsupervised]
+
+    R --> R1[AnTuTu score<br/>CURRENT: R² 0.852]
+    R --> R2[LTV Regressor<br/>revenue next 12 mo]
+    R --> R3[Review-rating Predictor<br/>1-5 stars]
+
+    C --> C1[Brand Loyalty<br/>binary]
+    C --> C2[Camera Tier<br/>multi-class]
+    C --> C3[Tech Tier<br/>multi-class]
+    C --> C4[Churn<br/>binary]
+    C --> C5[Wishlist Conversion<br/>binary]
+    C --> C6[Segment Classifier<br/>cold-start]
+
+    LTR --> L1[LambdaMART Ranker<br/>NDCG optimization]
+
+    TS --> T1[Demand Forecaster<br/>city × brand × month]
+
+    U --> U1[Anomaly Detector<br/>Isolation Forest<br/>or One-Class XGB]
+
+    style R1 fill:#d1fae5
+    style R fill:#fef3c7
+    style C fill:#dbeafe
+    style LTR fill:#fce7f3
+    style TS fill:#e0e7ff
+    style U fill:#fee2e2

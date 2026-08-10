@@ -1,0 +1,26 @@
+%% 07 — Data Lineage
+%% See project_review/07_dataset_quality_report.md.
+
+flowchart LR
+    R0[Raw CSV<br/>customer_data.csv<br/>~5000 rows] --> R1[Drop PII columns<br/>email, phone, name]
+    R1 --> R2[Convert NPR → EUR<br/>fixed 1/150]
+    R2 --> R3[Impute missing<br/>median numeric<br/>mode categorical]
+    R3 --> R4[Encode categoricals<br/>CategoricalDtypeManager<br/>frozen]
+    R4 --> R5[After_EDA.csv<br/>canonical artifact]
+    R5 --> R6[Train pipeline]
+    R6 --> R7[Model artifact<br/>xgb_v0.4.1.json]
+    R6 --> R8[Scoring snapshot<br/>quantiles]
+    R6 --> R9[Feature schema<br/>column order]
+    R7 --> R10[FastAPI in-memory]
+    R8 --> R10
+    R9 --> R10
+    R10 --> R11[Predictions]
+
+    R5 -.PII check.-> PII[(PII redaction log)]
+    R6 -.hash.-> CARD[Model Card<br/>+ Dataset Card]
+    R11 -.log.-> LOG[(rec_log table)]
+
+    style R1 fill:#fee2e2
+    style R2 fill:#fef3c7
+    style PII fill:#fee2e2
+    style CARD fill:#dbeafe

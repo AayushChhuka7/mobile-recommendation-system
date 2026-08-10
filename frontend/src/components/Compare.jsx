@@ -214,6 +214,18 @@ function PhoneFullDetailPanel({ phone, index, defaultOpen = false }) {
           <ChevronDownIcon />
         </span>
       </button>
+      {/* Mirror Dashboard's "click card -> go to /phones/:id" behaviour.
+          Doesn't replace the inline expand toggle — additive link button. */}
+      {phone.id && (
+        <button
+          type="button"
+          className="compare-fulldetail-link"
+          onClick={() => navigate(`/phones/${phone.id}`)}
+          aria-label={`Open full details for ${phone.modelName || "this phone"}`}
+        >
+          View details →
+        </button>
+      )}
 
       {open && (
         <div
@@ -469,7 +481,23 @@ function Compare() {
           {hasResult && !isLoading && (
             <div className="compare-ml-results">
               <div className="compare-ml-headline">
-                <div className="compare-ml-headline-side">
+                {/* Result cards: clicking either side navigates to that
+                    phone's detail page, exactly like Dashboard's phone
+                    cards. phone1/phone2 are the original selected phone
+                    objects so they carry the `id` we need for routing. */}
+                <div
+                  className="compare-ml-headline-side compare-ml-headline-side--link"
+                  role="button"
+                  tabIndex={phone1?.id ? 0 : -1}
+                  aria-label={`View details for ${phone1?.modelName || compareResult.Phone_A}`}
+                  onClick={() => phone1?.id && navigate(`/phones/${phone1.id}`)}
+                  onKeyDown={(e) => {
+                    if ((e.key === "Enter" || e.key === " ") && phone1?.id) {
+                      e.preventDefault();
+                      navigate(`/phones/${phone1.id}`);
+                    }
+                  }}
+                >
                   <span className="compare-ml-side-name">
                     {compareResult.Phone_A}
                   </span>
@@ -478,7 +506,19 @@ function Compare() {
                   </span>
                 </div>
                 <div className="compare-ml-headline-vs">VS</div>
-                <div className="compare-ml-headline-side">
+                <div
+                  className="compare-ml-headline-side compare-ml-headline-side--link"
+                  role="button"
+                  tabIndex={phone2?.id ? 0 : -1}
+                  aria-label={`View details for ${phone2?.modelName || compareResult.Phone_B}`}
+                  onClick={() => phone2?.id && navigate(`/phones/${phone2.id}`)}
+                  onKeyDown={(e) => {
+                    if ((e.key === "Enter" || e.key === " ") && phone2?.id) {
+                      e.preventDefault();
+                      navigate(`/phones/${phone2.id}`);
+                    }
+                  }}
+                >
                   <span className="compare-ml-side-name">
                     {compareResult.Phone_B}
                   </span>

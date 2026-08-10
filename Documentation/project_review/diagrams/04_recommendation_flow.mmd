@@ -1,0 +1,27 @@
+%% 04 — Recommendation Request Flow (Frontend → Backend → ML)
+%% See project_review/02_architecture_review.md and 08_recommendation_quality.md.
+
+sequenceDiagram
+    actor User
+    participant FE as React SPA
+    participant API as Express /api/recommend
+    participant ML as FastAPI /recommend
+    participant REG as Model Registry
+    participant DB as PostgreSQL
+
+    User->>FE: select persona (Gamer)
+    FE->>API: GET /recommend?user_id=42&persona=Gamer
+    API->>DB: fetch customer features
+    DB-->>API: row + 3 purchases + wishlist
+    API->>ML: POST /recommend {user_features, persona, top_k=10}
+    ML->>REG: load booster v0.4.1 (cached)
+    ML->>ML: filter candidate pool (250 phones)
+    ML->>ML: score via XGBoost + persona weights
+    ML->>ML: compute SHAP force values
+    ML-->>API: {phones: [...], explanations: [...]}
+    API->>DB: INSERT rec_log (user, ranked list, ts)
+    API-->>FE: JSON with phones + SHAP reasons
+    FE-->>User: cards rendered with "Why this phone?" tooltip
+    User->>FE: click phone #3
+    FE->>API: POST /feedback {rec_id: 7, action: click}
+    API->>DB: UPDATE rec_log SET clicked = phone #3
