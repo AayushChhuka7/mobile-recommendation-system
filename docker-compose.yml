@@ -2,7 +2,8 @@
 # Mobile Recommendation System — local dev stack
 #
 # Boot order:
-#   postgres (healthy) -> db-init (one-shot: schema push, RBAC seed, bulk CSV)
+#   postgres (healthy) -> db-init (one-shot: schema push, RBAC seed, phone
+#                         bulk CSV, customer bulk CSV)
 #                     -> ml-service (healthy) + backend (waits on db-init)
 #                     -> frontend
 # ----------------------------------------------------------------------------
@@ -38,28 +39,32 @@ services:
       retries: 10
 
   # One-shot DB initializer:
-  #   1. prisma db push                       -> apply schema
-  #   2. npm run seed:rbac                    -> system roles + customer backfill
-  #   3. node prisma/import-gsmarena-bulk.mjs -> seed phones/brands/variants/specs
+  #   1. prisma db push                          -> apply schema
+  #   2. npm run seed:rbac                       -> system roles + customer backfill
+  #   3. node prisma/import-gsmarena-bulk.mjs    -> seed phones/brands/variants/specs
+  #   4. npm run seed:customers                  -> seed users + customer activity
+  #                                                (payment / browsing / search history)
   # Exits 0; the backend waits for this with service_completed_successfully.
   db-init:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: mobile-recommender-db-init
-    # Override CMD. We pass the CSV path explicitly so the script doesn't need
-    # to know where the file lives relative to itself.
+    # Override CMD. We pass the CSV paths explicitly so the scripts don't
+    # need to know where the files live relative to themselves.
     command: >
       sh -c "npx prisma db push &&
              npm run seed:rbac &&
-             node ./prisma/import-gsmarena-bulk.mjs /seed/GSMArena_Cleaned_Dataset.csv"
+             node ./prisma/import-gsmarena-bulk.mjs /seed/GSMArena_Cleaned_Dataset.csv &&
+             npm run seed:customers -- /seed/customer_dataset.csv"
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@postgres:5432/${POSTGRES_DB:-mobile_recommender}"
       NODE_ENV: development
     volumes:
-      # Bind-mount the CSV into the container. The host path is relative
-      # to the compose file, i.e. <repo-root>/dataset/GSMArena_Cleaned_Dataset.csv
+      # Bind-mount the CSVs into the container. Host paths are relative
+      # to the compose file, i.e. <repo-root>/dataset/*.csv
       - ./dataset/GSMArena_Cleaned_Dataset.csv:/seed/GSMArena_Cleaned_Dataset.csv:ro
+      - ./dataset/customer_dataset.csv:/seed/customer_dataset.csv:ro
     depends_on:
       postgres:
         condition: service_healthy
