@@ -30,7 +30,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    // `CORS_ORIGIN` accepts a single origin or a comma-separated list
+    // so preview/dev can run side-by-side. Defaults to the Vite dev
+    // port so a fresh checkout works without any env wiring.
+    origin: (process.env.CORS_ORIGIN || "http://localhost:5173")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
     credentials: true,
   }),
 );

@@ -1,0 +1,75 @@
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Page of Approval}{ii}{chapter*.1}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Copyright}{iii}{chapter*.2}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Acknowledgements}{iv}{chapter*.3}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Abstract}{v}{chapter*.4}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Contents}{viii}{chapter*.5}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Figures}{ix}{chapter*.6}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{x}{chapter*.7}%
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Abbreviations}{xi}{chapter*.8}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.9}%
+\contentsline {section}{\numberline {1.1}Background}{1}{section.10}%
+\contentsline {section}{\numberline {1.2}Problem Statement}{3}{section.11}%
+\contentsline {section}{\numberline {1.3}Aim and Objectives}{3}{section.12}%
+\contentsline {section}{\numberline {1.4}Scope}{4}{section.17}%
+\contentsline {chapter}{\numberline {2}Literature Review}{5}{chapter.18}%
+\contentsline {section}{\numberline {2.1}Related Work}{5}{section.19}%
+\contentsline {section}{\numberline {2.2}Related Theory}{8}{section.20}%
+\contentsline {subsection}{\numberline {2.2.1}Gradient Boosting}{8}{subsection.21}%
+\contentsline {subsection}{\numberline {2.2.2}XGBoost}{8}{subsection.22}%
+\contentsline {subsection}{\numberline {2.2.3}SHAP (SHapley Additive exPlanations)}{9}{subsection.23}%
+\contentsline {subsection}{\numberline {2.2.4}K-Means Clustering}{9}{subsection.24}%
+\contentsline {subsection}{\numberline {2.2.5}Customer Segmentation}{9}{subsection.25}%
+\contentsline {subsection}{\numberline {2.2.6}Collaborative Filtering}{9}{subsection.26}%
+\contentsline {subsection}{\numberline {2.2.7}Content Based Recommendation}{10}{subsection.27}%
+\contentsline {subsection}{\numberline {2.2.8}Hybrid Recommendation System}{10}{subsection.28}%
+\contentsline {subsection}{\numberline {2.2.9}Singular Value Decomposition (SVD)}{10}{subsection.29}%
+\contentsline {subsection}{\numberline {2.2.10}Cosine Similarity}{11}{subsection.30}%
+\contentsline {chapter}{\numberline {3}Methodology}{12}{chapter.31}%
+\contentsline {section}{\numberline {3.1}Block Diagram of the System}{12}{section.32}%
+\contentsline {subsection}{\numberline {3.1.1}Data Collection}{12}{subsection.34}%
+\contentsline {subsubsection}{Phone Specifications}{13}{subsubsection*.36}%
+\contentsline {subsubsection}{Benchmark Scores}{14}{subsubsection*.37}%
+\contentsline {subsubsection}{Customer Profile and Transaction Data}{14}{subsubsection*.38}%
+\contentsline {subsubsection}{Customer-Phone Interaction Data}{14}{subsubsection*.39}%
+\contentsline {subsection}{\numberline {3.1.2}Data cleaning and Preprocessing}{15}{subsection.40}%
+\contentsline {subsubsection}{Phone Dataset Preprocessing}{15}{subsubsection*.42}%
+\contentsline {subsubsection}{Customer Dataset Preprocessing}{16}{subsubsection*.43}%
+\contentsline {subsubsection}{Customer Segmentation Preprocessing}{16}{subsubsection*.44}%
+\contentsline {subsubsection}{Interaction Dataset Preprocessing}{17}{subsubsection*.45}%
+\contentsline {subsection}{\numberline {3.1.3}Feature Engineering}{17}{subsection.46}%
+\contentsline {subsection}{\numberline {3.1.4}Scaling, Outlier Handling, and Train Test Split}{18}{subsection.47}%
+\contentsline {subsection}{\numberline {3.1.5}Segmentation Model }{19}{subsection.48}%
+\contentsline {subsection}{\numberline {3.1.6}Recommendation Engine}{20}{subsection.50}%
+\contentsline {section}{\numberline {3.2}Methods and Algorithms}{21}{section.52}%
+\contentsline {subsection}{\numberline {3.2.1}XGBoost Algorithm}{21}{subsection.53}%
+\contentsline {subsection}{\numberline {3.2.2}K-Means Clustering for Customer Segmentation}{23}{subsection.58}%
+\contentsline {section}{\numberline {3.3}Evaluation Metrics}{24}{section.61}%
+\contentsline {subsection}{\numberline {3.3.1}Metrics for the Regressor}{24}{subsection.62}%
+\contentsline {subsection}{\numberline {3.3.2}Metrics for the Segmentation}{27}{subsection.70}%
+\contentsline {subsection}{\numberline {3.3.3}Metrics for the Recommendation Engine}{27}{subsection.72}%
+\contentsline {chapter}{\numberline {4}Experimental Setup}{29}{chapter.75}%
+\contentsline {section}{\numberline {4.1}Hardware Configuration}{29}{section.76}%
+\contentsline {section}{\numberline {4.2}Software and Tools}{29}{section.77}%
+\contentsline {chapter}{\numberline {5}System Design}{31}{chapter.78}%
+\contentsline {section}{\numberline {5.1}Requirement Specification}{31}{section.79}%
+\contentsline {subsection}{\numberline {5.1.1}Functional Requirements}{31}{subsection.80}%
+\contentsline {subsection}{\numberline {5.1.2}Non-Functional Requirements}{31}{subsection.87}%
+\contentsline {section}{\numberline {5.2}System Architecture}{32}{section.93}%
+\contentsline {section}{\numberline {5.3}Use Case Diagram}{34}{section.95}%
+\contentsline {section}{\numberline {5.4}Data Flow Diagram}{35}{section.97}%
+\contentsline {section}{\numberline {5.5}Iterative Development Model}{37}{section.100}%
+\contentsline {chapter}{\numberline {6}Results \& Discussion}{38}{chapter.102}%
+\contentsline {section}{\numberline {6.1}Experiment Setup}{38}{section.103}%
+\contentsline {section}{\numberline {6.2}Data Preparation Results}{38}{section.104}%
+\contentsline {section}{\numberline {6.3}Machine Learning Results}{39}{section.107}%
+\contentsline {section}{\numberline {6.4}Recommendation System Output}{43}{section.113}%
+\contentsline {section}{\numberline {6.5}Software Development Approach}{43}{section.114}%
+\contentsline {section}{\numberline {6.6}Model Deployment}{44}{section.115}%
+\contentsline {section}{\numberline {6.7}User Interface and Backend}{44}{section.116}%
+\contentsline {section}{\numberline {6.8}Testing, Evaluation, and Validation}{44}{section.118}%
+\contentsline {chapter}{\numberline {7}Conclusions}{46}{chapter.119}%
+\contentsline {chapter}{\numberline {8}Limitations and Future Enhancement}{47}{chapter.120}%
+\contentsline {section}{\numberline {8.1}Limitations}{47}{section.121}%
+\contentsline {section}{\numberline {8.2}Future Enhancement}{47}{section.127}%
+\contentsline {section}{References}{47}{Item.132}%
+\contentsline {section}{Appendices}{51}{chapter*.134}%

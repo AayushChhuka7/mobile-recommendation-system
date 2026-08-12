@@ -1668,6 +1668,36 @@ function Dashboard() {
                           </ul>
                         )}
 
+                      {/*
+                        CF (collaborative-filtering) reason badge. The
+                        backend `recommendService` attaches
+                        `cfReasons: string[]` to a row when the CF
+                        service also recommended it (either as a
+                        standalone row OR as a hit on an existing
+                        rule-based candidate). The first reason is
+                        shown as a single-line "people like you also
+                        liked" hint; subsequent reasons are hidden
+                        behind the same `slice(0,1)` to keep the card
+                        compact. Same `recommendationSource === "manual"`
+                        gate as the SHAP "why" list — auto-rec cards
+                        stay quiet.
+                      */}
+                      {Array.isArray(r.cfReasons) &&
+                        r.cfReasons.length > 0 &&
+                        recommendationSource === "manual" && (
+                          <div
+                            className="cf-reason-badge"
+                            aria-label="People like you also liked"
+                          >
+                            <span className="cf-reason-text">
+                              <strong>People like you liked:</strong>
+                              {r.cfReasons.slice(0, 1).map((reason, idx) => (
+                                <span key={idx}> {reason}</span>
+                              ))}
+                            </span>
+                          </div>
+                        )}
+
                       {r.inDatabase === false && (
                         <div className="rec-not-in-db">Not in our catalog</div>
                       )}

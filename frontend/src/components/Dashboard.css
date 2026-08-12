@@ -1569,6 +1569,48 @@
   text-align: center;
 }
 
+/* "People like you also liked" badge — appended to phone cards whose
+   row was contributed (or confirmed) by the collaborative-filtering
+   service. Renders the first CF reason as a compact, non-blocking
+   hint. Hidden on auto-recommendations (gated by the same
+   `recommendationSource === "manual"` check as the SHAP "why" list)
+   so the auto-rec card stays visually quiet. */
+.cf-reason-badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: #6d28d9;
+  background: #ede9fe;
+  border-top: 1px solid var(--border);
+  padding: 8px 12px 10px;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.cf-reason-badge::before {
+  content: "👥";
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.cf-reason-badge .cf-reason-text {
+  display: block;
+  flex: 1 1 auto;
+}
+
+.cf-reason-badge .cf-reason-text strong {
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.dashboard-page.dash-dark .cf-reason-badge {
+  color: #c4b5fd;
+  background: rgba(124, 58, 237, 0.12);
+  border-top-color: var(--border);
+}
+
 .dashboard-page.dash-dark .rec-why-list {
   color: var(--text);
 }
