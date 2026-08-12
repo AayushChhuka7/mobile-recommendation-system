@@ -1,0 +1,153 @@
+\begin{thebibliography}{10}
+
+\bibitem{xgboostimg}
+{ResearchGate}.
+\newblock A general architecture of xgboost, 2026.
+\newblock [Online]. Available:
+  \url{https://www.researchgate.net/figure/A-general-architecture-of-XGBoost_fig3_335483097}.
+  [Accessed: Jul. 10, 2026].
+
+\bibitem{kmeansimg}
+{Towards AI}.
+\newblock Fully explained k-means clustering with python, 2026.
+\newblock [Online]. Available:
+  \url{https://pub.towardsai.net/fully-explained-k-means-clustering-with-python-e7caa573176a}.
+  [Accessed: Jul. 10, 2026].
+
+\bibitem{singh}
+B.~Singh.
+\newblock Customer segmentation recommendation.
+\newblock GitHub Repository, 2020.
+\newblock [Online]. Available:
+  \url{https://github.com/bhaveshsingh0206/customer-segmentation-recommendation}.
+  [Accessed: Feb. 26, 2026].
+
+\bibitem{gsmarena}
+{GSMArena}.
+\newblock Gsmarena -- mobile phone specifications, reviews, and news.
+\newblock GSMArena, 2026.
+\newblock [Online]. Available: \url{https://www.gsmarena.com/}. [Accessed: Feb.
+  26, 2026].
+
+\bibitem{antutu}
+{AnTuTu}.
+\newblock Antutu benchmark -- mobile device performance ranking.
+\newblock AnTuTu, 2026.
+\newblock [Online]. Available: \url{https://www.antutu.com/}. [Accessed: Jul.
+  10, 2026].
+
+\bibitem{pandey}
+B.~K. Pandey.
+\newblock The cold start problem in recommender systems.
+\newblock freeCodeCamp, 2022.
+\newblock [Online]. Available:
+  \url{https://www.freecodecamp.org/news/cold-start-problem-in-recommender-systems/}.
+  [Accessed: May 20, 2024].
+
+\bibitem{chen}
+T.~Chen and C.~Guestrin.
+\newblock Xgboost: A scalable tree boosting system.
+\newblock In {\em Proc. 22nd ACM SIGKDD Int. Conf. Knowledge Discovery and Data
+  Mining}, pages 785--794, 2016.
+
+\bibitem{crosssell}
+{Wiley Online Library}.
+\newblock Cross-selling precision marketing strategy based on xgboost model and
+  shap explanatory framework.
+\newblock {\em Wiley Online Library}, 2024.
+
+\bibitem{isik}
+N.~I\c{s}\i k.
+\newblock A hyper-personalized product recommendation system focused on
+  customer segmentation.
+\newblock {\em Journal of Theoretical and Applied Electronic Commerce
+  Research}, 18(4), 2023.
+
+\bibitem{joung}
+H.~Joung and K.~Kim.
+\newblock Interpretable machine learning-based approach for customer
+  segmentation.
+\newblock {\em Technovation}, 127, 2023.
+
+\bibitem{pcadbscan}
+{International Journal of System Assurance Engineering and Management}.
+\newblock A shap-enhanced pca-dbscan framework for retail customer
+  segmentation.
+\newblock {\em International Journal of System Assurance Engineering and
+  Management}, 2025.
+
+\bibitem{valueaware}
+{arXiv}.
+\newblock Value-aware product recommendation using customer segmentation.
+\newblock {\em arXiv}, 2024.
+
+\bibitem{zhang}
+Y.~Zhang, B.~Pang, Y.~Shi, and X.~Wang.
+\newblock Large scale purchase prediction with historical user actions.
+\newblock {\em arXiv}, 2014.
+
+\bibitem{predictive}
+{Predictive Analytics in E-Commerce}.
+\newblock Predictive analytics in e-commerce for customer behavior forecasting.
+\newblock 2024.
+
+\bibitem{segmentrecommend}
+{Customer Segmentation}.
+\newblock Customer segmentation and personalized recommendation system using
+  machine learning.
+\newblock 2024.
+
+\bibitem{xairecommend}
+{Springer}.
+\newblock An explainable ai framework for personalized product recommendation.
+\newblock {\em Springer}, 2024.
+
+\bibitem{friedman}
+J.~H. Friedman.
+\newblock Greedy function approximation: A gradient boosting machine.
+\newblock {\em The Annals of Statistics}, 29(5):1189--1232, 2001.
+
+\bibitem{lundberg}
+S.~M. Lundberg and S.-I. Lee.
+\newblock A unified approach to interpreting model predictions.
+\newblock In {\em Advances in Neural Information Processing Systems (NeurIPS)},
+  volume~30, 2017.
+
+\bibitem{macqueen}
+J.~MacQueen.
+\newblock Some methods for classification and analysis of multivariate
+  observations.
+\newblock In {\em Proceedings of the Fifth Berkeley Symposium on Mathematical
+  Statistics and Probability}, volume~1, pages 281--297, 1967.
+
+\bibitem{resnick}
+P.~Resnick, N.~Iacovou, M.~Suchak, P.~Bergstrom, and J.~Riedl.
+\newblock Grouplens: An open architecture for collaborative filtering of
+  netnews.
+\newblock In {\em Proceedings of the 1994 ACM Conference on Computer Supported
+  Cooperative Work}, pages 175--186, 1994.
+
+\bibitem{pazzani}
+M.~J. Pazzani and D.~Billsus.
+\newblock Content-based recommendation systems.
+\newblock In {\em The Adaptive Web: Methods and Strategies of Web
+  Personalization}, volume 4321, pages 325--341. Springer, 2007.
+
+\bibitem{burke}
+R.~Burke.
+\newblock Hybrid recommender systems: Survey and experiments.
+\newblock {\em User Modeling and User-Adapted Interaction}, 12(4):331--370,
+  2002.
+
+\bibitem{sarwar}
+B.~Sarwar, G.~Karypis, J.~Konstan, and J.~Riedl.
+\newblock Item-based collaborative filtering recommendation algorithms.
+\newblock In {\em Proceedings of the 10th International Conference on World
+  Wide Web}, pages 285--295, 2001.
+
+\bibitem{manning}
+C.~D. Manning, P.~Raghavan, and H.~Sch{\"u}tze.
+\newblock {\em Introduction to Information Retrieval}.
+\newblock Cambridge University Press, 2008.
+
+\end{thebibliography}

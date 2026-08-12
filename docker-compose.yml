@@ -4,7 +4,8 @@
 # Boot order:
 #   postgres (healthy) -> db-init (one-shot: schema push, RBAC seed, phone
 #                         bulk CSV, customer bulk CSV)
-#                     -> ml-service (healthy) + backend (waits on db-init)
+#                     -> ml-service (healthy) + cf-service (healthy) +
+#                        backend (waits on db-init)
 #                     -> frontend
 # ----------------------------------------------------------------------------
 
@@ -87,6 +88,56 @@ services:
       retries: 5
       start_period: 20s
 
+  # CF (collaborative-filtering) FastAPI Service
+  #
+  # Loads `cf_recommender.pkl` (the trained SVD+item-cosine hybrid model)
+  # from a bind-mounted volume on startup and serves recommendation
+  # requests on port 9001. The pickle is bind-mounted (not COPY'd) so a
+  # retrain only requires re-mounting the volume — no image rebuild.
+  #
+  # The backend's `recommendService` calls this service in parallel
+  # with the existing `ml-service`. The CF call NEVER blocks the
+  # response: a timeout / unreachable error is logged as a warning and
+  # the served list degrades to the existing rule-based + content-based
+  # candidates. The service is exposed only on the internal Docker
+  # network (no host port) — admin/health probes should hit
+  # `docker compose exec cf-service curl http://127.0.0.1:9001/health`.
+  cf-service:
+    build:
+      context: ./ML Model/filtering
+      dockerfile: Dockerfile
+    container_name: mobile-recommender-cf
+    restart: unless-stopped
+    # No `ports:` — internal-only. The backend reaches it via
+    # http://cf-service:9001 (CF_BASE_URL env var on the backend).
+    environment:
+      # MODEL_DIR tells the FastAPI service where to find
+      # `cf_recommender.pkl`. We bind-mount the trained output dir
+      # (read-only) and override the default (which expects the
+      # artifact to live at /app/../03_collaborative_filtering/output
+      # inside the image — that path doesn't exist when the pickle
+      # is mounted from the host).
+      CF_MODEL_DIR: /model/cf
+    volumes:
+      # Trained CF model artifact + its companion CSVs.
+      - ./ML Model/filtering/03_collaborative_filtering/output:/model/cf:ro
+      # KMeans segmentation output — read by the BE's
+      # `cfRecommendationService.mjs` to lazily hydrate
+      # `CustomerCluster` rows. Not needed by the CF FastAPI
+      # itself, but mounted here so the service image doesn't
+      # bake it in either. (The BE reads the SAME files from the
+      # host filesystem directly when running outside Docker, and
+      # via the same bind path inside Docker.)
+      - ./ML Model/filtering/02_segmentation/output:/model/seg:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:9001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      # Pickle load can take 15-25s on a cold volume mount + first
+      # import of numpy/pandas/sklearn/implicit.
+      start_period: 45s
+
   # Node.js Backend
   # All runtime secrets (DB, session key, mail) are injected from the host
   # environment. Set them in the root .env file (see .env.example) or in a
@@ -108,6 +159,11 @@ services:
       # Generate one with: openssl rand -hex 32
       COOKIE_SECRET: "${COOKIE_SECRET:?COOKIE_SECRET must be set in .env — run: openssl rand -hex 32}"
       ML_BASE_URL: http://ml-service:8002
+      # CF (collaborative-filtering) FastAPI service URL. The BE's
+      # cfRecommendationService gracefully degrades when this URL is
+      # unreachable — never fatal, just a warn log + no CF candidates
+      # in the served list.
+      CF_BASE_URL: http://cf-service:9001
       NODE_ENV: development
       PORT: 8001
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
@@ -123,6 +179,8 @@ services:
       db-init:
         condition: service_completed_successfully
       ml-service:
+        condition: service_healthy
+      cf-service:
         condition: service_healthy
 
   # React Frontend
