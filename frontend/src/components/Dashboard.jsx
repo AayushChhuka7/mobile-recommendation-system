@@ -133,7 +133,7 @@ const personaToCategory = (persona) => {
 // (e.g. live price slider) gets wired to auto-save.
 
 function buildPhonesQuery(filters, sort, extra = {}) {
-  const params = { limit: 6, sort, ...extra };
+  const params = { limit: 12, sort, ...extra };
   if (filters.brand) params.brand = filters.brand;
   // The dashboard's phone cards display prices in NPR (see
   // `formatPriceNpr`) but the backend stores `phoneVariants.price`
@@ -444,6 +444,10 @@ function Dashboard() {
     // authenticated; the BE identifies the caller by cookie anyway.
     const uid = user?.userId || user?.id;
     if (!user || !uid) return;
+    // Only auto-recommend on the first page. Pages 2+ are pure
+    // paginated catalog — the recommendations section is hidden
+    // there, so no need to spend a network round-trip.
+    if (page !== 1) return;
     // Skip when any recommendations are already on screen. The flag
     // covers both auto (re-mount during the same session) and manual
     // (user clicked "Recommend Me" and we don't want to clobber their
@@ -491,7 +495,7 @@ function Dashboard() {
       ignore = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.userId, user?.id, recommendationSource]);
+  }, [user?.userId, user?.id, recommendationSource, page]);
 
   const handleSignOut = useCallback(async () => {
     try {
@@ -939,16 +943,6 @@ function Dashboard() {
   return (
     <div className={`dashboard-page ${isDarkMode ? "dash-dark" : ""}`}>
       <header className="dash-header">
-        <div className="login-brand">
-          <div className="brand-icon" style={{ color: "#fff" }}>
-            M
-          </div>
-          <div>
-            <div className="dash-brand-title">Mobile Recommender</div>
-            <div className="dash-brand-sub">Find your perfect phone</div>
-          </div>
-        </div>
-
         <div className="dash-header-actions">
           <button
             type="button"
@@ -1469,7 +1463,7 @@ function Dashboard() {
           </div>
         )}
 
-        {recs && !recsLoading && !searchTerm && activeFilterCount === 0 && (
+        {recs && !recsLoading && !searchTerm && activeFilterCount === 0 && page === 1 && (
           <section
             className="dash-recs-section"
             aria-label="Recommended for you"
@@ -1508,7 +1502,7 @@ function Dashboard() {
               </p>
             ) : (
               <div className="phone-grid">
-                {recs.map((r) => {
+                {recs.slice(0, 6).map((r) => {
                   const isClickable = r.id && r.inDatabase !== false;
                   const handleRecClick = () => {
                     if (isClickable) navigate(`/phones/${r.id}`);
@@ -1716,8 +1710,10 @@ function Dashboard() {
         )}
 
         {!isLoading && !error && phones.length > 0 && (
-          <div className="phone-grid">
-            {phones.map((p) => (
+          <>
+            <h2 className="dash-section-title">Explore more phones</h2>
+            <div className="phone-grid">
+              {phones.map((p) => (
               <div
                 key={p.id}
                 className={`phone-card ${hoveredCard === p.id ? "expanded" : ""}`}
@@ -1780,7 +1776,8 @@ function Dashboard() {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
+          </>
         )}
 
         {/* Pagination — only when there is more than one page */}

@@ -27,10 +27,18 @@
   color: var(--text-muted);
 }
 
+.dash-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 24px 0 12px;
+}
+
 .dash-header-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-left: auto;
 }
 
 .icon-btn {
