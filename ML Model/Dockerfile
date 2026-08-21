@@ -17,6 +17,17 @@
 #   - Has glibc, which matches most published wheels (numpy/pandas/sklearn
 #     all ship glibc wheels; no `python:3.11-alpine` musl recompile pain)
 #   - `slim` is the standard recommendation for FastAPI images
+#
+# Production notes:
+#   * uvicorn binds 0.0.0.0 — required for Docker port publishing AND
+#     for inter-container calls from the Node backend.
+#   * The model is loaded ONCE in pipeline/serve.py's lifespan handler,
+#     NOT on every request. See pipeline/serve.py (unchanged).
+#   * `--port` reads `$PORT` at runtime, defaulting to 8002 so the
+#     image works locally AND on Render/Railway/Fly.io (which all set
+#     PORT automatically).
+#   * A `/health` endpoint already exists in serve.py — we do NOT add
+#     a duplicate one.
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── Stage 1: builder ─────────────────────────────────────────────────────────
@@ -59,12 +70,14 @@ FROM python:3.11-slim AS runtime
 
 WORKDIR /app
 
-# Runtime-only system libraries. curl is needed for the compose healthcheck
-# (`curl -fsS http://127.0.0.1:8002/health`). Without it, the healthcheck
-# fails and the backend's `depends_on: ml-service service_healthy` hangs.
+# Runtime-only system libraries. curl is needed for the container
+# healthcheck (also used by docker-compose). Adding tini so SIGTERM
+# is forwarded correctly to uvicorn — avoids stuck shutdowns on
+# platform restarts.
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
         curl \
+        tini \
  && rm -rf /var/lib/apt/lists/*
 
 # Copy the prebuilt site-packages from the builder. This is the
@@ -87,10 +100,18 @@ COPY After_EDA_and_Feature_ENginering.csv .
 # is paid only when the BE actually asks for content-based ranking.
 COPY similarity_bundle.joblib .
 
+# Default port — overridable by the platform's PORT env. uvicorn reads
+# the `--port` flag at startup; we inject $PORT into the CMD via shell
+# so platforms that set PORT (Render, Railway, Fly.io, Heroku) just work.
+ENV PORT=8002
 EXPOSE 8002
 
-# Healthcheck the compose file expects. `curl` was installed in this stage.
-HEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=20s \
+# Healthcheck — uvicorn takes a few seconds to import numpy/pandas/sklearn.
+# 30s start_period covers the slow first-time import.
+HEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=30s \
   CMD ["curl", "-fsS", "http://127.0.0.1:8002/health"]
 
-CMD ["uvicorn", "pipeline.serve:app", "--host", "0.0.0.0", "--port", "8002"]
+# tini forwards SIGTERM correctly; uvicorn then drains in-flight
+# requests and exits cleanly within docker's 10s grace window.
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["sh", "-c", "exec uvicorn pipeline.serve:app --host 0.0.0.0 --port ${PORT}"]
