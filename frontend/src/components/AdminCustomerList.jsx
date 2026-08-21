@@ -4,21 +4,64 @@
 // Mounted at `/admin/customer-profiles` by App.jsx. Guarded by
 // `useAdminGuard`. Client-side search filter (by name or email).
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdminGuard } from "../hooks/useAdminGuard.jsx";
+import { useAuth } from "../hooks/useAuth.jsx";
 import { listAllUsers } from "../services/adminProfiles";
-import { SearchIcon, ChevronIcon } from "./AuthShared";
+import {
+  SearchIcon,
+  ChevronIcon,
+  FilterIcon,
+  CloseIcon,
+  LogoutIcon,
+} from "./AuthShared";
 import "./AdminCustomerList.css";
+
+const ROLE_OPTIONS = [
+  { value: "all", label: "All" },
+  { value: "customer", label: "Customer" },
+  { value: "admin", label: "Admin" },
+  { value: "salesman", label: "Salesman" },
+];
+
+const STATUS_OPTIONS = [
+  { value: "all", label: "All" },
+  { value: "active", label: "Active" },
+  { value: "inactive", label: "Inactive" },
+];
+
+const SORT_OPTIONS = [
+  { value: "name_asc", label: "Name A–Z" },
+  { value: "name_desc", label: "Name Z–A" },
+];
 
 function AdminCustomerList() {
   const navigate = useNavigate();
   const { isAdmin, loading } = useAdminGuard();
+  const { logout } = useAuth();
+
+  // Sign-out clears the auth record (localStorage + context) and
+  // pushes the user back to /login. Using `replace: true` keeps the
+  // admin-list out of the back-stack so the browser back button can't
+  // drop them right back onto the listing after they sign out.
+  const handleSignOut = useCallback(() => {
+    logout();
+    navigate("/login", { replace: true });
+  }, [logout, navigate]);
 
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
   const [fetching, setFetching] = useState(true);
   const [query, setQuery] = useState("");
+  // Filter state — role, status, and sort. All default to "no
+  // narrowing" so the page looks identical to the prior behaviour
+  // until the admin opens the filter dropdown and changes a control.
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("name_asc");
+  const [showFilters, setShowFilters] = useState(false);
+  const filterRef = useRef(null);
 
   useEffect(() => {
     if (!isAdmin) return; // guard will redirect; skip fetch
@@ -51,13 +94,60 @@ function AdminCustomerList() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return users;
-    return users.filter((u) => {
-      const name = (u.name || "").toLowerCase();
-      const email = (u.email || "").toLowerCase();
-      return name.includes(q) || email.includes(q);
+    const roleLower = roleFilter === "all" ? null : roleFilter.toLowerCase();
+    const wantedActive =
+      statusFilter === "all" ? null : statusFilter === "active";
+    let out = users.filter((u) => {
+      if (q) {
+        const name = (u.name || "").toLowerCase();
+        const email = (u.email || "").toLowerCase();
+        if (!name.includes(q) && !email.includes(q)) return false;
+      }
+      if (roleLower) {
+        const userRole = (u.role || "").toLowerCase();
+        if (userRole !== roleLower) return false;
+      }
+      if (wantedActive !== null) {
+        if (Boolean(u.isActive) !== wantedActive) return false;
+      }
+      return true;
     });
-  }, [users, query]);
+    // Sort — only by name for now. Comparator is stable so equal
+    // names preserve their original list order.
+    const dir = sortBy === "name_desc" ? -1 : 1;
+    out = out.slice().sort((a, b) => {
+      const an = (a.name || "").toLowerCase();
+      const bn = (b.name || "").toLowerCase();
+      if (an < bn) return -1 * dir;
+      if (an > bn) return 1 * dir;
+      return 0;
+    });
+    return out;
+  }, [users, query, roleFilter, statusFilter, sortBy]);
+
+  // Close the filter popover on outside click — same pattern the
+  // Dashboard search bar / filter button uses.
+  useEffect(() => {
+    if (!showFilters) return undefined;
+    function handleOutside(e) {
+      if (filterRef.current && !filterRef.current.contains(e.target)) {
+        setShowFilters(false);
+      }
+    }
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [showFilters]);
+
+  const resetFilters = useCallback(() => {
+    setRoleFilter("all");
+    setStatusFilter("all");
+    setSortBy("name_asc");
+  }, []);
+
+  const activeFilterCount =
+    (roleFilter !== "all" ? 1 : 0) +
+    (statusFilter !== "all" ? 1 : 0) +
+    (sortBy !== "name_asc" ? 1 : 0);
 
   if (loading || !isAdmin) {
     return (
@@ -70,18 +160,10 @@ function AdminCustomerList() {
   return (
     <div className="admin-list-page">
       <header className="admin-list-header">
-        <button
-          type="button"
-          className="admin-back-btn"
-          onClick={() => navigate("/dashboard")}
-          aria-label="Back to dashboard"
-        >
-          <ChevronIcon /> <span>Back to dashboard</span>
-        </button>
         <div>
           <h1 className="admin-list-title">Customer profiles</h1>
           <p className="admin-list-sub">
-            Admin view · {users.length} {users.length === 1 ? "user" : "users"}
+            Total users = {users.length}
           </p>
         </div>
       </header>
@@ -97,6 +179,116 @@ function AdminCustomerList() {
             aria-label="Search customers"
           />
         </div>
+
+        <div className="admin-list-filter-wrap" ref={filterRef}>
+          <button
+            type="button"
+            className={`btn btn-outline admin-list-filter-btn ${showFilters ? "active" : ""}`}
+            onClick={() => setShowFilters((s) => !s)}
+            aria-expanded={showFilters}
+            aria-haspopup="dialog"
+            title="Filter and sort"
+          >
+            <FilterIcon />
+            <span>Filter</span>
+            {activeFilterCount > 0 && (
+              <span className="admin-list-filter-badge">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+
+          {showFilters && (
+            <div
+              className="admin-list-filter-popover"
+              role="dialog"
+              aria-label="Filter and sort customers"
+            >
+              <div className="admin-list-filter-header">
+                <h3>Filter &amp; sort</h3>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => setShowFilters(false)}
+                  aria-label="Close filters"
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+
+              <div className="admin-list-filter-body">
+                <div className="admin-list-filter-group">
+                  <label className="admin-list-filter-label">Sort by name</label>
+                  <select
+                    className="admin-list-filter-select"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    aria-label="Sort by name"
+                  >
+                    {SORT_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="admin-list-filter-group">
+                  <label className="admin-list-filter-label">Role</label>
+                  <select
+                    className="admin-list-filter-select"
+                    value={roleFilter}
+                    onChange={(e) => setRoleFilter(e.target.value)}
+                    aria-label="Filter by role"
+                  >
+                    {ROLE_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="admin-list-filter-group">
+                  <label className="admin-list-filter-label">Status</label>
+                  <select
+                    className="admin-list-filter-select"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    aria-label="Filter by status"
+                  >
+                    {STATUS_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="admin-list-filter-footer">
+                <button
+                  type="button"
+                  className="btn btn-outline w-full"
+                  onClick={resetFilters}
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className="admin-list-signout-btn"
+          onClick={handleSignOut}
+          title="Sign out"
+          aria-label="Sign out"
+        >
+          <LogoutIcon />
+          <span>Sign out</span>
+        </button>
       </div>
 
       {fetching && <div className="admin-list-splash">Loading customers…</div>}
@@ -111,7 +303,7 @@ function AdminCustomerList() {
         <div className="admin-list-empty">
           {users.length === 0
             ? "No customers in the system yet."
-            : "No customers match your search."}
+            : "No customers match your search or filters."}
         </div>
       )}
 
