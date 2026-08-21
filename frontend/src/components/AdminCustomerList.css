@@ -18,6 +18,37 @@
   margin-bottom: 24px;
 }
 
+/* Sign-out lives at the right end of the toolbar row, on the same
+ * baseline as the search bar and filter button. Red background with
+ * white icon/label so it reads as a destructive action, distinct from
+ * the neutral outline Filter button next to it. */
+.admin-list-signout-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  /* Softer red than the brand danger colour — reads as "destructive"
+   * without the visual heaviness of pure #dc2626. Border matches the
+   * fill so the button looks like a flat pill rather than an outlined
+   * tag. */
+  border: 1px solid #ef4444;
+  background: #ef4444;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition);
+}
+
+.admin-list-signout-btn:hover {
+  background: #f87171;
+  border-color: #f87171;
+}
+
 .admin-back-btn {
   display: inline-flex;
   align-items: center;
@@ -54,6 +85,13 @@
   font-size: 13px;
 }
 
+/* Toolbar holds the search input and the filter button. Its width is
+ * intentionally NOT a percentage — we let it size to its content so the
+ * search bar and filter button stay anchored in the same position
+ * regardless of whether the table or the empty-state placeholder is
+ * rendered below. Using `flex: 1` here would have made the search bar
+ * jump when the sibling area (table vs. empty state) changed the
+ * available space. */
 .admin-list-toolbar {
   display: flex;
   gap: 12px;
@@ -68,8 +106,7 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px 12px;
-  flex: 1;
-  max-width: 420px;
+  width: 360px;
 }
 
 .admin-list-search input {
@@ -81,11 +118,103 @@
   color: var(--text);
 }
 
+.admin-list-filter-wrap {
+  position: relative;
+}
+
+.admin-list-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.admin-list-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--primary, #4f46e5);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+.admin-list-filter-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 260px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  z-index: 15;
+  padding: 0;
+}
+
+.admin-list-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-list-filter-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.admin-list-filter-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-list-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-list-filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-list-filter-select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--white);
+  font-size: 14px;
+  color: var(--text);
+}
+
+.admin-list-filter-footer {
+  padding: 10px 14px 14px;
+  border-top: 1px solid var(--border);
+}
+
 .admin-list-splash {
   padding: 40px;
   text-align: center;
   color: var(--text-muted);
   font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .admin-list-error {
@@ -105,6 +234,8 @@
   background: var(--white);
   border: 1px dashed var(--border);
   border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .admin-list-table-wrap {

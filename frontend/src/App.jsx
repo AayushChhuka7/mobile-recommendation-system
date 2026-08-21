@@ -12,7 +12,7 @@ import AdminCustomerList from "./components/AdminCustomerList.jsx";
 import AdminCustomerDetail from "./components/AdminCustomerDetail.jsx";
 
 function App() {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = (userData) => {
@@ -41,11 +41,36 @@ function App() {
       ...(record.role ? { role: record.role } : {}),
     };
     login(unwrapped);
-    navigate("/dashboard", { replace: true });
+    // Admins go straight to the customer-profiles list — no Dashboard
+    // intermediate step. Non-admin users (customers / salesmen) land
+    // on the regular Dashboard.
+    const isAdmin =
+      record?.role === "Admin" || unwrapped?.role === "Admin";
+    navigate(isAdmin ? "/admin/customer-profiles" : "/dashboard", {
+      replace: true,
+    });
   };
 
   // Return based on current path
   const path = window.location.pathname;
+
+  // Admin guard: admins never see the mobile-recommendation Dashboard,
+  // phone listings, or compare UI. If they land on (or navigate to)
+  // any non-admin route, bounce them straight to the customer-profiles
+  // list. Non-admin users pass through unchanged. The `replace: true`
+  // keeps the redirect out of the history stack so the admin's back
+  // button still works for in-app navigation.
+  if (
+    user?.role === "Admin" &&
+    !path.startsWith("/admin") &&
+    !path.startsWith("/login") &&
+    !path.startsWith("/forgot-password")
+  ) {
+    navigate("/admin/customer-profiles", { replace: true });
+    // Fall through to render the admin list anyway — avoids a flash
+    // of the wrong component while the navigation settles.
+    return <AdminCustomerList />;
+  }
 
   if (path.startsWith("/login")) return <Login onLogin={handleLogin} />;
   if (path.startsWith("/register"))
