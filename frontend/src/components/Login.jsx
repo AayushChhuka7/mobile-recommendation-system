@@ -306,7 +306,6 @@ function Login({ onLogin }) {
                 >
                   <option value="Customer">Customer</option>
                   <option value="Admin">Admin</option>
-                  <option value="Salesman">Salesman</option>
                 </select>
               </div>
 
