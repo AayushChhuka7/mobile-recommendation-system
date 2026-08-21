@@ -8,7 +8,7 @@
 # We exclude everything that is not needed at build OR runtime.
 #
 # Do NOT exclude .env.example — it is needed for compose's env_file.
-# Do NOT exclude src/, prisma/, seed.mjs, prisma.config.ts, package*.json.
+# Do NOT exclude src/, prisma/, seed*.mjs, prisma.config.ts, package*.json.
 # ─────────────────────────────────────────────────────────────────────────────
 
 # --- Node ---
