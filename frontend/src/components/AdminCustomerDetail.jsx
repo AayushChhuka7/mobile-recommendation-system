@@ -13,6 +13,7 @@ import {
   getCustomerProfileById,
   getCustomerBehavior,
 } from "../services/adminProfiles";
+import { getPhoneById } from "../services/phones";
 import { ChevronIcon } from "./AuthShared";
 import "./AdminCustomerDetail.css";
 
@@ -56,6 +57,12 @@ function AdminCustomerDetail() {
   // alongside the bundle. Renders as a top-N list in its own card.
   const [behavior, setBehavior] = useState([]);
   const [behaviorError, setBehaviorError] = useState("");
+  // Map of phoneId → full phone record (imageUrl, brand.name, modelName,
+  // specs, pricing). Hydrated lazily as the topResults come back from
+  // the bundle endpoint so the "Top results" rail can render real
+  // phone cards (image, model, price) the same way the dashboard does,
+  // instead of plain "Brand · Model" text rows.
+  const [topResultPhones, setTopResultPhones] = useState({});
 
   useEffect(() => {
     if (!isAdmin) return; // guard will redirect; skip fetch
@@ -115,6 +122,38 @@ function AdminCustomerDetail() {
       ignore = true;
     };
   }, [isAdmin, userId]);
+
+  // Hydrate the topResults phones — the BE returns just phoneId /
+  // overallCompatibility / searchDate, so we need to fan out one
+  // GET /phones/:id per row to get the image + brand + model needed
+  // to render real phone cards. Independent reads run in parallel;
+  // any single failure is swallowed so the page still renders.
+  useEffect(() => {
+    const rows = bundle?.lastRecommendation?.topResults;
+    if (!Array.isArray(rows) || rows.length === 0) {
+      setTopResultPhones({});
+      return undefined;
+    }
+    const ids = rows.map((r) => r?.phoneId).filter(Boolean);
+    if (ids.length === 0) return undefined;
+    let ignore = false;
+    (async () => {
+      const fetched = await Promise.all(
+        ids.map((id) =>
+          getPhoneById(id).catch(() => null),
+        ),
+      );
+      if (ignore) return;
+      const next = {};
+      ids.forEach((id, i) => {
+        if (fetched[i]) next[id] = fetched[i];
+      });
+      setTopResultPhones(next);
+    })();
+    return () => {
+      ignore = true;
+    };
+  }, [bundle?.lastRecommendation]);
 
   if (loading || !isAdmin) {
     return (
@@ -391,7 +430,23 @@ function AdminCustomerDetail() {
                   <li>
                     <span className="admin-info-label">Budget:</span>
                     <span className="admin-info-value">
-                      {formatNumber(bundle.lastRecommendation.budget)}
+                      {(() => {
+                        // The BE sometimes returns the budget as a
+                        // pre-formatted { amount, currency } object
+                        // (from the RecommendationCall serializer) and
+                        // sometimes as a bare number depending on the
+                        // code path. Handle both shapes so we never
+                        // surface the literal string "[object Object]".
+                        const b = bundle.lastRecommendation.budget;
+                        if (b == null) return "—";
+                        if (typeof b === "number") return formatNumber(b);
+                        if (typeof b === "object") {
+                          const amt = b.amount ?? b.value ?? b.max;
+                          const cur = b.currency ? ` ${b.currency}` : "";
+                          return amt != null ? `${formatNumber(amt)}${cur}` : "—";
+                        }
+                        return String(b);
+                      })()}
                     </span>
                   </li>
                   <li>
@@ -405,38 +460,102 @@ function AdminCustomerDetail() {
                   bundle.lastRecommendation.topResults.length > 0 && (
                     <div className="admin-subsection">
                       <h3 className="admin-subsection-title">Top results</h3>
-                      <ul className="admin-list-clean">
+                      {/* Real phone cards — same shape as the
+                        * dashboard's recommended rail. We map each
+                        * topResults row to its full phone record
+                        * (fetched via getPhoneById above) so we can
+                        * show the image, brand and price. While the
+                        * enrichment fetch is still in flight we
+                        * render a lightweight placeholder card with
+                        * the brand · model string from the bundle so
+                        * the row doesn't pop in after the rest of
+                        * the page. */}
+                      <div className="phone-grid admin-top-results-grid">
                         {bundle.lastRecommendation.topResults.map((r, i) => {
-                          // Resolve phoneId → "Brand · Model" — the
-                          // backend already joins Phones on the
-                          // per-call RecommendationCall row so we
-                          // just render what we get. If the phone was
-                          // deleted between serving and reading we
-                          // fall back to "Unknown phone" so the admin
-                          // still sees *that* something was served.
-                          const label =
-                            r.brand && r.modelName
+                          const phone = topResultPhones[r.phoneId];
+                          const label = phone
+                            ? `${phone.brand?.name || ""} · ${phone.modelName || ""}`.trim()
+                            : r.brand && r.modelName
                               ? `${r.brand} · ${r.modelName}`
                               : r.modelName ||
                                 (r.phoneId ? "Unknown phone" : "—");
+                          const matchPct =
+                            r.score != null
+                              ? Math.round(Number(r.score))
+                              : r.overallCompatibility != null
+                                ? Math.round(Number(r.overallCompatibility))
+                                : null;
                           return (
-                            <li key={r.phoneId || i}>
-                              <span className="admin-timeline-what">
-                                <strong>{label}</strong>
-                                {r.score != null ? (
-                                  <span className="admin-muted">
-                                    {" "}
-                                    · {Math.round(Number(r.score))}% match
-                                  </span>
-                                ) : null}
-                              </span>
-                              <span className="admin-muted">
-                                {formatDate(r.servedAt || bundle.lastRecommendation.servedAt)}
-                              </span>
-                            </li>
+                            <div
+                              key={r.phoneId || i}
+                              className="phone-card"
+                              onClick={() =>
+                                r.phoneId &&
+                                navigate(`/phones/${r.phoneId}`)
+                              }
+                              style={{ cursor: "pointer" }}
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (
+                                  (e.key === "Enter" || e.key === " ") &&
+                                  r.phoneId
+                                ) {
+                                  e.preventDefault();
+                                  navigate(`/phones/${r.phoneId}`);
+                                }
+                              }}
+                            >
+                              <div className="phone-card-top">
+                                <div
+                                  className={`phone-card-image${phone?.imageUrl ? "" : " no-image"}`}
+                                >
+                                  {phone?.imageUrl ? (
+                                    <img
+                                      src={phone.imageUrl}
+                                      alt={phone.modelName || label}
+                                      onError={(e) => {
+                                        e.currentTarget.style.display =
+                                          "none";
+                                        e.currentTarget.parentElement.classList.add(
+                                          "no-image",
+                                        );
+                                      }}
+                                    />
+                                  ) : (
+                                    <span className="phone-card-emoji">📱</span>
+                                  )}
+                                  {matchPct != null && (
+                                    <span className="phone-card-match-badge">
+                                      {matchPct}% match
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="phone-card-name">
+                                  {phone?.modelName || r.modelName || "—"}
+                                </div>
+                                <div className="phone-card-tagline">
+                                  {phone?.brand?.name ||
+                                    r.brand ||
+                                    "Unknown brand"}
+                                </div>
+                              </div>
+                              {phone?.pricing?.cheapest != null && (
+                                <div className="phone-card-details">
+                                  <div className="phone-spec phone-price">
+                                    <span>
+                                      NPR{" "}
+                                      {formatNumber(
+                                        phone.pricing.cheapest,
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           );
                         })}
-                      </ul>
+                      </div>
                     </div>
                   )}
               </>
@@ -453,8 +572,6 @@ function AdminCustomerDetail() {
             * type at a glance. If all three are empty we show a single
             * "No recent activity." line per the feature spec. */}
           <section className="admin-card admin-card-wide">
-            <h2 className="admin-card-title">Recent signals</h2>
-
             {(!bundle.lastSearches || bundle.lastSearches.length === 0) &&
             (!bundle.lastBrowses || bundle.lastBrowses.length === 0) &&
             (!bundle.lastComparisons || bundle.lastComparisons.length === 0) ? (

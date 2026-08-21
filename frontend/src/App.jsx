@@ -60,11 +60,16 @@ function App() {
   // list. Non-admin users pass through unchanged. The `replace: true`
   // keeps the redirect out of the history stack so the admin's back
   // button still works for in-app navigation.
+  //
+  // `/phones/...` is excluded from the bounce so admins can click into
+  // a phone card from the customer-detail "Top results" rail and view
+  // the spec page without being redirected back to the customer list.
   if (
     user?.role === "Admin" &&
     !path.startsWith("/admin") &&
     !path.startsWith("/login") &&
-    !path.startsWith("/forgot-password")
+    !path.startsWith("/forgot-password") &&
+    !path.match(/^\/phones\/[^/]+/)
   ) {
     navigate("/admin/customer-profiles", { replace: true });
     // Fall through to render the admin list anyway — avoids a flash

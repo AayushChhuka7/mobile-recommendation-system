@@ -251,3 +251,55 @@
   font-weight: 600;
   color: var(--primary, #2563eb);
 }
+
+/* ---- Top results rail ----
+ *
+ * Reuses the dashboard's .phone-card / .phone-grid primitives so the
+ * cards look identical to the main catalog. The match badge is the
+ * only new piece — overlaid in the top-right of the card image so
+ * the % is visible at a glance even before the card expands.
+ *
+ * The dashboard's `.phone-grid` media query collapses to 2 columns at
+ * <=900px and 1 column at <=600px. Inside this admin detail card the
+ * viewport width is always narrower than the dashboard's main
+ * content, so without an override we get the 2-column layout from
+ * the screenshot. Force 3 columns here so the top-results rail
+ * always reads as a single horizontal row regardless of viewport.
+ */
+.admin-top-results-grid.phone-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .admin-top-results-grid.phone-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-top-results-grid.phone-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-top-results-grid {
+  margin-top: 4px;
+}
+
+.admin-card .phone-card-match-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.78);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(4px);
+}
+
+.admin-card .phone-card-image {
+  position: relative;
+}
