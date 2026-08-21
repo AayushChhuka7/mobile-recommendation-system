@@ -10,7 +10,7 @@ export const PASSWORD_MIN_LENGTH = 8;
 export const PASSWORD_RULES =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/;
 export const PASSWORD_HINT = `At least ${PASSWORD_MIN_LENGTH} characters with one uppercase, one lowercase, one number, and one special character.`;
-export const SELF_ASSIGNABLE_ROLES = ["Customer", "Salesman"];
+export const SELF_ASSIGNABLE_ROLES = ["Customer", "Admin"];
 export const NEPAL_CITIES = [
   "Kathmandu",
   "Lalitpur",

@@ -23,7 +23,7 @@ import api from "./api";
  *       {
  *         userId, name, email, phoneNo,
  *         isActive, isVerified,
- *         role: "Customer" | "Admin" | "Salesman" | null
+ *         role: "Customer" | "Admin" | null
  *       },
  *       ...
  *     ],

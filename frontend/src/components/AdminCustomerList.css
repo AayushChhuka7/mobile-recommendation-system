@@ -165,11 +165,6 @@
   color: var(--danger);
 }
 
-.admin-role-salesman {
-  background: rgba(255, 193, 7, 0.15);
-  color: #b07c00;
-}
-
 .admin-role-none {
   background: rgba(108, 117, 125, 0.12);
   color: #6c757d;
