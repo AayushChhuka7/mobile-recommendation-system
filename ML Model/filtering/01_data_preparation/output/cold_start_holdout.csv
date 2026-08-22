@@ -1,0 +1,283 @@
+holdout_kind,customer_id,model_name,notes
+cold_user,CUST-014332E4,,user held out from training interactions (zero history)
+cold_user,CUST-01533733,,user held out from training interactions (zero history)
+cold_user,CUST-03A2E62B,,user held out from training interactions (zero history)
+cold_user,CUST-0454D465,,user held out from training interactions (zero history)
+cold_user,CUST-05B2C52B,,user held out from training interactions (zero history)
+cold_user,CUST-08D2C68A,,user held out from training interactions (zero history)
+cold_user,CUST-0BA9BACD,,user held out from training interactions (zero history)
+cold_user,CUST-0CA4C0F2,,user held out from training interactions (zero history)
+cold_user,CUST-0D864FA8,,user held out from training interactions (zero history)
+cold_user,CUST-138A9F27,,user held out from training interactions (zero history)
+cold_user,CUST-14360E92,,user held out from training interactions (zero history)
+cold_user,CUST-15C50CF7,,user held out from training interactions (zero history)
+cold_user,CUST-17FAB959,,user held out from training interactions (zero history)
+cold_user,CUST-1AEC6B1A,,user held out from training interactions (zero history)
+cold_user,CUST-1E91CDD0,,user held out from training interactions (zero history)
+cold_user,CUST-1F369ECB,,user held out from training interactions (zero history)
+cold_user,CUST-20A1F638,,user held out from training interactions (zero history)
+cold_user,CUST-20DA718D,,user held out from training interactions (zero history)
+cold_user,CUST-20DBE8D3,,user held out from training interactions (zero history)
+cold_user,CUST-21D0CD43,,user held out from training interactions (zero history)
+cold_user,CUST-2351AC7D,,user held out from training interactions (zero history)
+cold_user,CUST-2591BA42,,user held out from training interactions (zero history)
+cold_user,CUST-273D2ACF,,user held out from training interactions (zero history)
+cold_user,CUST-28C3D34E,,user held out from training interactions (zero history)
+cold_user,CUST-297B000D,,user held out from training interactions (zero history)
+cold_user,CUST-2BD0F791,,user held out from training interactions (zero history)
+cold_user,CUST-2CA1A267,,user held out from training interactions (zero history)
+cold_user,CUST-2D9704BD,,user held out from training interactions (zero history)
+cold_user,CUST-2DF91F56,,user held out from training interactions (zero history)
+cold_user,CUST-31109A61,,user held out from training interactions (zero history)
+cold_user,CUST-33BC5B25,,user held out from training interactions (zero history)
+cold_user,CUST-375911FB,,user held out from training interactions (zero history)
+cold_user,CUST-3AF78F71,,user held out from training interactions (zero history)
+cold_user,CUST-3BBE0317,,user held out from training interactions (zero history)
+cold_user,CUST-3BF6B33F,,user held out from training interactions (zero history)
+cold_user,CUST-3D0D47AE,,user held out from training interactions (zero history)
+cold_user,CUST-3F28AF86,,user held out from training interactions (zero history)
+cold_user,CUST-3F3DE854,,user held out from training interactions (zero history)
+cold_user,CUST-419BBCA6,,user held out from training interactions (zero history)
+cold_user,CUST-445419AC,,user held out from training interactions (zero history)
+cold_user,CUST-45ECC7F2,,user held out from training interactions (zero history)
+cold_user,CUST-46A54631,,user held out from training interactions (zero history)
+cold_user,CUST-46E6D410,,user held out from training interactions (zero history)
+cold_user,CUST-474C18E6,,user held out from training interactions (zero history)
+cold_user,CUST-47C60C01,,user held out from training interactions (zero history)
+cold_user,CUST-4894072F,,user held out from training interactions (zero history)
+cold_user,CUST-496D2DB6,,user held out from training interactions (zero history)
+cold_user,CUST-4B0EBC26,,user held out from training interactions (zero history)
+cold_user,CUST-4B4796F5,,user held out from training interactions (zero history)
+cold_user,CUST-4B8ED86D,,user held out from training interactions (zero history)
+cold_user,CUST-4BC08BEF,,user held out from training interactions (zero history)
+cold_user,CUST-4BE8718A,,user held out from training interactions (zero history)
+cold_user,CUST-4D1E42B7,,user held out from training interactions (zero history)
+cold_user,CUST-4D72B993,,user held out from training interactions (zero history)
+cold_user,CUST-4E4794DF,,user held out from training interactions (zero history)
+cold_user,CUST-4EB28165,,user held out from training interactions (zero history)
+cold_user,CUST-529432E9,,user held out from training interactions (zero history)
+cold_user,CUST-530F43C5,,user held out from training interactions (zero history)
+cold_user,CUST-534E848C,,user held out from training interactions (zero history)
+cold_user,CUST-53DBE8EE,,user held out from training interactions (zero history)
+cold_user,CUST-56974F6B,,user held out from training interactions (zero history)
+cold_user,CUST-56A5C645,,user held out from training interactions (zero history)
+cold_user,CUST-5CBBC8CF,,user held out from training interactions (zero history)
+cold_user,CUST-5DA299D6,,user held out from training interactions (zero history)
+cold_user,CUST-5DAA5127,,user held out from training interactions (zero history)
+cold_user,CUST-5DCE9254,,user held out from training interactions (zero history)
+cold_user,CUST-5DF89E47,,user held out from training interactions (zero history)
+cold_user,CUST-5E967499,,user held out from training interactions (zero history)
+cold_user,CUST-5E9FBA10,,user held out from training interactions (zero history)
+cold_user,CUST-601AB607,,user held out from training interactions (zero history)
+cold_user,CUST-61AB0A99,,user held out from training interactions (zero history)
+cold_user,CUST-6292477C,,user held out from training interactions (zero history)
+cold_user,CUST-6324178D,,user held out from training interactions (zero history)
+cold_user,CUST-64492102,,user held out from training interactions (zero history)
+cold_user,CUST-662A971D,,user held out from training interactions (zero history)
+cold_user,CUST-6677B167,,user held out from training interactions (zero history)
+cold_user,CUST-67846E0B,,user held out from training interactions (zero history)
+cold_user,CUST-679F0A6A,,user held out from training interactions (zero history)
+cold_user,CUST-680533D9,,user held out from training interactions (zero history)
+cold_user,CUST-682B4821,,user held out from training interactions (zero history)
+cold_user,CUST-68C25B56,,user held out from training interactions (zero history)
+cold_user,CUST-6A091EEE,,user held out from training interactions (zero history)
+cold_user,CUST-6EA2CEF1,,user held out from training interactions (zero history)
+cold_user,CUST-6FE13305,,user held out from training interactions (zero history)
+cold_user,CUST-705DAC92,,user held out from training interactions (zero history)
+cold_user,CUST-713BE6EB,,user held out from training interactions (zero history)
+cold_user,CUST-71B6B672,,user held out from training interactions (zero history)
+cold_user,CUST-7331B3D9,,user held out from training interactions (zero history)
+cold_user,CUST-7354DCFE,,user held out from training interactions (zero history)
+cold_user,CUST-73BD6F2E,,user held out from training interactions (zero history)
+cold_user,CUST-7720D3E8,,user held out from training interactions (zero history)
+cold_user,CUST-7A36523B,,user held out from training interactions (zero history)
+cold_user,CUST-7A3EDA28,,user held out from training interactions (zero history)
+cold_user,CUST-7A7DF517,,user held out from training interactions (zero history)
+cold_user,CUST-7B324E19,,user held out from training interactions (zero history)
+cold_user,CUST-7C421832,,user held out from training interactions (zero history)
+cold_user,CUST-7C63EB13,,user held out from training interactions (zero history)
+cold_user,CUST-7D802F3D,,user held out from training interactions (zero history)
+cold_user,CUST-7E89EE86,,user held out from training interactions (zero history)
+cold_user,CUST-7EECDE71,,user held out from training interactions (zero history)
+cold_user,CUST-7F898A85,,user held out from training interactions (zero history)
+cold_user,CUST-81156386,,user held out from training interactions (zero history)
+cold_user,CUST-8327122F,,user held out from training interactions (zero history)
+cold_user,CUST-833CEDFE,,user held out from training interactions (zero history)
+cold_user,CUST-854BBC2A,,user held out from training interactions (zero history)
+cold_user,CUST-858349F8,,user held out from training interactions (zero history)
+cold_user,CUST-87110CA0,,user held out from training interactions (zero history)
+cold_user,CUST-8724AF0C,,user held out from training interactions (zero history)
+cold_user,CUST-882879D3,,user held out from training interactions (zero history)
+cold_user,CUST-88375A9D,,user held out from training interactions (zero history)
+cold_user,CUST-8A649625,,user held out from training interactions (zero history)
+cold_user,CUST-8B9C8F3D,,user held out from training interactions (zero history)
+cold_user,CUST-8C03ACAA,,user held out from training interactions (zero history)
+cold_user,CUST-8CF8498D,,user held out from training interactions (zero history)
+cold_user,CUST-8E181FA2,,user held out from training interactions (zero history)
+cold_user,CUST-8E340D0D,,user held out from training interactions (zero history)
+cold_user,CUST-8E5DD2B9,,user held out from training interactions (zero history)
+cold_user,CUST-8F4A0E09,,user held out from training interactions (zero history)
+cold_user,CUST-905CCBD1,,user held out from training interactions (zero history)
+cold_user,CUST-90C531DE,,user held out from training interactions (zero history)
+cold_user,CUST-90C83DA7,,user held out from training interactions (zero history)
+cold_user,CUST-9373B1A7,,user held out from training interactions (zero history)
+cold_user,CUST-9526CEF6,,user held out from training interactions (zero history)
+cold_user,CUST-96481F1D,,user held out from training interactions (zero history)
+cold_user,CUST-97150715,,user held out from training interactions (zero history)
+cold_user,CUST-9B8F5E94,,user held out from training interactions (zero history)
+cold_user,CUST-9C5EB194,,user held out from training interactions (zero history)
+cold_user,CUST-9DF39439,,user held out from training interactions (zero history)
+cold_user,CUST-9EC80058,,user held out from training interactions (zero history)
+cold_user,CUST-9EDF8A3A,,user held out from training interactions (zero history)
+cold_user,CUST-9F49C7E3,,user held out from training interactions (zero history)
+cold_user,CUST-A0DD53CB,,user held out from training interactions (zero history)
+cold_user,CUST-A116BCBA,,user held out from training interactions (zero history)
+cold_user,CUST-A385B2A7,,user held out from training interactions (zero history)
+cold_user,CUST-A402CDB4,,user held out from training interactions (zero history)
+cold_user,CUST-A6199277,,user held out from training interactions (zero history)
+cold_user,CUST-A6419CDF,,user held out from training interactions (zero history)
+cold_user,CUST-A765866F,,user held out from training interactions (zero history)
+cold_user,CUST-A773541F,,user held out from training interactions (zero history)
+cold_user,CUST-A9AB8BD4,,user held out from training interactions (zero history)
+cold_user,CUST-AC66A09D,,user held out from training interactions (zero history)
+cold_user,CUST-ACD68F8C,,user held out from training interactions (zero history)
+cold_user,CUST-ACF13B5E,,user held out from training interactions (zero history)
+cold_user,CUST-AD46FB7D,,user held out from training interactions (zero history)
+cold_user,CUST-ADD85C04,,user held out from training interactions (zero history)
+cold_user,CUST-AE1CFF05,,user held out from training interactions (zero history)
+cold_user,CUST-AF8989DE,,user held out from training interactions (zero history)
+cold_user,CUST-B06AD83B,,user held out from training interactions (zero history)
+cold_user,CUST-B30B64AE,,user held out from training interactions (zero history)
+cold_user,CUST-B404F486,,user held out from training interactions (zero history)
+cold_user,CUST-B7710104,,user held out from training interactions (zero history)
+cold_user,CUST-B8C69269,,user held out from training interactions (zero history)
+cold_user,CUST-B96E923E,,user held out from training interactions (zero history)
+cold_user,CUST-BA504E6C,,user held out from training interactions (zero history)
+cold_user,CUST-BA5FD847,,user held out from training interactions (zero history)
+cold_user,CUST-BAD5ADF3,,user held out from training interactions (zero history)
+cold_user,CUST-BB259927,,user held out from training interactions (zero history)
+cold_user,CUST-BB2D6224,,user held out from training interactions (zero history)
+cold_user,CUST-BD89312E,,user held out from training interactions (zero history)
+cold_user,CUST-BDB8218F,,user held out from training interactions (zero history)
+cold_user,CUST-BDF4E4E6,,user held out from training interactions (zero history)
+cold_user,CUST-BEA5F51F,,user held out from training interactions (zero history)
+cold_user,CUST-C103472D,,user held out from training interactions (zero history)
+cold_user,CUST-C3498979,,user held out from training interactions (zero history)
+cold_user,CUST-C651F816,,user held out from training interactions (zero history)
+cold_user,CUST-C6538696,,user held out from training interactions (zero history)
+cold_user,CUST-C73FBF1D,,user held out from training interactions (zero history)
+cold_user,CUST-C7961045,,user held out from training interactions (zero history)
+cold_user,CUST-C88DC7BF,,user held out from training interactions (zero history)
+cold_user,CUST-C961F86D,,user held out from training interactions (zero history)
+cold_user,CUST-CA516954,,user held out from training interactions (zero history)
+cold_user,CUST-CB8D1D9E,,user held out from training interactions (zero history)
+cold_user,CUST-CBD717EC,,user held out from training interactions (zero history)
+cold_user,CUST-CCB008A2,,user held out from training interactions (zero history)
+cold_user,CUST-CD75F432,,user held out from training interactions (zero history)
+cold_user,CUST-CF588775,,user held out from training interactions (zero history)
+cold_user,CUST-D00F44E1,,user held out from training interactions (zero history)
+cold_user,CUST-D06DC0E4,,user held out from training interactions (zero history)
+cold_user,CUST-D08DD224,,user held out from training interactions (zero history)
+cold_user,CUST-D246DEF1,,user held out from training interactions (zero history)
+cold_user,CUST-D33C03C6,,user held out from training interactions (zero history)
+cold_user,CUST-D4721E66,,user held out from training interactions (zero history)
+cold_user,CUST-D4AEC944,,user held out from training interactions (zero history)
+cold_user,CUST-D7CD0380,,user held out from training interactions (zero history)
+cold_user,CUST-D8DC5C5C,,user held out from training interactions (zero history)
+cold_user,CUST-D9D505B8,,user held out from training interactions (zero history)
+cold_user,CUST-DA379C2A,,user held out from training interactions (zero history)
+cold_user,CUST-DB2FE99B,,user held out from training interactions (zero history)
+cold_user,CUST-DC41B8A5,,user held out from training interactions (zero history)
+cold_user,CUST-DD00FEEE,,user held out from training interactions (zero history)
+cold_user,CUST-DD9531C0,,user held out from training interactions (zero history)
+cold_user,CUST-DDC8B1F5,,user held out from training interactions (zero history)
+cold_user,CUST-E06F409D,,user held out from training interactions (zero history)
+cold_user,CUST-E3072013,,user held out from training interactions (zero history)
+cold_user,CUST-E47BEB60,,user held out from training interactions (zero history)
+cold_user,CUST-E61CA7B2,,user held out from training interactions (zero history)
+cold_user,CUST-E6E6205B,,user held out from training interactions (zero history)
+cold_user,CUST-E74189F7,,user held out from training interactions (zero history)
+cold_user,CUST-E8C0E94C,,user held out from training interactions (zero history)
+cold_user,CUST-E8E8762A,,user held out from training interactions (zero history)
+cold_user,CUST-EA5E0506,,user held out from training interactions (zero history)
+cold_user,CUST-EB04FFB0,,user held out from training interactions (zero history)
+cold_user,CUST-EB7FF22D,,user held out from training interactions (zero history)
+cold_user,CUST-ECC8C10F,,user held out from training interactions (zero history)
+cold_user,CUST-ED6668AC,,user held out from training interactions (zero history)
+cold_user,CUST-ED78C496,,user held out from training interactions (zero history)
+cold_user,CUST-EF8AE6EF,,user held out from training interactions (zero history)
+cold_user,CUST-F0EB626F,,user held out from training interactions (zero history)
+cold_user,CUST-F147BE2F,,user held out from training interactions (zero history)
+cold_user,CUST-F316D032,,user held out from training interactions (zero history)
+cold_user,CUST-F4D4030B,,user held out from training interactions (zero history)
+cold_user,CUST-F53EA8D3,,user held out from training interactions (zero history)
+cold_user,CUST-F6B15167,,user held out from training interactions (zero history)
+cold_user,CUST-F6BC64AD,,user held out from training interactions (zero history)
+cold_user,CUST-F73D5B77,,user held out from training interactions (zero history)
+cold_user,CUST-F7568906,,user held out from training interactions (zero history)
+cold_user,CUST-F854944F,,user held out from training interactions (zero history)
+cold_user,CUST-F8C86E94,,user held out from training interactions (zero history)
+cold_user,CUST-F97DD14F,,user held out from training interactions (zero history)
+cold_user,CUST-F99C09D8,,user held out from training interactions (zero history)
+cold_user,CUST-F9BB485C,,user held out from training interactions (zero history)
+cold_user,CUST-FB573B0E,,user held out from training interactions (zero history)
+cold_user,CUST-FBF1C33B,,user held out from training interactions (zero history)
+cold_user,CUST-FC55A157,,user held out from training interactions (zero history)
+cold_user,CUST-FDB29CC4,,user held out from training interactions (zero history)
+cold_user,CUST-FEC25075,,user held out from training interactions (zero history)
+cold_user,CUST-FF3B8E22,,user held out from training interactions (zero history)
+cold_user,CUST-FF403A90,,user held out from training interactions (zero history)
+cold_phone,,Infinix Hot 20 5G,phone held out from training interactions
+cold_phone,,Blackview Mega 12,phone held out from training interactions
+cold_phone,,OnePlus 9 Pro,phone held out from training interactions
+cold_phone,,Realme P2 Pro,phone held out from training interactions
+cold_phone,,Apple iPad mini (2024),phone held out from training interactions
+cold_phone,,Honor X30 Max,phone held out from training interactions
+cold_phone,,Lava Play Ultra,phone held out from training interactions
+cold_phone,,ZTE nubia RedMagic 11 Air,phone held out from training interactions
+cold_phone,,vivo X300 FE,phone held out from training interactions
+cold_phone,,Realme GT Neo6,phone held out from training interactions
+cold_phone,,Motorola Moto G200 5G,phone held out from training interactions
+cold_phone,,Apple iPhone SE (2022),phone held out from training interactions
+cold_phone,,OnePlus Nord N200 5G,phone held out from training interactions
+cold_phone,,TCL 30 XE 5G,phone held out from training interactions
+cold_phone,,Honor Magic5 Pro,phone held out from training interactions
+cold_phone,,Oukitel WP50,phone held out from training interactions
+cold_phone,,vivo Y100i,phone held out from training interactions
+cold_phone,,Oppo Reno8 Lite,phone held out from training interactions
+cold_phone,,Realme GT Neo 5 240W,phone held out from training interactions
+cold_phone,,Realme GT 6T,phone held out from training interactions
+cold_phone,,Xiaomi Redmi Note 12 Turbo,phone held out from training interactions
+cold_phone,,Nokia G300,phone held out from training interactions
+cold_phone,,ZTE Voyage 40 Pro+,phone held out from training interactions
+cold_phone,,OnePlus Nord 5,phone held out from training interactions
+cold_phone,,Xiaomi Redmi K50i,phone held out from training interactions
+cold_phone,,OnePlus Nord 3,phone held out from training interactions
+cold_phone,,Xiaomi 12T Pro,phone held out from training interactions
+cold_phone,,Motorola Razr 60 Ultra,phone held out from training interactions
+cold_phone,,Xiaomi Redmi Note 11 (China),phone held out from training interactions
+cold_phone,,Oppo Reno8 Pro+,phone held out from training interactions
+cold_phone,,Umidigi G6 5G,phone held out from training interactions
+cold_phone,,Realme P4 Lite,phone held out from training interactions
+cold_phone,,Xiaomi Redmi 10X 5G,phone held out from training interactions
+cold_phone,,OnePlus Nord CE 3 Lite,phone held out from training interactions
+cold_phone,,Oppo K12x,phone held out from training interactions
+cold_phone,,Energizer Ultimate 65G,phone held out from training interactions
+cold_phone,,Realme GT Explorer Master,phone held out from training interactions
+cold_phone,,vivo V40 Pro,phone held out from training interactions
+cold_phone,,Realme Narzo 70 Pro,phone held out from training interactions
+cold_phone,,Nokia G50,phone held out from training interactions
+cold_phone,,Motorola ThinkPhone,phone held out from training interactions
+cold_phone,,OnePlus Ace 2V,phone held out from training interactions
+cold_phone,,vivo iQOO Z10 Lite,phone held out from training interactions
+cold_phone,,Asus Zenfone 8,phone held out from training interactions
+cold_phone,,Xiaomi Redmi Note 12,phone held out from training interactions
+cold_phone,,Motorola Moto X50 Ultra,phone held out from training interactions
+cold_phone,,Doogee V20 Pro,phone held out from training interactions
+cold_phone,,Blackview Zeno 10,phone held out from training interactions
+cold_phone,,Motorola Moto G Power (2026),phone held out from training interactions
+cold_phone,,Realme Narzo 60x,phone held out from training interactions
+cold_phone,,Google Pixel 8 Pro,phone held out from training interactions
+cold_phone,,Xiaomi Mix Flip 2,phone held out from training interactions
+cold_phone,,ZTE S30 SE,phone held out from training interactions
+cold_phone,,Oppo Reno8 Pro (China),phone held out from training interactions

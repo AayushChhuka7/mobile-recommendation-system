@@ -22,7 +22,7 @@ import {
   TOAST_DURATION_MS,
 } from "./AuthShared";
 
-const REGISTER_ROLE_OPTIONS = [...SELF_ASSIGNABLE_ROLES, "Admin"];
+const REGISTER_ROLE_OPTIONS = [...SELF_ASSIGNABLE_ROLES];
 
 function Registration({ onLogin }) {
   const navigate = useNavigate();

@@ -4,7 +4,7 @@
 //   npm run seed:rbac
 //
 // What it does (each step is safe to re-run):
-//   1. Upserts the three system roles: Customer, Salesman, Admin.
+//   1. Upserts the system roles: Customer, Admin.
 //   2. Backfills every existing user that has no role by assigning
 //      them Customer. Already-assigned users are untouched.
 //
@@ -20,7 +20,7 @@ import { Pool } from "pg";
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 
-const SYSTEM_ROLES = ["Customer", "Salesman", "Admin"];
+const SYSTEM_ROLES = ["Customer", "Admin"];
 
 async function upsertSystemRoles() {
   for (const roleName of SYSTEM_ROLES) {

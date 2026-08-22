@@ -99,6 +99,18 @@ model Users {
   // signal reserved at 0.05 weight in FUSION_WEIGHTS).
   recommendationLogs RecommendationLog[]
 
+  // Customer-segmentation + collaborative-filtering integration. The
+  // CF FastAPI service (`ML Model/filtering/cf_service/`) consumes a
+  // `customer_id` of the form `CUST-XXXXXXXX` (the format the original
+  // customer_dataset.csv uses and the CF model was trained on). For
+  // each application user, we either remember an explicit mapping from
+  // their app `userId` to that `customerId` (e.g. CSV-imported users
+  // whose email is `${customerId}@import.local`) or we fall back to a
+  // cluster lookup at runtime. `CustomerCluster` is populated lazily
+  // the first time the BE tries to look up the cluster for a user.
+  customerCluster      CustomerCluster?
+  cfRecommendationLogs CfRecommendationLog[]
+
   // One row per recommendation call — backs the "Last recommendation
   // → Top results" admin panel without re-running the ML pipeline.
   recommendationCalls RecommendationCall[]
@@ -667,6 +679,83 @@ model BehaviorScore {
   @@id([userId, tag])
   @@index([userId])
   @@map("behavior_scores")
+}
+
+// ============================================================
+// Customer Segmentation + Collaborative Filtering
+//
+// Two tables added by the CF integration migration:
+//
+//   CustomerCluster       — links an app user to a KMeans cluster
+//                           (and human-readable cluster name) assigned
+//                           by the segmentation model. Populated lazily
+//                           on first CF / cluster lookup. Cluster ID
+//                           matches the labels produced by the trained
+//                           `kmeans_model.joblib` (0..3 — see
+//                           `ML Model/filtering/02_segmentation/output/
+//                            cluster_profiles.csv` for names).
+//
+//   CfRecommendationLog   — one row per served CF recommendation
+//                           call. Used for offline analytics / debugging
+//                           and for telling the "this phone was
+//                           suggested because of CF" story in admin
+//                           tooling. Distinct from `RecommendationLog`
+//                           (which tracks the full hybrid top-N) —
+//                           this table only carries the CF top-N
+//                           alongside the cold-start flag and the
+//                           human-readable reason strings.
+// ============================================================
+
+model CustomerCluster {
+  id           String   @id @default(uuid()) @map("id") @db.Uuid
+  userId       String   @unique @map("user_id") @db.Uuid
+  // Cluster ID in the trained KMeans model's label space (0..3 for k=4).
+  clusterId    Int      @map("cluster_id")
+  // Human-readable cluster name from
+  // `cluster_profiles.csv` (e.g. "Premium Flagship Shopper",
+  // "Mainstream Mid-Range Shopper", "Hardcore Gamer (Flagship)",
+  // "Budget Buyer"). Cached here so the FE doesn't need to round-trip
+  // through the segmentation CSV on every dashboard mount.
+  clusterName  String   @map("cluster_name") @db.VarChar(80)
+  // Optional mapping back to the CF dataset's customer_id format. For
+  // users imported from `customer_dataset.csv` this equals the
+  // `${customerId}@import.local` email prefix. For real registrations
+  // (no CF counterpart), this stays null and the CF service falls back
+  // to global popularity.
+  cfCustomerId String?  @map("cf_customer_id") @db.VarChar(40)
+  assignedAt   DateTime @default(now()) @map("assigned_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([clusterId])
+  @@map("customer_clusters")
+}
+
+model CfRecommendationLog {
+  id           String   @id @default(uuid()) @map("id") @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  // The CF dataset's customer_id format (e.g. CUST-000EFD69) that was
+  // used to call the CF service. Null for users that don't have a CF
+  // counterpart (real registrations) — the CF service is still called
+  // with a synthetic id and the model falls back to global popularity.
+  cfCustomerId String?  @map("cf_customer_id") @db.VarChar(40)
+  // `isColdStart` mirrors the `cold_start` field in the CF service
+  // response: true when the user was unknown to the CF model and the
+  // cluster/province/global popularity chain kicked in.
+  isColdStart  Boolean  @default(false) @map("is_cold_start")
+  // The CF service returned N phones; we JSON-store the
+  // model_name / score / reason tuples as one column so analytics
+  // can replay the served list without re-running the model.
+  modelNames   String   @map("model_names") @db.Text
+  scores       String   @map("scores") @db.Text
+  reasons      String   @map("reasons") @db.Text
+  servedAt     DateTime @default(now()) @map("served_at")
+
+  user Users @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId, servedAt(sort: Desc)])
+  @@map("cf_recommendation_logs")
 }
 
 // ============================================================

@@ -92,8 +92,7 @@ export const userCreationValidation = checkSchema({
   },
   phoneNo: checkPhoneNo,
   // Self-service role pick at registration. Whitelist comes from
-  // `rbacService.getAssignableRoles()` — currently ["Customer",
-  // "Salesman"]. `Admin` is admin-only and cannot be self-assigned.
+  // `rbacService.getAssignableRoles()` — currently ["Customer", "Admin"].
   roleName: {
     in: ["body"],
     trim: true,
@@ -102,7 +101,7 @@ export const userCreationValidation = checkSchema({
       options: (value) => {
         if (!isAssignableRole(value)) {
           throw new Error(
-            "roleName must be one of: Customer, Salesman",
+            "roleName must be one of: Customer, Admin",
           );
         }
         return true;
@@ -241,7 +240,7 @@ export const requestEmailChangeValidation = checkSchema({
 
 // ---- RBAC Phase 1 — admin role assignment ----
 
-const ALLOWED_ROLE_NAMES = ["Customer", "Salesman", "Admin"];
+const ALLOWED_ROLE_NAMES = ["Customer", "Admin"];
 
 export const assignRoleValidation = checkSchema({
   roleName: {

@@ -102,9 +102,8 @@ export const revokeRole = async (userId) => {
 // ---- Self-service role assignment ----
 //
 // `getAssignableRoles` / `isAssignableRole` define the whitelist for
-// roles a user can pick at registration. `Admin` is intentionally
-// excluded — admins are promoted only via `assignRole` (admin
-// endpoint), not through the self-service registration path.
+// roles a user can pick at registration. After dropping the
+// `Salesman` role, the public whitelist is `["Customer", "Admin"]`.
 //
 // `assertUserRoleMatches` is the login-time check: the FE sends a
 // `roleName` with the credentials, and we verify the user's row
@@ -114,38 +113,14 @@ export const revokeRole = async (userId) => {
 // source of truth.
 
 // Whitelist of roles a user can self-assign at registration.
-//
-// Production-safe default: Admin is admin-only and cannot be self-
-// assigned through the public registration endpoint. An attacker
-// hitting a deployed instance cannot escalate to Admin on their own.
-//
-// Development escape hatch: set `DEV_ALLOW_ADMIN_SELF_REGISTER=true`
-// in `backend/.env`. When that flag is on, "Admin" is also accepted at
-// registration. This makes local end-to-end testing (RBAC checks,
-// admin-only routes, /api/users listing) possible without standing up
-// a separate admin-promotion script. **Never enable this flag in any
-// deployed environment.** The flag defaults to off and reads on every
-// request, so flipping it back to off takes effect immediately (after
-// restarting the backend to refresh module-level state).
-const PRODUCTION_ASSIGNABLE_ROLES = ["Customer", "Salesman"];
-const DEV_EXTRA_ASSIGNABLE_ROLES = ["Admin"];
-
-const isDevAdminBypassEnabled = () => {
-  const flag = process.env.DEV_ALLOW_ADMIN_SELF_REGISTER;
-  if (typeof flag !== "string") return false;
-  return flag.toLowerCase() === "true" || flag === "1";
-};
-
-const getAssignableRolesList = () => {
-  if (isDevAdminBypassEnabled()) {
-    return [...PRODUCTION_ASSIGNABLE_ROLES, ...DEV_EXTRA_ASSIGNABLE_ROLES];
-  }
-  return [...PRODUCTION_ASSIGNABLE_ROLES];
-};
+// Both `Customer` and `Admin` are now self-assignable so the public
+// /auth/register endpoint can produce admins (a default admin is also
+// created by `npm run seed:admin`).
+const ASSIGNABLE_ROLES = ["Customer", "Admin"];
 
 export const getAssignableRoles = () => {
   // Return a fresh array so callers can't mutate the source.
-  return getAssignableRolesList();
+  return [...ASSIGNABLE_ROLES];
 };
 
 export const isAssignableRole = (roleName) => {
