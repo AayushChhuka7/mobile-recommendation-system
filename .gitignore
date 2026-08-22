@@ -49,6 +49,7 @@ tmp/
 prompt.txt
 
 ML Model/.venv
+ML Model/filtering/.venv
 
 # Python
 __pycache__/

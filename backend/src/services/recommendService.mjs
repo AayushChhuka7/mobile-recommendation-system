@@ -566,6 +566,12 @@ export const getRecommendations = async (body, userId, opts = {}) => {
 
   // 1. Get ML results — and CF candidates in parallel (CF NEVER
   //    blocks the response; failures degrade to empty results).
+  //    Fix #2 — soft constraints + progressive relaxation live in
+  //    Python. `minCandidates` matches the Python `MIN_CANDIDATES`
+  //    default. `softPrice` is forwarded ONLY when
+  //    `opts.softPrice === true` (auto-recommend path). Click path
+  //    leaves it false (the Pydantic schema default) so the user's
+  //    budget.max stays a hard ceiling.
   const [data, cfPayload] = await Promise.all([
     mlFetch("/recommend", {
       method: "POST",
@@ -573,7 +579,11 @@ export const getRecommendations = async (body, userId, opts = {}) => {
         persona: effectivePersona,
         budget: { min: budget.min || 0, max: budget.max },
         preferences: fusedPreferences || preferences || {},
+        preferred_brands: preferredBrands,
+        exclude_brands: excludeBrands,
+        softPrice,
         topN: topN || FULL_LIST_TOP_N,
+        minCandidates: MIN_CANDIDATES,
       }),
     }),
     userId
@@ -583,26 +593,6 @@ export const getRecommendations = async (body, userId, opts = {}) => {
         })
       : Promise.resolve({ results: [], coldStart: true, customerId: null, cluster: null, error: null }),
   ]);
-  // 1. Get ML results (Fix #2 — soft constraints + progressive
-  //    relaxation live in Python). `minCandidates` matches the
-  //    Python `MIN_CANDIDATES` default.
-  //    `softPrice` is forwarded ONLY when `opts.softPrice === true`
-  //    (auto-recommend path). Click path leaves it false (the
-  //    Pydantic schema default) so the user's budget.max stays a
-  //    hard ceiling.
-  const data = await mlFetch("/recommend", {
-    method: "POST",
-    body: JSON.stringify({
-      persona: effectivePersona,
-      budget: { min: budget.min || 0, max: budget.max },
-      preferences: fusedPreferences || preferences || {},
-      preferred_brands: preferredBrands,
-      exclude_brands: excludeBrands,
-      softPrice,
-      topN: topN || FULL_LIST_TOP_N,
-      minCandidates: MIN_CANDIDATES,
-    }),
-  });
 
   const mlResults = data.results || [];
 
@@ -862,15 +852,27 @@ export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
   // Same FastAPI call as the legacy path — applies budget, brand, RAM,
   // 5G filters on the full catalog and returns STAGE1_TOP_N candidates.
   // This is the "reduced candidate domain" Stage 2 runs on.
-  const data = await mlFetch("/recommend", {
-    method: "POST",
-    body: JSON.stringify({
-      persona: effectivePersona,
-      budget: { min: budget.min || 0, max: budget.max },
-      preferences: fusedPreferences || preferences || {},
-      topN: STAGE1_TOP_N,
+  //
+  // CF candidates are fetched in parallel (CF NEVER blocks the response;
+  // failures degrade to empty results). Mirrors the dual-fetch in
+  // `getRecommendations` so both code paths share the same CF behaviour.
+  const [data, cfPayload] = await Promise.all([
+    mlFetch("/recommend", {
+      method: "POST",
+      body: JSON.stringify({
+        persona: effectivePersona,
+        budget: { min: budget.min || 0, max: budget.max },
+        preferences: fusedPreferences || preferences || {},
+        topN: STAGE1_TOP_N,
+      }),
     }),
-  });
+    userId
+      ? getCfRecommendations(userId, CF_CANDIDATE_TOP_N).catch((err) => {
+          console.warn("[cf] promise rejected unexpectedly:", err?.message || err);
+          return { results: [], coldStart: true, customerId: null, cluster: null, error: "rejected" };
+        })
+      : Promise.resolve({ results: [], coldStart: true, customerId: null, cluster: null, error: null }),
+  ]);
 
   const mlResults = data.results || [];
   if (mlResults.length === 0) {

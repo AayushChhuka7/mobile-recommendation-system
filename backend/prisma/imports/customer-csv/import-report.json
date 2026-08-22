@@ -1,8 +1,8 @@
 {
   "csvPath": "D:\\mobile-recommendation-system\\dataset\\customer_dataset.csv",
-  "startedAt": "2026-07-26T03:47:33.750Z",
-  "finishedAt": "2026-07-26T03:59:37.171Z",
-  "durationMs": 724023,
+  "startedAt": "2026-08-22T07:35:42.665Z",
+  "finishedAt": "2026-08-22T07:50:05.361Z",
+  "durationMs": 863488,
   "totalRows": 16608,
   "invalidCustomerRows": 0,
   "rowWarnings": 0,
