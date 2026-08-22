@@ -321,13 +321,18 @@ class ContentScorer:
     feature_columns: list[str]
     feature_index: dict[str, int]
     user_profiles: pd.DataFrame         # customers + cluster_id + cluster_name
+    # Pre-indexed lookups — built once at load time so per-request calls
+    # avoid DataFrame boolean masks (which are O(n) scans). With ~10k
+    # profiles and ~1800 catalog rows, those scans dominated request
+    # latency on the warm CF path (~30-60 ms each).
+    profile_by_cid: dict[str, pd.Series] = field(default_factory=dict)
+    catalog_by_model: dict[str, pd.Series] = field(default_factory=dict)
 
     def score_user(self, customer_id: str) -> np.ndarray:
         """Return a content-similarity score for every catalog item, for this user."""
-        row = self.user_profiles[self.user_profiles["customer_id"] == customer_id]
-        if row.empty:
+        row = self.profile_by_cid.get(customer_id)
+        if row is None:
             return np.zeros(len(self.catalog), dtype=np.float32)
-        row = row.iloc[0]
 
         # Build a synthetic "spec vector" from the customer's interests & budget.
         # We do this in the same feature space as the catalog spec vectors.
@@ -441,6 +446,20 @@ def build_content_scorer(catalog: pd.DataFrame, profiles: pd.DataFrame) -> Conte
         feature_columns=feature_columns,
         feature_index=feature_index,
         user_profiles=profiles,
+        # Pre-index the catalogs once. Per-request code uses these
+        # instead of DataFrame boolean masks.
+        profile_by_cid=(
+            dict(zip(
+                profiles["customer_id"].astype(str).values,
+                [row for _, row in profiles.iterrows()],
+            ))
+            if "customer_id" in profiles.columns
+            else {}
+        ),
+        catalog_by_model=dict(zip(
+            df["Model_Name"].astype(str).values,
+            [row for _, row in df.iterrows()],
+        )),
     )
 
 
@@ -619,13 +638,29 @@ class CFRecommender:
         # Reconstruct a minimal SVD object
         svd = TruncatedSVD(n_components=job["user_factors"].shape[1])
         svd.components_ = job["svd_components"]
-        # Rebuild ContentScorer
+        # Rebuild ContentScorer. The two pre-indexed dicts are built
+        # here (instead of defaulted to {}) so the per-request hot
+        # paths see O(1) lookups on the very first call after load.
+        profile_by_cid = (
+            dict(zip(
+                profiles["customer_id"].astype(str).values,
+                [row for _, row in profiles.iterrows()],
+            ))
+            if "customer_id" in profiles.columns
+            else {}
+        )
+        catalog_by_model = dict(zip(
+            catalog["Model_Name"].astype(str).values,
+            [row for _, row in catalog.iterrows()],
+        ))
         content = ContentScorer(
             catalog=catalog,
             item_spec=job["content_item_spec"],
             feature_columns=job["content_feature_columns"],
             feature_index={c: i for i, c in enumerate(job["content_feature_columns"])},
             user_profiles=profiles,
+            profile_by_cid=profile_by_cid,
+            catalog_by_model=catalog_by_model,
         )
         return cls(
             data=data,
@@ -669,40 +704,39 @@ class CFRecommender:
         # --- CF score (item-item cosine + SVD weighted) ---
         cf_scores = self._cf_score(u)
 
-        # --- Content score ---
-        content_scores = self.content.score_user(customer_id)
-        # Need to align content_scores with item_index order
-        catalog_model_order = self.content.catalog["Model_Name"].values
-        # Re-index into our item_index order
-        item_idx_lookup = {m: i for i, m in enumerate(self.data.index_item)}
-        n_items = len(self.data.index_item)
-        aligned_content = np.zeros(n_items, dtype=np.float32)
-        for j, m in enumerate(catalog_model_order):
-            i = item_idx_lookup.get(m)
-            if i is not None:
-                aligned_content[i] = content_scores[j]
+        # --- Content score (cached per customer_id) ---
+        aligned_content = self._get_aligned_content(customer_id)
 
         # --- Hybrid score ---
         cf_norm = self._minmax(cf_scores)
         content_norm = self._minmax(aligned_content)
         hybrid = self.cf_weight * cf_norm + self.content_weight * content_norm
 
-        # Already-seen items: dim unless the caller wants them
+        # Already-seen items: dim unless the caller wants them.
+        # Cache the dense row vector — it's used here and again inside _cf_score.
+        seen_dense = self.data.train_csr[u].toarray().ravel()
         if exclude_seen:
-            seen_mask = self.data.train_csr[u].toarray().ravel() > 0
+            seen_mask = seen_dense > 0
             hybrid[seen_mask] = -np.inf
-        # Caller-supplied excludes
-        for m in exclude_models:
-            i = item_idx_lookup.get(m)
-            if i is not None:
-                hybrid[i] = -np.inf
+        # Caller-supplied excludes — bulk-indexed by the precomputed lookup
+        if exclude_models:
+            item_idx_lookup = self._item_idx_lookup()
+            for m in exclude_models:
+                i = item_idx_lookup.get(m)
+                if i is not None:
+                    hybrid[i] = -np.inf
 
         # Top-N
         n_pick = min(top_n, len(hybrid))
-        top_idx = np.argpartition(-hybrid, n_pick - 1)[:n_pick] if n_pick < len(hybrid) \
-            else np.argsort(-hybrid)
-        top_idx = top_idx[np.argsort(-hybrid[top_idx])]
+        if n_pick < len(hybrid):
+            top_idx = np.argpartition(-hybrid, n_pick - 1)[:n_pick]
+            top_idx = top_idx[np.argsort(-hybrid[top_idx])]
+        else:
+            top_idx = np.argsort(-hybrid)
 
+        # Avoid re-running _make_reason for items that ended up excluded
+        # (their hybrid[i] is -inf) — the top_idx slice may still include
+        # them when there are fewer than top_n surviving candidates.
         out = []
         for i in top_idx:
             if hybrid[i] == -np.inf:
@@ -716,6 +750,44 @@ class CFRecommender:
             })
         return out
 
+    # ----- memoised lookups (per-process, built lazily) -----
+    def _item_idx_lookup(self) -> dict[str, int]:
+        """Lazily-built lookup from model_name → item_index. Used in two
+        hot paths (exclude_models + the alignment cache)."""
+        cache = getattr(self, "_item_idx_lookup_cache", None)
+        if cache is None:
+            cache = {m: i for i, m in enumerate(self.data.index_item)}
+            self._item_idx_lookup_cache = cache
+        return cache
+
+    def _get_aligned_content(self, customer_id: str) -> np.ndarray:
+        """Content score vector aligned to `data.index_item` order.
+
+        The expensive bits — building the user spec vector and the
+        catalog-order → item-index alignment — only need to run once
+        per (customer_id, model-arity) pair. Subsequent calls on the
+        same customer (same dashboard mount, same recommendation list)
+        return a cached ndarray directly.
+        """
+        cache = getattr(self, "_content_cache", None)
+        if cache is None:
+            cache = {}
+            self._content_cache = cache
+        cached = cache.get(customer_id)
+        if cached is not None:
+            return cached
+        content_scores = self.content.score_user(customer_id)
+        catalog_model_order = self.content.catalog["Model_Name"].values
+        item_idx_lookup = self._item_idx_lookup()
+        n_items = len(self.data.index_item)
+        aligned = np.zeros(n_items, dtype=np.float32)
+        for j, m in enumerate(catalog_model_order):
+            i = item_idx_lookup.get(m)
+            if i is not None:
+                aligned[i] = content_scores[j]
+        cache[customer_id] = aligned
+        return aligned
+
     # ----- helpers -----
     def _cf_score(self, u: int) -> np.ndarray:
         """Weighted CF score combining SVD and item-item cosine.
@@ -726,11 +798,13 @@ class CFRecommender:
         """
         # SVD
         svd_scores = self.item_factors.dot(self.user_factors[u])
-        # Item-item cosine
-        seen = np.where(self.data.train_csr[u].toarray().ravel() > 0)[0]
+        # Item-item cosine. The dense row already has the per-item
+        # weights, so we don't need a second `.toarray()` against the
+        # column slice.
+        seen_dense = self.data.train_csr[u].toarray().ravel()
+        seen = np.where(seen_dense > 0)[0]
         if len(seen) > 0:
-            seen_weights = self.data.train_csr[u, seen].toarray().ravel()
-            cosine_scores = self.item_sim[:, seen].dot(seen_weights)
+            cosine_scores = self.item_sim[:, seen].dot(seen_dense[seen])
         else:
             cosine_scores = np.zeros(len(self.data.index_item), dtype=np.float32)
         # Z-score each
@@ -756,48 +830,53 @@ class CFRecommender:
         content_score: float,
     ) -> str:
         """Human-readable reason for why this phone is recommended."""
-        row = self.profiles[self.profiles["customer_id"] == customer_id]
-        if row.empty:
-            return "Popular in your area"
-        row = row.iloc[0]
+        row = self.content.profile_by_cid.get(customer_id)
+        if row is None:
+            # Fall back to the raw profiles frame in case the caller
+            # passed an id that wasn't in the load-time index (defensive).
+            df_match = self.profiles[self.profiles["customer_id"] == customer_id]
+            if df_match.empty:
+                return "Popular in your area"
+            row = df_match.iloc[0]
         cname = row.get("cluster_name", "")
-        # Get the model's spec
-        m = self.catalog[self.catalog["Model_Name"] == model_name]
-        if m.empty:
-            return f"Recommended for {cname} customers"
-        m = m.iloc[0]
+        # Get the model's spec from the precomputed index
+        m = self.content.catalog_by_model.get(model_name)
+        if m is None:
+            return f"Recommended for {cname} customers" if cname else "Popular in your area"
         # Pick the strongest feature for the reason
         profile = row
         reasons = []
         # Brand match
-        if normalize_brand(profile.get("preferred_brand", "")) == m.get("Brand_norm", ""):
+        pref_brand = normalize_brand(profile.get("preferred_brand", ""))
+        if pref_brand and pref_brand == m.get("Brand_norm", ""):
             reasons.append(f"matches your preferred brand {m['Brand']}")
         # Budget match
-        bmax = profile.get("budget_max_npr", 0)
-        if 0.8 * bmax <= m["npr_price"] <= 1.2 * bmax:
+        bmax = profile.get("budget_max_npr", 0) or 0
+        price = m.get("npr_price", 0) or 0
+        if bmax and (0.8 * bmax <= price <= 1.2 * bmax):
             reasons.append("fits your budget")
         # Cluster hint
         if cname:
             reasons.append(f"popular with {cname} customers")
-        # Dominant interest
+        # Dominant interest — `.get` on a Series returns NaN for missing
+        # values; coerce to float so `max()` doesn't trip on None.
         interests = {
-            "gaming": profile.get("gaming_interest", 0),
-            "camera": profile.get("camera_interest", 0),
-            "battery": profile.get("battery_interest", 0),
-            "display": profile.get("display_interest", 0),
+            "gaming": float(profile.get("gaming_interest", 0) or 0),
+            "camera": float(profile.get("camera_interest", 0) or 0),
+            "battery": float(profile.get("battery_interest", 0) or 0),
+            "display": float(profile.get("display_interest", 0) or 0),
         }
         top_int = max(interests, key=interests.get)
         # Use computed spec columns on the catalog row (added in
         # build_content_scorer) — they're stored on `self.content.catalog`.
-        cam = self.content.catalog.set_index("Model_Name").loc[model_name] if model_name in self.content.catalog["Model_Name"].values else None
-        if top_int == "gaming" and cam is not None and cam.get("gaming_score", 0) > 0:
+        if top_int == "gaming" and m.get("gaming_score", 0) > 0:
             reasons.append("strong gaming performance")
-        elif top_int == "camera" and cam is not None and cam.get("Main_Camera_MP", 0) >= 50:
-            reasons.append(f"{cam['Main_Camera_MP']:.0f} MP main camera")
-        elif top_int == "battery" and cam is not None and cam.get("Battery_mAh", 0) >= 5000:
-            reasons.append(f"{cam['Battery_mAh']:.0f} mAh battery")
-        elif top_int == "display" and cam is not None and cam.get("Refresh_Rate_Hz", 0) >= 90:
-            reasons.append(f"{cam['Refresh_Rate_Hz']:.0f}Hz refresh display")
+        elif top_int == "camera" and m.get("Main_Camera_MP", 0) >= 50:
+            reasons.append(f"{m['Main_Camera_MP']:.0f} MP main camera")
+        elif top_int == "battery" and m.get("Battery_mAh", 0) >= 5000:
+            reasons.append(f"{m['Battery_mAh']:.0f} mAh battery")
+        elif top_int == "display" and m.get("Refresh_Rate_Hz", 0) >= 90:
+            reasons.append(f"{m['Refresh_Rate_Hz']:.0f}Hz refresh display")
         if not reasons:
             reasons.append(f"recommended for {cname}" if cname else "popular overall")
         return "; ".join(reasons[:3])
@@ -814,12 +893,14 @@ class CFRecommender:
         Falls back to: cluster popularity → province popularity →
         district popularity → global popularity.
         """
-        row = self.profiles[self.profiles["customer_id"] == customer_id]
-        if row.empty:
-            # Unknown user entirely — return global top by recent purchases
-            return self._global_top(top_n, exclude_models, "Most popular in Nepal right now")
+        row = self.content.profile_by_cid.get(customer_id)
+        if row is None:
+            df_match = self.profiles[self.profiles["customer_id"] == customer_id]
+            if df_match.empty:
+                # Unknown user entirely — return global top by recent purchases
+                return self._global_top(top_n, exclude_models, "Most popular in Nepal right now")
+            row = df_match.iloc[0]
 
-        row = row.iloc[0]
         cluster_id = row.get("cluster_id")
         province = row.get("province")
         district = row.get("district")
@@ -829,25 +910,35 @@ class CFRecommender:
         candidates: dict[str, float] = {}
 
         # 1. Cluster popularity
-        if cluster_id in self.cluster_pops:
-            for rank, m in enumerate(self.cluster_pops[cluster_id]["model_name"].tolist()):
-                candidates[m] = candidates.get(m, 0) + (len(self.cluster_pops[cluster_id]) - rank) * 1.0
+        cluster_pop = self.cluster_pops.get(int(cluster_id)) if cluster_id is not None else None
+        if cluster_pop is not None:
+            n_cluster = len(cluster_pop)
+            cluster_models = cluster_pop["model_name"].tolist()
+            for rank, m in enumerate(cluster_models):
+                candidates[m] = candidates.get(m, 0) + (n_cluster - rank) * 1.0
 
         # 2. Province popularity
         if province in self.province_pops:
-            for rank, m in enumerate(self.province_pops[province]["model_name"].tolist()):
-                candidates[m] = candidates.get(m, 0) + (len(self.province_pops[province]) - rank) * 0.5
+            n_prov = len(self.province_pops[province])
+            prov_models = self.province_pops[province]["model_name"].tolist()
+            for rank, m in enumerate(prov_models):
+                candidates[m] = candidates.get(m, 0) + (n_prov - rank) * 0.5
 
         # 3. District popularity
         if district in self.district_pops:
-            for rank, m in enumerate(self.district_pops[district]["model_name"].tolist()):
-                candidates[m] = candidates.get(m, 0) + (len(self.district_pops[district]) - rank) * 0.3
+            n_dist = len(self.district_pops[district])
+            dist_models = self.district_pops[district]["model_name"].tolist()
+            for rank, m in enumerate(dist_models):
+                candidates[m] = candidates.get(m, 0) + (n_dist - rank) * 0.3
 
-        # 4. Content-based reranking using the profile
-        content = self.content.score_user(customer_id)
-        catalog_models = self.content.catalog["Model_Name"].values
-        for i, m in enumerate(catalog_models):
-            candidates[m] = candidates.get(m, 0) + float(content[i]) * 0.4
+        # 4. Content-based reranking using the profile (cached)
+        aligned = self._get_aligned_content(customer_id)
+        for i in range(len(self.data.index_item)):
+            sc = aligned[i]
+            if sc == 0:
+                continue
+            m = self.data.index_item[i]
+            candidates[m] = candidates.get(m, 0) + float(sc) * 0.4
 
         # Sort and exclude
         ranked = sorted(candidates.items(), key=lambda kv: -kv[1])
@@ -872,13 +963,14 @@ class CFRecommender:
         return out
 
     def _in_budget(self, model_name: str, row) -> bool:
-        m = self.catalog[self.catalog["Model_Name"] == model_name]
-        if m.empty:
+        # O(1) catalog lookup instead of a boolean-mask scan.
+        m = self.content.catalog_by_model.get(model_name)
+        if m is None:
             return True
-        m = m.iloc[0]
-        bmin = row.get("budget_min_npr", 0)
-        bmax = row.get("budget_max_npr", float("inf"))
-        return bmin * 0.6 <= m["npr_price"] <= bmax * 1.3
+        bmin = float(row.get("budget_min_npr", 0) or 0)
+        bmax = float(row.get("budget_max_npr", float("inf")) or float("inf"))
+        price = float(m.get("npr_price", 0) or 0)
+        return bmin * 0.6 <= price <= bmax * 1.3
 
     def _cold_reason(self, model_name: str, cluster_name: str, province: str) -> str:
         bits = []
