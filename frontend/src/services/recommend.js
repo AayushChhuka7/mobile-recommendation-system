@@ -12,6 +12,7 @@ import api from "./api";
  *     persona: "gamer" | "camera" | "battery" | "allrounder",
  *     budget:  { min?: number, max: number },
  *     preferences?: { gaming?, camera?, battery?, display? },  // 1..5
+ *     brandFilter?: { mode: "include" | "exclude", list: string[] },
  *     topN?: number                                            // default 6
  *   }
  *
@@ -29,12 +30,23 @@ export async function getRecommendations({
   persona,
   budget,
   preferences,
+  brandFilter,
   topN = 6,
 }) {
+  // Forward `brandFilter` only when the user actually picked something —
+  // an empty list would otherwise tell the ML ranker "include nothing",
+  // which is the wrong default. `undefined` is dropped by JSON.stringify.
+  const hasBrandFilter =
+    brandFilter &&
+    (brandFilter.mode === "include" || brandFilter.mode === "exclude") &&
+    Array.isArray(brandFilter.list) &&
+    brandFilter.list.length > 0;
+
   const res = await api.post("/recommend/recommend", {
     persona,
     budget,
     preferences,
+    ...(hasBrandFilter ? { brandFilter } : {}),
     topN,
   });
   // Backend success envelope: { success, data, message? }

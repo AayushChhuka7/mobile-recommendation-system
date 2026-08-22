@@ -862,6 +862,20 @@ export async function recordEvent(userId, eventType, opts = {}) {
     phoneId,
     payload,
   );
+  // Diagnostic — dev-only. Confirms whether the per-tag deltas the writer
+  // would produce contain a `brand:<X>` row for the touched phone.
+  // Gated to NODE_ENV !== "production" so it has zero prod cost. Remove
+  // once the `brand:apple`-missing investigation is closed.
+  if (process.env.NODE_ENV !== "production" && deltas.size > 0) {
+    const brandTag = Array.from(deltas.keys()).find((k) => k.startsWith("brand:"));
+    console.log(
+      "[behaviorAnalyzer] event=%s phoneId=%s brand=%s deltas.size=%d",
+      eventType,
+      phoneId || "<none>",
+      brandTag || "<none>",
+      deltas.size,
+    );
+  }
   if (deltas.size === 0) {
     // Still worth recording the Event row so the audit trail exists,
     // even though no BehaviourScore bump is meaningful.

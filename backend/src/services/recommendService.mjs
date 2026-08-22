@@ -6,16 +6,52 @@ import { fusionRank, personalizedRank } from "./fusionRanker.mjs";
 import { fetchContentSimilarity } from "./similarityClient.mjs";
 import { phoneToTags } from "./searchHistoryScore.mjs";
 import { buildShortTermInterest } from "./shortTermInterest.mjs";
+import { resolvePhoneIds, enrichPhonesById } from "./enrichmentClient.mjs";
+import { loadStockAndTrend, applyStockPenalty } from "./stockSignal.mjs";
+import { mmrRerank } from "./mmrReranker.mjs";
+import { applyExploration } from "./exploration.mjs";
 import {
   getProfileBundle,
   loadBehaviorScoreMap,
   getRecentEvents,
   loadPhoneMetaMap,
+  loadUserLikedAndViewed,
   safeRecordRecommendationLog,
 } from "./profileService.mjs";
 
 
-const TIMEOUT_MS = 8000;
+// Auto-recommend pulls FULL_LIST_TOP_N candidates back from the
+// Python ranker (default 200). With ~8.4k catalog rows × 9 per-dim
+// scores, a cold-cache topN=200 call regularly exceeds 8s on the
+// ML side — the prior default made every dashboard mount fail
+// with "ML service timed out". Bumped to 30s so the eager call
+// reliably returns, while the auto path keeps the cache-hot
+// per-call latency below ~10s. The lazy /recommend/slice path
+// also reuses this same timeout (it asks for topN=200 again by
+// default in `getRecommendationsSlice`).
+const TIMEOUT_MS = 30000;
+
+// Eager slice shipped in the first response (#8 — pagination).
+// Lazy expansion fetches the next LAZY_BATCH on FE scroll.
+const EAGER_TOP_N = 60;
+const LAZY_BATCH = 30;
+
+// MMR rerank window. Only the top-50 of the 200 candidates is
+// re-ordered by diversity. The remaining 150 keep their relevance
+// order so the long tail is still relevance-dominant.
+const MMR_TOP_K = 50;
+const MMR_LAMBDA = 0.78;
+
+// Exploration pass (#6) is also gated by relevance in the top-50.
+// Outside that window the slot injection would land on a phone the
+// user is unlikely to ever see.
+const EXPLORATION_TOP_K = 50;
+
+// Soft-constraint candidate floor. If the BE forwards min_candidates
+// to the Python side, the ranker widens constraints to keep at
+// least this many candidates in the pool (#2). Matches the Python
+// default in `recommend.py::MIN_CANDIDATES`.
+const MIN_CANDIDATES = 10;
 
 // De-duplicate a recommendation list by a stable identity key.
 //
@@ -170,23 +206,49 @@ export const checkHealth = async () => {
 };
 
 export const getRecommendations = async (body, userId, opts = {}) => {
-  const { persona, budget, preferences, topN } = body || {};
+  const { persona, budget, preferences, brandFilter, topN } = body || {};
   // `source` is forwarded by the controller to flag the call origin.
-  // The auto-recommendation flow passes "auto" so the
-  // `safeRecordRecommendationLog` impression write at the bottom of
-  // this function is suppressed (Dashboard auto-recommendations are
-  // read-only and must not pollute the personalization pipeline).
-  // Any other value (or undefined) keeps the legacy behaviour of
-  // logging impressions — the explicit "Recommend Me a Phone" path
-  // intentionally continues to log them.
-  const source = opts && typeof opts.source === "string" ? opts.source : null;
+  // The auto-recommendation flow passes "auto" so the impression log
+  // is tagged with `source: "auto"` (Fix #1) — it is NOT suppressed
+  // anymore; the trainer (#3) filters on `isTrainingEligible` to
+  // avoid pollution.
+  // `requestId` is the FE's per-mount UUID. It's required for the
+  // impression upsert key (userId, phoneId, source, requestId).
+  const source = opts && typeof opts.source === "string" ? opts.source : "click";
+  const requestId = opts && typeof opts.requestId === "string" ? opts.requestId : null;
+  // `softPrice` is an internal-call flag, NOT a user-facing body
+  // field. When true, the Python scorer treats `budget.max` as a
+  // soft penalty instead of a hard drop (auto-recommend path).
+  // Default false preserves the click-flow hard ceiling. Set by
+  // `getAutoRecommendations`; the controller never sets it.
+  const softPrice = !!(opts && opts.softPrice);
+
+  // Brand include/exclude from the "Find your phone" modal. The FE
+  // sends `{ mode: "include" | "exclude", list: string[] }`; we map it
+  // to the ranker's `preferred_brands` / `exclude_brands` slots. Both
+  // slots are HARD drops on the Python side (see
+  // `ML Model/pipeline/recommend.py::_hard_filter_drops` steps 6 + 7)
+  // — non-matching brands are removed from the candidate pool
+  // outright, never ranked-and-penalised. When the user has not
+  // picked anything (or sent an invalid shape) we emit `undefined`
+  // so the field is dropped by JSON.stringify — that keeps the ranker
+  // on its unfiltered default path.
+  const brandList = Array.isArray(brandFilter?.list) ? brandFilter.list : null;
+  const preferredBrands =
+    brandList && brandList.length > 0 && brandFilter.mode === "include"
+      ? brandList
+      : undefined;
+  const excludeBrands =
+    brandList && brandList.length > 0 && brandFilter.mode === "exclude"
+      ? brandList
+      : undefined;
 
   // Two-stage pipeline trigger: the "Recommend Me a Phone" click flow
   // passes topN=5 to switch off the 5-signal fusionRank and onto the
   // rule-based → content-based → top-5 pipeline. Any other topN keeps
   // the legacy full-fusion behaviour (auto-recommend, future callers).
   if (topN === STAGE2_FINAL_TOP_N) {
-    return getRecommendationsTwoStage(body, userId, { source });
+    return getRecommendationsTwoStage(body, userId, { source, requestId });
   }
 
   if (!persona) throw badRequest("persona is required");
@@ -194,12 +256,6 @@ export const getRecommendations = async (body, userId, opts = {}) => {
     throw badRequest("budget.max is required");
 
   // ---- Step C: Profile Fusion ---------------------------------------------
-  // Build the per-dim weight map from Step A (explicit) + Step B
-  // (behaviour). If the request supplies explicit `preferences` already
-  // (FE sliders for a Custom persona), those win as the explicit layer.
-  // Behaviour ALWAYS comes from the BE table — that's the same-session
-  // nudge that the user explicitly asked for. Output is in-memory only;
-  // nothing is persisted.
   let fusedPreferences = null;
   if (userId) {
     fusedPreferences = await buildFusedWeights(userId, {
@@ -207,21 +263,26 @@ export const getRecommendations = async (body, userId, opts = {}) => {
     });
   }
 
-  // When fused preferences exist, the persona itself becomes `Custom` for
-  // the FastAPI call — otherwise the ranker ignores `custom_weights_stars`
-  // entirely and falls back to the persona preset, which would silently
-  // swallow our behaviour nudge. The original `persona` is preserved in
-  // the response so the FE still sees what the user asked for.
   const effectivePersona = fusedPreferences ? "Custom" : persona;
 
-  // 1. Get ML results
+  // 1. Get ML results (Fix #2 — soft constraints + progressive
+  //    relaxation live in Python). `minCandidates` matches the
+  //    Python `MIN_CANDIDATES` default.
+  //    `softPrice` is forwarded ONLY when `opts.softPrice === true`
+  //    (auto-recommend path). Click path leaves it false (the
+  //    Pydantic schema default) so the user's budget.max stays a
+  //    hard ceiling.
   const data = await mlFetch("/recommend", {
     method: "POST",
     body: JSON.stringify({
       persona: effectivePersona,
       budget: { min: budget.min || 0, max: budget.max },
       preferences: fusedPreferences || preferences || {},
+      preferred_brands: preferredBrands,
+      exclude_brands: excludeBrands,
+      softPrice,
       topN: topN || FULL_LIST_TOP_N,
+      minCandidates: MIN_CANDIDATES,
     }),
   });
 
@@ -229,101 +290,115 @@ export const getRecommendations = async (body, userId, opts = {}) => {
 
   if (mlResults.length === 0) return [];
 
-  // 2. Enrich with database data
-  const enriched = await Promise.all(
-    mlResults.map(async (item) => {
-      const phone = await prisma.phones.findFirst({
-        where: {
-          modelName: { contains: item.Model, mode: "insensitive" },
-          brand: { name: { contains: item.Brand, mode: "insensitive" } },
-          isActive: true,
-        },
-        include: {
-          brand: { select: { brandId: true, name: true, logoUrl: true } },
-          specs: {
-            select: {
-              os: true,
-              chipset: true,
-              displaySize: true,
-              displayType: true,
-              refreshRate: true,
-              mainCamera: true,
-              batteryMah: true,
-              supports5g: true,
-              supportsNfc: true,
-            },
-          },
-          variants: {
-            where: { isAvailable: true },
-            orderBy: { price: "asc" },
-            select: {
-              variantId: true,
-              ramGb: true,
-              storageGb: true,
-              price: true,
-              storageType: true,
-            },
-          },
-        },
-      });
+  // ---- Fix #7 — batched enrichment ---------------------------------------
+  // 2a. Resolve (brand, model) → phoneId in ONE findMany (was N=200).
+  const idMap = await resolvePhoneIds(
+    mlResults.map((m) => ({ brand: m.Brand, modelName: m.Model })),
+  );
+  const phoneIds = Array.from(new Set(idMap.values()));
+  // 2b. Pull full enrichment in ONE findMany (was N=200).
+  const phoneById = await enrichPhonesById(phoneIds);
 
-      // Step D — attach sub-scores + tag set so fusionRank can consume
-      // them in the same pass as the DB enrichment. item.* come from
-      // FastAPI's extended /recommend response (Step D Python side).
-      const base = formatRecommendation(item, phone);
-      return {
-        ...base,
-        overallScore: Number.isFinite(item.Overall_Score)
-          ? Number(item.Overall_Score)
-          : null,
-        matchScoreFastApi: Number.isFinite(item.Match_Score)
-          ? Number(item.Match_Score)
-          : null,
-        valueScore: Number.isFinite(item.Value_Score)
-          ? Number(item.Value_Score)
-          : null,
-        tags: phoneToTags(phone || {}),
-      };
-    }),
-  );
+  // 2c. Stock / trend / freshness (Fix #9) — one extra findMany.
+  const stockMap = await loadStockAndTrend(phoneIds);
 
-  // Step D — content similarity (mean of candidates). One POST to
-  // FastAPI's /similarity/score; failure path returns zeros.
-  const simRows = await fetchContentSimilarity(
-    enriched.map((c) => ({
-      brand: c.brand?.name || null,
-      modelName: c.modelName,
-    })),
-  );
-  const simMap = new Map(
-    simRows.map((r) => [`${r.brand}::${r.modelName}`, r.similarityToMean]),
-  );
-  for (const c of enriched) {
-    const key = `${c.brand?.name || ""}::${c.modelName}`;
-    c.contentSim = Number.isFinite(simMap.get(key)) ? simMap.get(key) : 0;
+  // 2d. Re-attach everything to the ML list in original order.
+  let enriched = mlResults.map((item) => {
+    const key = `${(item.Brand || "").toLowerCase()}::${(item.Model || "").toLowerCase()}`;
+    const phoneId = idMap.get(key) || null;
+    const phone = phoneId ? phoneById.get(phoneId) : null;
+    const stock = phoneId ? stockMap.get(phoneId) : null;
+
+    const base = formatRecommendation(item, phone);
+    return {
+      ...base,
+      overallScore: Number.isFinite(item.Overall_Score) ? Number(item.Overall_Score) : null,
+      matchScoreFastApi: Number.isFinite(item.Match_Score) ? Number(item.Match_Score) : null,
+      valueScore: Number.isFinite(item.Value_Score) ? Number(item.Value_Score) : null,
+      // Fix #9 — wire the freshness + trending sub-scores into the
+      // ranker via the candidate object. Defaulted to 0.5 (neutral)
+      // when stock/trend metadata is missing.
+      trendScore: stock?.trendScore ?? 0,
+      freshness:  stock?.freshness ?? 0.5,
+      stockState: stock?.stockState ?? "in_stock",
+      stockPenalty: stock?.stockPenalty ?? 1.0,
+      tags: phoneToTags(phone || {}),
+    };
+  });
+
+  // 2e. Fix #9 pre-fusion stock gate. Out-of-stock phones are
+  //     dropped from the auto response (the user did not ask for
+  //     them). Low-stock phones pass through and are penalised at
+  //     rank time. The legacy behaviour (no gate) is preserved for
+  //     the explicit "click" flow, where the user actively asked.
+  if (source === "auto") {
+    const before = enriched.length;
+    const dropped = [];
+    enriched = enriched.filter((c) => {
+      const gate = (c.stockState || "in_stock") === "out_of_stock" ? false : true;
+      if (!gate) dropped.push(`${c.brand?.name || "?"} ${c.modelName || "?"} (stockState=${c.stockState})`);
+      return gate;
+    });
+    // One-shot diagnostic — surfaces phones the auto gate silently
+    // dropped so the ops team can audit "why doesn't this phone show
+    // up in my top-N?" without re-running the pipeline. Gated to
+    // non-production so there is zero cost in prod.
+    if (process.env.NODE_ENV !== "production" && dropped.length > 0) {
+      console.warn(
+        `[auto-recommend] stock gate dropped ${dropped.length}/${before}: ${dropped.slice(0, 10).join(" | ")}${dropped.length > 10 ? " | …" : ""}`,
+      );
+    }
+    if (enriched.length === 0) return [];
+  }
+
+  // ---- Fix #4 — content similarity against USER history -----------------
+  // The user history is the union of: browsed phones + compared
+  // phones. Empty history = cold start = fall back to the legacy
+  // "centroid of candidates" score, which the FastAPI side also
+  // reports as `similarityToCatalog` so the BE can blend.
+  //
+  // Disabled for the auto path: the user no longer wants content
+  // similarity to influence the auto ranking. We keep the read pipeline
+  // (loadUserLikedAndViewed / fetchContentSimilarity) intact so the
+  // `getRecommendationsTwoStage` path can keep using it unchanged — set
+  // the guard to `true` to re-enable.
+  const USE_CONTENT_SIMILARITY_FOR_AUTO = false;
+  let seedPhones = [];
+  let simRows = [];
+  if (USE_CONTENT_SIMILARITY_FOR_AUTO && userId) {
+    seedPhones = await loadUserLikedAndViewed(userId, { limit: 25 });
+    simRows = await fetchContentSimilarity(
+      enriched.map((c) => ({
+        brand: c.brand?.name || null,
+        modelName: c.modelName,
+      })),
+      seedPhones.map((s) => ({ brand: s.brandName, modelName: s.phoneLabel })),
+    );
+    // Cold-start blend: when the user has < 3 history phones, mix in
+    // the catalog score so the long tail doesn't collapse.
+    const seedWeight = seedPhones.length >= 3
+      ? 1.0
+      : Math.max(0.4, seedPhones.length / 3);
+    for (const c of enriched) {
+      const key = `${c.brand?.name || ""}::${c.modelName}`;
+      const row = simRows.find((r) => `${r.brand}::${r.modelName}` === key);
+      const simSeed  = row && Number.isFinite(row.similarityToSeed)    ? row.similarityToSeed    : 0;
+      const simCat   = row && Number.isFinite(row.similarityToCatalog) ? row.similarityToCatalog : 0;
+      c.contentSim = (seedWeight * simSeed) + ((1 - seedWeight) * simCat);
+    }
   }
 
   // Step D — behaviour score map for the search_history sub-score.
-  // `null` is fine: searchHistoryScore treats it as neutral (0.5).
   const behaviorScoresMap = userId
     ? await loadBehaviorScoreMap(userId)
     : null;
 
-  // Step E — short-term interest vector. Built from the user's most
-  // recent events (exponential recency decay) so the ranking visibly
-  // evolves after EVERY interaction, not just after the long-term
-  // BehaviorScore saturates. The candidate meta map lets the ranker
-  // score each candidate against that recency vector. Both reads are
-  // best-effort: on any failure they resolve empty and the ranker
-  // falls back to plain 5-signal fusion (cold-start behaviour).
+  // Step E — short-term interest vector.
   let interestVec = new Map();
   let candidateMetaMap = new Map();
   if (userId) {
     const recentEvents = await getRecentEvents(userId);
     if (Array.isArray(recentEvents) && recentEvents.length > 0) {
-      // Meta for the *interacted* phones (to build the interest vector)
-      // and for the *candidate* phones (to score them). One combined
-      // lookup keeps it to a single query.
       const interactedIds = recentEvents.map((e) => e.phoneId).filter(Boolean);
       const candidateIds = enriched.map((c) => c.id).filter(Boolean);
       candidateMetaMap = await loadPhoneMetaMap([
@@ -334,74 +409,124 @@ export const getRecommendations = async (body, userId, opts = {}) => {
     }
   }
 
-  // Step E — personalized fusion. Runs the pure 5-signal base fusion,
-  // then folds in the bounded short-term boost. Falls back to the exact
-  // fusionRank ordering when `interestVec` is empty (new users), so no
-  // regression for cold-start.
+  // Step E — personalized fusion. The stock multiplier is a function
+  // so each candidate can have its own penalty (low_stock → 0.85,
+  // in_stock → 1.0). Cold users (no stockMultiplier) keep the
+  // legacy path.
+  const stockMultiplier = (c) =>
+    Number.isFinite(c.stockPenalty) ? c.stockPenalty : 1.0;
   const ranked = personalizedRank(
     enriched,
     behaviorScoresMap,
     interestVec,
     candidateMetaMap,
+    stockMultiplier,
   );
 
+  // ---- Fix #5 — MMR diversity rerank -------------------------------------
+  // Re-orders the top-K by maximal marginal relevance. The remainder
+  // of the list keeps relevance order. Exploration (#6) runs AFTER
+  // this so the diversity pass doesn't penalise the exploration
+  // pick as a near-duplicate.
+  const mmrReranked = mmrRerank(ranked, MMR_LAMBDA, undefined, MMR_TOP_K);
 
-  // Re-shape for the FE. The existing `matchScore` (0..100) is
-  // overwritten with the fused score so the "% match" UI keeps working
-  // unchanged. `matchComponents` is opt-in for the FE (used by the
-  // "Boosted by your activity" badge).
-  const finalRanked = ranked.map((c) => ({
+  // ---- Fix #6 — exploration slot injection --------------------------------
+  // ε-greedy + Thompson sampling on the top-50 by relevance. The
+  // exploration picks are marked with `explorationArm` so the
+  // trainer (#3) can filter them out.
+  const explored = await applyExploration(mmrReranked, userId);
+
+  // Re-shape for the FE. `matchScore` (0..100) is overwritten with
+  // the fused score so the "% match" UI keeps working unchanged.
+  const finalRanked = explored.map((c) => ({
     ...c,
     matchScore: c.finalScore * 100,
     matchComponents: c.components,
+    explorationArm: c.explorationArm || null,
   }));
 
-  // Enforce the "no duplicate phones" contract on the API response.
-  // See `dedupeByStableId` for rationale. Ranking order is preserved
-  // because `fusionRank` returns phones in `finalScore` desc order —
-  // the first occurrence is always the highest-ranked row for each
-  // identity.
+  // One-shot diagnostic — for any candidate the user's affinity
+  // singles out, print where it landed in the final list. Helps
+  // answer "user has strong affinity for X but X is missing from top
+  // N" without re-running the pipeline. Gated to non-production.
+  if (process.env.NODE_ENV !== "production" && finalRanked.length > 0) {
+    const interesting = finalRanked.filter((c) => {
+      const id = c.id || "";
+      const model = (c.modelName || "").toLowerCase();
+      return (
+        (behaviorScoresMap && behaviorScoresMap.has(`affinity:${id}`)) ||
+        model.includes("iphone 17e") ||
+        model.includes("iphone air")
+      );
+    });
+    if (interesting.length > 0) {
+      const top = finalRanked
+        .slice(0, 20)
+        .map((c) => `${c.brand?.name || "?"} ${c.modelName || "?"}`)
+        .join(" | ");
+      const detail = interesting
+        .map((c) => {
+          const comps = c.components || {};
+          const k = Object.entries(comps)
+            .map(([k, v]) => `${k.slice(0, 4)}=${(v || 0).toFixed(2)}`)
+            .join(" ");
+          return `  ${c.brand?.name || "?"} ${c.modelName || "?"} (phoneId=${c.id || "null"}) finalScore=${(c.finalScore || 0).toFixed(3)} ${k}`;
+        })
+        .join("\n");
+      const firstAffIdx = finalRanked.findIndex(
+        (c) => c.id && behaviorScoresMap && behaviorScoresMap.has(`affinity:${c.id}`),
+      );
+      const rank = firstAffIdx >= 0 ? firstAffIdx + 1 : "not in top 20";
+      console.warn(
+        `[auto-recommend] affinity-tracked candidates in final list (${interesting.length})\n  user top-20: ${top}\n  detail:\n${detail}\n  rank of first affinity hit: ${rank}`,
+      );
+    }
+  }
+
+  // Enforce the "no duplicate phones" contract.
   const finalRankedUnique = dedupeByStableId(finalRanked);
 
-  // Step D — fire-and-forget impression log. One row per served
-  // candidate for future segmentation clustering (consumes the 0.05
-  // popularity slot reserved in FUSION_WEIGHTS). Never awaited, never
-  // throws back to the route.
-  //
-  // Issue 1 — at the new FULL_LIST_TOP_N, log writes are capped at
-  // REC_LOG_WRITE_CAP rows per call. We bulk-insert via `createMany`
-  // so the cost is one round-trip per request rather than N, and the
-  // DB never sees more than the top 50 ranked impressions regardless
-  // of how many candidates the ranker returned.
-  //
-  // Log from the post-dedup list so the analytics table never sees
-  // duplicate impressions for the same phone on one call.
-  //
-  // Behaviour tracking policy (2026-08): when this call originated
-  // from the Dashboard auto-recommendation flow (`source === "auto"`,
-  // forwarded by the controller) the impression log is suppressed
-  // alongside the controller-level `safeRecordRecommendationEvent` /
-  // `safeRecordRecommendationCall` writes. The user did not ask for
-  // these phones explicitly, so they must not feed the
-  // personalization pipeline.
-  if (
-    userId &&
-    source !== "auto" &&
-    Array.isArray(finalRankedUnique) &&
-    finalRankedUnique.length > 0
-  ) {
+  // ---- Fix #1 — fire-and-forget impression log ---------------------------
+  // No longer suppressed on `source === "auto"`. The trainer filters
+  // on `is_training_eligible` (set true by the FE's
+  // `POST /impressions` when dwell >= 1.5s && !skipped). requestId
+  // is the FE's per-mount UUID; pass null when the FE didn't supply
+  // one (defensive — should never happen in production).
+  if (userId && Array.isArray(finalRankedUnique) && finalRankedUnique.length > 0) {
     const topLogged = finalRankedUnique.slice(0, REC_LOG_WRITE_CAP);
     void safeRecordRecommendationLog(
       userId,
       topLogged.map((c, i) => ({
         rank: i + 1,
         phoneId: c.id,
-        finalScore: c.matchScore, // already in [0,100] for FE
+        finalScore: c.matchScore,
+        source,
+        requestId,
+        explorationArm: c.explorationArm || null,
+        firstSeenAt: new Date(),
       })),
     );
   }
 
-  return finalRankedUnique;
+  // ---- Fix #8 — pagination-aware payload ---------------------------------
+  // Ship the first EAGER_TOP_N fully enriched, plus a thin "lazy"
+  // descriptor list for the rest. The FE uses `lazy[]` to request
+  // expansion as the user scrolls. We never re-serve the same phone
+  // twice; the FE is expected to render positions [0..eager-1] in
+  // order and append lazy[0], lazy[1], ... as the user scrolls.
+  const eagerSlice = finalRankedUnique.slice(0, EAGER_TOP_N);
+  const lazyQueue  = finalRankedUnique.slice(EAGER_TOP_N);
+  const response = {
+    results: eagerSlice,
+    lazy: lazyQueue.map((c, i) => ({
+      offset: EAGER_TOP_N + i,
+      phoneId: c.id,
+      finalScore: c.matchScore,
+    })),
+    totalRanked: finalRankedUnique.length,
+    eagerCount: eagerSlice.length,
+  };
+  return response;
 };
 
 // ---------------------------------------------------------------------------
@@ -430,23 +555,29 @@ export const getRecommendations = async (body, userId, opts = {}) => {
 // Any other topN continues to use `getRecommendations` above.
 // ---------------------------------------------------------------------------
 export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
-  const { persona, budget, preferences } = body || {};
-  // `source` is forwarded by the caller to flag the call origin. The
-  // auto-recommendation flow passes "auto" so the
-  // `safeRecordRecommendationLog` impression write at the bottom of
-  // this function is suppressed. The two-stage path is currently only
-  // triggered by the explicit "Recommend Me a Phone" click flow
-  // (topN === 5), but we still honour the flag for symmetry with the
-  // legacy path and to be defensive against future callers.
-  const source = opts && typeof opts.source === "string" ? opts.source : null;
+  const { persona, budget, preferences, brandFilter } = body || {};
+  const source = opts && typeof opts.source === "string" ? opts.source : "click";
+  const requestId = opts && typeof opts.requestId === "string" ? opts.requestId : null;
+
+  // Brand include/exclude from the "Find your phone" modal — see the
+  // mirror copy in `getRecommendations` for the full comment. Kept
+  // identical so both call sites stay in lock-step. Both slots are
+  // HARD drops on the Python side (see
+  // `ML Model/pipeline/recommend.py::_hard_filter_drops` steps 6 + 7).
+  const brandList = Array.isArray(brandFilter?.list) ? brandFilter.list : null;
+  const preferredBrands =
+    brandList && brandList.length > 0 && brandFilter.mode === "include"
+      ? brandList
+      : undefined;
+  const excludeBrands =
+    brandList && brandList.length > 0 && brandFilter.mode === "exclude"
+      ? brandList
+      : undefined;
 
   if (!persona) throw badRequest("persona is required");
   if (!budget || typeof budget.max !== "number")
     throw badRequest("budget.max is required");
 
-  // ---- Step C: Profile Fusion ---------------------------------------------
-  // Same as the legacy path. The fused weights feed the rule-based stage
-  // (FastAPI /recommend reads custom_weights_stars when persona=Custom).
   let fusedPreferences = null;
   if (userId) {
     fusedPreferences = await buildFusedWeights(userId, {
@@ -455,94 +586,78 @@ export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
   }
   const effectivePersona = fusedPreferences ? "Custom" : persona;
 
-  // ---- Stage 1: Rule-based filtering + persona-weight ranking ------------
-  // Same FastAPI call as the legacy path — applies budget, brand, RAM,
-  // 5G filters on the full catalog and returns STAGE1_TOP_N candidates.
-  // This is the "reduced candidate domain" Stage 2 runs on.
   const data = await mlFetch("/recommend", {
     method: "POST",
     body: JSON.stringify({
       persona: effectivePersona,
       budget: { min: budget.min || 0, max: budget.max },
       preferences: fusedPreferences || preferences || {},
+      preferred_brands: preferredBrands,
+      exclude_brands: excludeBrands,
+      // Click path keeps the hard price ceiling — budget.max is the
+      // user's stated wall. Only the auto path opts into soft price.
+      softPrice: false,
       topN: STAGE1_TOP_N,
+      minCandidates: MIN_CANDIDATES,
     }),
   });
 
   const mlResults = data.results || [];
   if (mlResults.length === 0) return [];
 
-  // ---- Enrich with database data (same loop as legacy path) ---------------
-  const enriched = await Promise.all(
-    mlResults.map(async (item) => {
-      const phone = await prisma.phones.findFirst({
-        where: {
-          modelName: { contains: item.Model, mode: "insensitive" },
-          brand: { name: { contains: item.Brand, mode: "insensitive" } },
-          isActive: true,
-        },
-        include: {
-          brand: { select: { brandId: true, name: true, logoUrl: true } },
-          specs: {
-            select: {
-              os: true,
-              chipset: true,
-              displaySize: true,
-              displayType: true,
-              refreshRate: true,
-              mainCamera: true,
-              batteryMah: true,
-              supports5g: true,
-              supportsNfc: true,
-            },
-          },
-          variants: {
-            where: { isAvailable: true },
-            orderBy: { price: "asc" },
-            select: {
-              variantId: true,
-              ramGb: true,
-              storageGb: true,
-              price: true,
-              storageType: true,
-            },
-          },
-        },
-      });
-
-      const base = formatRecommendation(item, phone);
-      return {
-        ...base,
-        overallScore: Number.isFinite(item.Overall_Score)
-          ? Number(item.Overall_Score)
-          : null,
-        matchScoreFastApi: Number.isFinite(item.Match_Score)
-          ? Number(item.Match_Score)
-          : null,
-        valueScore: Number.isFinite(item.Value_Score)
-          ? Number(item.Value_Score)
-          : null,
-        tags: phoneToTags(phone || {}),
-      };
-    }),
+  // ---- Fix #7 — batched enrichment (same path as the legacy call) -------
+  const idMap = await resolvePhoneIds(
+    mlResults.map((m) => ({ brand: m.Brand, modelName: m.Model })),
   );
+  const phoneIds = Array.from(new Set(idMap.values()));
+  const phoneById = await enrichPhonesById(phoneIds);
+  const stockMap = await loadStockAndTrend(phoneIds);
 
-  // ---- Stage 2: Content-based similarity (reduced domain only) ------------
-  // The candidate list here is exactly the Stage-1 output, so the
-  // similarity is computed within the rule-based filtered domain, not
-  // the full catalog. FastAPI /similarity/score is unchanged.
+  const enriched = mlResults.map((item) => {
+    const key = `${(item.Brand || "").toLowerCase()}::${(item.Model || "").toLowerCase()}`;
+    const phoneId = idMap.get(key) || null;
+    const phone = phoneId ? phoneById.get(phoneId) : null;
+    const stock = phoneId ? stockMap.get(phoneId) : null;
+    const base = formatRecommendation(item, phone);
+    return {
+      ...base,
+      overallScore: Number.isFinite(item.Overall_Score)
+        ? Number(item.Overall_Score)
+        : null,
+      matchScoreFastApi: Number.isFinite(item.Match_Score)
+        ? Number(item.Match_Score)
+        : null,
+      valueScore: Number.isFinite(item.Value_Score)
+        ? Number(item.Value_Score)
+        : null,
+      trendScore: stock?.trendScore ?? 0,
+      freshness: stock?.freshness ?? 0.5,
+      stockState: stock?.stockState ?? "in_stock",
+      stockPenalty: stock?.stockPenalty ?? 1.0,
+      tags: phoneToTags(phone || {}),
+    };
+  });
+
+  // ---- Fix #4 — content similarity against user history -----------------
+  const seedPhones = userId
+    ? await loadUserLikedAndViewed(userId, { limit: 25 })
+    : [];
   const simRows = await fetchContentSimilarity(
     enriched.map((c) => ({
       brand: c.brand?.name || null,
       modelName: c.modelName,
     })),
+    seedPhones.map((s) => ({ brand: s.brandName, modelName: s.phoneLabel })),
   );
-  const simMap = new Map(
-    simRows.map((r) => [`${r.brand}::${r.modelName}`, r.similarityToMean]),
-  );
+  const seedWeight = seedPhones.length >= 3
+    ? 1.0
+    : Math.max(0.4, seedPhones.length / 3);
   for (const c of enriched) {
     const key = `${c.brand?.name || ""}::${c.modelName}`;
-    c.contentSim = Number.isFinite(simMap.get(key)) ? simMap.get(key) : 0;
+    const row = simRows.find((r) => `${r.brand}::${r.modelName}` === key);
+    const simSeed = row && Number.isFinite(row.similarityToSeed) ? row.similarityToSeed : 0;
+    const simCat  = row && Number.isFinite(row.similarityToCatalog) ? row.similarityToCatalog : 0;
+    c.contentSim = (seedWeight * simSeed) + ((1 - seedWeight) * simCat);
   }
 
   // ---- Final ranking: content similarity only, then slice top 5 -----------
@@ -560,9 +675,6 @@ export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
       const aSim = Number.isFinite(a.contentSim) ? a.contentSim : 0;
       const bSim = Number.isFinite(b.contentSim) ? b.contentSim : 0;
       if (bSim !== aSim) return bSim - aSim;
-      // Stable tie-break: FastAPI's Match_Score (the rule-based
-      // ranking) acts as the implicit tie-breaker, identical to how
-      // the fusion ranker behaves for ties.
       const aMatch = Number.isFinite(a.matchScoreFastApi)
         ? a.matchScoreFastApi
         : 0;
@@ -583,28 +695,58 @@ export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
     matchScore: (Number.isFinite(c.contentSim) ? c.contentSim : 0) * 100,
   }));
 
-  // Top-5 impression log (fire-and-forget, same as the legacy path).
-  // We never log more than STAGE2_FINAL_TOP_N rows here because that's
-  // the contract.
-  //
-  // Behaviour tracking policy (2026-08): when this call originated
-  // from the auto-recommendation flow (`source === "auto"`) the
-  // impression log is suppressed. Currently the two-stage path is
-  // only triggered by the explicit "Recommend Me a Phone" click
-  // (topN === 5), but the flag is honoured for symmetry with the
-  // legacy path and to be defensive against future callers.
-  if (userId && source !== "auto" && shaped.length > 0) {
+  // Top-5 impression log (Fix #1 — now writes for ALL sources; the
+  // trainer filters on is_training_eligible).
+  if (userId && shaped.length > 0) {
     void safeRecordRecommendationLog(
       userId,
       shaped.map((c, i) => ({
         rank: i + 1,
         phoneId: c.id,
         finalScore: c.matchScore,
+        source,
+        requestId,
+        firstSeenAt: new Date(),
       })),
     );
   }
 
   return shaped;
+};
+
+// ---------------------------------------------------------------------------
+// Fix #8 — lazy expansion. The FE calls this as the user scrolls past
+// the eager slice. Re-runs the FULL pipeline (stateful per-call
+// pipelines are a trap) but only enriches / returns the
+// [offset, offset+limit) window. The score / order are identical to
+// what the eager response would have shown at those positions, so the
+// FE can just append without re-sorting.
+//
+// We deliberately do NOT cache between calls — the user's behavior
+// changes between calls and a cached response would be stale. The
+// full pipeline is ~30-80ms on warm cache; the lazy slice is fine.
+// ---------------------------------------------------------------------------
+export const getRecommendationsSlice = async (body, userId, opts = {}) => {
+  const { persona, budget, preferences, topN } = body || {};
+  const source = opts && typeof opts.source === "string" ? opts.source : "click";
+  const requestId = opts && typeof opts.requestId === "string" ? opts.requestId : null;
+  const offset = Number.isFinite(opts.offset) ? Math.max(0, opts.offset) : EAGER_TOP_N;
+  const limit = Number.isFinite(opts.limit) ? Math.max(1, Math.min(60, opts.limit)) : LAZY_BATCH;
+
+  // Run the same full pipeline, but only return the requested window.
+  // We do this by calling the main path and slicing the response.
+  const full = await getRecommendations({ ...(body || {}), topN: topN || FULL_LIST_TOP_N }, userId, {
+    source,
+    requestId,
+  });
+  const all = full && Array.isArray(full.results) ? full.results : [];
+  const slice = all.slice(offset, offset + limit);
+  return {
+    results: slice,
+    offset,
+    limit,
+    totalRanked: full?.totalRanked ?? all.length,
+  };
 };
 
 // ---------------------------------------------------------------------------
@@ -625,7 +767,18 @@ export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
 //     "showing cold-start picks" UX if it wants to.
 // ---------------------------------------------------------------------------
 export const getAutoRecommendations = async (userId, opts = {}) => {
-  if (!userId) return { results: [], defaultedAt: { persona: false, budget: false } };
+  if (!userId) {
+    return {
+      results: [],
+      lazy: [],
+      totalRanked: 0,
+      eagerCount: 0,
+      defaultedAt: { persona: false, budget: false },
+    };
+  }
+
+  const source = opts && typeof opts.source === "string" ? opts.source : "auto";
+  const requestId = opts && typeof opts.requestId === "string" ? opts.requestId : null;
 
   // Single read; buildFusedWeights inside getRecommendations will also
   // pull behavior_scores, so we don't double-load that table here.
@@ -654,19 +807,42 @@ export const getAutoRecommendations = async (userId, opts = {}) => {
   // Skip the explicit-prefs layer in the click flow — auto-recommend
   // is offline-of-the-moment, so fused weights do all the work.
   //
-  // Behaviour tracking policy (2026-08): we forward `source: "auto"`
-  // to the underlying `getRecommendations` so its internal impression
-  // log (`safeRecordRecommendationLog`) is also suppressed. The
-  // controller-level recommendation/RecommendationCall writes were
-  // already removed for this path; this completes the cut so the
-  // auto flow is fully silent on the analytics side.
+  // Behaviour tracking policy (updated 2026-08 — Fix #1):
+  // The impression log inside `getRecommendations` is now WRITTEN
+  // (not suppressed) with `source: "auto"`. The trainer (#3)
+  // filters on `is_training_eligible` (set true by the FE's
+  // POST /impressions when dwell >= 1.5s && !skipped) so noisy
+  // "scrolled past" impressions don't pollute the regression.
   let results = [];
   try {
-    results = await getRecommendations(
+    const response = await getRecommendations(
+      // Auto path does NOT forward a `brandFilter`. The Python
+      // ranker treats `preferred_brands` / `exclude_brands` as HARD
+      // drops (see `ML Model/pipeline/recommend.py::_hard_filter_drops`
+      // steps 6 + 7), so forwarding the user's stored brand list here
+      // would silently hide phones the user never asked to hide.
+      // Auto-recommend surfaces ALL brands and lets the score decide.
+      // The click flow ("Recommend Me a Phone") continues to honour
+      // the modal's brand filter as a hard drop — that path is
+      // untouched.
       { persona, budget, topN: FULL_LIST_TOP_N },
       userId,
-      { source: "auto" },
+      // Auto path opts OUT of the hard price ceiling. Out-of-budget
+      // phones still surface (ranked, not dropped) with a soft
+      // penalty proportional to how far over-budget they are. The
+      // click flow ("Recommend Me a Phone") leaves `softPrice`
+      // unset so the user's stated budget stays a hard ceiling.
+      { source, requestId, softPrice: true },
     );
+    // Fix #8 — the new response shape is { results, lazy, totalRanked,
+    // eagerCount }. The auto path returns the full shape so the FE
+    // can drive lazy expansion.
+    if (response && Array.isArray(response.results)) {
+      return { ...response, defaultedAt };
+    }
+    // Legacy fallback (the inner getRecommendations returned a plain
+    // array; preserve the old contract).
+    results = Array.isArray(response) ? response : [];
   } catch (err) {
     // Don't bubble the error up to the route — the FE will simply show
     // an empty recs section. We surface the failure via console for ops.
@@ -678,7 +854,13 @@ export const getAutoRecommendations = async (userId, opts = {}) => {
     results = [];
   }
 
-  return { results, defaultedAt };
+  return {
+    results,
+    lazy: [],
+    totalRanked: results.length,
+    eagerCount: results.length,
+    defaultedAt,
+  };
 };
 
 // Format ML result + DB data into frontend-friendly shape

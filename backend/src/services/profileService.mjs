@@ -900,6 +900,36 @@ export const safeRecordRecommendationEvent = async (
     },
   });
 
+  // Per-phoneId recommend events for the top results — without a
+  // phoneId the analyzer falls through to "no meta, no brand tag",
+  // so a single call-level "recommend" event writes zero `brand:<X>`
+  // rows even when the result list is all Apple phones. We forward
+  // the top-N (capped at TOP_RESULTS_LIMIT) so each top result gets
+  // its own brand/feature/affinity deltas via the existing
+  // recordEvent flow. Reuses safeRecordBehaviorEvent — no new path.
+  const topWithId = results
+    .slice()
+    .sort(
+      (a, b) => (Number(b.matchScore) || 0) - (Number(a.matchScore) || 0),
+    )
+    .slice(0, TOP_RESULTS_LIMIT)
+    .filter((r) => r && typeof r.id === "string" && r.id);
+  for (let i = 0; i < topWithId.length; i += 1) {
+    const r = topWithId[i];
+    await safeRecordBehaviorEvent(userId, "recommend", {
+      phoneId: r.id,
+      payload: {
+        persona,
+        budget,
+        rank: i + 1,
+        matchScore: Number.isFinite(Number(r.matchScore))
+          ? Number(r.matchScore)
+          : null,
+        source: "top-result",
+      },
+    });
+  }
+
   // Re-derive techTier / preferredRamGb / preferredStorageGb from the
   // user's last 25 recommendation rows. Fire-and-forget; the
   // aggregator self-throttles and is cheap when there is nothing to do.
@@ -1121,15 +1151,93 @@ export const loadPhoneMetaMap = async (phoneIds) => {
   }
 };
 
+// Fix #4 — load the user's history of "liked / viewed" phones for
+// the content-similarity centroid. We union browsed phones
+// (BrowsingHistory, capped at 10 unique) with the user's most-recent
+// compares (ComparisonHistory, top 5). Returns a flat list of
+// { brandName, phoneLabel } so the BE can pass it to
+// `fetchContentSimilarity` as `userSeedPhones`.
+//
+// Why this shape: the FastAPI /similarity/score endpoint indexes
+// the bundle by (Brand, Model_Name). BrowsingHistory carries the
+// model name as `phoneLabel` (e.g. "Apple iPhone 17") and the brand
+// as `brandName`. We forward those two fields as-is.
+//
+// Returns [] on any read failure so the BE falls back to the legacy
+// "centroid of candidates" path (cold start).
+export const loadUserLikedAndViewed = async (userId, { limit = 25 } = {}) => {
+  if (!userId) return [];
+  const take = Math.max(1, Math.min(50, Number(limit) || 25));
+  try {
+    const [browses, compares] = await Promise.all([
+      prisma.browsingHistory.findMany({
+        where: { userId },
+        orderBy: { viewedAt: "desc" },
+        take,
+        select: { phoneLabel: true, brandName: true, phoneId: true },
+      }),
+      prisma.comparisonHistory.findMany({
+        where: { userId },
+        orderBy: { comparedDate: "desc" },
+        take: Math.min(5, take),
+        select: {
+          phoneIdA: true,
+          phoneIdB: true,
+          phoneA: { select: { modelName: true, brand: { select: { name: true } } } },
+          phoneB: { select: { modelName: true, brand: { select: { name: true } } } },
+        },
+      }),
+    ]);
+
+    const out = [];
+    const seen = new Set();
+    const cap = Math.max(1, Math.min(25, take));
+    const push = (brandName, modelName) => {
+      if (!brandName || !modelName) return;
+      if (out.length >= cap) return;
+      const k = `${brandName.toLowerCase()}::${modelName.toLowerCase()}`;
+      if (seen.has(k)) return;
+      seen.add(k);
+      out.push({ brandName, phoneLabel: modelName });
+    };
+
+    for (const b of browses) {
+      if (b.phoneLabel && b.brandName) push(b.brandName, b.phoneLabel);
+    }
+    for (const c of compares) {
+      if (c.phoneA?.brand?.name && c.phoneA?.modelName) {
+        push(c.phoneA.brand.name, c.phoneA.modelName);
+      }
+      if (c.phoneB?.brand?.name && c.phoneB?.modelName) {
+        push(c.phoneB.brand.name, c.phoneB.modelName);
+      }
+    }
+    return out;
+  } catch (err) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "[profile] loadUserLikedAndViewed failed:",
+        err?.message || err,
+      );
+    } else {
+      console.warn("[profile] loadUserLikedAndViewed failed:", err);
+    }
+    return [];
+  }
+};
+
 
 // Fire-and-forget write into RecommendationLog. One row per served
-// candidate — used for future segmentation clustering (the same
-// cluster would consume these rows to derive the popularity signal
-// that the 0.05 weight slot is reserved for).
+// candidate — used for the impression batch upsert and for the
+// learned-fusion-weights trainer (#3).
 //
-// Accepts either a single row ({ rank, phoneId, finalScore }) or an
-// array of rows (used by Issue 1's capped bulk write path that
-// batches the top-N candidates into one createMany round-trip).
+// Fix #1 — un-suppressed on auto. The `source` column discriminates
+// "auto" / "click" / "similar" so the trainer can filter to the
+// right stream. `requestId` is the FE's per-mount UUID that ties
+// subsequent dwell/skip/click upserts back to this initial write.
+//
+// Accepts either a single row ({ rank, phoneId, finalScore, source,
+// requestId }) or an array of rows.
 //
 // Fire-and-forget policy: if the insert fails (transient DB error,
 // FK trip on an inDatabase=false phone, etc.) the error is logged
@@ -1149,6 +1257,12 @@ export const safeRecordRecommendationLog = async (userId, rowOrRows) => {
         phoneId: r.phoneId,
         rank: Number(r.rank),
         finalScore: Number.isFinite(Number(r.finalScore)) ? Number(r.finalScore) : 0,
+        source: typeof r.source === "string" ? r.source.slice(0, 20) : "click",
+        requestId: typeof r.requestId === "string" ? r.requestId : null,
+        explorationArm:
+          typeof r.explorationArm === "string" ? r.explorationArm.slice(0, 40) : null,
+        firstSeenAt: r.firstSeenAt ? new Date(r.firstSeenAt) : new Date(),
+        isTrainingEligible: false, // initial write — set to true via /impressions
       })),
       skipDuplicates: true,
     });
@@ -1162,6 +1276,134 @@ export const safeRecordRecommendationLog = async (userId, rowOrRows) => {
       console.error("[profile] recordRecommendationLog failed:", err);
     }
   }
+};
+
+// Fix #1 — FE-driven impression batch. The FE mints a `requestId`
+// per dashboard mount and posts dwell/skip/click deltas as the
+// user interacts. We upsert by the (userId, phoneId, source,
+// requestId) UNIQUE key so multiple dwell deltas in a session
+// collapse to one row. Dwell is max(escalated) — never goes down.
+// Clicked/skipped are escalated-only booleans (once true, stay
+// true). `isTrainingEligible` is computed from the latest observed
+// state and is the column the learned-weights trainer (#3) filters
+// on.
+//
+// Shape of each `e`:
+//   { phoneId, source, requestId, dwellMs?, clicked?, skipped?,
+//     viewportIndex?, firstSeenAt? }
+export const safeRecordImpressionBatch = async (userId, events) => {
+  if (!userId) return 0;
+  if (!Array.isArray(events) || events.length === 0) return 0;
+  let applied = 0;
+  for (const e of events) {
+    if (!e || typeof e !== "object") continue;
+    const phoneId = typeof e.phoneId === "string" ? e.phoneId : null;
+    // source defaults to "click" when the FE omits it — the legacy
+    // schema had no source column at all, so older FE builds don't
+    // send one. We map them onto "click" rather than dropping the
+    // event.
+    const source = typeof e.source === "string" && e.source.length > 0
+      ? e.source.slice(0, 20)
+      : "click";
+    // requestId is REQUIRED. Without it the impression upsert key
+    // can't distinguish separate sessions, so multiple calls would
+    // collapse into one row and the dwell would never escalate
+    // past the first batch. Drop the event if missing — the FE
+    // mints the UUID on dashboard mount.
+    const requestId = typeof e.requestId === "string" && e.requestId.length > 0
+      ? e.requestId
+      : null;
+    if (!phoneId || !requestId) continue;
+
+    const dwell = Number.isFinite(e.dwellMs) ? Math.max(0, e.dwellMs | 0) : 0;
+    const clicked = e.clicked === true;
+    const skipped = e.skipped === true;
+    const viewportIndex = Number.isFinite(e.viewportIndex)
+      ? Math.max(0, e.viewportIndex | 0)
+      : null;
+    const firstSeenAt = e.firstSeenAt ? new Date(e.firstSeenAt) : null;
+
+    // Training eligibility: card was actually seen (dwell ≥ 1.5s)
+    // and was not skipped past. A click is the strongest positive
+    // signal; a long dwell without a click is a weaker positive
+    // signal; a fast skip is excluded.
+    const eligible = (clicked || (dwell >= 1500 && !skipped));
+
+    try {
+      // Prisma's `update` doesn't support arithmetic on integers
+      // across all providers, so we read-then-write for monotonic
+      // dwell. For a 5-row batch this is well under 10 round-trips
+      // and never hits the user's read path.
+      const existing = await prisma.recommendationLog.findUnique({
+        where: {
+          impression_unique: { userId, phoneId, source, requestId },
+        },
+        select: { dwellMs: true, clicked: true, skipped: true },
+      });
+      const newDwell = Math.max(dwell, existing?.dwellMs ?? 0);
+      const newClicked = clicked || (existing?.clicked === true);
+      const newSkipped = skipped || (existing?.skipped === true);
+      const newEligible = (newClicked || (newDwell >= 1500 && !newSkipped));
+
+      await prisma.recommendationLog.upsert({
+        where: {
+          impression_unique: { userId, phoneId, source, requestId },
+        },
+        create: {
+          userId, phoneId, source, requestId,
+          rank: 0, finalScore: 0,
+          dwellMs: newDwell,
+          clicked: newClicked,
+          skipped: newSkipped,
+          isTrainingEligible: newEligible,
+          viewportIndex,
+          firstSeenAt: firstSeenAt || new Date(),
+        },
+        update: {
+          dwellMs: newDwell,
+          clicked: newClicked,
+          skipped: newSkipped,
+          isTrainingEligible: newEligible,
+          viewportIndex: viewportIndex ?? undefined,
+        },
+      });
+      applied += 1;
+
+      // Step B — forward eligible impressions into BehaviorScore so the
+      // brand/feature/affinity rows the user actually saw get the
+      // score they deserve. Without this the recommendationLog row
+      // only feeds the trainer — the user's brand lift stays empty.
+      // We reuse the same `newEligible` gate (clicked || dwell>=1.5s
+      // && !skipped) the trainer uses, so noisy scroll-past cards are
+      // NOT written to BehaviorScore (Fix #1 noise policy preserved).
+      // safeRecordBehaviorEvent is the same wrapper used by
+      // browse/click/compare — no new code path.
+      if (newEligible) {
+        await safeRecordBehaviorEvent(userId, "view", {
+          phoneId,
+          payload: {
+            source,
+            requestId,
+            dwellMs: newDwell,
+            clicked: newClicked,
+            viewportIndex: viewportIndex ?? null,
+            impression: true,
+          },
+        });
+      }
+    } catch (err) {
+      // Single-row failure does not abort the batch.
+      if (process.env.NODE_ENV === "production") {
+        console.warn(
+          "[impression] upsert failed:",
+          err?.message || err,
+        );
+      } else {
+        console.warn("[impression] upsert failed:", err);
+      }
+    }
+  }
+  return applied;
 };
 
 // ---------------------------------------------------------------------------

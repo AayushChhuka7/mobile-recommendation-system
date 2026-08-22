@@ -58,19 +58,42 @@ function neutralScores(candidates) {
 }
 
 // POST /similarity/score
-// Body: { candidates: [{ brand, modelName }, ...] }
-// Returns: [{ brand, modelName, similarityToMean }, ...]
+//
+// Fix #4 — body now carries the user's seed phones (history) so the
+// similarity is against the user's interest profile, not the catalog
+// centroid. The FastAPI side computes a cosine score to BOTH the
+// user-seed centroid AND the catalog mean; the BE blends them with
+// a weight that ramps with the size of the user's history. Cold-
+// start users (no seed phones) get the legacy catalog-mean score.
+//
+// Body: {
+//   candidates:     [{ brand, modelName }, ...],
+//   userSeedPhones: [{ brand, modelName }, ...] | undefined
+// }
+//
+// Returns: [{
+//   brand, modelName,
+//   similarityToSeed,     // 0..1, 0 if userSeedPhones is empty
+//   similarityToCatalog,  // 0..1, the legacy "centroid of input set" score
+//   coldStart             // boolean, true if userSeedPhones was empty
+// }, ...]
 //
 // Every input candidate gets exactly one output row — either its
-// real cosine score, or 0 if the bundle couldn't load / the phone
+// real scores, or zeros if the bundle couldn't load / the phone
 // wasn't in the bundle's df.
-export async function fetchContentSimilarity(candidates) {
+export async function fetchContentSimilarity(candidates, userSeedPhones = null) {
   if (!Array.isArray(candidates) || candidates.length === 0) return [];
+
+  const seedList = Array.isArray(userSeedPhones) ? userSeedPhones : [];
+  const body = { candidates };
+  if (seedList.length > 0) {
+    body.userSeedPhones = seedList;
+  }
 
   try {
     const res = await similarityFetch("/similarity/score", {
       method: "POST",
-      body: JSON.stringify({ candidates }),
+      body: JSON.stringify(body),
     });
     const rows = Array.isArray(res?.scores) ? res.scores : [];
     // Backfill any candidate FastAPI didn't echo (shouldn't happen,
@@ -84,7 +107,9 @@ export async function fetchContentSimilarity(candidates) {
         rows.push({
           brand: c.brand,
           modelName: c.modelName,
-          similarityToMean: 0,
+          similarityToSeed: 0,
+          similarityToCatalog: 0,
+          coldStart: seedList.length === 0,
         });
       }
     }
@@ -95,7 +120,13 @@ export async function fetchContentSimilarity(candidates) {
       "[step-d] similarity fetch failed, falling back to neutral scores:",
       err?.message || err,
     );
-    return neutralScores(candidates);
+    return candidates.map((c) => ({
+      brand: c.brand,
+      modelName: c.modelName,
+      similarityToSeed: 0,
+      similarityToCatalog: 0,
+      coldStart: seedList.length === 0,
+    }));
   }
 }
 

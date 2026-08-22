@@ -172,6 +172,9 @@ exports.Prisma.PhonesScalarFieldEnum = {
   batteryMah: 'batteryMah',
   source: 'source',
   sourceUrl: 'sourceUrl',
+  releasedAt: 'releasedAt',
+  stockState: 'stockState',
+  stockUpdatedAt: 'stockUpdatedAt',
   isActive: 'isActive',
   discontinuedAt: 'discontinuedAt',
   createdAt: 'createdAt',
@@ -292,8 +295,15 @@ exports.Prisma.RecommendationLogScalarFieldEnum = {
   phoneId: 'phoneId',
   finalScore: 'finalScore',
   rank: 'rank',
+  source: 'source',
+  requestId: 'requestId',
+  dwellMs: 'dwellMs',
+  clicked: 'clicked',
+  skipped: 'skipped',
+  isTrainingEligible: 'isTrainingEligible',
+  explorationArm: 'explorationArm',
   shownAt: 'shownAt',
-  clicked: 'clicked'
+  firstSeenAt: 'firstSeenAt'
 };
 
 exports.Prisma.RecommendationCallScalarFieldEnum = {
@@ -303,6 +313,45 @@ exports.Prisma.RecommendationCallScalarFieldEnum = {
   budget: 'budget',
   topResults: 'topResults',
   servedAt: 'servedAt'
+};
+
+exports.Prisma.PhoneTrendScalarFieldEnum = {
+  phoneId: 'phoneId',
+  trendScore: 'trendScore',
+  views7d: 'views7d',
+  clicks7d: 'clicks7d',
+  impressions7d: 'impressions7d',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TrainingImpressionScalarFieldEnum = {
+  impressionId: 'impressionId',
+  requestId: 'requestId',
+  userId: 'userId',
+  phoneId: 'phoneId',
+  source: 'source',
+  position: 'position',
+  viewportIndex: 'viewportIndex',
+  sCompatibility: 'sCompatibility',
+  sCustomerPref: 'sCustomerPref',
+  sContentSim: 'sContentSim',
+  sSearchHistory: 'sSearchHistory',
+  sValue: 'sValue',
+  sFreshness: 'sFreshness',
+  inStock: 'inStock',
+  daysSinceRelease: 'daysSinceRelease',
+  userPersona: 'userPersona',
+  userSegment: 'userSegment',
+  hasHistory: 'hasHistory',
+  labelClicked: 'labelClicked',
+  labelClickedAt: 'labelClickedAt',
+  labelDwellMs: 'labelDwellMs',
+  labelSkipped: 'labelSkipped',
+  labelPurchased: 'labelPurchased',
+  labelPurchasedAt: 'labelPurchasedAt',
+  isTrainingEligible: 'isTrainingEligible',
+  observedAt: 'observedAt',
+  labelledAt: 'labelledAt'
 };
 
 exports.Prisma.CustomerProfileScalarFieldEnum = {
@@ -494,6 +543,8 @@ exports.Prisma.ModelName = {
   RecommendationHistory: 'RecommendationHistory',
   RecommendationLog: 'RecommendationLog',
   RecommendationCall: 'RecommendationCall',
+  PhoneTrend: 'PhoneTrend',
+  TrainingImpression: 'TrainingImpression',
   CustomerProfile: 'CustomerProfile',
   Wishlist: 'Wishlist',
   ComparisonHistory: 'ComparisonHistory',

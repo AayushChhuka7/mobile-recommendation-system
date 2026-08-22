@@ -279,7 +279,9 @@ function AdminCustomerDetail() {
               <ul className="admin-tag-list">
                 {behavior.slice(0, 10).map((row) => (
                   <li key={row.tag} className="admin-tag-row">
-                    <span className="admin-tag-label">{row.tag}</span>
+                    <span className="admin-tag-label">
+                      {row.phoneName ? `affinity:${row.phoneName}` : row.tag}
+                    </span>
                     <span className="admin-tag-score">
                       {Number(row.score).toFixed(2)}
                     </span>

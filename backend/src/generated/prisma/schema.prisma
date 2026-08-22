@@ -169,6 +169,15 @@ model Phones {
   source    String? @db.VarChar(40) // e.g., "gsmarena", "admin", "api"
   sourceUrl String? @map("source_url") @db.VarChar(500) // Original page URL
 
+  // Freshness / stock / trend — populated by nightly jobs. The
+  // `stockState` column is the pre-fusion gate (#9): out-of-stock
+  // phones are dropped from auto responses. `releasedAt` powers the
+  // freshness sub-score; phones older than 18 months are
+  // deprioritised but not dropped.
+  releasedAt     DateTime? @map("released_at")
+  stockState     String?   @map("stock_state") @db.VarChar(20) // "in_stock" | "low_stock" | "out_of_stock"
+  stockUpdatedAt DateTime? @map("stock_updated_at")
+
   // Soft delete & lifecycle
   isActive       Boolean   @default(true) @map("is_active")
   discontinuedAt DateTime? @map("discontinued_at")
@@ -179,6 +188,7 @@ model Phones {
   brand    Brands          @relation(fields: [brandId], references: [brandId], onDelete: Cascade)
   variants PhoneVariants[]
   specs    PhoneSpecs?
+  trend    PhoneTrend?
 
   // Recommendation relations
   recommendationHistory RecommendationHistory[]
@@ -390,25 +400,58 @@ model RecommendationHistory {
 }
 
 // Step D — per-candidate impression log. One row per served candidate
-// (rank + finalScore + userId + phoneId). Feeds the future customer-
-// segmentation cluster that will reclaim the 0.05 popularity slot
-// currently held open in FUSION_WEIGHTS. Click-through tracking is
-// not on this table — `clicked` here is reserved for a future
-// analytics job; today it's seeded false and never written.
+// (rank + finalScore + userId + phoneId + source + requestId). The
+// dashboard auto-recommendation flow now also writes here so the
+// learned-fusion-weights trainer (#3) has data to fit on.
+//
+// Extensions over the v1 schema:
+//   - `source`       discriminates "auto" / "click" / "similar" so
+//                    training data can pick the right stream and we
+//                    never double-count a phone across call origins.
+//   - `requestId`    is a UUID minted by the FE per dashboard mount.
+//                    Lets the FE upsert dwell/skip/click via the
+//                    `impression_unique` key without producing N rows
+//                    on every scroll event.
+//   - `dwellMs`      is the max viewport-dwell the FE has observed
+//                    for this impression. 0 = below the fold and
+//                    never scrolled to.
+//   - `clicked` / `skipped` are escalated-only booleans (set true
+//                    once and never reset). A scroll past without a
+//                    click flips `skipped` so the trainer can
+//                    distinguish "showed, ignored" from "showed, not
+//                    visible long enough to judge".
+//   - `isTrainingEligible` is computed by the FE based on dwell + skip
+//                    state. The trainer filters on this column so
+//                    auto-load impressions that the user never saw
+//                    don't pollute the regression.
+//
+// Note: the v1 (userId, phoneId, source, requestId) UNIQUE constraint
+// is what lets the FE's `POST /impressions` endpoint be a true
+// upsert — multiple dwell deltas in a session collapse to one row.
 model RecommendationLog {
-  logId      String   @id @default(uuid()) @map("log_id") @db.Uuid
-  userId     String   @map("user_id") @db.Uuid
-  phoneId    String   @map("phone_id") @db.Uuid
-  finalScore Float    @map("final_score")
-  rank       Int
-  shownAt    DateTime @default(now()) @map("shown_at")
-  clicked    Boolean  @default(false)
+  logId              String    @id @default(uuid()) @map("log_id") @db.Uuid
+  userId             String    @map("user_id") @db.Uuid
+  phoneId            String    @map("phone_id") @db.Uuid
+  finalScore         Float     @map("final_score")
+  rank               Int
+  source             String    @default("click") @map("source") @db.VarChar(20)
+  requestId          String?   @map("request_id") @db.Uuid
+  dwellMs            Int       @default(0) @map("dwell_ms")
+  clicked            Boolean   @default(false)
+  skipped            Boolean   @default(false) @map("skipped")
+  isTrainingEligible Boolean   @default(false) @map("is_training_eligible")
+  explorationArm     String?   @map("exploration_arm") @db.VarChar(40)
+  shownAt            DateTime  @default(now()) @map("shown_at")
+  firstSeenAt        DateTime? @map("first_seen_at")
 
   user  Users  @relation(fields: [userId], references: [userId], onDelete: Cascade)
   phone Phones @relation(fields: [phoneId], references: [phoneId])
 
+  // Lets the FE upsert dwell/skip/click on a single row per session.
+  @@unique([userId, phoneId, source, requestId], name: "impression_unique", map: "impression_unique_idx")
   @@index([userId, shownAt(sort: Desc)])
   @@index([phoneId])
+  @@index([isTrainingEligible, shownAt(sort: Desc)], map: "training_eligible_idx")
   @@map("recommendation_logs")
 }
 
@@ -417,10 +460,6 @@ model RecommendationLog {
 // admin "Last recommendation → Top results" panel can show the
 // human-readable brand · model for that exact call without fanning
 // out into the per-phone RecommendationHistory table.
-//
-// Schema choice: keeping this as its own table (rather than storing a
-// `queryId` on RecommendationHistory and grouping) keeps reads cheap —
-// a `LIMIT 1 ORDER BY servedAt DESC` returns the whole block.
 model RecommendationCall {
   callId     String   @id @default(uuid()) @map("call_id") @db.Uuid
   userId     String   @map("user_id") @db.Uuid
@@ -433,6 +472,81 @@ model RecommendationCall {
 
   @@index([userId, servedAt(sort: Desc)])
   @@map("recommendation_calls")
+}
+
+// PhoneTrend — nightly-job populated, 0..1 normalised score. Powers
+// the `freshness_trending` slot in FUSION_WEIGHTS (#9). Trending
+// alone creates a rich-get-richer feedback loop, so the score is
+// computed as (clicks_7d / impressions_7d) vs. the prior 7d — a
+// positive trend = the phone is becoming MORE clicked, not just more
+// seen.
+model PhoneTrend {
+  phoneId       String   @id @map("phone_id") @db.Uuid
+  trendScore    Float    @default(0) @map("trend_score")
+  views7d       Int      @default(0) @map("views_7d")
+  clicks7d      Int      @default(0) @map("clicks_7d")
+  impressions7d Int      @default(0) @map("impressions_7d")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  phone Phones @relation(fields: [phoneId], references: [phoneId], onDelete: Cascade)
+
+  @@index([trendScore(sort: Desc)])
+  @@map("phone_trends")
+}
+
+// Training impressions — one row per qualified impression (#3). The
+// learned-fusion-weights trainer reads from this view, NOT from
+// recommendation_logs, so the data can be cleaned (deduped by
+// (userId, phoneId, requestId), filtered by observation window,
+// position-dampened) in a single scheduled job rather than at every
+// read.
+//
+// The view is intentionally a denormalised flat table: each row is
+// the input feature vector for one ranking decision plus its outcome
+// (click, dwell, skip, purchase). The trainer produces per-feature
+// weights that the BE loads as FUSION_WEIGHTS.
+model TrainingImpression {
+  impressionId  String @id @default(uuid()) @map("impression_id") @db.Uuid
+  requestId     String @map("request_id") @db.Uuid
+  userId        String @map("user_id") @db.Uuid
+  phoneId       String @map("phone_id") @db.Uuid
+  source        String @map("source") @db.VarChar(20)
+  position      Int    @map("position")
+  viewportIndex Int?   @map("viewport_index")
+
+  // Sub-scores (5 + optional 6th)
+  sCompatibility   Float    @map("s_compatibility")
+  sCustomerPref    Float    @map("s_customer_pref")
+  sContentSim      Float    @map("s_content_sim")
+  sSearchHistory   Float    @map("s_search_history")
+  sValue           Float    @map("s_value")
+  sFreshness       Float?   @map("s_freshness")
+  inStock          Boolean? @map("in_stock")
+  daysSinceRelease Int?     @map("days_since_release")
+
+  // Context
+  userPersona String? @map("user_persona") @db.VarChar(40)
+  userSegment String? @map("user_segment") @db.VarChar(40)
+  hasHistory  Boolean @map("has_history")
+
+  // Labels (one hot)
+  labelClicked     Boolean?  @map("label_clicked")
+  labelClickedAt   DateTime? @map("label_clicked_at")
+  labelDwellMs     Int?      @map("label_dwell_ms")
+  labelSkipped     Boolean?  @map("label_skipped")
+  labelPurchased   Boolean?  @map("label_purchased")
+  labelPurchasedAt DateTime? @map("label_purchased_at")
+
+  // Eligibility — must be true for the row to enter training
+  isTrainingEligible Boolean @map("is_training_eligible")
+
+  observedAt DateTime  @map("observed_at")
+  labelledAt DateTime? @map("labelled_at")
+
+  @@index([observedAt(sort: Desc)])
+  @@index([userId, phoneId])
+  @@index([isTrainingEligible, labelClicked], map: "train_eligible_clicked_idx")
+  @@map("training_impressions")
 }
 
 model CustomerProfile {

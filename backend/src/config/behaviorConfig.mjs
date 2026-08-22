@@ -28,15 +28,36 @@
 // in the same order of magnitude as the previous DELTAS table.
 export const BEHAVIOR_CONFIG = Object.freeze({
   eventWeights: Object.freeze({
-    view:      0.40,   // glancing at a card — very light
-    click:     0.65,   // opened the detail page
-    search:    0.90,   // typed a query — explicit intent
-    compare:   2.80,   // side-by-side comparison — strong shopping intent
+    view:      0.90,   // glancing at a card — very light
+                          // (Step 3 rebalance: 0.40 → 0.90; a card glance
+                          //  now carries more weight so a passive
+                          //  browsing session still leaves a useful
+                          //  trail.)
+    click:     2.70,   // opened the detail page — explicit per-phone
+                          // interest; lifted from 0.65 so a single click
+                          // counts more than a search, matching its
+                          // stronger semantic ("this specific phone").
+                          // (Step 3 rebalance: 1.20 → 1.70 to rebalance
+                          //  toward lower-friction events.)
+                          // Dedup + confidence ramp + diminishing curve
+                          // still bound repeat abuse.
+    search:    1.40,   // typed a query — explicit intent
+                          // (Step 3 rebalance: 0.90 → 1.40 to rebalance
+                          //  toward lower-friction events.)
+    compare:   3.30,   // side-by-side comparison — strong shopping intent
                           // (Step 2 rebalance: raised from 2.00 so a single
                           //  compare writes a stronger per-tag delta; the
                           //  pair-level dedup + pair diminishing curve still
                           //  bound spam, so the higher ceiling is safe.)
-    recommend: 3.00,   // "Recommend Me" button — strongest explicit ask
+                          // (Step 3 rebalance: 2.80 → 3.30; compare is the
+                          //  strongest signal we capture — lifting it
+                          //  above recommend re-anchors the brief's
+                          //  "compare > recommend" intent.)
+    recommend: 3.00,   // "Recommend Me" button — explicit ask
+                          // (Step 3 rebalance: 3.00 → 2.50; still a
+                          //  strong single signal, but no longer the
+                          //  ceiling — compare is now the strongest
+                          //  explicit ask, matching the product brief.)
     save:      2.40,   // bookmarked
     ignore:   -0.55,   // dismissed / scrolled past
   }),
@@ -191,11 +212,13 @@ export const BEHAVIOR_CONFIG = Object.freeze({
     // `customer_preference` slot.
     phoneAffinity: 1.10,     // affinity:<phoneId>  — direct
     modelAffinity: 0.55,     // model:<hash>        — same model cluster
-    brandGatedAffinity: 1.10,// brand:<X>           — gated; only fires
+    brandGatedAffinity: 0.60,// brand:<X>           — gated; only fires
                              //                     after ≥2 distinct phones
                              //                     of brand X
     tierAffinity: 0.40,      // tier:<T>
     featureAffinity: 0.65,   // average of feature:<dim> rows on the phone
+
+    
   }),
 
   // Event-dedup: hard-deduplicate repeats inside this window so a
