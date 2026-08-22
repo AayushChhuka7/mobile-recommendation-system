@@ -1,20 +1,46 @@
-# ----------------------------------------------------------------------------
-# Mobile Recommendation System — local dev stack
+# ─────────────────────────────────────────────────────────────────────────────
+# Mobile Recommendation System — Docker Compose
 #
-# Boot order:
-#   postgres (healthy) -> db-init (one-shot: schema push, RBAC seed, phone
-#                         bulk CSV, customer bulk CSV)
-#                     -> ml-service (healthy) + backend (waits on db-init)
-#                     -> frontend
-# ----------------------------------------------------------------------------
+# This compose file is platform-independent and supports two modes:
+#
+#   1. LOCAL DEV (default):
+#        docker compose --profile dev up --build
+#      Spins up:
+#        - postgres (named volume)
+#        - db-init       (one-shot: prisma migrate deploy + seeds + phone
+#                         bulk CSV + customer CSV)
+#        - ml-service    (FastAPI :8002)
+#        - cf-service    (FastAPI :9001)
+#        - backend       (Node  :8001)
+#        - frontend      (Vite dev :5173  OR  production nginx :8080)
+#      The browser reaches the API at http://localhost:8001/api.
+#
+#   2. PRODUCTION-LIKE (no profile):
+#        docker compose up --build backend ml-service cf-service
+#      Runs the three runtime services without postgres. Point
+#      DATABASE_URL in the host environment at your managed Postgres
+#      (Render / Neon / Supabase / RDS / etc.) before starting.
+#
+# Required for first-time dev setup:
+#   1. Copy .env.example to .env and set POSTGRES_PASSWORD + COOKIE_SECRET.
+#   2. Bind-mount the dataset/ folder into db-init (already wired).
+#
+# Secrets are NEVER hardcoded — every sensitive value is read from the
+# host environment via ${VAR} substitution or ${VAR:?} (fails loudly if
+# missing).
+# ─────────────────────────────────────────────────────────────────────────────
 
 services:
-  # PostgreSQL Database
-  # Credentials are read from the host environment (root .env file).
-  # Copy .env.example to .env and set real values before first run.
+  # -------------------------------------------------------------------------
+  # PostgreSQL — LOCAL DEVELOPMENT ONLY.
+  # Production deployments use a managed Postgres (RDS, Neon, Supabase, …)
+  # and inject its URL via DATABASE_URL. This service lives behind the
+  # `dev` profile so it doesn't start in production runs.
+  # -------------------------------------------------------------------------
   postgres:
     image: postgres:16-alpine
     container_name: mobile-recommender-db
+    profiles: ["dev", "all"]
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -27,8 +53,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      # Reuses the POSTGRES_USER / POSTGRES_DB env vars so healthcheck stays
-      # in sync with whatever the dev configured in .env.
+      # Reuses the POSTGRES_USER / POSTGRES_DB env vars so healthcheck
+      # stays in sync with whatever the dev configured in .env.
       test:
         [
           "CMD-SHELL",
@@ -38,28 +64,41 @@ services:
       timeout: 5s
       retries: 10
 
-  # One-shot DB initializer:
-  #   1. prisma db push                          -> apply schema
-  #   2. npm run seed:rbac                       -> system roles + customer backfill
-  #   3. node prisma/import-gsmarena-bulk.mjs    -> seed phones/brands/variants/specs
-  #   4. npm run seed:customers                  -> seed users + customer activity
-  #                                                (payment / browsing / search history)
+  # -------------------------------------------------------------------------
+  # One-shot DB initializer (LOCAL DEV ONLY).
+  #
+  # Order:
+  #   1. prisma migrate deploy                -> apply pending migrations
+  #                                             (production-safe; no reset)
+  #   2. npm run seed:rbac                     -> system roles + customer
+  #                                             role backfill (idempotent)
+  #   3. node prisma/import-gsmarena-bulk.mjs  -> seed phones / brands /
+  #                                             variants / specs
+  #   4. npm run seed:customers                -> seed users + activity
+  #
+  # All four steps are idempotent — safe to re-run.
   # Exits 0; the backend waits for this with service_completed_successfully.
+  # -------------------------------------------------------------------------
   db-init:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      # Prisma 7 reads DATABASE_URL via prisma.config.ts; the env below is
+      # used by the prisma CLI during `prisma migrate deploy`.
+      args:
+        DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@postgres:5432/${POSTGRES_DB:-mobile_recommender}"
     container_name: mobile-recommender-db-init
-    # Override CMD. We pass the CSV paths explicitly so the scripts don't
-    # need to know where the files live relative to themselves.
+    profiles: ["dev", "all"]
+    # Override CMD. We pass the CSV paths explicitly so the scripts
+    # don't need to know where the files live relative to themselves.
     command: >
-      sh -c "npx prisma db push &&
+      sh -c "npx prisma migrate deploy &&
              npm run seed:rbac &&
              node ./prisma/import-gsmarena-bulk.mjs /seed/GSMArena_Cleaned_Dataset.csv &&
              npm run seed:customers -- /seed/customer_dataset.csv"
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@postgres:5432/${POSTGRES_DB:-mobile_recommender}"
-      NODE_ENV: development
+      NODE_ENV: production
     volumes:
       # Bind-mount the CSVs into the container. Host paths are relative
       # to the compose file, i.e. <repo-root>/dataset/*.csv
@@ -71,7 +110,11 @@ services:
     # Don't restart a one-shot job — if it fails, you want to see it.
     restart: "no"
 
-  # ML FastAPI Service
+  # -------------------------------------------------------------------------
+  # ML FastAPI Service — always runs in dev AND production.
+  # Internal-only by default; bind to the host via ports: if you want
+  # external access (e.g. for ad-hoc curl probes).
+  # -------------------------------------------------------------------------
   ml-service:
     build:
       context: ./ML Model
@@ -80,62 +123,126 @@ services:
     restart: unless-stopped
     ports:
       - "8002:8002"
+    environment:
+      # PORT is consumed by the CMD wrapper in the ML Dockerfile.
+      PORT: 8002
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8002/health"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 20s
+      start_period: 30s
 
-  # Node.js Backend
+  # -------------------------------------------------------------------------
+  # CF (collaborative-filtering) FastAPI Service.
+  # Loads `cf_recommender.pkl` (the trained SVD+item-cosine hybrid model)
+  # from a bind-mounted volume on startup. Internal-only — no host port.
+  # The backend's `cfRecommendationService` calls it over HTTP and
+  # gracefully degrades to content-only recs if the call fails.
+  # -------------------------------------------------------------------------
+  cf-service:
+    build:
+      context: ./ML Model/filtering
+      dockerfile: Dockerfile
+    container_name: mobile-recommender-cf
+    restart: unless-stopped
+    environment:
+      PORT: 9001
+      # MODEL_DIR tells the FastAPI service where to find the pickle.
+      # Bind-mounted so a retrain only requires re-mounting (no rebuild).
+      CF_MODEL_DIR: /model/cf
+    volumes:
+      # Trained CF model artifact + its companion CSVs.
+      - ./ML Model/filtering/03_collaborative_filtering/output:/model/cf:ro
+      # KMeans segmentation output — read by the BE's
+      # cfRecommendationService.mjs to lazily hydrate CustomerCluster
+      # rows. Mounted here so the service image doesn't bake it in.
+      - ./ML Model/filtering/02_segmentation/output:/model/seg:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:9001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      # Pickle load can take 15-25s on a cold volume mount + first
+      # import of numpy/pandas/sklearn/implicit.
+      start_period: 45s
+
+  # -------------------------------------------------------------------------
+  # Node.js Backend.
   # All runtime secrets (DB, session key, mail) are injected from the host
-  # environment. Set them in the root .env file (see .env.example) or in a
-  # shell environment before running `docker compose up`.
+  # environment. Set them in the root .env file (see .env.example).
+  #
+  # In LOCAL DEV the backend uses the bundled postgres via DATABASE_URL
+  # (substituted below). In PRODUCTION, DATABASE_URL must point at your
+  # managed Postgres — set it in the host environment before `compose up`
+  # (or use Render's / Railway's environment-variable UI).
+  # -------------------------------------------------------------------------
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      # Prisma 7 needs DATABASE_URL at build time for `prisma generate`
+      # to introspect the datasource. In production, this can be any
+      # reachable Postgres URL (the generator only checks the URL format,
+      # not whether the DB is up).
+      args:
+        DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@postgres:5432/${POSTGRES_DB:-mobile_recommender}"
     container_name: mobile-recommender-backend
     restart: unless-stopped
     ports:
       - "8001:8001"
     environment:
-      # DATABASE_URL is quoted because the value contains a `:` after the
-      # password error message which would otherwise confuse the YAML parser.
-      DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@postgres:5432/${POSTGRES_DB:-mobile_recommender}"
-      # COOKIE_SECRET is REQUIRED. Quoted because the error message contains
-      # a colon (`:?`) which would otherwise confuse the YAML parser.
-      # Generate one with: openssl rand -hex 32
+      # DATABASE_URL is quoted because the value contains a `:` after
+      # the password error message which would otherwise confuse YAML.
+      # If you set DATABASE_URL in your host env (e.g. on Render), the
+      # value below is OVERRIDDEN — that's intentional.
+      DATABASE_URL: "${DATABASE_URL:-postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@postgres:5432/${POSTGRES_DB:-mobile_recommender}}"
+      # COOKIE_SECRET is REQUIRED. Generate one with: openssl rand -hex 32
       COOKIE_SECRET: "${COOKIE_SECRET:?COOKIE_SECRET must be set in .env — run: openssl rand -hex 32}"
+      # Internal service URLs use Docker service names.
       ML_BASE_URL: http://ml-service:8002
-      NODE_ENV: development
+      CF_BASE_URL: http://cf-service:9001
+      NODE_ENV: production
       PORT: 8001
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+      # Comma-separated origins. Defaults to the Vite dev server so a
+      # fresh checkout works; production should override this with the
+      # deployed frontend domain.
+      CORS_ORIGIN: "${CORS_ORIGIN:-http://localhost:5173,http://localhost:8080}"
       # Mail — optional in dev, required for OTP / password-reset flows.
-      # Reads from the host env so the real credentials never enter git.
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASS: ${SMTP_PASS:-}
     depends_on:
-      postgres:
-        condition: service_healthy
-      db-init:
-        condition: service_completed_successfully
       ml-service:
         condition: service_healthy
+      cf-service:
+        condition: service_healthy
+      # db-init only matters for the `dev` / `all` profile — production
+      # runs without it and depends on DATABASE_URL pointing externally.
+      db-init:
+        condition: service_completed_successfully
+        required: false
 
-  # React Frontend
+  # -------------------------------------------------------------------------
+  # React Frontend (production build, served by nginx).
+  # VITE_API_URL is the public URL the browser uses to reach the backend.
+  # In local dev it points at localhost:8001; in production it points
+  # at the deployed backend domain.
+  # -------------------------------------------------------------------------
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        # Public API URL — what the BROWSER uses. Override in production:
+        #   docker build --build-arg VITE_API_URL=https://api.example.com/api .
+        # Or override here in compose for any deployed environment.
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8001/api}
     container_name: mobile-recommender-frontend
     restart: unless-stopped
     ports:
-      - "5173:5173"
-    environment:
-      VITE_API_URL: http://localhost:8001/api
+      - "8080:8080"
     depends_on:
       - backend
 

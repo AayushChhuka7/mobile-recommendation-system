@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.8.0
- * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
+ * Prisma Client JS version: 7.9.1
+ * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
  */
 Prisma.prismaVersion = {
-  client: "7.8.0",
-  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
+  client: "7.9.1",
+  engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -459,6 +459,27 @@ exports.Prisma.BehaviorScoreScalarFieldEnum = {
   reasons: 'reasons'
 };
 
+exports.Prisma.CustomerClusterScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  clusterId: 'clusterId',
+  clusterName: 'clusterName',
+  cfCustomerId: 'cfCustomerId',
+  assignedAt: 'assignedAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CfRecommendationLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  cfCustomerId: 'cfCustomerId',
+  isColdStart: 'isColdStart',
+  modelNames: 'modelNames',
+  scores: 'scores',
+  reasons: 'reasons',
+  servedAt: 'servedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -553,7 +574,9 @@ exports.Prisma.ModelName = {
   BrowsingHistory: 'BrowsingHistory',
   AdminStatsCache: 'AdminStatsCache',
   Event: 'Event',
-  BehaviorScore: 'BehaviorScore'
+  BehaviorScore: 'BehaviorScore',
+  CustomerCluster: 'CustomerCluster',
+  CfRecommendationLog: 'CfRecommendationLog'
 };
 
 /**

@@ -133,6 +133,16 @@ export type Event = $Result.DefaultSelection<Prisma.$EventPayload>
  * 
  */
 export type BehaviorScore = $Result.DefaultSelection<Prisma.$BehaviorScorePayload>
+/**
+ * Model CustomerCluster
+ * 
+ */
+export type CustomerCluster = $Result.DefaultSelection<Prisma.$CustomerClusterPayload>
+/**
+ * Model CfRecommendationLog
+ * 
+ */
+export type CfRecommendationLog = $Result.DefaultSelection<Prisma.$CfRecommendationLogPayload>
 
 /**
  * Enums
@@ -262,7 +272,7 @@ export class PrismaClient<
    * Read more in our [docs](https://pris.ly/d/client).
    */
 
-  constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
+  constructor(optionsArg ?: Prisma.PrismaClientConstructorArgs<ClientOptions>);
   $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): PrismaClient;
 
   /**
@@ -582,6 +592,26 @@ export class PrismaClient<
     * ```
     */
   get behaviorScore(): Prisma.BehaviorScoreDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.customerCluster`: Exposes CRUD operations for the **CustomerCluster** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CustomerClusters
+    * const customerClusters = await prisma.customerCluster.findMany()
+    * ```
+    */
+  get customerCluster(): Prisma.CustomerClusterDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cfRecommendationLog`: Exposes CRUD operations for the **CfRecommendationLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CfRecommendationLogs
+    * const cfRecommendationLogs = await prisma.cfRecommendationLog.findMany()
+    * ```
+    */
+  get cfRecommendationLog(): Prisma.CfRecommendationLogDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -632,8 +662,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.8.0
-   * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
+   * Prisma Client JS version: 7.9.1
+   * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
    */
   export type PrismaVersion = {
     client: string
@@ -768,6 +798,19 @@ export namespace Prisma {
   };
 
   /**
+   * Resolved type of the argument passed to the `PrismaClient` constructor.
+   *
+   * When called without a narrower options type (the common case), this resolves
+   * to `PrismaClientOptions` directly, which produces a clear TypeScript error
+   * message (`not assignable to parameter of type 'PrismaClientOptions'`) when
+   * the argument is missing or incomplete. When the user supplies a narrower
+   * options type (e.g. via a literal), it falls back to `Subset` to keep
+   * filtering out unknown properties.
+   */
+  export type PrismaClientConstructorArgs<Options extends PrismaClientOptions> =
+    [PrismaClientOptions] extends [Options] ? PrismaClientOptions : Subset<Options, PrismaClientOptions>;
+
+  /**
    * SelectSubset
    * @desc From `T` pick properties that exist in `U`. Simple version of Intersection.
    * Additionally, it validates, if both select and include are present. If the case, it errors.
@@ -799,7 +842,7 @@ export namespace Prisma {
   type XOR<T, U> =
     T extends object ?
     U extends object ?
-      (Without<T, U> & U) | (Without<U, T> & T)
+      ((Without<T, U> & U) | (Without<U, T> & T)) & object
     : U : T
 
 
@@ -1039,7 +1082,9 @@ export namespace Prisma {
     BrowsingHistory: 'BrowsingHistory',
     AdminStatsCache: 'AdminStatsCache',
     Event: 'Event',
-    BehaviorScore: 'BehaviorScore'
+    BehaviorScore: 'BehaviorScore',
+    CustomerCluster: 'CustomerCluster',
+    CfRecommendationLog: 'CfRecommendationLog'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1056,6 +1101,7 @@ export namespace Prisma {
     }
     meta: {
       modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "recommendationLog" | "recommendationCall" | "phoneTrend" | "trainingImpression" | "customerProfile" | "wishlist" | "comparisonHistory" | "paymentHistory" | "searchHistory" | "browsingHistory" | "adminStatsCache" | "event" | "behaviorScore"
+      modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "recommendationLog" | "recommendationCall" | "customerProfile" | "wishlist" | "comparisonHistory" | "paymentHistory" | "searchHistory" | "browsingHistory" | "adminStatsCache" | "event" | "behaviorScore" | "customerCluster" | "cfRecommendationLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2835,6 +2881,154 @@ export namespace Prisma {
           }
         }
       }
+      CustomerCluster: {
+        payload: Prisma.$CustomerClusterPayload<ExtArgs>
+        fields: Prisma.CustomerClusterFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CustomerClusterFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CustomerClusterFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload>
+          }
+          findFirst: {
+            args: Prisma.CustomerClusterFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CustomerClusterFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload>
+          }
+          findMany: {
+            args: Prisma.CustomerClusterFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload>[]
+          }
+          create: {
+            args: Prisma.CustomerClusterCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload>
+          }
+          createMany: {
+            args: Prisma.CustomerClusterCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CustomerClusterCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload>[]
+          }
+          delete: {
+            args: Prisma.CustomerClusterDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload>
+          }
+          update: {
+            args: Prisma.CustomerClusterUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload>
+          }
+          deleteMany: {
+            args: Prisma.CustomerClusterDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CustomerClusterUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CustomerClusterUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload>[]
+          }
+          upsert: {
+            args: Prisma.CustomerClusterUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerClusterPayload>
+          }
+          aggregate: {
+            args: Prisma.CustomerClusterAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCustomerCluster>
+          }
+          groupBy: {
+            args: Prisma.CustomerClusterGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CustomerClusterGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CustomerClusterCountArgs<ExtArgs>
+            result: $Utils.Optional<CustomerClusterCountAggregateOutputType> | number
+          }
+        }
+      }
+      CfRecommendationLog: {
+        payload: Prisma.$CfRecommendationLogPayload<ExtArgs>
+        fields: Prisma.CfRecommendationLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CfRecommendationLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CfRecommendationLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload>
+          }
+          findFirst: {
+            args: Prisma.CfRecommendationLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CfRecommendationLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload>
+          }
+          findMany: {
+            args: Prisma.CfRecommendationLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload>[]
+          }
+          create: {
+            args: Prisma.CfRecommendationLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload>
+          }
+          createMany: {
+            args: Prisma.CfRecommendationLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CfRecommendationLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload>[]
+          }
+          delete: {
+            args: Prisma.CfRecommendationLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload>
+          }
+          update: {
+            args: Prisma.CfRecommendationLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.CfRecommendationLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CfRecommendationLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CfRecommendationLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.CfRecommendationLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CfRecommendationLogPayload>
+          }
+          aggregate: {
+            args: Prisma.CfRecommendationLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCfRecommendationLog>
+          }
+          groupBy: {
+            args: Prisma.CfRecommendationLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CfRecommendationLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CfRecommendationLogCountArgs<ExtArgs>
+            result: $Utils.Optional<CfRecommendationLogCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2903,11 +3097,26 @@ export namespace Prisma {
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
     /**
-     * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
+     * A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by `@prisma/adapter-pg`, `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
+     * 
+     * A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use `accelerateUrl` instead).
+     * 
+     * Learn more: https://pris.ly/d/driver-adapters
+     * 
+     * @example
+     * ```ts
+     * import { PrismaPg } from '@prisma/adapter-pg'
+     * import { PrismaClient } from './generated/prisma/client'
+     * 
+     * const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+     * const prisma = new PrismaClient({ adapter })
+     * ```
      */
     adapter?: runtime.SqlDriverAdapterFactory
     /**
-     * Prisma Accelerate URL allowing the client to connect through Accelerate instead of a direct database.
+     * The Prisma Accelerate connection URL. Use this option to connect to your database through Prisma Accelerate instead of using a driver adapter to connect directly.
+     * 
+     * Learn more: https://pris.ly/d/accelerate
      */
     accelerateUrl?: string
     /**
@@ -2967,6 +3176,8 @@ export namespace Prisma {
     adminStatsCache?: AdminStatsCacheOmit
     event?: EventOmit
     behaviorScore?: BehaviorScoreOmit
+    customerCluster?: CustomerClusterOmit
+    cfRecommendationLog?: CfRecommendationLogOmit
   }
 
   /* Types for Logging */
@@ -3088,6 +3299,7 @@ export namespace Prisma {
     events: number
     behaviorScores: number
     recommendationLogs: number
+    cfRecommendationLogs: number
     recommendationCalls: number
   }
 
@@ -3102,6 +3314,7 @@ export namespace Prisma {
     events?: boolean | UsersCountOutputTypeCountEventsArgs
     behaviorScores?: boolean | UsersCountOutputTypeCountBehaviorScoresArgs
     recommendationLogs?: boolean | UsersCountOutputTypeCountRecommendationLogsArgs
+    cfRecommendationLogs?: boolean | UsersCountOutputTypeCountCfRecommendationLogsArgs
     recommendationCalls?: boolean | UsersCountOutputTypeCountRecommendationCallsArgs
   }
 
@@ -3184,6 +3397,13 @@ export namespace Prisma {
    */
   export type UsersCountOutputTypeCountRecommendationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RecommendationLogWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountCfRecommendationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CfRecommendationLogWhereInput
   }
 
   /**
@@ -4579,6 +4799,8 @@ export namespace Prisma {
     events?: boolean | Users$eventsArgs<ExtArgs>
     behaviorScores?: boolean | Users$behaviorScoresArgs<ExtArgs>
     recommendationLogs?: boolean | Users$recommendationLogsArgs<ExtArgs>
+    customerCluster?: boolean | Users$customerClusterArgs<ExtArgs>
+    cfRecommendationLogs?: boolean | Users$cfRecommendationLogsArgs<ExtArgs>
     recommendationCalls?: boolean | Users$recommendationCallsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
@@ -4634,6 +4856,8 @@ export namespace Prisma {
     events?: boolean | Users$eventsArgs<ExtArgs>
     behaviorScores?: boolean | Users$behaviorScoresArgs<ExtArgs>
     recommendationLogs?: boolean | Users$recommendationLogsArgs<ExtArgs>
+    customerCluster?: boolean | Users$customerClusterArgs<ExtArgs>
+    cfRecommendationLogs?: boolean | Users$cfRecommendationLogsArgs<ExtArgs>
     recommendationCalls?: boolean | Users$recommendationCallsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -4661,6 +4885,8 @@ export namespace Prisma {
       events: Prisma.$EventPayload<ExtArgs>[]
       behaviorScores: Prisma.$BehaviorScorePayload<ExtArgs>[]
       recommendationLogs: Prisma.$RecommendationLogPayload<ExtArgs>[]
+      customerCluster: Prisma.$CustomerClusterPayload<ExtArgs> | null
+      cfRecommendationLogs: Prisma.$CfRecommendationLogPayload<ExtArgs>[]
       recommendationCalls: Prisma.$RecommendationCallPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -5080,6 +5306,8 @@ export namespace Prisma {
     events<T extends Users$eventsArgs<ExtArgs> = {}>(args?: Subset<T, Users$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     behaviorScores<T extends Users$behaviorScoresArgs<ExtArgs> = {}>(args?: Subset<T, Users$behaviorScoresArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BehaviorScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     recommendationLogs<T extends Users$recommendationLogsArgs<ExtArgs> = {}>(args?: Subset<T, Users$recommendationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    customerCluster<T extends Users$customerClusterArgs<ExtArgs> = {}>(args?: Subset<T, Users$customerClusterArgs<ExtArgs>>): Prisma__CustomerClusterClient<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    cfRecommendationLogs<T extends Users$cfRecommendationLogsArgs<ExtArgs> = {}>(args?: Subset<T, Users$cfRecommendationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     recommendationCalls<T extends Users$recommendationCallsArgs<ExtArgs> = {}>(args?: Subset<T, Users$recommendationCallsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationCallPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -5832,6 +6060,49 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RecommendationLogScalarFieldEnum | RecommendationLogScalarFieldEnum[]
+  }
+
+  /**
+   * Users.customerCluster
+   */
+  export type Users$customerClusterArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+    where?: CustomerClusterWhereInput
+  }
+
+  /**
+   * Users.cfRecommendationLogs
+   */
+  export type Users$cfRecommendationLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+    where?: CfRecommendationLogWhereInput
+    orderBy?: CfRecommendationLogOrderByWithRelationInput | CfRecommendationLogOrderByWithRelationInput[]
+    cursor?: CfRecommendationLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CfRecommendationLogScalarFieldEnum | CfRecommendationLogScalarFieldEnum[]
   }
 
   /**
@@ -32171,6 +32442,2231 @@ export namespace Prisma {
 
 
   /**
+   * Model CustomerCluster
+   */
+
+  export type AggregateCustomerCluster = {
+    _count: CustomerClusterCountAggregateOutputType | null
+    _avg: CustomerClusterAvgAggregateOutputType | null
+    _sum: CustomerClusterSumAggregateOutputType | null
+    _min: CustomerClusterMinAggregateOutputType | null
+    _max: CustomerClusterMaxAggregateOutputType | null
+  }
+
+  export type CustomerClusterAvgAggregateOutputType = {
+    clusterId: number | null
+  }
+
+  export type CustomerClusterSumAggregateOutputType = {
+    clusterId: number | null
+  }
+
+  export type CustomerClusterMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    clusterId: number | null
+    clusterName: string | null
+    cfCustomerId: string | null
+    assignedAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CustomerClusterMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    clusterId: number | null
+    clusterName: string | null
+    cfCustomerId: string | null
+    assignedAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CustomerClusterCountAggregateOutputType = {
+    id: number
+    userId: number
+    clusterId: number
+    clusterName: number
+    cfCustomerId: number
+    assignedAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CustomerClusterAvgAggregateInputType = {
+    clusterId?: true
+  }
+
+  export type CustomerClusterSumAggregateInputType = {
+    clusterId?: true
+  }
+
+  export type CustomerClusterMinAggregateInputType = {
+    id?: true
+    userId?: true
+    clusterId?: true
+    clusterName?: true
+    cfCustomerId?: true
+    assignedAt?: true
+    updatedAt?: true
+  }
+
+  export type CustomerClusterMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    clusterId?: true
+    clusterName?: true
+    cfCustomerId?: true
+    assignedAt?: true
+    updatedAt?: true
+  }
+
+  export type CustomerClusterCountAggregateInputType = {
+    id?: true
+    userId?: true
+    clusterId?: true
+    clusterName?: true
+    cfCustomerId?: true
+    assignedAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CustomerClusterAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomerCluster to aggregate.
+     */
+    where?: CustomerClusterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerClusters to fetch.
+     */
+    orderBy?: CustomerClusterOrderByWithRelationInput | CustomerClusterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CustomerClusterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerClusters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerClusters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CustomerClusters
+    **/
+    _count?: true | CustomerClusterCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CustomerClusterAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CustomerClusterSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CustomerClusterMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CustomerClusterMaxAggregateInputType
+  }
+
+  export type GetCustomerClusterAggregateType<T extends CustomerClusterAggregateArgs> = {
+        [P in keyof T & keyof AggregateCustomerCluster]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCustomerCluster[P]>
+      : GetScalarType<T[P], AggregateCustomerCluster[P]>
+  }
+
+
+
+
+  export type CustomerClusterGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerClusterWhereInput
+    orderBy?: CustomerClusterOrderByWithAggregationInput | CustomerClusterOrderByWithAggregationInput[]
+    by: CustomerClusterScalarFieldEnum[] | CustomerClusterScalarFieldEnum
+    having?: CustomerClusterScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CustomerClusterCountAggregateInputType | true
+    _avg?: CustomerClusterAvgAggregateInputType
+    _sum?: CustomerClusterSumAggregateInputType
+    _min?: CustomerClusterMinAggregateInputType
+    _max?: CustomerClusterMaxAggregateInputType
+  }
+
+  export type CustomerClusterGroupByOutputType = {
+    id: string
+    userId: string
+    clusterId: number
+    clusterName: string
+    cfCustomerId: string | null
+    assignedAt: Date
+    updatedAt: Date
+    _count: CustomerClusterCountAggregateOutputType | null
+    _avg: CustomerClusterAvgAggregateOutputType | null
+    _sum: CustomerClusterSumAggregateOutputType | null
+    _min: CustomerClusterMinAggregateOutputType | null
+    _max: CustomerClusterMaxAggregateOutputType | null
+  }
+
+  type GetCustomerClusterGroupByPayload<T extends CustomerClusterGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CustomerClusterGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CustomerClusterGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CustomerClusterGroupByOutputType[P]>
+            : GetScalarType<T[P], CustomerClusterGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CustomerClusterSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    clusterId?: boolean
+    clusterName?: boolean
+    cfCustomerId?: boolean
+    assignedAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["customerCluster"]>
+
+  export type CustomerClusterSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    clusterId?: boolean
+    clusterName?: boolean
+    cfCustomerId?: boolean
+    assignedAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["customerCluster"]>
+
+  export type CustomerClusterSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    clusterId?: boolean
+    clusterName?: boolean
+    cfCustomerId?: boolean
+    assignedAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["customerCluster"]>
+
+  export type CustomerClusterSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    clusterId?: boolean
+    clusterName?: boolean
+    cfCustomerId?: boolean
+    assignedAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CustomerClusterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "clusterId" | "clusterName" | "cfCustomerId" | "assignedAt" | "updatedAt", ExtArgs["result"]["customerCluster"]>
+  export type CustomerClusterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type CustomerClusterIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type CustomerClusterIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+
+  export type $CustomerClusterPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CustomerCluster"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      clusterId: number
+      clusterName: string
+      cfCustomerId: string | null
+      assignedAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["customerCluster"]>
+    composites: {}
+  }
+
+  type CustomerClusterGetPayload<S extends boolean | null | undefined | CustomerClusterDefaultArgs> = $Result.GetResult<Prisma.$CustomerClusterPayload, S>
+
+  type CustomerClusterCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CustomerClusterFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CustomerClusterCountAggregateInputType | true
+    }
+
+  export interface CustomerClusterDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CustomerCluster'], meta: { name: 'CustomerCluster' } }
+    /**
+     * Find zero or one CustomerCluster that matches the filter.
+     * @param {CustomerClusterFindUniqueArgs} args - Arguments to find a CustomerCluster
+     * @example
+     * // Get one CustomerCluster
+     * const customerCluster = await prisma.customerCluster.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CustomerClusterFindUniqueArgs>(args: SelectSubset<T, CustomerClusterFindUniqueArgs<ExtArgs>>): Prisma__CustomerClusterClient<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CustomerCluster that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CustomerClusterFindUniqueOrThrowArgs} args - Arguments to find a CustomerCluster
+     * @example
+     * // Get one CustomerCluster
+     * const customerCluster = await prisma.customerCluster.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CustomerClusterFindUniqueOrThrowArgs>(args: SelectSubset<T, CustomerClusterFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CustomerClusterClient<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomerCluster that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerClusterFindFirstArgs} args - Arguments to find a CustomerCluster
+     * @example
+     * // Get one CustomerCluster
+     * const customerCluster = await prisma.customerCluster.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CustomerClusterFindFirstArgs>(args?: SelectSubset<T, CustomerClusterFindFirstArgs<ExtArgs>>): Prisma__CustomerClusterClient<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomerCluster that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerClusterFindFirstOrThrowArgs} args - Arguments to find a CustomerCluster
+     * @example
+     * // Get one CustomerCluster
+     * const customerCluster = await prisma.customerCluster.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CustomerClusterFindFirstOrThrowArgs>(args?: SelectSubset<T, CustomerClusterFindFirstOrThrowArgs<ExtArgs>>): Prisma__CustomerClusterClient<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CustomerClusters that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerClusterFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CustomerClusters
+     * const customerClusters = await prisma.customerCluster.findMany()
+     * 
+     * // Get first 10 CustomerClusters
+     * const customerClusters = await prisma.customerCluster.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const customerClusterWithIdOnly = await prisma.customerCluster.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CustomerClusterFindManyArgs>(args?: SelectSubset<T, CustomerClusterFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CustomerCluster.
+     * @param {CustomerClusterCreateArgs} args - Arguments to create a CustomerCluster.
+     * @example
+     * // Create one CustomerCluster
+     * const CustomerCluster = await prisma.customerCluster.create({
+     *   data: {
+     *     // ... data to create a CustomerCluster
+     *   }
+     * })
+     * 
+     */
+    create<T extends CustomerClusterCreateArgs>(args: SelectSubset<T, CustomerClusterCreateArgs<ExtArgs>>): Prisma__CustomerClusterClient<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CustomerClusters.
+     * @param {CustomerClusterCreateManyArgs} args - Arguments to create many CustomerClusters.
+     * @example
+     * // Create many CustomerClusters
+     * const customerCluster = await prisma.customerCluster.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CustomerClusterCreateManyArgs>(args?: SelectSubset<T, CustomerClusterCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CustomerClusters and returns the data saved in the database.
+     * @param {CustomerClusterCreateManyAndReturnArgs} args - Arguments to create many CustomerClusters.
+     * @example
+     * // Create many CustomerClusters
+     * const customerCluster = await prisma.customerCluster.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CustomerClusters and only return the `id`
+     * const customerClusterWithIdOnly = await prisma.customerCluster.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CustomerClusterCreateManyAndReturnArgs>(args?: SelectSubset<T, CustomerClusterCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CustomerCluster.
+     * @param {CustomerClusterDeleteArgs} args - Arguments to delete one CustomerCluster.
+     * @example
+     * // Delete one CustomerCluster
+     * const CustomerCluster = await prisma.customerCluster.delete({
+     *   where: {
+     *     // ... filter to delete one CustomerCluster
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CustomerClusterDeleteArgs>(args: SelectSubset<T, CustomerClusterDeleteArgs<ExtArgs>>): Prisma__CustomerClusterClient<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CustomerCluster.
+     * @param {CustomerClusterUpdateArgs} args - Arguments to update one CustomerCluster.
+     * @example
+     * // Update one CustomerCluster
+     * const customerCluster = await prisma.customerCluster.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CustomerClusterUpdateArgs>(args: SelectSubset<T, CustomerClusterUpdateArgs<ExtArgs>>): Prisma__CustomerClusterClient<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CustomerClusters.
+     * @param {CustomerClusterDeleteManyArgs} args - Arguments to filter CustomerClusters to delete.
+     * @example
+     * // Delete a few CustomerClusters
+     * const { count } = await prisma.customerCluster.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CustomerClusterDeleteManyArgs>(args?: SelectSubset<T, CustomerClusterDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomerClusters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerClusterUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CustomerClusters
+     * const customerCluster = await prisma.customerCluster.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CustomerClusterUpdateManyArgs>(args: SelectSubset<T, CustomerClusterUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomerClusters and returns the data updated in the database.
+     * @param {CustomerClusterUpdateManyAndReturnArgs} args - Arguments to update many CustomerClusters.
+     * @example
+     * // Update many CustomerClusters
+     * const customerCluster = await prisma.customerCluster.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CustomerClusters and only return the `id`
+     * const customerClusterWithIdOnly = await prisma.customerCluster.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CustomerClusterUpdateManyAndReturnArgs>(args: SelectSubset<T, CustomerClusterUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CustomerCluster.
+     * @param {CustomerClusterUpsertArgs} args - Arguments to update or create a CustomerCluster.
+     * @example
+     * // Update or create a CustomerCluster
+     * const customerCluster = await prisma.customerCluster.upsert({
+     *   create: {
+     *     // ... data to create a CustomerCluster
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CustomerCluster we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CustomerClusterUpsertArgs>(args: SelectSubset<T, CustomerClusterUpsertArgs<ExtArgs>>): Prisma__CustomerClusterClient<$Result.GetResult<Prisma.$CustomerClusterPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CustomerClusters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerClusterCountArgs} args - Arguments to filter CustomerClusters to count.
+     * @example
+     * // Count the number of CustomerClusters
+     * const count = await prisma.customerCluster.count({
+     *   where: {
+     *     // ... the filter for the CustomerClusters we want to count
+     *   }
+     * })
+    **/
+    count<T extends CustomerClusterCountArgs>(
+      args?: Subset<T, CustomerClusterCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CustomerClusterCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CustomerCluster.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerClusterAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CustomerClusterAggregateArgs>(args: Subset<T, CustomerClusterAggregateArgs>): Prisma.PrismaPromise<GetCustomerClusterAggregateType<T>>
+
+    /**
+     * Group by CustomerCluster.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerClusterGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CustomerClusterGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CustomerClusterGroupByArgs['orderBy'] }
+        : { orderBy?: CustomerClusterGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CustomerClusterGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCustomerClusterGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CustomerCluster model
+   */
+  readonly fields: CustomerClusterFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CustomerCluster.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CustomerClusterClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CustomerCluster model
+   */
+  interface CustomerClusterFieldRefs {
+    readonly id: FieldRef<"CustomerCluster", 'String'>
+    readonly userId: FieldRef<"CustomerCluster", 'String'>
+    readonly clusterId: FieldRef<"CustomerCluster", 'Int'>
+    readonly clusterName: FieldRef<"CustomerCluster", 'String'>
+    readonly cfCustomerId: FieldRef<"CustomerCluster", 'String'>
+    readonly assignedAt: FieldRef<"CustomerCluster", 'DateTime'>
+    readonly updatedAt: FieldRef<"CustomerCluster", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CustomerCluster findUnique
+   */
+  export type CustomerClusterFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomerCluster to fetch.
+     */
+    where: CustomerClusterWhereUniqueInput
+  }
+
+  /**
+   * CustomerCluster findUniqueOrThrow
+   */
+  export type CustomerClusterFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomerCluster to fetch.
+     */
+    where: CustomerClusterWhereUniqueInput
+  }
+
+  /**
+   * CustomerCluster findFirst
+   */
+  export type CustomerClusterFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomerCluster to fetch.
+     */
+    where?: CustomerClusterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerClusters to fetch.
+     */
+    orderBy?: CustomerClusterOrderByWithRelationInput | CustomerClusterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomerClusters.
+     */
+    cursor?: CustomerClusterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerClusters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerClusters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomerClusters.
+     */
+    distinct?: CustomerClusterScalarFieldEnum | CustomerClusterScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerCluster findFirstOrThrow
+   */
+  export type CustomerClusterFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomerCluster to fetch.
+     */
+    where?: CustomerClusterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerClusters to fetch.
+     */
+    orderBy?: CustomerClusterOrderByWithRelationInput | CustomerClusterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomerClusters.
+     */
+    cursor?: CustomerClusterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerClusters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerClusters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomerClusters.
+     */
+    distinct?: CustomerClusterScalarFieldEnum | CustomerClusterScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerCluster findMany
+   */
+  export type CustomerClusterFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomerClusters to fetch.
+     */
+    where?: CustomerClusterWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerClusters to fetch.
+     */
+    orderBy?: CustomerClusterOrderByWithRelationInput | CustomerClusterOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CustomerClusters.
+     */
+    cursor?: CustomerClusterWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerClusters from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerClusters.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomerClusters.
+     */
+    distinct?: CustomerClusterScalarFieldEnum | CustomerClusterScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerCluster create
+   */
+  export type CustomerClusterCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CustomerCluster.
+     */
+    data: XOR<CustomerClusterCreateInput, CustomerClusterUncheckedCreateInput>
+  }
+
+  /**
+   * CustomerCluster createMany
+   */
+  export type CustomerClusterCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CustomerClusters.
+     */
+    data: CustomerClusterCreateManyInput | CustomerClusterCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CustomerCluster createManyAndReturn
+   */
+  export type CustomerClusterCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * The data used to create many CustomerClusters.
+     */
+    data: CustomerClusterCreateManyInput | CustomerClusterCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CustomerCluster update
+   */
+  export type CustomerClusterUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CustomerCluster.
+     */
+    data: XOR<CustomerClusterUpdateInput, CustomerClusterUncheckedUpdateInput>
+    /**
+     * Choose, which CustomerCluster to update.
+     */
+    where: CustomerClusterWhereUniqueInput
+  }
+
+  /**
+   * CustomerCluster updateMany
+   */
+  export type CustomerClusterUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CustomerClusters.
+     */
+    data: XOR<CustomerClusterUpdateManyMutationInput, CustomerClusterUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomerClusters to update
+     */
+    where?: CustomerClusterWhereInput
+    /**
+     * Limit how many CustomerClusters to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomerCluster updateManyAndReturn
+   */
+  export type CustomerClusterUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * The data used to update CustomerClusters.
+     */
+    data: XOR<CustomerClusterUpdateManyMutationInput, CustomerClusterUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomerClusters to update
+     */
+    where?: CustomerClusterWhereInput
+    /**
+     * Limit how many CustomerClusters to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CustomerCluster upsert
+   */
+  export type CustomerClusterUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CustomerCluster to update in case it exists.
+     */
+    where: CustomerClusterWhereUniqueInput
+    /**
+     * In case the CustomerCluster found by the `where` argument doesn't exist, create a new CustomerCluster with this data.
+     */
+    create: XOR<CustomerClusterCreateInput, CustomerClusterUncheckedCreateInput>
+    /**
+     * In case the CustomerCluster was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CustomerClusterUpdateInput, CustomerClusterUncheckedUpdateInput>
+  }
+
+  /**
+   * CustomerCluster delete
+   */
+  export type CustomerClusterDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+    /**
+     * Filter which CustomerCluster to delete.
+     */
+    where: CustomerClusterWhereUniqueInput
+  }
+
+  /**
+   * CustomerCluster deleteMany
+   */
+  export type CustomerClusterDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomerClusters to delete
+     */
+    where?: CustomerClusterWhereInput
+    /**
+     * Limit how many CustomerClusters to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomerCluster without action
+   */
+  export type CustomerClusterDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCluster
+     */
+    select?: CustomerClusterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCluster
+     */
+    omit?: CustomerClusterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerClusterInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CfRecommendationLog
+   */
+
+  export type AggregateCfRecommendationLog = {
+    _count: CfRecommendationLogCountAggregateOutputType | null
+    _min: CfRecommendationLogMinAggregateOutputType | null
+    _max: CfRecommendationLogMaxAggregateOutputType | null
+  }
+
+  export type CfRecommendationLogMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    cfCustomerId: string | null
+    isColdStart: boolean | null
+    modelNames: string | null
+    scores: string | null
+    reasons: string | null
+    servedAt: Date | null
+  }
+
+  export type CfRecommendationLogMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    cfCustomerId: string | null
+    isColdStart: boolean | null
+    modelNames: string | null
+    scores: string | null
+    reasons: string | null
+    servedAt: Date | null
+  }
+
+  export type CfRecommendationLogCountAggregateOutputType = {
+    id: number
+    userId: number
+    cfCustomerId: number
+    isColdStart: number
+    modelNames: number
+    scores: number
+    reasons: number
+    servedAt: number
+    _all: number
+  }
+
+
+  export type CfRecommendationLogMinAggregateInputType = {
+    id?: true
+    userId?: true
+    cfCustomerId?: true
+    isColdStart?: true
+    modelNames?: true
+    scores?: true
+    reasons?: true
+    servedAt?: true
+  }
+
+  export type CfRecommendationLogMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    cfCustomerId?: true
+    isColdStart?: true
+    modelNames?: true
+    scores?: true
+    reasons?: true
+    servedAt?: true
+  }
+
+  export type CfRecommendationLogCountAggregateInputType = {
+    id?: true
+    userId?: true
+    cfCustomerId?: true
+    isColdStart?: true
+    modelNames?: true
+    scores?: true
+    reasons?: true
+    servedAt?: true
+    _all?: true
+  }
+
+  export type CfRecommendationLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CfRecommendationLog to aggregate.
+     */
+    where?: CfRecommendationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CfRecommendationLogs to fetch.
+     */
+    orderBy?: CfRecommendationLogOrderByWithRelationInput | CfRecommendationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CfRecommendationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CfRecommendationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CfRecommendationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CfRecommendationLogs
+    **/
+    _count?: true | CfRecommendationLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CfRecommendationLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CfRecommendationLogMaxAggregateInputType
+  }
+
+  export type GetCfRecommendationLogAggregateType<T extends CfRecommendationLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateCfRecommendationLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCfRecommendationLog[P]>
+      : GetScalarType<T[P], AggregateCfRecommendationLog[P]>
+  }
+
+
+
+
+  export type CfRecommendationLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CfRecommendationLogWhereInput
+    orderBy?: CfRecommendationLogOrderByWithAggregationInput | CfRecommendationLogOrderByWithAggregationInput[]
+    by: CfRecommendationLogScalarFieldEnum[] | CfRecommendationLogScalarFieldEnum
+    having?: CfRecommendationLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CfRecommendationLogCountAggregateInputType | true
+    _min?: CfRecommendationLogMinAggregateInputType
+    _max?: CfRecommendationLogMaxAggregateInputType
+  }
+
+  export type CfRecommendationLogGroupByOutputType = {
+    id: string
+    userId: string
+    cfCustomerId: string | null
+    isColdStart: boolean
+    modelNames: string
+    scores: string
+    reasons: string
+    servedAt: Date
+    _count: CfRecommendationLogCountAggregateOutputType | null
+    _min: CfRecommendationLogMinAggregateOutputType | null
+    _max: CfRecommendationLogMaxAggregateOutputType | null
+  }
+
+  type GetCfRecommendationLogGroupByPayload<T extends CfRecommendationLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CfRecommendationLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CfRecommendationLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CfRecommendationLogGroupByOutputType[P]>
+            : GetScalarType<T[P], CfRecommendationLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CfRecommendationLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    cfCustomerId?: boolean
+    isColdStart?: boolean
+    modelNames?: boolean
+    scores?: boolean
+    reasons?: boolean
+    servedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cfRecommendationLog"]>
+
+  export type CfRecommendationLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    cfCustomerId?: boolean
+    isColdStart?: boolean
+    modelNames?: boolean
+    scores?: boolean
+    reasons?: boolean
+    servedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cfRecommendationLog"]>
+
+  export type CfRecommendationLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    cfCustomerId?: boolean
+    isColdStart?: boolean
+    modelNames?: boolean
+    scores?: boolean
+    reasons?: boolean
+    servedAt?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cfRecommendationLog"]>
+
+  export type CfRecommendationLogSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    cfCustomerId?: boolean
+    isColdStart?: boolean
+    modelNames?: boolean
+    scores?: boolean
+    reasons?: boolean
+    servedAt?: boolean
+  }
+
+  export type CfRecommendationLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "cfCustomerId" | "isColdStart" | "modelNames" | "scores" | "reasons" | "servedAt", ExtArgs["result"]["cfRecommendationLog"]>
+  export type CfRecommendationLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type CfRecommendationLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type CfRecommendationLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+
+  export type $CfRecommendationLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CfRecommendationLog"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      cfCustomerId: string | null
+      isColdStart: boolean
+      modelNames: string
+      scores: string
+      reasons: string
+      servedAt: Date
+    }, ExtArgs["result"]["cfRecommendationLog"]>
+    composites: {}
+  }
+
+  type CfRecommendationLogGetPayload<S extends boolean | null | undefined | CfRecommendationLogDefaultArgs> = $Result.GetResult<Prisma.$CfRecommendationLogPayload, S>
+
+  type CfRecommendationLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CfRecommendationLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CfRecommendationLogCountAggregateInputType | true
+    }
+
+  export interface CfRecommendationLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CfRecommendationLog'], meta: { name: 'CfRecommendationLog' } }
+    /**
+     * Find zero or one CfRecommendationLog that matches the filter.
+     * @param {CfRecommendationLogFindUniqueArgs} args - Arguments to find a CfRecommendationLog
+     * @example
+     * // Get one CfRecommendationLog
+     * const cfRecommendationLog = await prisma.cfRecommendationLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CfRecommendationLogFindUniqueArgs>(args: SelectSubset<T, CfRecommendationLogFindUniqueArgs<ExtArgs>>): Prisma__CfRecommendationLogClient<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CfRecommendationLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CfRecommendationLogFindUniqueOrThrowArgs} args - Arguments to find a CfRecommendationLog
+     * @example
+     * // Get one CfRecommendationLog
+     * const cfRecommendationLog = await prisma.cfRecommendationLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CfRecommendationLogFindUniqueOrThrowArgs>(args: SelectSubset<T, CfRecommendationLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CfRecommendationLogClient<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CfRecommendationLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CfRecommendationLogFindFirstArgs} args - Arguments to find a CfRecommendationLog
+     * @example
+     * // Get one CfRecommendationLog
+     * const cfRecommendationLog = await prisma.cfRecommendationLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CfRecommendationLogFindFirstArgs>(args?: SelectSubset<T, CfRecommendationLogFindFirstArgs<ExtArgs>>): Prisma__CfRecommendationLogClient<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CfRecommendationLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CfRecommendationLogFindFirstOrThrowArgs} args - Arguments to find a CfRecommendationLog
+     * @example
+     * // Get one CfRecommendationLog
+     * const cfRecommendationLog = await prisma.cfRecommendationLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CfRecommendationLogFindFirstOrThrowArgs>(args?: SelectSubset<T, CfRecommendationLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__CfRecommendationLogClient<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CfRecommendationLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CfRecommendationLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CfRecommendationLogs
+     * const cfRecommendationLogs = await prisma.cfRecommendationLog.findMany()
+     * 
+     * // Get first 10 CfRecommendationLogs
+     * const cfRecommendationLogs = await prisma.cfRecommendationLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cfRecommendationLogWithIdOnly = await prisma.cfRecommendationLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CfRecommendationLogFindManyArgs>(args?: SelectSubset<T, CfRecommendationLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CfRecommendationLog.
+     * @param {CfRecommendationLogCreateArgs} args - Arguments to create a CfRecommendationLog.
+     * @example
+     * // Create one CfRecommendationLog
+     * const CfRecommendationLog = await prisma.cfRecommendationLog.create({
+     *   data: {
+     *     // ... data to create a CfRecommendationLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends CfRecommendationLogCreateArgs>(args: SelectSubset<T, CfRecommendationLogCreateArgs<ExtArgs>>): Prisma__CfRecommendationLogClient<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CfRecommendationLogs.
+     * @param {CfRecommendationLogCreateManyArgs} args - Arguments to create many CfRecommendationLogs.
+     * @example
+     * // Create many CfRecommendationLogs
+     * const cfRecommendationLog = await prisma.cfRecommendationLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CfRecommendationLogCreateManyArgs>(args?: SelectSubset<T, CfRecommendationLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CfRecommendationLogs and returns the data saved in the database.
+     * @param {CfRecommendationLogCreateManyAndReturnArgs} args - Arguments to create many CfRecommendationLogs.
+     * @example
+     * // Create many CfRecommendationLogs
+     * const cfRecommendationLog = await prisma.cfRecommendationLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CfRecommendationLogs and only return the `id`
+     * const cfRecommendationLogWithIdOnly = await prisma.cfRecommendationLog.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CfRecommendationLogCreateManyAndReturnArgs>(args?: SelectSubset<T, CfRecommendationLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CfRecommendationLog.
+     * @param {CfRecommendationLogDeleteArgs} args - Arguments to delete one CfRecommendationLog.
+     * @example
+     * // Delete one CfRecommendationLog
+     * const CfRecommendationLog = await prisma.cfRecommendationLog.delete({
+     *   where: {
+     *     // ... filter to delete one CfRecommendationLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CfRecommendationLogDeleteArgs>(args: SelectSubset<T, CfRecommendationLogDeleteArgs<ExtArgs>>): Prisma__CfRecommendationLogClient<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CfRecommendationLog.
+     * @param {CfRecommendationLogUpdateArgs} args - Arguments to update one CfRecommendationLog.
+     * @example
+     * // Update one CfRecommendationLog
+     * const cfRecommendationLog = await prisma.cfRecommendationLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CfRecommendationLogUpdateArgs>(args: SelectSubset<T, CfRecommendationLogUpdateArgs<ExtArgs>>): Prisma__CfRecommendationLogClient<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CfRecommendationLogs.
+     * @param {CfRecommendationLogDeleteManyArgs} args - Arguments to filter CfRecommendationLogs to delete.
+     * @example
+     * // Delete a few CfRecommendationLogs
+     * const { count } = await prisma.cfRecommendationLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CfRecommendationLogDeleteManyArgs>(args?: SelectSubset<T, CfRecommendationLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CfRecommendationLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CfRecommendationLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CfRecommendationLogs
+     * const cfRecommendationLog = await prisma.cfRecommendationLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CfRecommendationLogUpdateManyArgs>(args: SelectSubset<T, CfRecommendationLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CfRecommendationLogs and returns the data updated in the database.
+     * @param {CfRecommendationLogUpdateManyAndReturnArgs} args - Arguments to update many CfRecommendationLogs.
+     * @example
+     * // Update many CfRecommendationLogs
+     * const cfRecommendationLog = await prisma.cfRecommendationLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CfRecommendationLogs and only return the `id`
+     * const cfRecommendationLogWithIdOnly = await prisma.cfRecommendationLog.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CfRecommendationLogUpdateManyAndReturnArgs>(args: SelectSubset<T, CfRecommendationLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CfRecommendationLog.
+     * @param {CfRecommendationLogUpsertArgs} args - Arguments to update or create a CfRecommendationLog.
+     * @example
+     * // Update or create a CfRecommendationLog
+     * const cfRecommendationLog = await prisma.cfRecommendationLog.upsert({
+     *   create: {
+     *     // ... data to create a CfRecommendationLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CfRecommendationLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CfRecommendationLogUpsertArgs>(args: SelectSubset<T, CfRecommendationLogUpsertArgs<ExtArgs>>): Prisma__CfRecommendationLogClient<$Result.GetResult<Prisma.$CfRecommendationLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CfRecommendationLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CfRecommendationLogCountArgs} args - Arguments to filter CfRecommendationLogs to count.
+     * @example
+     * // Count the number of CfRecommendationLogs
+     * const count = await prisma.cfRecommendationLog.count({
+     *   where: {
+     *     // ... the filter for the CfRecommendationLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends CfRecommendationLogCountArgs>(
+      args?: Subset<T, CfRecommendationLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CfRecommendationLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CfRecommendationLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CfRecommendationLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CfRecommendationLogAggregateArgs>(args: Subset<T, CfRecommendationLogAggregateArgs>): Prisma.PrismaPromise<GetCfRecommendationLogAggregateType<T>>
+
+    /**
+     * Group by CfRecommendationLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CfRecommendationLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CfRecommendationLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CfRecommendationLogGroupByArgs['orderBy'] }
+        : { orderBy?: CfRecommendationLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CfRecommendationLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCfRecommendationLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CfRecommendationLog model
+   */
+  readonly fields: CfRecommendationLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CfRecommendationLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CfRecommendationLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CfRecommendationLog model
+   */
+  interface CfRecommendationLogFieldRefs {
+    readonly id: FieldRef<"CfRecommendationLog", 'String'>
+    readonly userId: FieldRef<"CfRecommendationLog", 'String'>
+    readonly cfCustomerId: FieldRef<"CfRecommendationLog", 'String'>
+    readonly isColdStart: FieldRef<"CfRecommendationLog", 'Boolean'>
+    readonly modelNames: FieldRef<"CfRecommendationLog", 'String'>
+    readonly scores: FieldRef<"CfRecommendationLog", 'String'>
+    readonly reasons: FieldRef<"CfRecommendationLog", 'String'>
+    readonly servedAt: FieldRef<"CfRecommendationLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CfRecommendationLog findUnique
+   */
+  export type CfRecommendationLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which CfRecommendationLog to fetch.
+     */
+    where: CfRecommendationLogWhereUniqueInput
+  }
+
+  /**
+   * CfRecommendationLog findUniqueOrThrow
+   */
+  export type CfRecommendationLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which CfRecommendationLog to fetch.
+     */
+    where: CfRecommendationLogWhereUniqueInput
+  }
+
+  /**
+   * CfRecommendationLog findFirst
+   */
+  export type CfRecommendationLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which CfRecommendationLog to fetch.
+     */
+    where?: CfRecommendationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CfRecommendationLogs to fetch.
+     */
+    orderBy?: CfRecommendationLogOrderByWithRelationInput | CfRecommendationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CfRecommendationLogs.
+     */
+    cursor?: CfRecommendationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CfRecommendationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CfRecommendationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CfRecommendationLogs.
+     */
+    distinct?: CfRecommendationLogScalarFieldEnum | CfRecommendationLogScalarFieldEnum[]
+  }
+
+  /**
+   * CfRecommendationLog findFirstOrThrow
+   */
+  export type CfRecommendationLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which CfRecommendationLog to fetch.
+     */
+    where?: CfRecommendationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CfRecommendationLogs to fetch.
+     */
+    orderBy?: CfRecommendationLogOrderByWithRelationInput | CfRecommendationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CfRecommendationLogs.
+     */
+    cursor?: CfRecommendationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CfRecommendationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CfRecommendationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CfRecommendationLogs.
+     */
+    distinct?: CfRecommendationLogScalarFieldEnum | CfRecommendationLogScalarFieldEnum[]
+  }
+
+  /**
+   * CfRecommendationLog findMany
+   */
+  export type CfRecommendationLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter, which CfRecommendationLogs to fetch.
+     */
+    where?: CfRecommendationLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CfRecommendationLogs to fetch.
+     */
+    orderBy?: CfRecommendationLogOrderByWithRelationInput | CfRecommendationLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CfRecommendationLogs.
+     */
+    cursor?: CfRecommendationLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CfRecommendationLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CfRecommendationLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CfRecommendationLogs.
+     */
+    distinct?: CfRecommendationLogScalarFieldEnum | CfRecommendationLogScalarFieldEnum[]
+  }
+
+  /**
+   * CfRecommendationLog create
+   */
+  export type CfRecommendationLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CfRecommendationLog.
+     */
+    data: XOR<CfRecommendationLogCreateInput, CfRecommendationLogUncheckedCreateInput>
+  }
+
+  /**
+   * CfRecommendationLog createMany
+   */
+  export type CfRecommendationLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CfRecommendationLogs.
+     */
+    data: CfRecommendationLogCreateManyInput | CfRecommendationLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CfRecommendationLog createManyAndReturn
+   */
+  export type CfRecommendationLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many CfRecommendationLogs.
+     */
+    data: CfRecommendationLogCreateManyInput | CfRecommendationLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CfRecommendationLog update
+   */
+  export type CfRecommendationLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CfRecommendationLog.
+     */
+    data: XOR<CfRecommendationLogUpdateInput, CfRecommendationLogUncheckedUpdateInput>
+    /**
+     * Choose, which CfRecommendationLog to update.
+     */
+    where: CfRecommendationLogWhereUniqueInput
+  }
+
+  /**
+   * CfRecommendationLog updateMany
+   */
+  export type CfRecommendationLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CfRecommendationLogs.
+     */
+    data: XOR<CfRecommendationLogUpdateManyMutationInput, CfRecommendationLogUncheckedUpdateManyInput>
+    /**
+     * Filter which CfRecommendationLogs to update
+     */
+    where?: CfRecommendationLogWhereInput
+    /**
+     * Limit how many CfRecommendationLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CfRecommendationLog updateManyAndReturn
+   */
+  export type CfRecommendationLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * The data used to update CfRecommendationLogs.
+     */
+    data: XOR<CfRecommendationLogUpdateManyMutationInput, CfRecommendationLogUncheckedUpdateManyInput>
+    /**
+     * Filter which CfRecommendationLogs to update
+     */
+    where?: CfRecommendationLogWhereInput
+    /**
+     * Limit how many CfRecommendationLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CfRecommendationLog upsert
+   */
+  export type CfRecommendationLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CfRecommendationLog to update in case it exists.
+     */
+    where: CfRecommendationLogWhereUniqueInput
+    /**
+     * In case the CfRecommendationLog found by the `where` argument doesn't exist, create a new CfRecommendationLog with this data.
+     */
+    create: XOR<CfRecommendationLogCreateInput, CfRecommendationLogUncheckedCreateInput>
+    /**
+     * In case the CfRecommendationLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CfRecommendationLogUpdateInput, CfRecommendationLogUncheckedUpdateInput>
+  }
+
+  /**
+   * CfRecommendationLog delete
+   */
+  export type CfRecommendationLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+    /**
+     * Filter which CfRecommendationLog to delete.
+     */
+    where: CfRecommendationLogWhereUniqueInput
+  }
+
+  /**
+   * CfRecommendationLog deleteMany
+   */
+  export type CfRecommendationLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CfRecommendationLogs to delete
+     */
+    where?: CfRecommendationLogWhereInput
+    /**
+     * Limit how many CfRecommendationLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CfRecommendationLog without action
+   */
+  export type CfRecommendationLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CfRecommendationLog
+     */
+    select?: CfRecommendationLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CfRecommendationLog
+     */
+    omit?: CfRecommendationLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CfRecommendationLogInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -32595,6 +35091,33 @@ export namespace Prisma {
   export type BehaviorScoreScalarFieldEnum = (typeof BehaviorScoreScalarFieldEnum)[keyof typeof BehaviorScoreScalarFieldEnum]
 
 
+  export const CustomerClusterScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    clusterId: 'clusterId',
+    clusterName: 'clusterName',
+    cfCustomerId: 'cfCustomerId',
+    assignedAt: 'assignedAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CustomerClusterScalarFieldEnum = (typeof CustomerClusterScalarFieldEnum)[keyof typeof CustomerClusterScalarFieldEnum]
+
+
+  export const CfRecommendationLogScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    cfCustomerId: 'cfCustomerId',
+    isColdStart: 'isColdStart',
+    modelNames: 'modelNames',
+    scores: 'scores',
+    reasons: 'reasons',
+    servedAt: 'servedAt'
+  };
+
+  export type CfRecommendationLogScalarFieldEnum = (typeof CfRecommendationLogScalarFieldEnum)[keyof typeof CfRecommendationLogScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -32892,6 +35415,8 @@ export namespace Prisma {
     events?: EventListRelationFilter
     behaviorScores?: BehaviorScoreListRelationFilter
     recommendationLogs?: RecommendationLogListRelationFilter
+    customerCluster?: XOR<CustomerClusterNullableScalarRelationFilter, CustomerClusterWhereInput> | null
+    cfRecommendationLogs?: CfRecommendationLogListRelationFilter
     recommendationCalls?: RecommendationCallListRelationFilter
   }
 
@@ -32918,6 +35443,8 @@ export namespace Prisma {
     events?: EventOrderByRelationAggregateInput
     behaviorScores?: BehaviorScoreOrderByRelationAggregateInput
     recommendationLogs?: RecommendationLogOrderByRelationAggregateInput
+    customerCluster?: CustomerClusterOrderByWithRelationInput
+    cfRecommendationLogs?: CfRecommendationLogOrderByRelationAggregateInput
     recommendationCalls?: RecommendationCallOrderByRelationAggregateInput
   }
 
@@ -32947,6 +35474,8 @@ export namespace Prisma {
     events?: EventListRelationFilter
     behaviorScores?: BehaviorScoreListRelationFilter
     recommendationLogs?: RecommendationLogListRelationFilter
+    customerCluster?: XOR<CustomerClusterNullableScalarRelationFilter, CustomerClusterWhereInput> | null
+    cfRecommendationLogs?: CfRecommendationLogListRelationFilter
     recommendationCalls?: RecommendationCallListRelationFilter
   }, "userId" | "email" | "phoneNo">
 
@@ -35012,6 +37541,143 @@ export namespace Prisma {
     reasons?: JsonNullableWithAggregatesFilter<"BehaviorScore">
   }
 
+  export type CustomerClusterWhereInput = {
+    AND?: CustomerClusterWhereInput | CustomerClusterWhereInput[]
+    OR?: CustomerClusterWhereInput[]
+    NOT?: CustomerClusterWhereInput | CustomerClusterWhereInput[]
+    id?: UuidFilter<"CustomerCluster"> | string
+    userId?: UuidFilter<"CustomerCluster"> | string
+    clusterId?: IntFilter<"CustomerCluster"> | number
+    clusterName?: StringFilter<"CustomerCluster"> | string
+    cfCustomerId?: StringNullableFilter<"CustomerCluster"> | string | null
+    assignedAt?: DateTimeFilter<"CustomerCluster"> | Date | string
+    updatedAt?: DateTimeFilter<"CustomerCluster"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }
+
+  export type CustomerClusterOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    clusterId?: SortOrder
+    clusterName?: SortOrder
+    cfCustomerId?: SortOrderInput | SortOrder
+    assignedAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UsersOrderByWithRelationInput
+  }
+
+  export type CustomerClusterWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: CustomerClusterWhereInput | CustomerClusterWhereInput[]
+    OR?: CustomerClusterWhereInput[]
+    NOT?: CustomerClusterWhereInput | CustomerClusterWhereInput[]
+    clusterId?: IntFilter<"CustomerCluster"> | number
+    clusterName?: StringFilter<"CustomerCluster"> | string
+    cfCustomerId?: StringNullableFilter<"CustomerCluster"> | string | null
+    assignedAt?: DateTimeFilter<"CustomerCluster"> | Date | string
+    updatedAt?: DateTimeFilter<"CustomerCluster"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }, "id" | "userId">
+
+  export type CustomerClusterOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    clusterId?: SortOrder
+    clusterName?: SortOrder
+    cfCustomerId?: SortOrderInput | SortOrder
+    assignedAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CustomerClusterCountOrderByAggregateInput
+    _avg?: CustomerClusterAvgOrderByAggregateInput
+    _max?: CustomerClusterMaxOrderByAggregateInput
+    _min?: CustomerClusterMinOrderByAggregateInput
+    _sum?: CustomerClusterSumOrderByAggregateInput
+  }
+
+  export type CustomerClusterScalarWhereWithAggregatesInput = {
+    AND?: CustomerClusterScalarWhereWithAggregatesInput | CustomerClusterScalarWhereWithAggregatesInput[]
+    OR?: CustomerClusterScalarWhereWithAggregatesInput[]
+    NOT?: CustomerClusterScalarWhereWithAggregatesInput | CustomerClusterScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"CustomerCluster"> | string
+    userId?: UuidWithAggregatesFilter<"CustomerCluster"> | string
+    clusterId?: IntWithAggregatesFilter<"CustomerCluster"> | number
+    clusterName?: StringWithAggregatesFilter<"CustomerCluster"> | string
+    cfCustomerId?: StringNullableWithAggregatesFilter<"CustomerCluster"> | string | null
+    assignedAt?: DateTimeWithAggregatesFilter<"CustomerCluster"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CustomerCluster"> | Date | string
+  }
+
+  export type CfRecommendationLogWhereInput = {
+    AND?: CfRecommendationLogWhereInput | CfRecommendationLogWhereInput[]
+    OR?: CfRecommendationLogWhereInput[]
+    NOT?: CfRecommendationLogWhereInput | CfRecommendationLogWhereInput[]
+    id?: UuidFilter<"CfRecommendationLog"> | string
+    userId?: UuidFilter<"CfRecommendationLog"> | string
+    cfCustomerId?: StringNullableFilter<"CfRecommendationLog"> | string | null
+    isColdStart?: BoolFilter<"CfRecommendationLog"> | boolean
+    modelNames?: StringFilter<"CfRecommendationLog"> | string
+    scores?: StringFilter<"CfRecommendationLog"> | string
+    reasons?: StringFilter<"CfRecommendationLog"> | string
+    servedAt?: DateTimeFilter<"CfRecommendationLog"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }
+
+  export type CfRecommendationLogOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    cfCustomerId?: SortOrderInput | SortOrder
+    isColdStart?: SortOrder
+    modelNames?: SortOrder
+    scores?: SortOrder
+    reasons?: SortOrder
+    servedAt?: SortOrder
+    user?: UsersOrderByWithRelationInput
+  }
+
+  export type CfRecommendationLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CfRecommendationLogWhereInput | CfRecommendationLogWhereInput[]
+    OR?: CfRecommendationLogWhereInput[]
+    NOT?: CfRecommendationLogWhereInput | CfRecommendationLogWhereInput[]
+    userId?: UuidFilter<"CfRecommendationLog"> | string
+    cfCustomerId?: StringNullableFilter<"CfRecommendationLog"> | string | null
+    isColdStart?: BoolFilter<"CfRecommendationLog"> | boolean
+    modelNames?: StringFilter<"CfRecommendationLog"> | string
+    scores?: StringFilter<"CfRecommendationLog"> | string
+    reasons?: StringFilter<"CfRecommendationLog"> | string
+    servedAt?: DateTimeFilter<"CfRecommendationLog"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }, "id">
+
+  export type CfRecommendationLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    cfCustomerId?: SortOrderInput | SortOrder
+    isColdStart?: SortOrder
+    modelNames?: SortOrder
+    scores?: SortOrder
+    reasons?: SortOrder
+    servedAt?: SortOrder
+    _count?: CfRecommendationLogCountOrderByAggregateInput
+    _max?: CfRecommendationLogMaxOrderByAggregateInput
+    _min?: CfRecommendationLogMinOrderByAggregateInput
+  }
+
+  export type CfRecommendationLogScalarWhereWithAggregatesInput = {
+    AND?: CfRecommendationLogScalarWhereWithAggregatesInput | CfRecommendationLogScalarWhereWithAggregatesInput[]
+    OR?: CfRecommendationLogScalarWhereWithAggregatesInput[]
+    NOT?: CfRecommendationLogScalarWhereWithAggregatesInput | CfRecommendationLogScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"CfRecommendationLog"> | string
+    userId?: UuidWithAggregatesFilter<"CfRecommendationLog"> | string
+    cfCustomerId?: StringNullableWithAggregatesFilter<"CfRecommendationLog"> | string | null
+    isColdStart?: BoolWithAggregatesFilter<"CfRecommendationLog"> | boolean
+    modelNames?: StringWithAggregatesFilter<"CfRecommendationLog"> | string
+    scores?: StringWithAggregatesFilter<"CfRecommendationLog"> | string
+    reasons?: StringWithAggregatesFilter<"CfRecommendationLog"> | string
+    servedAt?: DateTimeWithAggregatesFilter<"CfRecommendationLog"> | Date | string
+  }
+
   export type RolesCreateInput = {
     roleId?: string
     roleName: string
@@ -35073,6 +37739,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -35098,6 +37766,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -35123,6 +37793,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -35148,6 +37820,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -37469,6 +40143,151 @@ export namespace Prisma {
     reasons?: NullableJsonNullValueInput | InputJsonValue
   }
 
+  export type CustomerClusterCreateInput = {
+    id?: string
+    clusterId: number
+    clusterName: string
+    cfCustomerId?: string | null
+    assignedAt?: Date | string
+    updatedAt?: Date | string
+    user: UsersCreateNestedOneWithoutCustomerClusterInput
+  }
+
+  export type CustomerClusterUncheckedCreateInput = {
+    id?: string
+    userId: string
+    clusterId: number
+    clusterName: string
+    cfCustomerId?: string | null
+    assignedAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerClusterUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clusterId?: IntFieldUpdateOperationsInput | number
+    clusterName?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutCustomerClusterNestedInput
+  }
+
+  export type CustomerClusterUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    clusterId?: IntFieldUpdateOperationsInput | number
+    clusterName?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerClusterCreateManyInput = {
+    id?: string
+    userId: string
+    clusterId: number
+    clusterName: string
+    cfCustomerId?: string | null
+    assignedAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerClusterUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clusterId?: IntFieldUpdateOperationsInput | number
+    clusterName?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerClusterUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    clusterId?: IntFieldUpdateOperationsInput | number
+    clusterName?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CfRecommendationLogCreateInput = {
+    id?: string
+    cfCustomerId?: string | null
+    isColdStart?: boolean
+    modelNames: string
+    scores: string
+    reasons: string
+    servedAt?: Date | string
+    user: UsersCreateNestedOneWithoutCfRecommendationLogsInput
+  }
+
+  export type CfRecommendationLogUncheckedCreateInput = {
+    id?: string
+    userId: string
+    cfCustomerId?: string | null
+    isColdStart?: boolean
+    modelNames: string
+    scores: string
+    reasons: string
+    servedAt?: Date | string
+  }
+
+  export type CfRecommendationLogUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isColdStart?: BoolFieldUpdateOperationsInput | boolean
+    modelNames?: StringFieldUpdateOperationsInput | string
+    scores?: StringFieldUpdateOperationsInput | string
+    reasons?: StringFieldUpdateOperationsInput | string
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutCfRecommendationLogsNestedInput
+  }
+
+  export type CfRecommendationLogUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isColdStart?: BoolFieldUpdateOperationsInput | boolean
+    modelNames?: StringFieldUpdateOperationsInput | string
+    scores?: StringFieldUpdateOperationsInput | string
+    reasons?: StringFieldUpdateOperationsInput | string
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CfRecommendationLogCreateManyInput = {
+    id?: string
+    userId: string
+    cfCustomerId?: string | null
+    isColdStart?: boolean
+    modelNames: string
+    scores: string
+    reasons: string
+    servedAt?: Date | string
+  }
+
+  export type CfRecommendationLogUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isColdStart?: BoolFieldUpdateOperationsInput | boolean
+    modelNames?: StringFieldUpdateOperationsInput | string
+    scores?: StringFieldUpdateOperationsInput | string
+    reasons?: StringFieldUpdateOperationsInput | string
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CfRecommendationLogUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isColdStart?: BoolFieldUpdateOperationsInput | boolean
+    modelNames?: StringFieldUpdateOperationsInput | string
+    scores?: StringFieldUpdateOperationsInput | string
+    reasons?: StringFieldUpdateOperationsInput | string
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -37666,6 +40485,17 @@ export namespace Prisma {
     none?: RecommendationLogWhereInput
   }
 
+  export type CustomerClusterNullableScalarRelationFilter = {
+    is?: CustomerClusterWhereInput | null
+    isNot?: CustomerClusterWhereInput | null
+  }
+
+  export type CfRecommendationLogListRelationFilter = {
+    every?: CfRecommendationLogWhereInput
+    some?: CfRecommendationLogWhereInput
+    none?: CfRecommendationLogWhereInput
+  }
+
   export type RecommendationCallListRelationFilter = {
     every?: RecommendationCallWhereInput
     some?: RecommendationCallWhereInput
@@ -37714,6 +40544,10 @@ export namespace Prisma {
   }
 
   export type RecommendationLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CfRecommendationLogOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -39495,6 +42329,77 @@ export namespace Prisma {
     score?: SortOrder
   }
 
+  export type CustomerClusterCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    clusterId?: SortOrder
+    clusterName?: SortOrder
+    cfCustomerId?: SortOrder
+    assignedAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomerClusterAvgOrderByAggregateInput = {
+    clusterId?: SortOrder
+  }
+
+  export type CustomerClusterMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    clusterId?: SortOrder
+    clusterName?: SortOrder
+    cfCustomerId?: SortOrder
+    assignedAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomerClusterMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    clusterId?: SortOrder
+    clusterName?: SortOrder
+    cfCustomerId?: SortOrder
+    assignedAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomerClusterSumOrderByAggregateInput = {
+    clusterId?: SortOrder
+  }
+
+  export type CfRecommendationLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    cfCustomerId?: SortOrder
+    isColdStart?: SortOrder
+    modelNames?: SortOrder
+    scores?: SortOrder
+    reasons?: SortOrder
+    servedAt?: SortOrder
+  }
+
+  export type CfRecommendationLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    cfCustomerId?: SortOrder
+    isColdStart?: SortOrder
+    modelNames?: SortOrder
+    scores?: SortOrder
+    reasons?: SortOrder
+    servedAt?: SortOrder
+  }
+
+  export type CfRecommendationLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    cfCustomerId?: SortOrder
+    isColdStart?: SortOrder
+    modelNames?: SortOrder
+    scores?: SortOrder
+    reasons?: SortOrder
+    servedAt?: SortOrder
+  }
+
   export type UsersCreateNestedManyWithoutRoleInput = {
     create?: XOR<UsersCreateWithoutRoleInput, UsersUncheckedCreateWithoutRoleInput> | UsersCreateWithoutRoleInput[] | UsersUncheckedCreateWithoutRoleInput[]
     connectOrCreate?: UsersCreateOrConnectWithoutRoleInput | UsersCreateOrConnectWithoutRoleInput[]
@@ -39635,6 +42540,19 @@ export namespace Prisma {
     connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
   }
 
+  export type CustomerClusterCreateNestedOneWithoutUserInput = {
+    create?: XOR<CustomerClusterCreateWithoutUserInput, CustomerClusterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CustomerClusterCreateOrConnectWithoutUserInput
+    connect?: CustomerClusterWhereUniqueInput
+  }
+
+  export type CfRecommendationLogCreateNestedManyWithoutUserInput = {
+    create?: XOR<CfRecommendationLogCreateWithoutUserInput, CfRecommendationLogUncheckedCreateWithoutUserInput> | CfRecommendationLogCreateWithoutUserInput[] | CfRecommendationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CfRecommendationLogCreateOrConnectWithoutUserInput | CfRecommendationLogCreateOrConnectWithoutUserInput[]
+    createMany?: CfRecommendationLogCreateManyUserInputEnvelope
+    connect?: CfRecommendationLogWhereUniqueInput | CfRecommendationLogWhereUniqueInput[]
+  }
+
   export type RecommendationCallCreateNestedManyWithoutUserInput = {
     create?: XOR<RecommendationCallCreateWithoutUserInput, RecommendationCallUncheckedCreateWithoutUserInput> | RecommendationCallCreateWithoutUserInput[] | RecommendationCallUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RecommendationCallCreateOrConnectWithoutUserInput | RecommendationCallCreateOrConnectWithoutUserInput[]
@@ -39728,6 +42646,19 @@ export namespace Prisma {
     connectOrCreate?: RecommendationLogCreateOrConnectWithoutUserInput | RecommendationLogCreateOrConnectWithoutUserInput[]
     createMany?: RecommendationLogCreateManyUserInputEnvelope
     connect?: RecommendationLogWhereUniqueInput | RecommendationLogWhereUniqueInput[]
+  }
+
+  export type CustomerClusterUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<CustomerClusterCreateWithoutUserInput, CustomerClusterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CustomerClusterCreateOrConnectWithoutUserInput
+    connect?: CustomerClusterWhereUniqueInput
+  }
+
+  export type CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CfRecommendationLogCreateWithoutUserInput, CfRecommendationLogUncheckedCreateWithoutUserInput> | CfRecommendationLogCreateWithoutUserInput[] | CfRecommendationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CfRecommendationLogCreateOrConnectWithoutUserInput | CfRecommendationLogCreateOrConnectWithoutUserInput[]
+    createMany?: CfRecommendationLogCreateManyUserInputEnvelope
+    connect?: CfRecommendationLogWhereUniqueInput | CfRecommendationLogWhereUniqueInput[]
   }
 
   export type RecommendationCallUncheckedCreateNestedManyWithoutUserInput = {
@@ -39925,6 +42856,30 @@ export namespace Prisma {
     deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
   }
 
+  export type CustomerClusterUpdateOneWithoutUserNestedInput = {
+    create?: XOR<CustomerClusterCreateWithoutUserInput, CustomerClusterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CustomerClusterCreateOrConnectWithoutUserInput
+    upsert?: CustomerClusterUpsertWithoutUserInput
+    disconnect?: CustomerClusterWhereInput | boolean
+    delete?: CustomerClusterWhereInput | boolean
+    connect?: CustomerClusterWhereUniqueInput
+    update?: XOR<XOR<CustomerClusterUpdateToOneWithWhereWithoutUserInput, CustomerClusterUpdateWithoutUserInput>, CustomerClusterUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CfRecommendationLogUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CfRecommendationLogCreateWithoutUserInput, CfRecommendationLogUncheckedCreateWithoutUserInput> | CfRecommendationLogCreateWithoutUserInput[] | CfRecommendationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CfRecommendationLogCreateOrConnectWithoutUserInput | CfRecommendationLogCreateOrConnectWithoutUserInput[]
+    upsert?: CfRecommendationLogUpsertWithWhereUniqueWithoutUserInput | CfRecommendationLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CfRecommendationLogCreateManyUserInputEnvelope
+    set?: CfRecommendationLogWhereUniqueInput | CfRecommendationLogWhereUniqueInput[]
+    disconnect?: CfRecommendationLogWhereUniqueInput | CfRecommendationLogWhereUniqueInput[]
+    delete?: CfRecommendationLogWhereUniqueInput | CfRecommendationLogWhereUniqueInput[]
+    connect?: CfRecommendationLogWhereUniqueInput | CfRecommendationLogWhereUniqueInput[]
+    update?: CfRecommendationLogUpdateWithWhereUniqueWithoutUserInput | CfRecommendationLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CfRecommendationLogUpdateManyWithWhereWithoutUserInput | CfRecommendationLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CfRecommendationLogScalarWhereInput | CfRecommendationLogScalarWhereInput[]
+  }
+
   export type RecommendationCallUpdateManyWithoutUserNestedInput = {
     create?: XOR<RecommendationCallCreateWithoutUserInput, RecommendationCallUncheckedCreateWithoutUserInput> | RecommendationCallCreateWithoutUserInput[] | RecommendationCallUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RecommendationCallCreateOrConnectWithoutUserInput | RecommendationCallCreateOrConnectWithoutUserInput[]
@@ -40107,6 +43062,30 @@ export namespace Prisma {
     update?: RecommendationLogUpdateWithWhereUniqueWithoutUserInput | RecommendationLogUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: RecommendationLogUpdateManyWithWhereWithoutUserInput | RecommendationLogUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: RecommendationLogScalarWhereInput | RecommendationLogScalarWhereInput[]
+  }
+
+  export type CustomerClusterUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<CustomerClusterCreateWithoutUserInput, CustomerClusterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CustomerClusterCreateOrConnectWithoutUserInput
+    upsert?: CustomerClusterUpsertWithoutUserInput
+    disconnect?: CustomerClusterWhereInput | boolean
+    delete?: CustomerClusterWhereInput | boolean
+    connect?: CustomerClusterWhereUniqueInput
+    update?: XOR<XOR<CustomerClusterUpdateToOneWithWhereWithoutUserInput, CustomerClusterUpdateWithoutUserInput>, CustomerClusterUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CfRecommendationLogCreateWithoutUserInput, CfRecommendationLogUncheckedCreateWithoutUserInput> | CfRecommendationLogCreateWithoutUserInput[] | CfRecommendationLogUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CfRecommendationLogCreateOrConnectWithoutUserInput | CfRecommendationLogCreateOrConnectWithoutUserInput[]
+    upsert?: CfRecommendationLogUpsertWithWhereUniqueWithoutUserInput | CfRecommendationLogUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CfRecommendationLogCreateManyUserInputEnvelope
+    set?: CfRecommendationLogWhereUniqueInput | CfRecommendationLogWhereUniqueInput[]
+    disconnect?: CfRecommendationLogWhereUniqueInput | CfRecommendationLogWhereUniqueInput[]
+    delete?: CfRecommendationLogWhereUniqueInput | CfRecommendationLogWhereUniqueInput[]
+    connect?: CfRecommendationLogWhereUniqueInput | CfRecommendationLogWhereUniqueInput[]
+    update?: CfRecommendationLogUpdateWithWhereUniqueWithoutUserInput | CfRecommendationLogUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CfRecommendationLogUpdateManyWithWhereWithoutUserInput | CfRecommendationLogUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CfRecommendationLogScalarWhereInput | CfRecommendationLogScalarWhereInput[]
   }
 
   export type RecommendationCallUncheckedUpdateManyWithoutUserNestedInput = {
@@ -41123,6 +44102,34 @@ export namespace Prisma {
     update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutBehaviorScoresInput, UsersUpdateWithoutBehaviorScoresInput>, UsersUncheckedUpdateWithoutBehaviorScoresInput>
   }
 
+  export type UsersCreateNestedOneWithoutCustomerClusterInput = {
+    create?: XOR<UsersCreateWithoutCustomerClusterInput, UsersUncheckedCreateWithoutCustomerClusterInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutCustomerClusterInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type UsersUpdateOneRequiredWithoutCustomerClusterNestedInput = {
+    create?: XOR<UsersCreateWithoutCustomerClusterInput, UsersUncheckedCreateWithoutCustomerClusterInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutCustomerClusterInput
+    upsert?: UsersUpsertWithoutCustomerClusterInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutCustomerClusterInput, UsersUpdateWithoutCustomerClusterInput>, UsersUncheckedUpdateWithoutCustomerClusterInput>
+  }
+
+  export type UsersCreateNestedOneWithoutCfRecommendationLogsInput = {
+    create?: XOR<UsersCreateWithoutCfRecommendationLogsInput, UsersUncheckedCreateWithoutCfRecommendationLogsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutCfRecommendationLogsInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type UsersUpdateOneRequiredWithoutCfRecommendationLogsNestedInput = {
+    create?: XOR<UsersCreateWithoutCfRecommendationLogsInput, UsersUncheckedCreateWithoutCfRecommendationLogsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutCfRecommendationLogsInput
+    upsert?: UsersUpsertWithoutCfRecommendationLogsInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutCfRecommendationLogsInput, UsersUpdateWithoutCfRecommendationLogsInput>, UsersUncheckedUpdateWithoutCfRecommendationLogsInput>
+  }
+
   export type NestedUuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -41659,6 +44666,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -41683,6 +44692,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -42157,6 +45168,59 @@ export namespace Prisma {
 
   export type RecommendationLogCreateManyUserInputEnvelope = {
     data: RecommendationLogCreateManyUserInput | RecommendationLogCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerClusterCreateWithoutUserInput = {
+    id?: string
+    clusterId: number
+    clusterName: string
+    cfCustomerId?: string | null
+    assignedAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerClusterUncheckedCreateWithoutUserInput = {
+    id?: string
+    clusterId: number
+    clusterName: string
+    cfCustomerId?: string | null
+    assignedAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerClusterCreateOrConnectWithoutUserInput = {
+    where: CustomerClusterWhereUniqueInput
+    create: XOR<CustomerClusterCreateWithoutUserInput, CustomerClusterUncheckedCreateWithoutUserInput>
+  }
+
+  export type CfRecommendationLogCreateWithoutUserInput = {
+    id?: string
+    cfCustomerId?: string | null
+    isColdStart?: boolean
+    modelNames: string
+    scores: string
+    reasons: string
+    servedAt?: Date | string
+  }
+
+  export type CfRecommendationLogUncheckedCreateWithoutUserInput = {
+    id?: string
+    cfCustomerId?: string | null
+    isColdStart?: boolean
+    modelNames: string
+    scores: string
+    reasons: string
+    servedAt?: Date | string
+  }
+
+  export type CfRecommendationLogCreateOrConnectWithoutUserInput = {
+    where: CfRecommendationLogWhereUniqueInput
+    create: XOR<CfRecommendationLogCreateWithoutUserInput, CfRecommendationLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type CfRecommendationLogCreateManyUserInputEnvelope = {
+    data: CfRecommendationLogCreateManyUserInput | CfRecommendationLogCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -42639,6 +45703,65 @@ export namespace Prisma {
     firstSeenAt?: DateTimeNullableFilter<"RecommendationLog"> | Date | string | null
   }
 
+  export type CustomerClusterUpsertWithoutUserInput = {
+    update: XOR<CustomerClusterUpdateWithoutUserInput, CustomerClusterUncheckedUpdateWithoutUserInput>
+    create: XOR<CustomerClusterCreateWithoutUserInput, CustomerClusterUncheckedCreateWithoutUserInput>
+    where?: CustomerClusterWhereInput
+  }
+
+  export type CustomerClusterUpdateToOneWithWhereWithoutUserInput = {
+    where?: CustomerClusterWhereInput
+    data: XOR<CustomerClusterUpdateWithoutUserInput, CustomerClusterUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CustomerClusterUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clusterId?: IntFieldUpdateOperationsInput | number
+    clusterName?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerClusterUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clusterId?: IntFieldUpdateOperationsInput | number
+    clusterName?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CfRecommendationLogUpsertWithWhereUniqueWithoutUserInput = {
+    where: CfRecommendationLogWhereUniqueInput
+    update: XOR<CfRecommendationLogUpdateWithoutUserInput, CfRecommendationLogUncheckedUpdateWithoutUserInput>
+    create: XOR<CfRecommendationLogCreateWithoutUserInput, CfRecommendationLogUncheckedCreateWithoutUserInput>
+  }
+
+  export type CfRecommendationLogUpdateWithWhereUniqueWithoutUserInput = {
+    where: CfRecommendationLogWhereUniqueInput
+    data: XOR<CfRecommendationLogUpdateWithoutUserInput, CfRecommendationLogUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CfRecommendationLogUpdateManyWithWhereWithoutUserInput = {
+    where: CfRecommendationLogScalarWhereInput
+    data: XOR<CfRecommendationLogUpdateManyMutationInput, CfRecommendationLogUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CfRecommendationLogScalarWhereInput = {
+    AND?: CfRecommendationLogScalarWhereInput | CfRecommendationLogScalarWhereInput[]
+    OR?: CfRecommendationLogScalarWhereInput[]
+    NOT?: CfRecommendationLogScalarWhereInput | CfRecommendationLogScalarWhereInput[]
+    id?: UuidFilter<"CfRecommendationLog"> | string
+    userId?: UuidFilter<"CfRecommendationLog"> | string
+    cfCustomerId?: StringNullableFilter<"CfRecommendationLog"> | string | null
+    isColdStart?: BoolFilter<"CfRecommendationLog"> | boolean
+    modelNames?: StringFilter<"CfRecommendationLog"> | string
+    scores?: StringFilter<"CfRecommendationLog"> | string
+    reasons?: StringFilter<"CfRecommendationLog"> | string
+    servedAt?: DateTimeFilter<"CfRecommendationLog"> | Date | string
+  }
+
   export type RecommendationCallUpsertWithWhereUniqueWithoutUserInput = {
     where: RecommendationCallWhereUniqueInput
     update: XOR<RecommendationCallUpdateWithoutUserInput, RecommendationCallUncheckedUpdateWithoutUserInput>
@@ -42688,6 +45811,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -42712,6 +45837,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -42752,6 +45879,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -42776,6 +45905,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -44020,6 +47151,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -44044,6 +47177,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -44084,6 +47219,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -44108,6 +47245,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -44159,6 +47298,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -44183,6 +47324,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -44256,6 +47399,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -44280,6 +47425,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -44304,6 +47451,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -44328,6 +47477,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -44431,6 +47582,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -44455,6 +47608,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -44548,6 +47703,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -44572,6 +47729,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -44675,6 +47834,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -44699,6 +47860,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -44793,6 +47956,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutRecommendationCallsInput = {
@@ -44817,6 +47982,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutRecommendationCallsInput = {
@@ -44857,6 +48024,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutRecommendationCallsInput = {
@@ -44881,6 +48050,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PhonesCreateWithoutTrendInput = {
@@ -45036,6 +48207,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -45060,6 +48233,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -45100,6 +48275,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -45124,6 +48301,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -45148,6 +48327,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -45172,6 +48353,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -45275,6 +48458,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -45299,6 +48484,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -45392,6 +48579,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -45416,6 +48605,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -45582,6 +48773,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -45606,6 +48799,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -45768,6 +48963,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -45792,6 +48989,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -45832,6 +49031,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -45856,6 +49057,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -45880,6 +49083,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -45904,6 +49109,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -45944,6 +49151,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -45968,6 +49177,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -45992,6 +49203,8 @@ export namespace Prisma {
     events?: EventCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -46016,6 +49229,8 @@ export namespace Prisma {
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -46056,6 +49271,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -46080,6 +49297,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -46500,6 +49719,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -46524,6 +49745,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
     behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -46564,6 +49787,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -46588,6 +49813,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -46612,6 +49839,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
     events?: EventCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
   }
 
@@ -46636,6 +49865,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
     events?: EventUncheckedCreateNestedManyWithoutUserInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
     recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -46676,6 +49907,8 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
     events?: EventUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -46700,6 +49933,248 @@ export namespace Prisma {
     browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersCreateWithoutCustomerClusterInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    role?: RolesCreateNestedOneWithoutUsersInput
+    otps?: OtpCreateNestedManyWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutCustomerClusterInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    roleId?: string | null
+    otps?: OtpUncheckedCreateNestedManyWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutCustomerClusterInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutCustomerClusterInput, UsersUncheckedCreateWithoutCustomerClusterInput>
+  }
+
+  export type UsersUpsertWithoutCustomerClusterInput = {
+    update: XOR<UsersUpdateWithoutCustomerClusterInput, UsersUncheckedUpdateWithoutCustomerClusterInput>
+    create: XOR<UsersCreateWithoutCustomerClusterInput, UsersUncheckedCreateWithoutCustomerClusterInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutCustomerClusterInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutCustomerClusterInput, UsersUncheckedUpdateWithoutCustomerClusterInput>
+  }
+
+  export type UsersUpdateWithoutCustomerClusterInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    role?: RolesUpdateOneWithoutUsersNestedInput
+    otps?: OtpUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutCustomerClusterInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    otps?: OtpUncheckedUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersCreateWithoutCfRecommendationLogsInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    role?: RolesCreateNestedOneWithoutUsersInput
+    otps?: OtpCreateNestedManyWithoutUserInput
+    profile?: UserProfileCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutUserInput
+    wishlist?: WishlistCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryCreateNestedManyWithoutUserInput
+    events?: EventCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterCreateNestedOneWithoutUserInput
+    recommendationCalls?: RecommendationCallCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutCfRecommendationLogsInput = {
+    name: string
+    userId?: string
+    email: string
+    password: string
+    phoneNo?: string | null
+    isActive?: boolean
+    isVerified?: boolean
+    roleId?: string | null
+    otps?: OtpUncheckedCreateNestedManyWithoutUserInput
+    profile?: UserProfileUncheckedCreateNestedOneWithoutUserInput
+    preference?: UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+    customerProfile?: CustomerProfileUncheckedCreateNestedOneWithoutUserInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutUserInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutUserInput
+    comparisonHistory?: ComparisonHistoryUncheckedCreateNestedManyWithoutUserInput
+    paymentHistory?: PaymentHistoryUncheckedCreateNestedManyWithoutUserInput
+    searchHistory?: SearchHistoryUncheckedCreateNestedManyWithoutUserInput
+    browsingHistory?: BrowsingHistoryUncheckedCreateNestedManyWithoutUserInput
+    events?: EventUncheckedCreateNestedManyWithoutUserInput
+    behaviorScores?: BehaviorScoreUncheckedCreateNestedManyWithoutUserInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutUserInput
+    customerCluster?: CustomerClusterUncheckedCreateNestedOneWithoutUserInput
+    recommendationCalls?: RecommendationCallUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutCfRecommendationLogsInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutCfRecommendationLogsInput, UsersUncheckedCreateWithoutCfRecommendationLogsInput>
+  }
+
+  export type UsersUpsertWithoutCfRecommendationLogsInput = {
+    update: XOR<UsersUpdateWithoutCfRecommendationLogsInput, UsersUncheckedUpdateWithoutCfRecommendationLogsInput>
+    create: XOR<UsersCreateWithoutCfRecommendationLogsInput, UsersUncheckedCreateWithoutCfRecommendationLogsInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutCfRecommendationLogsInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutCfRecommendationLogsInput, UsersUncheckedUpdateWithoutCfRecommendationLogsInput>
+  }
+
+  export type UsersUpdateWithoutCfRecommendationLogsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    role?: RolesUpdateOneWithoutUsersNestedInput
+    otps?: OtpUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUpdateManyWithoutUserNestedInput
+    events?: EventUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutCfRecommendationLogsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phoneNo?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    roleId?: NullableStringFieldUpdateOperationsInput | string | null
+    otps?: OtpUncheckedUpdateManyWithoutUserNestedInput
+    profile?: UserProfileUncheckedUpdateOneWithoutUserNestedInput
+    preference?: UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    customerProfile?: CustomerProfileUncheckedUpdateOneWithoutUserNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutUserNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutUserNestedInput
+    comparisonHistory?: ComparisonHistoryUncheckedUpdateManyWithoutUserNestedInput
+    paymentHistory?: PaymentHistoryUncheckedUpdateManyWithoutUserNestedInput
+    searchHistory?: SearchHistoryUncheckedUpdateManyWithoutUserNestedInput
+    browsingHistory?: BrowsingHistoryUncheckedUpdateManyWithoutUserNestedInput
+    events?: EventUncheckedUpdateManyWithoutUserNestedInput
+    behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -46734,6 +50209,8 @@ export namespace Prisma {
     events?: EventUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUpdateManyWithoutUserNestedInput
   }
 
@@ -46758,6 +50235,8 @@ export namespace Prisma {
     events?: EventUncheckedUpdateManyWithoutUserNestedInput
     behaviorScores?: BehaviorScoreUncheckedUpdateManyWithoutUserNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+    customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
+    cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     recommendationCalls?: RecommendationCallUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -46874,6 +50353,16 @@ export namespace Prisma {
     explorationArm?: string | null
     shownAt?: Date | string
     firstSeenAt?: Date | string | null
+  }
+
+  export type CfRecommendationLogCreateManyUserInput = {
+    id?: string
+    cfCustomerId?: string | null
+    isColdStart?: boolean
+    modelNames: string
+    scores: string
+    reasons: string
+    servedAt?: Date | string
   }
 
   export type RecommendationCallCreateManyUserInput = {
@@ -47197,6 +50686,36 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type CfRecommendationLogUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isColdStart?: BoolFieldUpdateOperationsInput | boolean
+    modelNames?: StringFieldUpdateOperationsInput | string
+    scores?: StringFieldUpdateOperationsInput | string
+    reasons?: StringFieldUpdateOperationsInput | string
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CfRecommendationLogUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isColdStart?: BoolFieldUpdateOperationsInput | boolean
+    modelNames?: StringFieldUpdateOperationsInput | string
+    scores?: StringFieldUpdateOperationsInput | string
+    reasons?: StringFieldUpdateOperationsInput | string
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CfRecommendationLogUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cfCustomerId?: NullableStringFieldUpdateOperationsInput | string | null
+    isColdStart?: BoolFieldUpdateOperationsInput | boolean
+    modelNames?: StringFieldUpdateOperationsInput | string
+    scores?: StringFieldUpdateOperationsInput | string
+    reasons?: StringFieldUpdateOperationsInput | string
+    servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RecommendationCallUpdateWithoutUserInput = {

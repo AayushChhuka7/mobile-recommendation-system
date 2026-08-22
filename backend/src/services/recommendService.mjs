@@ -18,6 +18,12 @@ import {
   loadUserLikedAndViewed,
   safeRecordRecommendationLog,
 } from "./profileService.mjs";
+import {
+  getCfRecommendations,
+  checkCfHealth,
+  safeRecordCfLog,
+  safeUpsertCustomerCluster,
+} from "./cfRecommendationService.mjs";
 
 
 // Auto-recommend pulls FULL_LIST_TOP_N candidates back from the
@@ -84,6 +90,280 @@ const dedupeByStableId = (list) => {
     out.push(item);
   }
   return out;
+};
+
+// ---------------------------------------------------------------------------
+// CF (collaborative-filtering) hybrid merge.
+//
+// The new CF service runs in parallel with the existing
+// rule-based → content-based pipeline (the FastAPI at port 8002). When
+// the CF service returns ≥1 result we union it into the candidate set
+// WITHOUT removing anything the ML pipeline already produced:
+//
+//   1. Each CF result is enriched into the same DB shape as the ML
+//      result (same Prisma findFirst, same `formatRecommendation`).
+//   2. Rows that already exist in the ML candidate list (matched by
+//      `[brand, modelName]`) are kept as-is — the ML enrichment is
+//      strictly richer than the CF envelope (Full_Score, Overall_Score,
+//      Value_Score, Match_Score, Why, tags, contentSim, etc.). We
+//      only attach a `cfReasons: string[]` field to those rows so the
+//      FE can show a "people like you also liked" badge.
+//   3. Rows that are CF-only (no ML match) are appended at the end
+//      with `cfSource: true` and `cfReasons: [reason]` so the FE knows
+//      where they came from. Their matchScore is derived from the CF
+//      score (0..1) scaled to 0..100 so the percentage UI keeps
+//      working unchanged.
+//
+// All fallbacks are silent:
+//   - CF service unreachable / timeout → empty `{results, ...}` envelope,
+//     no exception, no impact on the served list.
+//   - CF returns results but the user has no CF counterpart (real
+//     registration, no `@import.local` email) → empty envelope, no
+//     impact.
+//   - CF row can't be matched to a DB phone → still surfaced in the
+//     list with `inDatabase: false`, `id: null`, model_name + brand
+//     only (dedupeByStableId falls back to the [brand, modelName] key
+//     for those rows).
+// ---------------------------------------------------------------------------
+const CF_CANDIDATE_TOP_N = 10;
+
+const cfKey = (brand, modelName) =>
+  `${String(brand || "").trim().toLowerCase()}::${String(modelName || "").trim().toLowerCase()}`;
+
+// Build a CF-only enriched candidate. Mirrors the ML enrichment above
+// but without the sub-scores, tags, or contentSim that the CF service
+// doesn't produce. Stays "fat" enough that the existing FE card
+// renderer doesn't have to special-case anything.
+//
+// `contentSim` is set to the CF score so the two-stage pipeline's
+// `sort by contentSim desc` can still rank this row against the
+// rule-based candidates — otherwise the CF-only row falls to the
+// bottom and is sliced out of the top-5.
+const buildCfCandidate = (cfItem) => {
+  const modelName = String(cfItem?.model_name || "").trim();
+  const brandName = String(cfItem?.model_name || "").includes(" ")
+    ? String(cfItem.model_name).split(" ")[0]
+    : "";
+  // The CF service emits `model_name` as the full label
+  // (e.g. "Samsung Galaxy A55"). We split off the brand as the first
+  // token; if the DB findFirst fails the fallback below still works
+  // because `formatRecommendation` tolerates missing brand.
+  const inferredBrand = brandName;
+  const score = Number.isFinite(cfItem?.score) ? Number(cfItem.score) : 0;
+  const reason = typeof cfItem?.reason === "string" ? cfItem.reason : "";
+  return {
+    id: null,
+    modelName,
+    brand: { name: inferredBrand },
+    imageUrl: null,
+    keySpecs: null,
+    cheapestVariant: null,
+    matchScore: score * 100,
+    why: [],
+    inDatabase: false,
+    cfSource: true,
+    cfReasons: reason ? [reason] : [],
+    contentSim: score,
+    matchScoreFastApi: score * 100,
+  };
+};
+
+// Lightweight DB enrichment for a single CF candidate. Mirrors the
+// fields fetched by the ML enrichment above but lazy — only fields the
+// FE actually renders need to be populated. Crashes on the DB read are
+// swallowed so a transient DB error on a CF row can never break the
+// recommendation response.
+const enrichCfCandidate = async (cfItem) => {
+  const modelName = String(cfItem?.model_name || "").trim();
+  const score = Number.isFinite(cfItem?.score) ? Number(cfItem.score) : 0;
+  const reason = typeof cfItem?.reason === "string" ? cfItem.reason : "";
+
+  if (!modelName) return null;
+
+  try {
+    const phone = await prisma.phones.findFirst({
+      where: {
+        modelName: { contains: modelName, mode: "insensitive" },
+        isActive: true,
+      },
+      include: {
+        brand: { select: { brandId: true, name: true, logoUrl: true } },
+        specs: {
+          select: {
+            os: true,
+            chipset: true,
+            displaySize: true,
+            displayType: true,
+            refreshRate: true,
+            mainCamera: true,
+            batteryMah: true,
+            supports5g: true,
+            supportsNfc: true,
+          },
+        },
+        variants: {
+          where: { isAvailable: true },
+          orderBy: { price: "asc" },
+          select: {
+            variantId: true,
+            ramGb: true,
+            storageGb: true,
+            price: true,
+            storageType: true,
+          },
+        },
+      },
+    });
+
+    if (!phone) {
+      // CF row not in the DB — surface the model_name + brand so the
+      // FE can still render a card (price-less, no image). Shows up
+      // in the audit log as `inDatabase: false`.
+      return {
+        ...buildCfCandidate(cfItem),
+        brand: {
+          name: String(cfItem?.model_name || "").split(" ")[0] || "",
+        },
+      };
+    }
+
+    const cheapestVariant = phone.variants?.[0];
+    return {
+      id: phone.phoneId,
+      modelName: phone.modelName,
+      imageUrl: phone.imageUrl,
+      antutuScore: phone.antutuScore,
+      brand: phone.brand,
+      keySpecs: {
+        os: phone.specs?.os || null,
+        display: phone.specs?.displaySize || null,
+        refreshRate: phone.specs?.refreshRate || null,
+        camera: phone.specs?.mainCamera || null,
+        battery: phone.specs?.batteryMah || null,
+        has5G: phone.specs?.supports5g || false,
+        hasNfc: phone.specs?.supportsNfc || false,
+      },
+      cheapestVariant: cheapestVariant
+        ? {
+            ram: cheapestVariant.ramGb,
+            storage: cheapestVariant.storageGb,
+            price: cheapestVariant.price,
+            storageType: cheapestVariant.storageType,
+          }
+        : null,
+      // matchScore is left undefined for CF rows that matched the DB
+      // — the ML pipeline has already assigned a richer score, and
+      // merging it would clobber the ranker output. The FE can show
+      // the CF reason as a "people like you also liked" badge via
+      // `cfReasons`.
+      matchScore: undefined,
+      why: [],
+      inDatabase: true,
+      cfSource: true,
+      cfReasons: reason ? [reason] : [],
+      // Synthetic contentSim derived from the CF score so the
+      // two-stage pipeline (which sorts by contentSim desc) can rank
+      // CF-only rows fairly. The CF score is in [0,1] and content
+      // similarity is also in [0,1], so a direct assignment is
+      // apples-to-apples. Without this, CF-only rows would always
+      // sort to the bottom of the two-stage top-5 because their
+      // contentSim is missing (defaulted to 0 by the sorter).
+      contentSim: Number.isFinite(score) ? score : 0,
+      // Same idea for the tie-breaker — FastAPI Match_Score is the
+      // implicit tie-breaker when two rows have equal contentSim.
+      // Mirror the CF score into matchScoreFastApi so a high-CF
+      // pick still wins over a low-ML pick on tie.
+      matchScoreFastApi: Number.isFinite(score) ? score * 100 : 0,
+    };
+  } catch (err) {
+    console.warn("[cf] db enrichment failed for", modelName, err?.message || err);
+    return null;
+  }
+};
+
+// Merge CF candidates into the existing ML-enriched list. See the
+// block comment above for the full contract. Returns the merged list
+// (deduped by `[brand, modelName]`, ML rows win on conflict) plus
+// the raw CF envelope so the caller can decide whether to log it.
+const mergeCfCandidates = async (mlEnriched, cfPayload) => {
+  const cfResults = Array.isArray(cfPayload?.results) ? cfPayload.results : [];
+  if (cfResults.length === 0) {
+    return { merged: mlEnriched, mergedAny: false };
+  }
+
+  // Pre-compute the ML keys once so the dedupe is O(N+M) not O(N*M).
+  const mlKeys = new Set();
+  for (const c of mlEnriched || []) {
+    if (!c) continue;
+    mlKeys.add(cfKey(c.brand?.name, c.modelName));
+  }
+
+  // Enrich every CF row that isn't already in the ML list.
+  const enrichedCf = await Promise.all(
+    cfResults.map(async (cfItem) => {
+      const k = cfKey(
+        String(cfItem?.model_name || "").split(" ")[0],
+        cfItem?.model_name,
+      );
+      if (mlKeys.has(k)) {
+        // Same phone already in the ML list — skip the DB read and
+        // attach the CF reason instead. The caller will sweep the
+        // merged list and write `cfReasons` onto the existing ML row.
+        return { existingKey: k, reason: cfItem?.reason || "" };
+      }
+      const enriched = await enrichCfCandidate(cfItem);
+      return enriched ? { candidate: enriched } : null;
+    }),
+  );
+
+  const cfOnlyCandidates = [];
+  const cfReasonsByKey = new Map();
+  for (const entry of enrichedCf) {
+    if (!entry) continue;
+    if (entry.candidate) {
+      cfOnlyCandidates.push(entry.candidate);
+    } else if (entry.existingKey && entry.reason) {
+      const list = cfReasonsByKey.get(entry.existingKey) || [];
+      list.push(entry.reason);
+      cfReasonsByKey.set(entry.existingKey, list);
+    }
+  }
+
+  // Attach CF reasons to the surviving ML rows. Mutates the existing
+  // list (in-place) so the FE renders the badge without a re-render.
+  for (const c of mlEnriched || []) {
+    if (!c) continue;
+    const k = cfKey(c.brand?.name, c.modelName);
+    const reasons = cfReasonsByKey.get(k);
+    if (reasons && reasons.length > 0) {
+      c.cfReasons = reasons;
+    }
+  }
+
+  const merged = [...(mlEnriched || []), ...cfOnlyCandidates];
+  return { merged, mergedAny: cfOnlyCandidates.length > 0 || cfReasonsByKey.size > 0 };
+};
+
+// Fire-and-forget CF analytics. Persists the served CF list into
+// `cf_recommendation_logs` and the lazy `CustomerCluster` row. Never
+// awaited, never throws.
+const recordCfArtifacts = (userId, cfPayload) => {
+  if (!userId) return;
+  if (!cfPayload || !Array.isArray(cfPayload.results) || cfPayload.results.length === 0) return;
+
+  safeRecordCfLog(userId, {
+    cfCustomerId: cfPayload.customerId || null,
+    coldStart: Boolean(cfPayload.coldStart),
+    results: cfPayload.results,
+  });
+
+  if (cfPayload.cluster && cfPayload.cluster.id != null) {
+    safeUpsertCustomerCluster(userId, {
+      cfCustomerId: cfPayload.customerId || null,
+      clusterId: cfPayload.cluster.id,
+      clusterName: cfPayload.cluster.name || `Cluster ${cfPayload.cluster.id}`,
+    });
+  }
 };
 
 // Issue 1 fix — default topN is now large enough to surface the full
@@ -202,7 +482,26 @@ const mlFetch = async (path, options = {}) => {
 };
 
 export const checkHealth = async () => {
-  return mlFetch("/health");
+  // Probe the existing rule-based ML service (port 8002) AND the new
+  // CF service (port 9001) in parallel. The dashboard's admin health
+  // panel surfaces both. Either can fail independently — failures
+  // surface as `status: "unhealthy" / "unreachable"` but never throw,
+  // so the route can still answer with the partial state.
+  const [mlHealth, cfHealth] = await Promise.all([
+    mlFetch("/health").catch((err) => ({
+      status: "unhealthy",
+      error: safeErrorMessage(err),
+    })),
+    checkCfHealth().catch((err) => ({
+      status: "unreachable",
+      error: safeErrorMessage(err),
+    })),
+  ]);
+
+  return {
+    ml: mlHealth,
+    cf: cfHealth,
+  };
 };
 
 export const getRecommendations = async (body, userId, opts = {}) => {
@@ -265,6 +564,25 @@ export const getRecommendations = async (body, userId, opts = {}) => {
 
   const effectivePersona = fusedPreferences ? "Custom" : persona;
 
+  // 1. Get ML results — and CF candidates in parallel (CF NEVER
+  //    blocks the response; failures degrade to empty results).
+  const [data, cfPayload] = await Promise.all([
+    mlFetch("/recommend", {
+      method: "POST",
+      body: JSON.stringify({
+        persona: effectivePersona,
+        budget: { min: budget.min || 0, max: budget.max },
+        preferences: fusedPreferences || preferences || {},
+        topN: topN || FULL_LIST_TOP_N,
+      }),
+    }),
+    userId
+      ? getCfRecommendations(userId, CF_CANDIDATE_TOP_N).catch((err) => {
+          console.warn("[cf] promise rejected unexpectedly:", err?.message || err);
+          return { results: [], coldStart: true, customerId: null, cluster: null, error: "rejected" };
+        })
+      : Promise.resolve({ results: [], coldStart: true, customerId: null, cluster: null, error: null }),
+  ]);
   // 1. Get ML results (Fix #2 — soft constraints + progressive
   //    relaxation live in Python). `minCandidates` matches the
   //    Python `MIN_CANDIDATES` default.
@@ -420,70 +738,24 @@ export const getRecommendations = async (body, userId, opts = {}) => {
     behaviorScoresMap,
     interestVec,
     candidateMetaMap,
-    stockMultiplier,
   );
 
-  // ---- Fix #5 — MMR diversity rerank -------------------------------------
-  // Re-orders the top-K by maximal marginal relevance. The remainder
-  // of the list keeps relevance order. Exploration (#6) runs AFTER
-  // this so the diversity pass doesn't penalise the exploration
-  // pick as a near-duplicate.
-  const mmrReranked = mmrRerank(ranked, MMR_LAMBDA, undefined, MMR_TOP_K);
 
-  // ---- Fix #6 — exploration slot injection --------------------------------
-  // ε-greedy + Thompson sampling on the top-50 by relevance. The
-  // exploration picks are marked with `explorationArm` so the
-  // trainer (#3) can filter them out.
-  const explored = await applyExploration(mmrReranked, userId);
-
-  // Re-shape for the FE. `matchScore` (0..100) is overwritten with
-  // the fused score so the "% match" UI keeps working unchanged.
-  const finalRanked = explored.map((c) => ({
+  // Re-shape for the FE. The existing `matchScore` (0..100) is
+  // overwritten with the fused score so the "% match" UI keeps working
+  // unchanged. `matchComponents` is opt-in for the FE (used by the
+  // "Boosted by your activity" badge).
+  const finalRanked = ranked.map((c) => ({
     ...c,
     matchScore: c.finalScore * 100,
     matchComponents: c.components,
-    explorationArm: c.explorationArm || null,
   }));
 
-  // One-shot diagnostic — for any candidate the user's affinity
-  // singles out, print where it landed in the final list. Helps
-  // answer "user has strong affinity for X but X is missing from top
-  // N" without re-running the pipeline. Gated to non-production.
-  if (process.env.NODE_ENV !== "production" && finalRanked.length > 0) {
-    const interesting = finalRanked.filter((c) => {
-      const id = c.id || "";
-      const model = (c.modelName || "").toLowerCase();
-      return (
-        (behaviorScoresMap && behaviorScoresMap.has(`affinity:${id}`)) ||
-        model.includes("iphone 17e") ||
-        model.includes("iphone air")
-      );
-    });
-    if (interesting.length > 0) {
-      const top = finalRanked
-        .slice(0, 20)
-        .map((c) => `${c.brand?.name || "?"} ${c.modelName || "?"}`)
-        .join(" | ");
-      const detail = interesting
-        .map((c) => {
-          const comps = c.components || {};
-          const k = Object.entries(comps)
-            .map(([k, v]) => `${k.slice(0, 4)}=${(v || 0).toFixed(2)}`)
-            .join(" ");
-          return `  ${c.brand?.name || "?"} ${c.modelName || "?"} (phoneId=${c.id || "null"}) finalScore=${(c.finalScore || 0).toFixed(3)} ${k}`;
-        })
-        .join("\n");
-      const firstAffIdx = finalRanked.findIndex(
-        (c) => c.id && behaviorScoresMap && behaviorScoresMap.has(`affinity:${c.id}`),
-      );
-      const rank = firstAffIdx >= 0 ? firstAffIdx + 1 : "not in top 20";
-      console.warn(
-        `[auto-recommend] affinity-tracked candidates in final list (${interesting.length})\n  user top-20: ${top}\n  detail:\n${detail}\n  rank of first affinity hit: ${rank}`,
-      );
-    }
-  }
-
-  // Enforce the "no duplicate phones" contract.
+  // Enforce the "no duplicate phones" contract on the API response.
+  // See `dedupeByStableId` for rationale. Ranking order is preserved
+  // because `fusionRank` returns phones in `finalScore` desc order —
+  // the first occurrence is always the highest-ranked row for each
+  // identity.
   const finalRankedUnique = dedupeByStableId(finalRanked);
 
   // ---- Fix #1 — fire-and-forget impression log ---------------------------
@@ -586,24 +858,33 @@ export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
   }
   const effectivePersona = fusedPreferences ? "Custom" : persona;
 
+  // ---- Stage 1: Rule-based filtering + persona-weight ranking ------------
+  // Same FastAPI call as the legacy path — applies budget, brand, RAM,
+  // 5G filters on the full catalog and returns STAGE1_TOP_N candidates.
+  // This is the "reduced candidate domain" Stage 2 runs on.
   const data = await mlFetch("/recommend", {
     method: "POST",
     body: JSON.stringify({
       persona: effectivePersona,
       budget: { min: budget.min || 0, max: budget.max },
       preferences: fusedPreferences || preferences || {},
-      preferred_brands: preferredBrands,
-      exclude_brands: excludeBrands,
-      // Click path keeps the hard price ceiling — budget.max is the
-      // user's stated wall. Only the auto path opts into soft price.
-      softPrice: false,
       topN: STAGE1_TOP_N,
-      minCandidates: MIN_CANDIDATES,
     }),
   });
 
   const mlResults = data.results || [];
-  if (mlResults.length === 0) return [];
+  if (mlResults.length === 0) {
+    // Edge case: no rule-based candidates. Still attempt to serve CF
+    // results as a last-ditch fallback before giving up entirely.
+    const cfOnly = await mergeCfCandidates([], cfPayload);
+    if (userId && cfPayload?.results?.length) {
+      void recordCfArtifacts(userId, cfPayload);
+    }
+    return dedupeByStableId(cfOnly.merged).slice(0, STAGE2_FINAL_TOP_N).map((c) => ({
+      ...c,
+      matchScore: (Number.isFinite(c.contentSim) ? c.contentSim : 0) * 100,
+    }));
+  }
 
   // ---- Fix #7 — batched enrichment (same path as the legacy call) -------
   const idMap = await resolvePhoneIds(
@@ -660,10 +941,31 @@ export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
     c.contentSim = (seedWeight * simSeed) + ((1 - seedWeight) * simCat);
   }
 
+  // ---- CF hybrid merge -----------------------------------------------------
+  // Union CF candidates into the enriched list before ranking. The CF
+  // candidates don't have a contentSim (they came from a different
+  // pipeline) so they'll rank below the rule-based candidates on the
+  // sort below — except CF rows that match a brand+modelName already
+  // in the list, which just receive a `cfReasons` hint without
+  // disturbing the ranking.
+  //
+  // `mergeCfCandidates` mutates ML rows to add `cfReasons: string[]`
+  // when a corresponding CF row was found. The FE renders that as a
+  // "people like you also liked" badge.
+  const { merged: cfMergedTwoStage } = await mergeCfCandidates(enriched, cfPayload);
+  if (userId && cfPayload?.results?.length) {
+    void recordCfArtifacts(userId, cfPayload);
+  }
+
   // ---- Final ranking: content similarity only, then slice top 5 -----------
   // No 5-signal fusion. No behaviour score. The contract for this flow
   // is "Rank the remaining phones using the content-based similarity
   // score and return exactly 5 phones with the highest similarity."
+  //
+  // CF-only candidates (no `contentSim`) use their CF score as a
+  // fallback so they still get a fair rank. In practice they appear
+  // below the rule-based picks because the rule-based stage
+  // already produced a high-quality content-similarity-ranked list.
   //
   // Dedupe BEFORE the slice so the top-5 are guaranteed to be 5 unique
   // phones, even when the underlying rule-based candidates share a
@@ -671,7 +973,7 @@ export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
   // the order of first occurrence, so the highest-ranked row for
   // each identity is what survives.
   const rankedUnique = dedupeByStableId(
-    enriched.slice().sort((a, b) => {
+    cfMergedTwoStage.slice().sort((a, b) => {
       const aSim = Number.isFinite(a.contentSim) ? a.contentSim : 0;
       const bSim = Number.isFinite(b.contentSim) ? b.contentSim : 0;
       if (bSim !== aSim) return bSim - aSim;
@@ -684,6 +986,7 @@ export const getRecommendationsTwoStage = async (body, userId, opts = {}) => {
       return bMatch - aMatch;
     }),
   );
+
 
   const finalRanked = rankedUnique.slice(0, STAGE2_FINAL_TOP_N);
 
