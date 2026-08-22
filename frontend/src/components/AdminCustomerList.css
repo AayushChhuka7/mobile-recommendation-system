@@ -1,0 +1,191 @@
+/* AdminCustomerList.css — admin listing page styles.
+ * Visual language matches the existing dashboard: card-style surfaces,
+ * rounded corners, primary-tinted buttons. Co-located per-component
+ * per the existing convention (one CSS file per component).
+ */
+
+.admin-list-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  color: var(--text);
+}
+
+.admin-list-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.admin-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--slate-dark);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.admin-back-btn:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.admin-list-title {
+  font-size: 24px;
+  margin: 0;
+  color: var(--slate-dark);
+}
+
+.admin-list-sub {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.admin-list-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.admin-list-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  flex: 1;
+  max-width: 420px;
+}
+
+.admin-list-search input {
+  border: 0;
+  outline: none;
+  flex: 1;
+  background: transparent;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.admin-list-splash {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.admin-list-error {
+  padding: 14px 16px;
+  border: 1px solid var(--danger);
+  background: rgba(220, 53, 69, 0.05);
+  border-radius: 8px;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.admin-list-empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  background: var(--white);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+}
+
+.admin-list-table-wrap {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+
+.admin-list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-list-table th,
+.admin-list-table td {
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-list-table th {
+  background: var(--bg);
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+.admin-list-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-list-table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.admin-role-pill,
+.admin-status-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+.admin-role-customer {
+  background: rgba(13, 110, 253, 0.1);
+  color: #0d6efd;
+}
+
+.admin-role-admin {
+  background: rgba(220, 53, 69, 0.1);
+  color: var(--danger);
+}
+
+.admin-role-salesman {
+  background: rgba(255, 193, 7, 0.15);
+  color: #b07c00;
+}
+
+.admin-role-none {
+  background: rgba(108, 117, 125, 0.12);
+  color: #6c757d;
+}
+
+.admin-status-pill.active {
+  background: rgba(25, 135, 84, 0.12);
+  color: #198754;
+}
+
+.admin-status-pill.inactive {
+  background: rgba(220, 53, 69, 0.1);
+  color: var(--danger);
+}
+
+.admin-status-pill.unverified {
+  background: rgba(255, 193, 7, 0.15);
+  color: #b07c00;
+}

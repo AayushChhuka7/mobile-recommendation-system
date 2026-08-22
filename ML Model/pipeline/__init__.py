@@ -9,6 +9,10 @@ Public API:
     PersonaType                 -- enum of user personas (Gamer / Camera_Lover / …).
     UserPreferenceInput         -- dataclass the UI/API fills in.
     recommend                   -- the ranking function (lifted from cell 104).
+    apply_weights               -- pure column-multiplication helper used by the
+                                   content-similarity pipeline (was previously a
+                                   notebook closure that broke unpickling under
+                                   uvicorn / FastAPI — see pipeline/similarity.py).
 """
 
 from .model import MobileRecommendationPipeline
@@ -21,6 +25,12 @@ from .recommend import (
     recommend as recommend_phones,
 )
 from .scoring import ScoringSnapshot, compute_scores
+from .similarity import (
+    DEFAULT_FEATURE_WEIGHTS,
+    apply_weights,
+    build_weight_vector,
+    make_apply_weights_step,
+)
 
 __all__ = [
     "MobileRecommendationPipeline",
@@ -32,4 +42,8 @@ __all__ = [
     "ScoringSnapshot",
     "compute_scores",
     "recommend_phones",
+    "DEFAULT_FEATURE_WEIGHTS",
+    "apply_weights",
+    "build_weight_vector",
+    "make_apply_weights_step",
 ]

@@ -2,6 +2,12 @@ import { prisma } from "../config/prisma.mjs";
 import { generateOtp, hashPassword, verifyPassword } from "../utils/crypto.mjs";
 import { sendEmail } from "../utils/email.mjs";
 import { findRoleByName } from "./rbacService.mjs";
+import {
+  PERSONA_TO_USAGE_TYPE,
+  deriveCameraPreference,
+  deriveBudgetSegment,
+  ALLOWED_PERSONAS,
+} from "./profileService.mjs";
 
 import {
   notFound,
@@ -31,7 +37,19 @@ const newOtpExpiry = () => new Date(Date.now() + OTP_TTL_MS);
 // per the locked-in Phase 1 design.
 
 export const registerUserService = async (userData) => {
-  const { confirmPassword, roleName, ...data } = userData;
+  const {
+    confirmPassword,
+    roleName,
+    // Issue 2 — onboarding answers collected BEFORE the OTP step.
+    // All optional. When omitted the user is created with no profile,
+    // matching the pre-fix behaviour exactly.
+    persona,
+    budgetMin,
+    budgetMax,
+    preferredBrands,
+    weights,
+    ...data
+  } = userData;
 
   const role = await findRoleByName(roleName);
   if (!role) {
@@ -41,6 +59,47 @@ export const registerUserService = async (userData) => {
   }
 
   const code = generateOtp();
+
+  // ---- Normalise onboarding payload --------------------------------------
+  // The persona + budget shape mirrors what `saveExplicitPreferences`
+  // expects. We re-derive the same enums (usageType, cameraPreference,
+  // budgetSegment) here so the same row shape lands in the DB whether
+  // the user filled the onboarding step or only ever used the
+  // "Recommend Me" modal after login.
+  const validPersona =
+    typeof persona === "string" && ALLOWED_PERSONAS.has(persona) ? persona : null;
+
+  const maxBudgetRaw = budgetMax;
+  const maxBudget =
+    Number.isFinite(Number(maxBudgetRaw)) && Number(maxBudgetRaw) > 0
+      ? Number(maxBudgetRaw)
+      : null;
+  const minBudgetRaw = budgetMin;
+  const minBudget =
+    Number.isFinite(Number(minBudgetRaw)) && Number(minBudgetRaw) >= 0
+      ? Number(minBudgetRaw)
+      : null;
+
+  const usageType = validPersona
+    ? PERSONA_TO_USAGE_TYPE[validPersona] || "Casual"
+    : null;
+  const cameraPreference = deriveCameraPreference(weights);
+  const budgetSegment = maxBudget != null ? deriveBudgetSegment(maxBudget) : null;
+
+  // Whitelist the brands array down to non-empty strings. We accept
+  // anything the FE sends and let the DB column (JSON-shaped) hold it.
+  const cleanedBrands = Array.isArray(preferredBrands)
+    ? preferredBrands
+        .filter((b) => typeof b === "string" && b.trim().length > 0)
+        .map((b) => b.trim().slice(0, 60))
+        .slice(0, 20)
+    : null;
+
+  const hasOnboarding =
+    validPersona != null ||
+    maxBudget != null ||
+    (Array.isArray(cleanedBrands) && cleanedBrands.length > 0) ||
+    (weights && typeof weights === "object");
 
   const newUser = await prisma.$transaction(async (tx) => {
     const createdUser = await tx.users.create({
@@ -55,6 +114,52 @@ export const registerUserService = async (userData) => {
         expiresAt: newOtpExpiry(),
       },
     });
+
+    // Issue 2 — write the onboarding answers into UserPreference +
+    // CustomerProfile inside the SAME transaction as the user create.
+    // This is what `saveExplicitPreferences` does for the post-login
+    // "Recommend Me" modal — we replicate that two-upsert here so
+    // the onboarding flow does not need a separate authenticated
+    // round-trip.
+    if (hasOnboarding) {
+      await tx.userPreference.upsert({
+        where: { userId: createdUser.userId },
+        create: {
+          userId: createdUser.userId,
+          maxBudget: maxBudget ?? 0,
+          cameraPreference,
+          usageType: usageType || "Casual",
+          ...(cleanedBrands && cleanedBrands.length > 0
+            ? { preferredBrands: cleanedBrands }
+            : {}),
+        },
+        update: {
+          ...(maxBudget != null ? { maxBudget } : {}),
+          cameraPreference,
+          ...(usageType ? { usageType } : {}),
+          ...(cleanedBrands && cleanedBrands.length > 0
+            ? { preferredBrands: cleanedBrands }
+            : {}),
+        },
+      });
+
+      await tx.customerProfile.upsert({
+        where: { userId: createdUser.userId },
+        create: {
+          userId: createdUser.userId,
+          ...(budgetSegment ? { budgetSegment } : {}),
+          ...(validPersona ? { recommendationPersona: validPersona } : {}),
+          ...(cameraPreference ? { cameraPreference } : {}),
+          ...(maxBudget != null ? { avgBudget: maxBudget } : {}),
+          segmentConfidence: "confirmed",
+        },
+        update: {
+          ...(budgetSegment ? { budgetSegment } : {}),
+          ...(validPersona ? { recommendationPersona: validPersona } : {}),
+          ...(cameraPreference ? { cameraPreference } : {}),
+        },
+      });
+    }
 
     return createdUser;
   });

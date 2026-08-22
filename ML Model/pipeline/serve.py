@@ -1,21 +1,19 @@
-"""FastAPI wrapper around `MobileRecommendationPipeline`.
 
-Run with: `uvicorn pipeline.serve:app --port 8002`
+"""
+FastAPI wrapper around `MobileRecommendationPipeline`.
+
+Run with:
+    uvicorn pipeline.serve:app --port 8002
+
 Endpoints:
-    GET  /health                  liveness + model status
-    POST /predict                 body: {phone_features} -> predicted AnTuTu + SHAP top-N
+    GET  /health                  liveness + model status + candidate count
+    POST /predict                 body: {features} -> predicted AnTuTu + SHAP top-N
     POST /predict_new             body: {raw: <cleaned phone row>} -> predict + score + SHAP
-    POST /score                   body: {phone_features} -> composite score dict
+    POST /score                   body: {features} -> composite score dict
     POST /recommend               body: UserPreferenceInput -> ranked list of phones
-    POST /compare                 body: {model_name_a, model_name_b} -> per-dim winner
-    GET  /explain/<model_name>    -> SHAP top-N for a phone in the pool
-
-Endpoints:
-    GET  /health         liveness + model status + candidate count
-    POST /predict        body: {features} → predicted AnTuTu + SHAP top-N
-    POST /score          body: {features} → composite score dict
-    POST /recommend      body: {persona, budget, preferences, topN}
-                         → ranked list of phones (Brand/Model/Price_EUR/Match_Score/Why)
+    POST /compare                 body: {model_name_a, model_name_b} -> per-dimension comparison
+    GET  /explain/{model_name}    -> SHAP top-N explanation
+    GET  /phones                  -> searchable phone list
 
 The model is loaded once at process start. The Node/Express backend at
 `backend/src/routes/recommendRoutes.mjs` calls these endpoints over HTTP.
@@ -30,7 +28,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
@@ -39,6 +37,9 @@ HERE = Path(__file__).resolve().parent
 PROJECT_ROOT = HERE.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+import joblib  # noqa: E402  — used by /similarity/score to load the content-bundle
+import numpy as np  # noqa: E402
+
 from pipeline.model import MobileRecommendationPipeline  # noqa: E402
 from pipeline.recommend import PersonaType, UserPreferenceInput  # noqa: E402
 from pipeline.scoring import compute_scores  # noqa: E402
@@ -46,6 +47,7 @@ from pipeline.scoring import compute_scores  # noqa: E402
 
 ARTIFACT_DIR = PROJECT_ROOT / "artifacts"
 DATA_PATH = PROJECT_ROOT / "After_EDA_and_Feature_ENginering.csv"
+SIMILARITY_BUNDLE_PATH = PROJECT_ROOT / "similarity_bundle.joblib"
 print("Running file:", __file__)
 
 
@@ -215,7 +217,13 @@ class RecommendRequest(BaseModel):
     # Used as `custom_weights_stars` when persona=Custom; otherwise the
     # persona preset wins.
     preferences: Dict[str, int] = Field(default_factory=dict)
-    topN: int = Field(default=6, ge=1, le=50)
+    # Issue 1 — the recs panel on the dashboard now shows the full
+    # ranked catalog instead of a top-6 picks slice. The BE sends up
+    # to FULL_LIST_TOP_N (200) so the same Match_Score ordering is
+    # exposed all the way down. Cap at 500 here (rather than 50) to
+    # give well above the realistic post-filter candidate count
+    # (~100–200) while still preventing accidental DoS.
+    topN: int = Field(default=6, ge=1, le=500)
 
     @field_validator("persona")
     @classmethod
@@ -374,6 +382,241 @@ def score(req: ScoreRequest) -> Dict[str, Any]:
         return pipeline.score_one(df)
     except Exception as exc:  # pragma: no cover
         raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+# ---------------------------------------------------------------------------
+# Content-similarity endpoint (Step D).
+#
+# Lazy-loads `similarity_bundle.joblib` (566 MB sklearn bundle + NxN
+# cosine matrix) on the first request, not at startup. The bundle is
+# produced by the `Content_based_recomaendation.ipynb` notebook.
+#
+# Returns, for each input candidate, its cosine similarity to the
+# mean of the input set. This is item-item style content-based
+# recommendation without a separate "seed phone" — the seed is the
+# centroid of the candidates the ranker just chose.
+# ---------------------------------------------------------------------------
+class SimilarityCandidate(BaseModel):
+    brand: str = Field(..., min_length=1, max_length=80)
+    modelName: str = Field(..., min_length=1, max_length=120)
+
+
+class SimilarityRequest(BaseModel):
+    candidates: List[SimilarityCandidate] = Field(..., min_length=1, max_length=200)
+
+
+class SimilarityRow(BaseModel):
+    brand: str
+    modelName: str
+    similarityToMean: float
+
+
+class SimilarityResponse(BaseModel):
+    scores: List[SimilarityRow]
+    matched: int
+    total: int
+
+
+_similarity_bundle: Optional[Dict[str, Any]] = None
+_similarity_bundle_error: Optional[str] = None
+
+
+def _load_similarity_bundle() -> Optional[Dict[str, Any]]:
+    """Lazy-load the content-bundle on first /similarity/score hit."""
+    global _similarity_bundle, _similarity_bundle_error
+    if _similarity_bundle is not None:
+        return _similarity_bundle
+    if _similarity_bundle_error is not None:
+        return None
+    if not SIMILARITY_BUNDLE_PATH.exists():
+        _similarity_bundle_error = (
+            f"bundle not found at {SIMILARITY_BUNDLE_PATH}"
+        )
+        print(
+            f"[similarity] bundle missing: {_similarity_bundle_error}",
+            flush=True,
+        )
+        return None
+    try:
+        bundle = joblib.load(SIMILARITY_BUNDLE_PATH)
+        _similarity_bundle = bundle
+        n_phones = len(bundle["df"])
+        print(
+            f"[similarity] bundle loaded: {n_phones} phones, "
+            f"matrix={bundle['similarity_matrix'].shape}",
+            flush=True,
+        )
+        return bundle
+    except Exception as exc:  # noqa: BLE001
+        _similarity_bundle_error = str(exc)
+        print(
+            f"[similarity] bundle load FAILED: {exc}",
+            flush=True,
+        )
+        return None
+
+
+@app.post("/similarity/score", response_model=SimilarityResponse)
+def similarity_score(req: SimilarityRequest) -> Dict[str, Any]:
+    bundle = _load_similarity_bundle()
+    if bundle is None:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                f"similarity_bundle unavailable: "
+                f"{_similarity_bundle_error or 'unknown error'}"
+            ),
+        )
+
+    df = bundle["df"]
+    sim_matrix = bundle["similarity_matrix"]
+    name_index = df.set_index(["Brand", "Model_Name"])
+
+    scored: List[Dict[str, Any]] = []
+    vecs: List[Tuple[Tuple[str, str], np.ndarray]] = []
+
+    for c in req.candidates:
+        key = (c.brand, c.modelName)
+        try:
+            idx = name_index.index.get_loc(key)
+            # .index.get_loc returns int or slice; collapse slice→first row.
+            if isinstance(idx, slice):
+                idx = int(idx.start)
+            else:
+                idx = int(idx)
+            vecs.append((key, np.asarray(sim_matrix[idx], dtype=np.float64)))
+        except KeyError:
+            scored.append({
+                "brand": key[0],
+                "modelName": key[1],
+                "similarityToMean": 0.0,
+            })
+
+    if not vecs:
+        # None of the candidates were in the bundle — every row gets 0.
+        for c in req.candidates:
+            scored.append({
+                "brand": c.brand,
+                "modelName": c.modelName,
+                "similarityToMean": 0.0,
+            })
+        return {"scores": scored, "matched": 0, "total": len(req.candidates)}
+
+    mean_vec = np.mean([v for _, v in vecs], axis=0)
+    mean_norm = float(np.linalg.norm(mean_vec)) + 1e-12
+
+    for key, vec in vecs:
+        denom = float(np.linalg.norm(vec)) * mean_norm
+        sim = float(np.dot(vec, mean_vec) / denom) if denom > 0 else 0.0
+        scored.append({
+            "brand": key[0],
+            "modelName": key[1],
+            "similarityToMean": round(sim, 4),
+        })
+
+    return {
+        "scores": scored,
+        "matched": len(vecs),
+        "total": len(req.candidates),
+    }
+
+
+
+# ---------------------------------------------------------------------------
+# Single-seed "phones similar to this one" lookup (Related Phones section
+# on the FE phone-details page).
+#
+# Reuses the EXACT same bundle and name_index as /similarity/score — no new
+# algorithm, no recomputation. The bundle's NxN cosine matrix already has
+# every pair-wise similarity pre-computed; we just pull the seed's row,
+# argsort descending, and slice the top-K (skipping the seed itself which
+# sits at index 0 with similarity=1.0 to itself).
+#
+# Strictly content-based — no collaborative filtering, no hybrid, no
+# persona, no popularity, no browsing history. Pure item-item cosine
+# lookup against the bundle built by `Content_based_recomaendation.ipynb`.
+# ---------------------------------------------------------------------------
+class SimilarPhoneRow(BaseModel):
+    brand: str
+    modelName: str
+    similarity: float  # cosine to the seed, in [0, 1]
+
+
+class SimilarPhonesResponse(BaseModel):
+    seed: SimilarPhoneRow
+    matches: List[SimilarPhoneRow]
+    matched: int
+    total: int  # how many bundle rows we considered before slicing
+
+
+@app.get("/similarity/similar", response_model=SimilarPhonesResponse)
+def similarity_similar(
+    brand: str = Query(..., min_length=1, max_length=80),
+    modelName: str = Query(..., min_length=1, max_length=120),
+    limit: int = Query(12, ge=1, le=50),
+) -> Dict[str, Any]:
+    bundle = _load_similarity_bundle()
+    if bundle is None:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                f"similarity_bundle unavailable: "
+                f"{_similarity_bundle_error or 'unknown error'}"
+            ),
+        )
+
+    df = bundle["df"]
+    sim_matrix = bundle["similarity_matrix"]
+    name_index = df.set_index(["Brand", "Model_Name"])
+
+    seed_key = (brand, modelName)
+    try:
+        idx = name_index.index.get_loc(seed_key)
+        # .index.get_loc returns int or slice; collapse slice→first row.
+        if isinstance(idx, slice):
+            seed_idx = int(idx.start)
+        else:
+            seed_idx = int(idx)
+    except KeyError:
+        # Seed phone isn't in the content-bundle's df — return an empty
+        # response so the FE simply hides the related-phones section
+        # rather than throwing a 404 on the detail page.
+        return {
+            "seed": {"brand": brand, "modelName": modelName, "similarity": 0.0},
+            "matches": [],
+            "matched": 0,
+            "total": 0,
+        }
+
+    # Pull the seed's pre-computed similarity row and sort descending.
+    # Index 0 is the seed itself (sim=1.0) — skip it.
+    row = np.asarray(sim_matrix[seed_idx], dtype=np.float64)
+    order = np.argsort(-row, kind="stable")
+
+    matches: List[Dict[str, Any]] = []
+    # `df` is the bundle's underlying frame (Brand/Model_Name are its index
+    # after .set_index above, but iloc still works on the original positions).
+    for i in order:
+        if int(i) == seed_idx:
+            continue  # skip self — always top-1
+        sim = float(row[int(i)])
+        # Look up the brand/model via iloc on the ORIGINAL df (which still
+        # has Brand/Model_Name as columns).
+        row_data = df.iloc[int(i)]
+        matches.append({
+            "brand": str(row_data["Brand"]),
+            "modelName": str(row_data["Model_Name"]),
+            "similarity": round(sim, 4),
+        })
+        if len(matches) >= limit:
+            break
+
+    return {
+        "seed": {"brand": brand, "modelName": modelName, "similarity": 1.0},
+        "matches": matches,
+        "matched": len(matches),
+        "total": len(order),
+    }
 
 
 @app.post("/recommend")
