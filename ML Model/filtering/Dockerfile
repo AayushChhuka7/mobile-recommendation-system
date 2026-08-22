@@ -3,12 +3,21 @@
 # CF Recommender — FastAPI inference service.
 #
 # Lightweight image — only uvicorn + a small numpy/pandas/sklearn set.
-# The CFRecommender pickle (~16 MB) is mounted at runtime rather than
-# COPY'd into the image so a retrain only requires re-mounting the
-# volume (no image rebuild). The compose file handles the bind.
+# The CFRecommender pickle is mounted at runtime rather than COPY'd
+# into the image so a retrain only requires re-mounting the volume
+# (no image rebuild). The compose file handles the bind via CF_MODEL_DIR.
 #
 # Reuses python:3.11-slim — same glibc + numpy/pandas wheel stack as the
 # existing ml-service so we don't need a second virtualenv story.
+#
+# Production notes:
+#   * uvicorn binds 0.0.0.0 — required for Docker port publishing AND
+#     for inter-container calls from the Node backend.
+#   * Pickle load happens ONCE at startup inside the FastAPI lifespan
+#     handler (cf_service/app.py). We do NOT reload the model per
+#     request — unchanged from the previous Dockerfile.
+#   * `--port` reads `$PORT` at runtime, defaulting to 9001 so the
+#     image works locally AND on cloud platforms.
 # ---------------------------------------------------------------------------
 
 # ---- Stage 1: builder ----
@@ -37,9 +46,11 @@ FROM python:3.11-slim AS runtime
 
 WORKDIR /app
 
+# curl (healthcheck) + tini (clean SIGTERM forwarding to uvicorn).
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
         curl \
+        tini \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /install/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
@@ -52,6 +63,7 @@ COPY --from=builder /install/bin /usr/local/bin
 COPY cf_service/ ./cf_service/
 COPY 03_collaborative_filtering/cf_model.py ./cf_model.py
 
+ENV PORT=9001
 EXPOSE 9001
 
 # Healthcheck — same curl pattern as ml-service so compose behaviour is
@@ -59,6 +71,9 @@ EXPOSE 9001
 HEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=30s \
   CMD ["curl", "-fsS", "http://127.0.0.1:9001/health"]
 
+# tini as PID 1 — forwards SIGTERM so uvicorn exits cleanly.
+ENTRYPOINT ["/usr/bin/tini", "--"]
 # `-k worker` is enough for this service. The pickle load happens once
-# at startup; per-request work is ~30 ms.
-CMD ["uvicorn", "cf_service.app:app", "--host", "0.0.0.0", "--port", "9001", "--workers", "1"]
+# at startup; per-request work is ~30 ms. Single worker so the in-memory
+# model is shared across requests.
+CMD ["sh", "-c", "exec uvicorn cf_service.app:app --host 0.0.0.0 --port ${PORT} --workers 1"]
