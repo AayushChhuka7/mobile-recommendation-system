@@ -247,6 +247,12 @@ function Dashboard() {
   const [budgetMin, setBudgetMin] = useState("10000");
   const [budgetMax, setBudgetMax] = useState("200000");
 
+  // Brand include/exclude preference for the "Find your phone" modal.
+  // Modal-scoped (not auto-saved). `brandMode` toggles between "include"
+  // and "exclude"; `selectedBrands` is the chip-set the user has picked.
+  const [brandMode, setBrandMode] = useState("include");
+  const [selectedBrands, setSelectedBrands] = useState([]);
+
   const [recs, setRecs] = useState(null);
   const [recsLoading, setRecsLoading] = useState(false);
   const [recsError, setRecsError] = useState("");
@@ -726,6 +732,21 @@ function Dashboard() {
     setWeights((prev) => ({ ...prev, [key]: Number(value) }));
     setWeightsTouched(true);
   }, []);
+
+  // Brand chip toggle — add a brand to `selectedBrands` if it isn't
+  // already in the set, otherwise remove it. Stable identity by name
+  // (matches the brand list served by `/phones/filters`).
+  const toggleBrand = useCallback((name) => {
+    setSelectedBrands((prev) =>
+      prev.includes(name) ? prev.filter((b) => b !== name) : [...prev, name],
+    );
+  }, []);
+
+  // Reset the brand selector. Modal-scoped — does not touch the stored
+  // user profile.
+  const clearBrands = useCallback(() => {
+    setSelectedBrands([]);
+  }, []);
   const handleFindPhone = useCallback(async () => {
     const max = Number(budgetMax);
     if (!Number.isFinite(max) || max <= 0) {
@@ -755,12 +776,18 @@ function Dashboard() {
     closeRecommend();
     const persona = weightsTouched ? "Custom" : selectedCategory;
     const preferences = weightsTouched ? { ...weights } : undefined;
+    // Only attach `brandFilter` when the user actually picked at least
+    // one brand — an empty list would tell the ML ranker "include
+    // nothing", which is the wrong default.
+    const brandFilter =
+      selectedBrands.length > 0 ? { mode: brandMode, list: selectedBrands } : undefined;
 
     try {
       const results = await getRecommendations({
         persona,
         budget,
         preferences,
+        brandFilter,
         // Two-stage pipeline trigger. The BE detects topN === 5 and
         // switches off the 5-signal fusionRank and onto the
         // rule-based → content-based → top-5 pipeline. The
@@ -795,6 +822,8 @@ function Dashboard() {
     selectedCategory,
     weights,
     weightsTouched,
+    brandMode,
+    selectedBrands,
     closeRecommend,
   ]);
   const handleClearRecommendations = useCallback(() => {
@@ -1960,6 +1989,79 @@ function Dashboard() {
                   aria-label="Maximum budget"
                 />
               </div>
+            </div>
+
+            <div className="questionnaire-section" style={{ marginTop: 16 }}>
+              <div className="dash-brands-header">
+                <div className="questionnaire-hint" style={{ marginBottom: 0 }}>
+                  Phone brands — optional
+                  {selectedBrands.length > 0 && (
+                    <span className="dash-brands-count">
+                      {" "}({selectedBrands.length} selected)
+                    </span>
+                  )}
+                </div>
+                {selectedBrands.length > 0 && (
+                  <button
+                    type="button"
+                    className="dash-brand-clear"
+                    onClick={clearBrands}
+                    aria-label="Clear brand selection"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              <div
+                className="dash-brand-mode"
+                role="tablist"
+                aria-label="Brand filter mode"
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={brandMode === "include"}
+                  className={`dash-brand-mode-btn ${brandMode === "include" ? "selected" : ""}`}
+                  onClick={() => setBrandMode("include")}
+                >
+                  Include brands
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={brandMode === "exclude"}
+                  className={`dash-brand-mode-btn ${brandMode === "exclude" ? "selected" : ""}`}
+                  onClick={() => setBrandMode("exclude")}
+                >
+                  Exclude brands
+                </button>
+              </div>
+
+              {brands.length > 0 ? (
+                <div className="dash-brands-grid">
+                  {brands.map((b) => {
+                    const name = typeof b === "string" ? b : b?.name;
+                    if (!name) return null;
+                    const selected = selectedBrands.includes(name);
+                    return (
+                      <button
+                        type="button"
+                        key={name}
+                        className={`usage-chip ${selected ? "selected" : ""}`}
+                        aria-pressed={selected}
+                        onClick={() => toggleBrand(name)}
+                      >
+                        {name}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="dash-brand-hint">
+                  Pick brands to include or exclude.
+                </div>
+              )}
             </div>
 
             <button

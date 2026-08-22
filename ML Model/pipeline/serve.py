@@ -217,6 +217,27 @@ class RecommendRequest(BaseModel):
     # Used as `custom_weights_stars` when persona=Custom; otherwise the
     # persona preset wins.
     preferences: Dict[str, int] = Field(default_factory=dict)
+    # Optional brand filters from the FE "Find your phone" modal.
+    # Both `preferred_brands` (include-list) and `exclude_brands`
+    # (deny-list) are HARD drops on the scorer side (see
+    # `ML Model/pipeline/recommend.py::_hard_filter_drops` steps 6 + 7).
+    # A non-matching brand never enters the candidate pool — there is
+    # no soft penalty path. The `preferred_brands` field was promoted
+    # from soft to hard as part of the brand-filter rework so the
+    # "Recommend Me a Phone" click flow respects the user's include
+    # choice without ranking-and-penalising outliers.
+    preferred_brands: Optional[List[str]] = None
+    exclude_brands: Optional[List[str]] = None
+    # When True, the user's `budget.max` is honoured as a SOFT penalty
+    # on the auto-recommend path (Dashboard mount) — out-of-budget
+    # phones stay in the candidate pool but get a reduced
+    # Match_Score, proportional to (price - budget) / budget. When
+    # False (default, the "Recommend Me a Phone" click flow), the
+    # budget is the user's hard ceiling and out-of-budget phones are
+    # dropped outright. See
+    # `recommend.py::_hard_filter_drops` step 1 and
+    # `_soft_filter_penalty` for the formula.
+    soft_price: bool = False
     # Issue 1 — the recs panel on the dashboard now shows the full
     # ranked catalog instead of a top-6 picks slice. The BE sends up
     # to FULL_LIST_TOP_N (200) so the same Match_Score ordering is
@@ -385,16 +406,18 @@ def score(req: ScoreRequest) -> Dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
-# Content-similarity endpoint (Step D).
+# Content-similarity endpoint (Step D + Fix #4).
 #
 # Lazy-loads `similarity_bundle.joblib` (566 MB sklearn bundle + NxN
 # cosine matrix) on the first request, not at startup. The bundle is
 # produced by the `Content_based_recomaendation.ipynb` notebook.
 #
-# Returns, for each input candidate, its cosine similarity to the
-# mean of the input set. This is item-item style content-based
-# recommendation without a separate "seed phone" — the seed is the
-# centroid of the candidates the ranker just chose.
+# Fix #4 — the body now optionally carries `userSeedPhones` (the
+# user's browsing + compare history). When present, each candidate's
+# similarity is computed against the *user's interest centroid*,
+# not the catalog mean. The legacy "centroid of the input set" score
+# is still returned as `similarityToCatalog` so the BE can blend
+# when the user history is too narrow.
 # ---------------------------------------------------------------------------
 class SimilarityCandidate(BaseModel):
     brand: str = Field(..., min_length=1, max_length=80)
@@ -403,18 +426,26 @@ class SimilarityCandidate(BaseModel):
 
 class SimilarityRequest(BaseModel):
     candidates: List[SimilarityCandidate] = Field(..., min_length=1, max_length=200)
+    # Optional — when present, similarity is computed against this
+    # centroid instead of the candidates' own centroid. Empty list
+    # is treated as "not provided".
+    userSeedPhones: Optional[List[SimilarityCandidate]] = None
 
 
 class SimilarityRow(BaseModel):
     brand: str
     modelName: str
-    similarityToMean: float
+    similarityToSeed: float
+    similarityToCatalog: float
+    coldStart: bool
 
 
 class SimilarityResponse(BaseModel):
     scores: List[SimilarityRow]
     matched: int
     total: int
+    seedMatched: int
+    coldStart: bool
 
 
 _similarity_bundle: Optional[Dict[str, Any]] = None
@@ -456,6 +487,23 @@ def _load_similarity_bundle() -> Optional[Dict[str, Any]]:
         return None
 
 
+def _lookup_vec(name_index, sim_matrix, brand: str, model: str):
+    """Return (vec, found) for a (brand, model) pair. `found` is
+    False when the phone is not in the bundle. We collapse
+    slice/multi-index cases to the first matching row so a phone
+    with duplicate keys always returns the same vector."""
+    key = (brand, model)
+    try:
+        idx = name_index.index.get_loc(key)
+        if isinstance(idx, slice):
+            idx = int(idx.start)
+        else:
+            idx = int(idx)
+        return np.asarray(sim_matrix[idx], dtype=np.float64), True
+    except KeyError:
+        return None, False
+
+
 @app.post("/similarity/score", response_model=SimilarityResponse)
 def similarity_score(req: SimilarityRequest) -> Dict[str, Any]:
     bundle = _load_similarity_bundle()
@@ -472,52 +520,81 @@ def similarity_score(req: SimilarityRequest) -> Dict[str, Any]:
     sim_matrix = bundle["similarity_matrix"]
     name_index = df.set_index(["Brand", "Model_Name"])
 
-    scored: List[Dict[str, Any]] = []
-    vecs: List[Tuple[Tuple[str, str], np.ndarray]] = []
+    # 1. Resolve candidate vectors (one per input candidate).
+    cand_vecs: Dict[Tuple[str, str], np.ndarray] = {}
+    for c in req.candidates:
+        vec, found = _lookup_vec(name_index, sim_matrix, c.brand, c.modelName)
+        if found:
+            cand_vecs[(c.brand, c.modelName)] = vec
 
+    # 2. Resolve the catalog-mean centroid (legacy "centroid of
+    #    the served set" — used as a fallback / blend target).
+    catalog_centroid: Optional[np.ndarray] = None
+    if cand_vecs:
+        catalog_centroid = np.mean(list(cand_vecs.values()), axis=0)
+    catalog_norm = float(np.linalg.norm(catalog_centroid)) + 1e-12 if catalog_centroid is not None else 0.0
+
+    # 3. Resolve the user-seed centroid (Fix #4). If the FE didn't
+    #    supply seeds, or none of the seeds resolved, we mark the
+    #    response `coldStart: true` and the BE falls back to the
+    #    catalog-centroid score. We DON'T return zeros here — that
+    #    would lose the legacy "mean of candidates" signal.
+    seed_list = req.userSeedPhones or []
+    seed_vecs: List[np.ndarray] = []
+    for s in seed_list:
+        vec, found = _lookup_vec(name_index, sim_matrix, s.brand, s.modelName)
+        if found:
+            seed_vecs.append(vec)
+    cold_start = len(seed_vecs) == 0
+    seed_centroid: Optional[np.ndarray] = None
+    seed_norm = 0.0
+    if seed_vecs:
+        seed_centroid = np.mean(seed_vecs, axis=0)
+        seed_norm = float(np.linalg.norm(seed_centroid)) + 1e-12
+
+    # 4. Score each candidate against BOTH centroids. The BE picks
+    #    the blend ratio (cold users get catalog, warm users get
+    #    seed, narrow-history users get a weighted mix).
+    scored: List[Dict[str, Any]] = []
+    matched = 0
     for c in req.candidates:
         key = (c.brand, c.modelName)
-        try:
-            idx = name_index.index.get_loc(key)
-            # .index.get_loc returns int or slice; collapse slice→first row.
-            if isinstance(idx, slice):
-                idx = int(idx.start)
-            else:
-                idx = int(idx)
-            vecs.append((key, np.asarray(sim_matrix[idx], dtype=np.float64)))
-        except KeyError:
-            scored.append({
-                "brand": key[0],
-                "modelName": key[1],
-                "similarityToMean": 0.0,
-            })
-
-    if not vecs:
-        # None of the candidates were in the bundle — every row gets 0.
-        for c in req.candidates:
+        vec = cand_vecs.get(key)
+        if vec is None:
             scored.append({
                 "brand": c.brand,
                 "modelName": c.modelName,
-                "similarityToMean": 0.0,
+                "similarityToSeed": 0.0,
+                "similarityToCatalog": 0.0,
+                "coldStart": cold_start,
             })
-        return {"scores": scored, "matched": 0, "total": len(req.candidates)}
-
-    mean_vec = np.mean([v for _, v in vecs], axis=0)
-    mean_norm = float(np.linalg.norm(mean_vec)) + 1e-12
-
-    for key, vec in vecs:
-        denom = float(np.linalg.norm(vec)) * mean_norm
-        sim = float(np.dot(vec, mean_vec) / denom) if denom > 0 else 0.0
+            continue
+        matched += 1
+        v_norm = float(np.linalg.norm(vec)) + 1e-12
+        # Catalog (legacy) score
+        if catalog_centroid is not None and catalog_norm > 0:
+            sim_cat = float(np.dot(vec, catalog_centroid) / (v_norm * catalog_norm))
+        else:
+            sim_cat = 0.0
+        # User-seed score (Fix #4)
+        if seed_centroid is not None and seed_norm > 0:
+            sim_seed = float(np.dot(vec, seed_centroid) / (v_norm * seed_norm))
+        else:
+            sim_seed = sim_cat  # fall back: same as catalog
         scored.append({
-            "brand": key[0],
-            "modelName": key[1],
-            "similarityToMean": round(sim, 4),
+            "brand": c.brand,
+            "modelName": c.modelName,
+            "similarityToSeed": round(sim_seed, 4),
+            "similarityToCatalog": round(sim_cat, 4),
+            "coldStart": cold_start,
         })
 
     return {
         "scores": scored,
-        "matched": len(vecs),
+        "matched": matched,
         "total": len(req.candidates),
+        "seedMatched": len(seed_vecs),
+        "coldStart": cold_start,
     }
 
 
@@ -672,6 +749,18 @@ def recommend(req: RecommendRequest) -> Dict[str, Any]:
         budget_min_eur=req.budget.min,
         persona=persona,
         custom_weights_stars=custom_weights_stars,
+        # Brand include/exclude from the FE "Find your phone" modal.
+        # Both slots are HARD drops in the scorer
+        # (recommend.py::_hard_filter_drops steps 6 + 7) — the user's
+        # include-list is honoured as a require, and exclude-list as
+        # a deny. There is no soft penalty path anymore.
+        preferred_brands=req.preferred_brands,
+        exclude_brands=req.exclude_brands,
+        # Auto-recommend soft price: when True (Dashboard mount), the
+        # user's `budget.max` is a soft penalty instead of a hard
+        # drop. Click path leaves this False and keeps the hard
+        # ceiling.
+        soft_price=req.soft_price,
         top_n_results=req.topN,
     )
 

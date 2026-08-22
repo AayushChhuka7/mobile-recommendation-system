@@ -738,6 +738,87 @@
   cursor: pointer;
 }
 
+/* Phone brands selector — keep compact, reuse the existing palette.
+   Visual language matches .usage-chip / .usage-chip.selected from
+   Login.css so the modal stays visually unified. */
+.dash-brands-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.dash-brands-count {
+  color: var(--slate-light);
+  font-weight: 500;
+}
+
+.dash-brand-clear {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--primary);
+  transition: color var(--transition);
+}
+
+.dash-brand-clear:hover {
+  color: var(--primary-dark, var(--primary));
+  text-decoration: underline;
+}
+
+.dash-brand-mode {
+  display: inline-flex;
+  background: var(--bg-soft, var(--border-light, transparent));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2px;
+  margin-bottom: 10px;
+}
+
+.dash-brand-mode-btn {
+  flex: 1 1 auto;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--slate-dark);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+
+.dash-brand-mode-btn.selected {
+  background: var(--white);
+  color: var(--primary);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.dash-brand-mode-btn:not(.selected):hover {
+  color: var(--primary);
+}
+
+.dash-brands-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 132px;
+  overflow-y: auto;
+  padding: 2px 0 4px;
+}
+
+.dash-brand-hint {
+  font-size: 12.5px;
+  color: var(--slate-light);
+  margin-top: 4px;
+}
+
 .dash-search-section {
   margin-bottom: 28px;
 }

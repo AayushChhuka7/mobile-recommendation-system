@@ -79,6 +79,16 @@ export type RecommendationLog = $Result.DefaultSelection<Prisma.$RecommendationL
  */
 export type RecommendationCall = $Result.DefaultSelection<Prisma.$RecommendationCallPayload>
 /**
+ * Model PhoneTrend
+ * 
+ */
+export type PhoneTrend = $Result.DefaultSelection<Prisma.$PhoneTrendPayload>
+/**
+ * Model TrainingImpression
+ * 
+ */
+export type TrainingImpression = $Result.DefaultSelection<Prisma.$TrainingImpressionPayload>
+/**
  * Model CustomerProfile
  * 
  */
@@ -472,6 +482,26 @@ export class PrismaClient<
     * ```
     */
   get recommendationCall(): Prisma.RecommendationCallDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.phoneTrend`: Exposes CRUD operations for the **PhoneTrend** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PhoneTrends
+    * const phoneTrends = await prisma.phoneTrend.findMany()
+    * ```
+    */
+  get phoneTrend(): Prisma.PhoneTrendDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.trainingImpression`: Exposes CRUD operations for the **TrainingImpression** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TrainingImpressions
+    * const trainingImpressions = await prisma.trainingImpression.findMany()
+    * ```
+    */
+  get trainingImpression(): Prisma.TrainingImpressionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.customerProfile`: Exposes CRUD operations for the **CustomerProfile** model.
@@ -1042,6 +1072,8 @@ export namespace Prisma {
     RecommendationHistory: 'RecommendationHistory',
     RecommendationLog: 'RecommendationLog',
     RecommendationCall: 'RecommendationCall',
+    PhoneTrend: 'PhoneTrend',
+    TrainingImpression: 'TrainingImpression',
     CustomerProfile: 'CustomerProfile',
     Wishlist: 'Wishlist',
     ComparisonHistory: 'ComparisonHistory',
@@ -1068,6 +1100,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
+      modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "recommendationLog" | "recommendationCall" | "phoneTrend" | "trainingImpression" | "customerProfile" | "wishlist" | "comparisonHistory" | "paymentHistory" | "searchHistory" | "browsingHistory" | "adminStatsCache" | "event" | "behaviorScore"
       modelProps: "roles" | "users" | "otp" | "session" | "brands" | "phones" | "phoneVariants" | "phoneSpecs" | "userProfile" | "userPreference" | "recommendationHistory" | "recommendationLog" | "recommendationCall" | "customerProfile" | "wishlist" | "comparisonHistory" | "paymentHistory" | "searchHistory" | "browsingHistory" | "adminStatsCache" | "event" | "behaviorScore" | "customerCluster" | "cfRecommendationLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
@@ -2034,6 +2067,154 @@ export namespace Prisma {
           }
         }
       }
+      PhoneTrend: {
+        payload: Prisma.$PhoneTrendPayload<ExtArgs>
+        fields: Prisma.PhoneTrendFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PhoneTrendFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PhoneTrendFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload>
+          }
+          findFirst: {
+            args: Prisma.PhoneTrendFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PhoneTrendFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload>
+          }
+          findMany: {
+            args: Prisma.PhoneTrendFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload>[]
+          }
+          create: {
+            args: Prisma.PhoneTrendCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload>
+          }
+          createMany: {
+            args: Prisma.PhoneTrendCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PhoneTrendCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload>[]
+          }
+          delete: {
+            args: Prisma.PhoneTrendDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload>
+          }
+          update: {
+            args: Prisma.PhoneTrendUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload>
+          }
+          deleteMany: {
+            args: Prisma.PhoneTrendDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PhoneTrendUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PhoneTrendUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload>[]
+          }
+          upsert: {
+            args: Prisma.PhoneTrendUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PhoneTrendPayload>
+          }
+          aggregate: {
+            args: Prisma.PhoneTrendAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePhoneTrend>
+          }
+          groupBy: {
+            args: Prisma.PhoneTrendGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PhoneTrendGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PhoneTrendCountArgs<ExtArgs>
+            result: $Utils.Optional<PhoneTrendCountAggregateOutputType> | number
+          }
+        }
+      }
+      TrainingImpression: {
+        payload: Prisma.$TrainingImpressionPayload<ExtArgs>
+        fields: Prisma.TrainingImpressionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TrainingImpressionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TrainingImpressionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload>
+          }
+          findFirst: {
+            args: Prisma.TrainingImpressionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TrainingImpressionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload>
+          }
+          findMany: {
+            args: Prisma.TrainingImpressionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload>[]
+          }
+          create: {
+            args: Prisma.TrainingImpressionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload>
+          }
+          createMany: {
+            args: Prisma.TrainingImpressionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TrainingImpressionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload>[]
+          }
+          delete: {
+            args: Prisma.TrainingImpressionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload>
+          }
+          update: {
+            args: Prisma.TrainingImpressionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload>
+          }
+          deleteMany: {
+            args: Prisma.TrainingImpressionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TrainingImpressionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TrainingImpressionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload>[]
+          }
+          upsert: {
+            args: Prisma.TrainingImpressionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TrainingImpressionPayload>
+          }
+          aggregate: {
+            args: Prisma.TrainingImpressionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTrainingImpression>
+          }
+          groupBy: {
+            args: Prisma.TrainingImpressionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TrainingImpressionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TrainingImpressionCountArgs<ExtArgs>
+            result: $Utils.Optional<TrainingImpressionCountAggregateOutputType> | number
+          }
+        }
+      }
       CustomerProfile: {
         payload: Prisma.$CustomerProfilePayload<ExtArgs>
         fields: Prisma.CustomerProfileFieldRefs
@@ -2984,6 +3165,8 @@ export namespace Prisma {
     recommendationHistory?: RecommendationHistoryOmit
     recommendationLog?: RecommendationLogOmit
     recommendationCall?: RecommendationCallOmit
+    phoneTrend?: PhoneTrendOmit
+    trainingImpression?: TrainingImpressionOmit
     customerProfile?: CustomerProfileOmit
     wishlist?: WishlistOmit
     comparisonHistory?: ComparisonHistoryOmit
@@ -9185,6 +9368,9 @@ export namespace Prisma {
     batteryMah: number | null
     source: string | null
     sourceUrl: string | null
+    releasedAt: Date | null
+    stockState: string | null
+    stockUpdatedAt: Date | null
     isActive: boolean | null
     discontinuedAt: Date | null
     createdAt: Date | null
@@ -9201,6 +9387,9 @@ export namespace Prisma {
     batteryMah: number | null
     source: string | null
     sourceUrl: string | null
+    releasedAt: Date | null
+    stockState: string | null
+    stockUpdatedAt: Date | null
     isActive: boolean | null
     discontinuedAt: Date | null
     createdAt: Date | null
@@ -9217,6 +9406,9 @@ export namespace Prisma {
     batteryMah: number
     source: number
     sourceUrl: number
+    releasedAt: number
+    stockState: number
+    stockUpdatedAt: number
     isActive: number
     discontinuedAt: number
     createdAt: number
@@ -9245,6 +9437,9 @@ export namespace Prisma {
     batteryMah?: true
     source?: true
     sourceUrl?: true
+    releasedAt?: true
+    stockState?: true
+    stockUpdatedAt?: true
     isActive?: true
     discontinuedAt?: true
     createdAt?: true
@@ -9261,6 +9456,9 @@ export namespace Prisma {
     batteryMah?: true
     source?: true
     sourceUrl?: true
+    releasedAt?: true
+    stockState?: true
+    stockUpdatedAt?: true
     isActive?: true
     discontinuedAt?: true
     createdAt?: true
@@ -9277,6 +9475,9 @@ export namespace Prisma {
     batteryMah?: true
     source?: true
     sourceUrl?: true
+    releasedAt?: true
+    stockState?: true
+    stockUpdatedAt?: true
     isActive?: true
     discontinuedAt?: true
     createdAt?: true
@@ -9380,6 +9581,9 @@ export namespace Prisma {
     batteryMah: number | null
     source: string | null
     sourceUrl: string | null
+    releasedAt: Date | null
+    stockState: string | null
+    stockUpdatedAt: Date | null
     isActive: boolean
     discontinuedAt: Date | null
     createdAt: Date
@@ -9415,6 +9619,9 @@ export namespace Prisma {
     batteryMah?: boolean
     source?: boolean
     sourceUrl?: boolean
+    releasedAt?: boolean
+    stockState?: boolean
+    stockUpdatedAt?: boolean
     isActive?: boolean
     discontinuedAt?: boolean
     createdAt?: boolean
@@ -9422,6 +9629,7 @@ export namespace Prisma {
     brand?: boolean | BrandsDefaultArgs<ExtArgs>
     variants?: boolean | Phones$variantsArgs<ExtArgs>
     specs?: boolean | Phones$specsArgs<ExtArgs>
+    trend?: boolean | Phones$trendArgs<ExtArgs>
     recommendationHistory?: boolean | Phones$recommendationHistoryArgs<ExtArgs>
     recommendationLogs?: boolean | Phones$recommendationLogsArgs<ExtArgs>
     wishlist?: boolean | Phones$wishlistArgs<ExtArgs>
@@ -9443,6 +9651,9 @@ export namespace Prisma {
     batteryMah?: boolean
     source?: boolean
     sourceUrl?: boolean
+    releasedAt?: boolean
+    stockState?: boolean
+    stockUpdatedAt?: boolean
     isActive?: boolean
     discontinuedAt?: boolean
     createdAt?: boolean
@@ -9460,6 +9671,9 @@ export namespace Prisma {
     batteryMah?: boolean
     source?: boolean
     sourceUrl?: boolean
+    releasedAt?: boolean
+    stockState?: boolean
+    stockUpdatedAt?: boolean
     isActive?: boolean
     discontinuedAt?: boolean
     createdAt?: boolean
@@ -9477,17 +9691,21 @@ export namespace Prisma {
     batteryMah?: boolean
     source?: boolean
     sourceUrl?: boolean
+    releasedAt?: boolean
+    stockState?: boolean
+    stockUpdatedAt?: boolean
     isActive?: boolean
     discontinuedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PhonesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"phoneId" | "brandId" | "modelName" | "imageUrl" | "imagePath" | "antutuScore" | "batteryMah" | "source" | "sourceUrl" | "isActive" | "discontinuedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["phones"]>
+  export type PhonesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"phoneId" | "brandId" | "modelName" | "imageUrl" | "imagePath" | "antutuScore" | "batteryMah" | "source" | "sourceUrl" | "releasedAt" | "stockState" | "stockUpdatedAt" | "isActive" | "discontinuedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["phones"]>
   export type PhonesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     brand?: boolean | BrandsDefaultArgs<ExtArgs>
     variants?: boolean | Phones$variantsArgs<ExtArgs>
     specs?: boolean | Phones$specsArgs<ExtArgs>
+    trend?: boolean | Phones$trendArgs<ExtArgs>
     recommendationHistory?: boolean | Phones$recommendationHistoryArgs<ExtArgs>
     recommendationLogs?: boolean | Phones$recommendationLogsArgs<ExtArgs>
     wishlist?: boolean | Phones$wishlistArgs<ExtArgs>
@@ -9511,6 +9729,7 @@ export namespace Prisma {
       brand: Prisma.$BrandsPayload<ExtArgs>
       variants: Prisma.$PhoneVariantsPayload<ExtArgs>[]
       specs: Prisma.$PhoneSpecsPayload<ExtArgs> | null
+      trend: Prisma.$PhoneTrendPayload<ExtArgs> | null
       recommendationHistory: Prisma.$RecommendationHistoryPayload<ExtArgs>[]
       recommendationLogs: Prisma.$RecommendationLogPayload<ExtArgs>[]
       wishlist: Prisma.$WishlistPayload<ExtArgs>[]
@@ -9530,6 +9749,9 @@ export namespace Prisma {
       batteryMah: number | null
       source: string | null
       sourceUrl: string | null
+      releasedAt: Date | null
+      stockState: string | null
+      stockUpdatedAt: Date | null
       isActive: boolean
       discontinuedAt: Date | null
       createdAt: Date
@@ -9931,6 +10153,7 @@ export namespace Prisma {
     brand<T extends BrandsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BrandsDefaultArgs<ExtArgs>>): Prisma__BrandsClient<$Result.GetResult<Prisma.$BrandsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     variants<T extends Phones$variantsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$variantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneVariantsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     specs<T extends Phones$specsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$specsArgs<ExtArgs>>): Prisma__PhoneSpecsClient<$Result.GetResult<Prisma.$PhoneSpecsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    trend<T extends Phones$trendArgs<ExtArgs> = {}>(args?: Subset<T, Phones$trendArgs<ExtArgs>>): Prisma__PhoneTrendClient<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     recommendationHistory<T extends Phones$recommendationHistoryArgs<ExtArgs> = {}>(args?: Subset<T, Phones$recommendationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     recommendationLogs<T extends Phones$recommendationLogsArgs<ExtArgs> = {}>(args?: Subset<T, Phones$recommendationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecommendationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     wishlist<T extends Phones$wishlistArgs<ExtArgs> = {}>(args?: Subset<T, Phones$wishlistArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WishlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9977,6 +10200,9 @@ export namespace Prisma {
     readonly batteryMah: FieldRef<"Phones", 'Int'>
     readonly source: FieldRef<"Phones", 'String'>
     readonly sourceUrl: FieldRef<"Phones", 'String'>
+    readonly releasedAt: FieldRef<"Phones", 'DateTime'>
+    readonly stockState: FieldRef<"Phones", 'String'>
+    readonly stockUpdatedAt: FieldRef<"Phones", 'DateTime'>
     readonly isActive: FieldRef<"Phones", 'Boolean'>
     readonly discontinuedAt: FieldRef<"Phones", 'DateTime'>
     readonly createdAt: FieldRef<"Phones", 'DateTime'>
@@ -10422,6 +10648,25 @@ export namespace Prisma {
      */
     include?: PhoneSpecsInclude<ExtArgs> | null
     where?: PhoneSpecsWhereInput
+  }
+
+  /**
+   * Phones.trend
+   */
+  export type Phones$trendArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+    where?: PhoneTrendWhereInput
   }
 
   /**
@@ -17102,11 +17347,13 @@ export namespace Prisma {
   export type RecommendationLogAvgAggregateOutputType = {
     finalScore: number | null
     rank: number | null
+    dwellMs: number | null
   }
 
   export type RecommendationLogSumAggregateOutputType = {
     finalScore: number | null
     rank: number | null
+    dwellMs: number | null
   }
 
   export type RecommendationLogMinAggregateOutputType = {
@@ -17115,8 +17362,15 @@ export namespace Prisma {
     phoneId: string | null
     finalScore: number | null
     rank: number | null
-    shownAt: Date | null
+    source: string | null
+    requestId: string | null
+    dwellMs: number | null
     clicked: boolean | null
+    skipped: boolean | null
+    isTrainingEligible: boolean | null
+    explorationArm: string | null
+    shownAt: Date | null
+    firstSeenAt: Date | null
   }
 
   export type RecommendationLogMaxAggregateOutputType = {
@@ -17125,8 +17379,15 @@ export namespace Prisma {
     phoneId: string | null
     finalScore: number | null
     rank: number | null
-    shownAt: Date | null
+    source: string | null
+    requestId: string | null
+    dwellMs: number | null
     clicked: boolean | null
+    skipped: boolean | null
+    isTrainingEligible: boolean | null
+    explorationArm: string | null
+    shownAt: Date | null
+    firstSeenAt: Date | null
   }
 
   export type RecommendationLogCountAggregateOutputType = {
@@ -17135,8 +17396,15 @@ export namespace Prisma {
     phoneId: number
     finalScore: number
     rank: number
-    shownAt: number
+    source: number
+    requestId: number
+    dwellMs: number
     clicked: number
+    skipped: number
+    isTrainingEligible: number
+    explorationArm: number
+    shownAt: number
+    firstSeenAt: number
     _all: number
   }
 
@@ -17144,11 +17412,13 @@ export namespace Prisma {
   export type RecommendationLogAvgAggregateInputType = {
     finalScore?: true
     rank?: true
+    dwellMs?: true
   }
 
   export type RecommendationLogSumAggregateInputType = {
     finalScore?: true
     rank?: true
+    dwellMs?: true
   }
 
   export type RecommendationLogMinAggregateInputType = {
@@ -17157,8 +17427,15 @@ export namespace Prisma {
     phoneId?: true
     finalScore?: true
     rank?: true
-    shownAt?: true
+    source?: true
+    requestId?: true
+    dwellMs?: true
     clicked?: true
+    skipped?: true
+    isTrainingEligible?: true
+    explorationArm?: true
+    shownAt?: true
+    firstSeenAt?: true
   }
 
   export type RecommendationLogMaxAggregateInputType = {
@@ -17167,8 +17444,15 @@ export namespace Prisma {
     phoneId?: true
     finalScore?: true
     rank?: true
-    shownAt?: true
+    source?: true
+    requestId?: true
+    dwellMs?: true
     clicked?: true
+    skipped?: true
+    isTrainingEligible?: true
+    explorationArm?: true
+    shownAt?: true
+    firstSeenAt?: true
   }
 
   export type RecommendationLogCountAggregateInputType = {
@@ -17177,8 +17461,15 @@ export namespace Prisma {
     phoneId?: true
     finalScore?: true
     rank?: true
-    shownAt?: true
+    source?: true
+    requestId?: true
+    dwellMs?: true
     clicked?: true
+    skipped?: true
+    isTrainingEligible?: true
+    explorationArm?: true
+    shownAt?: true
+    firstSeenAt?: true
     _all?: true
   }
 
@@ -17274,8 +17565,15 @@ export namespace Prisma {
     phoneId: string
     finalScore: number
     rank: number
-    shownAt: Date
+    source: string
+    requestId: string | null
+    dwellMs: number
     clicked: boolean
+    skipped: boolean
+    isTrainingEligible: boolean
+    explorationArm: string | null
+    shownAt: Date
+    firstSeenAt: Date | null
     _count: RecommendationLogCountAggregateOutputType | null
     _avg: RecommendationLogAvgAggregateOutputType | null
     _sum: RecommendationLogSumAggregateOutputType | null
@@ -17303,8 +17601,15 @@ export namespace Prisma {
     phoneId?: boolean
     finalScore?: boolean
     rank?: boolean
-    shownAt?: boolean
+    source?: boolean
+    requestId?: boolean
+    dwellMs?: boolean
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: boolean
+    shownAt?: boolean
+    firstSeenAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
     phone?: boolean | PhonesDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["recommendationLog"]>
@@ -17315,8 +17620,15 @@ export namespace Prisma {
     phoneId?: boolean
     finalScore?: boolean
     rank?: boolean
-    shownAt?: boolean
+    source?: boolean
+    requestId?: boolean
+    dwellMs?: boolean
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: boolean
+    shownAt?: boolean
+    firstSeenAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
     phone?: boolean | PhonesDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["recommendationLog"]>
@@ -17327,8 +17639,15 @@ export namespace Prisma {
     phoneId?: boolean
     finalScore?: boolean
     rank?: boolean
-    shownAt?: boolean
+    source?: boolean
+    requestId?: boolean
+    dwellMs?: boolean
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: boolean
+    shownAt?: boolean
+    firstSeenAt?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
     phone?: boolean | PhonesDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["recommendationLog"]>
@@ -17339,11 +17658,18 @@ export namespace Prisma {
     phoneId?: boolean
     finalScore?: boolean
     rank?: boolean
-    shownAt?: boolean
+    source?: boolean
+    requestId?: boolean
+    dwellMs?: boolean
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: boolean
+    shownAt?: boolean
+    firstSeenAt?: boolean
   }
 
-  export type RecommendationLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"logId" | "userId" | "phoneId" | "finalScore" | "rank" | "shownAt" | "clicked", ExtArgs["result"]["recommendationLog"]>
+  export type RecommendationLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"logId" | "userId" | "phoneId" | "finalScore" | "rank" | "source" | "requestId" | "dwellMs" | "clicked" | "skipped" | "isTrainingEligible" | "explorationArm" | "shownAt" | "firstSeenAt", ExtArgs["result"]["recommendationLog"]>
   export type RecommendationLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
     phone?: boolean | PhonesDefaultArgs<ExtArgs>
@@ -17369,8 +17695,15 @@ export namespace Prisma {
       phoneId: string
       finalScore: number
       rank: number
-      shownAt: Date
+      source: string
+      requestId: string | null
+      dwellMs: number
       clicked: boolean
+      skipped: boolean
+      isTrainingEligible: boolean
+      explorationArm: string | null
+      shownAt: Date
+      firstSeenAt: Date | null
     }, ExtArgs["result"]["recommendationLog"]>
     composites: {}
   }
@@ -17801,8 +18134,15 @@ export namespace Prisma {
     readonly phoneId: FieldRef<"RecommendationLog", 'String'>
     readonly finalScore: FieldRef<"RecommendationLog", 'Float'>
     readonly rank: FieldRef<"RecommendationLog", 'Int'>
-    readonly shownAt: FieldRef<"RecommendationLog", 'DateTime'>
+    readonly source: FieldRef<"RecommendationLog", 'String'>
+    readonly requestId: FieldRef<"RecommendationLog", 'String'>
+    readonly dwellMs: FieldRef<"RecommendationLog", 'Int'>
     readonly clicked: FieldRef<"RecommendationLog", 'Boolean'>
+    readonly skipped: FieldRef<"RecommendationLog", 'Boolean'>
+    readonly isTrainingEligible: FieldRef<"RecommendationLog", 'Boolean'>
+    readonly explorationArm: FieldRef<"RecommendationLog", 'String'>
+    readonly shownAt: FieldRef<"RecommendationLog", 'DateTime'>
+    readonly firstSeenAt: FieldRef<"RecommendationLog", 'DateTime'>
   }
     
 
@@ -19287,6 +19627,2484 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: RecommendationCallInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PhoneTrend
+   */
+
+  export type AggregatePhoneTrend = {
+    _count: PhoneTrendCountAggregateOutputType | null
+    _avg: PhoneTrendAvgAggregateOutputType | null
+    _sum: PhoneTrendSumAggregateOutputType | null
+    _min: PhoneTrendMinAggregateOutputType | null
+    _max: PhoneTrendMaxAggregateOutputType | null
+  }
+
+  export type PhoneTrendAvgAggregateOutputType = {
+    trendScore: number | null
+    views7d: number | null
+    clicks7d: number | null
+    impressions7d: number | null
+  }
+
+  export type PhoneTrendSumAggregateOutputType = {
+    trendScore: number | null
+    views7d: number | null
+    clicks7d: number | null
+    impressions7d: number | null
+  }
+
+  export type PhoneTrendMinAggregateOutputType = {
+    phoneId: string | null
+    trendScore: number | null
+    views7d: number | null
+    clicks7d: number | null
+    impressions7d: number | null
+    updatedAt: Date | null
+  }
+
+  export type PhoneTrendMaxAggregateOutputType = {
+    phoneId: string | null
+    trendScore: number | null
+    views7d: number | null
+    clicks7d: number | null
+    impressions7d: number | null
+    updatedAt: Date | null
+  }
+
+  export type PhoneTrendCountAggregateOutputType = {
+    phoneId: number
+    trendScore: number
+    views7d: number
+    clicks7d: number
+    impressions7d: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PhoneTrendAvgAggregateInputType = {
+    trendScore?: true
+    views7d?: true
+    clicks7d?: true
+    impressions7d?: true
+  }
+
+  export type PhoneTrendSumAggregateInputType = {
+    trendScore?: true
+    views7d?: true
+    clicks7d?: true
+    impressions7d?: true
+  }
+
+  export type PhoneTrendMinAggregateInputType = {
+    phoneId?: true
+    trendScore?: true
+    views7d?: true
+    clicks7d?: true
+    impressions7d?: true
+    updatedAt?: true
+  }
+
+  export type PhoneTrendMaxAggregateInputType = {
+    phoneId?: true
+    trendScore?: true
+    views7d?: true
+    clicks7d?: true
+    impressions7d?: true
+    updatedAt?: true
+  }
+
+  export type PhoneTrendCountAggregateInputType = {
+    phoneId?: true
+    trendScore?: true
+    views7d?: true
+    clicks7d?: true
+    impressions7d?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PhoneTrendAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PhoneTrend to aggregate.
+     */
+    where?: PhoneTrendWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneTrends to fetch.
+     */
+    orderBy?: PhoneTrendOrderByWithRelationInput | PhoneTrendOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PhoneTrendWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneTrends from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneTrends.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PhoneTrends
+    **/
+    _count?: true | PhoneTrendCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PhoneTrendAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PhoneTrendSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PhoneTrendMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PhoneTrendMaxAggregateInputType
+  }
+
+  export type GetPhoneTrendAggregateType<T extends PhoneTrendAggregateArgs> = {
+        [P in keyof T & keyof AggregatePhoneTrend]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePhoneTrend[P]>
+      : GetScalarType<T[P], AggregatePhoneTrend[P]>
+  }
+
+
+
+
+  export type PhoneTrendGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PhoneTrendWhereInput
+    orderBy?: PhoneTrendOrderByWithAggregationInput | PhoneTrendOrderByWithAggregationInput[]
+    by: PhoneTrendScalarFieldEnum[] | PhoneTrendScalarFieldEnum
+    having?: PhoneTrendScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PhoneTrendCountAggregateInputType | true
+    _avg?: PhoneTrendAvgAggregateInputType
+    _sum?: PhoneTrendSumAggregateInputType
+    _min?: PhoneTrendMinAggregateInputType
+    _max?: PhoneTrendMaxAggregateInputType
+  }
+
+  export type PhoneTrendGroupByOutputType = {
+    phoneId: string
+    trendScore: number
+    views7d: number
+    clicks7d: number
+    impressions7d: number
+    updatedAt: Date
+    _count: PhoneTrendCountAggregateOutputType | null
+    _avg: PhoneTrendAvgAggregateOutputType | null
+    _sum: PhoneTrendSumAggregateOutputType | null
+    _min: PhoneTrendMinAggregateOutputType | null
+    _max: PhoneTrendMaxAggregateOutputType | null
+  }
+
+  type GetPhoneTrendGroupByPayload<T extends PhoneTrendGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PhoneTrendGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PhoneTrendGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PhoneTrendGroupByOutputType[P]>
+            : GetScalarType<T[P], PhoneTrendGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PhoneTrendSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    phoneId?: boolean
+    trendScore?: boolean
+    views7d?: boolean
+    clicks7d?: boolean
+    impressions7d?: boolean
+    updatedAt?: boolean
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phoneTrend"]>
+
+  export type PhoneTrendSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    phoneId?: boolean
+    trendScore?: boolean
+    views7d?: boolean
+    clicks7d?: boolean
+    impressions7d?: boolean
+    updatedAt?: boolean
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phoneTrend"]>
+
+  export type PhoneTrendSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    phoneId?: boolean
+    trendScore?: boolean
+    views7d?: boolean
+    clicks7d?: boolean
+    impressions7d?: boolean
+    updatedAt?: boolean
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["phoneTrend"]>
+
+  export type PhoneTrendSelectScalar = {
+    phoneId?: boolean
+    trendScore?: boolean
+    views7d?: boolean
+    clicks7d?: boolean
+    impressions7d?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PhoneTrendOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"phoneId" | "trendScore" | "views7d" | "clicks7d" | "impressions7d" | "updatedAt", ExtArgs["result"]["phoneTrend"]>
+  export type PhoneTrendInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+  export type PhoneTrendIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+  export type PhoneTrendIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    phone?: boolean | PhonesDefaultArgs<ExtArgs>
+  }
+
+  export type $PhoneTrendPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PhoneTrend"
+    objects: {
+      phone: Prisma.$PhonesPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      phoneId: string
+      trendScore: number
+      views7d: number
+      clicks7d: number
+      impressions7d: number
+      updatedAt: Date
+    }, ExtArgs["result"]["phoneTrend"]>
+    composites: {}
+  }
+
+  type PhoneTrendGetPayload<S extends boolean | null | undefined | PhoneTrendDefaultArgs> = $Result.GetResult<Prisma.$PhoneTrendPayload, S>
+
+  type PhoneTrendCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PhoneTrendFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PhoneTrendCountAggregateInputType | true
+    }
+
+  export interface PhoneTrendDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PhoneTrend'], meta: { name: 'PhoneTrend' } }
+    /**
+     * Find zero or one PhoneTrend that matches the filter.
+     * @param {PhoneTrendFindUniqueArgs} args - Arguments to find a PhoneTrend
+     * @example
+     * // Get one PhoneTrend
+     * const phoneTrend = await prisma.phoneTrend.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PhoneTrendFindUniqueArgs>(args: SelectSubset<T, PhoneTrendFindUniqueArgs<ExtArgs>>): Prisma__PhoneTrendClient<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PhoneTrend that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PhoneTrendFindUniqueOrThrowArgs} args - Arguments to find a PhoneTrend
+     * @example
+     * // Get one PhoneTrend
+     * const phoneTrend = await prisma.phoneTrend.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PhoneTrendFindUniqueOrThrowArgs>(args: SelectSubset<T, PhoneTrendFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PhoneTrendClient<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PhoneTrend that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneTrendFindFirstArgs} args - Arguments to find a PhoneTrend
+     * @example
+     * // Get one PhoneTrend
+     * const phoneTrend = await prisma.phoneTrend.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PhoneTrendFindFirstArgs>(args?: SelectSubset<T, PhoneTrendFindFirstArgs<ExtArgs>>): Prisma__PhoneTrendClient<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PhoneTrend that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneTrendFindFirstOrThrowArgs} args - Arguments to find a PhoneTrend
+     * @example
+     * // Get one PhoneTrend
+     * const phoneTrend = await prisma.phoneTrend.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PhoneTrendFindFirstOrThrowArgs>(args?: SelectSubset<T, PhoneTrendFindFirstOrThrowArgs<ExtArgs>>): Prisma__PhoneTrendClient<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PhoneTrends that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneTrendFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PhoneTrends
+     * const phoneTrends = await prisma.phoneTrend.findMany()
+     * 
+     * // Get first 10 PhoneTrends
+     * const phoneTrends = await prisma.phoneTrend.findMany({ take: 10 })
+     * 
+     * // Only select the `phoneId`
+     * const phoneTrendWithPhoneIdOnly = await prisma.phoneTrend.findMany({ select: { phoneId: true } })
+     * 
+     */
+    findMany<T extends PhoneTrendFindManyArgs>(args?: SelectSubset<T, PhoneTrendFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PhoneTrend.
+     * @param {PhoneTrendCreateArgs} args - Arguments to create a PhoneTrend.
+     * @example
+     * // Create one PhoneTrend
+     * const PhoneTrend = await prisma.phoneTrend.create({
+     *   data: {
+     *     // ... data to create a PhoneTrend
+     *   }
+     * })
+     * 
+     */
+    create<T extends PhoneTrendCreateArgs>(args: SelectSubset<T, PhoneTrendCreateArgs<ExtArgs>>): Prisma__PhoneTrendClient<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PhoneTrends.
+     * @param {PhoneTrendCreateManyArgs} args - Arguments to create many PhoneTrends.
+     * @example
+     * // Create many PhoneTrends
+     * const phoneTrend = await prisma.phoneTrend.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PhoneTrendCreateManyArgs>(args?: SelectSubset<T, PhoneTrendCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PhoneTrends and returns the data saved in the database.
+     * @param {PhoneTrendCreateManyAndReturnArgs} args - Arguments to create many PhoneTrends.
+     * @example
+     * // Create many PhoneTrends
+     * const phoneTrend = await prisma.phoneTrend.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PhoneTrends and only return the `phoneId`
+     * const phoneTrendWithPhoneIdOnly = await prisma.phoneTrend.createManyAndReturn({
+     *   select: { phoneId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PhoneTrendCreateManyAndReturnArgs>(args?: SelectSubset<T, PhoneTrendCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PhoneTrend.
+     * @param {PhoneTrendDeleteArgs} args - Arguments to delete one PhoneTrend.
+     * @example
+     * // Delete one PhoneTrend
+     * const PhoneTrend = await prisma.phoneTrend.delete({
+     *   where: {
+     *     // ... filter to delete one PhoneTrend
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PhoneTrendDeleteArgs>(args: SelectSubset<T, PhoneTrendDeleteArgs<ExtArgs>>): Prisma__PhoneTrendClient<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PhoneTrend.
+     * @param {PhoneTrendUpdateArgs} args - Arguments to update one PhoneTrend.
+     * @example
+     * // Update one PhoneTrend
+     * const phoneTrend = await prisma.phoneTrend.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PhoneTrendUpdateArgs>(args: SelectSubset<T, PhoneTrendUpdateArgs<ExtArgs>>): Prisma__PhoneTrendClient<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PhoneTrends.
+     * @param {PhoneTrendDeleteManyArgs} args - Arguments to filter PhoneTrends to delete.
+     * @example
+     * // Delete a few PhoneTrends
+     * const { count } = await prisma.phoneTrend.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PhoneTrendDeleteManyArgs>(args?: SelectSubset<T, PhoneTrendDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PhoneTrends.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneTrendUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PhoneTrends
+     * const phoneTrend = await prisma.phoneTrend.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PhoneTrendUpdateManyArgs>(args: SelectSubset<T, PhoneTrendUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PhoneTrends and returns the data updated in the database.
+     * @param {PhoneTrendUpdateManyAndReturnArgs} args - Arguments to update many PhoneTrends.
+     * @example
+     * // Update many PhoneTrends
+     * const phoneTrend = await prisma.phoneTrend.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PhoneTrends and only return the `phoneId`
+     * const phoneTrendWithPhoneIdOnly = await prisma.phoneTrend.updateManyAndReturn({
+     *   select: { phoneId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PhoneTrendUpdateManyAndReturnArgs>(args: SelectSubset<T, PhoneTrendUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PhoneTrend.
+     * @param {PhoneTrendUpsertArgs} args - Arguments to update or create a PhoneTrend.
+     * @example
+     * // Update or create a PhoneTrend
+     * const phoneTrend = await prisma.phoneTrend.upsert({
+     *   create: {
+     *     // ... data to create a PhoneTrend
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PhoneTrend we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PhoneTrendUpsertArgs>(args: SelectSubset<T, PhoneTrendUpsertArgs<ExtArgs>>): Prisma__PhoneTrendClient<$Result.GetResult<Prisma.$PhoneTrendPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PhoneTrends.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneTrendCountArgs} args - Arguments to filter PhoneTrends to count.
+     * @example
+     * // Count the number of PhoneTrends
+     * const count = await prisma.phoneTrend.count({
+     *   where: {
+     *     // ... the filter for the PhoneTrends we want to count
+     *   }
+     * })
+    **/
+    count<T extends PhoneTrendCountArgs>(
+      args?: Subset<T, PhoneTrendCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PhoneTrendCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PhoneTrend.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneTrendAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PhoneTrendAggregateArgs>(args: Subset<T, PhoneTrendAggregateArgs>): Prisma.PrismaPromise<GetPhoneTrendAggregateType<T>>
+
+    /**
+     * Group by PhoneTrend.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PhoneTrendGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PhoneTrendGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PhoneTrendGroupByArgs['orderBy'] }
+        : { orderBy?: PhoneTrendGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PhoneTrendGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPhoneTrendGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PhoneTrend model
+   */
+  readonly fields: PhoneTrendFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PhoneTrend.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PhoneTrendClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    phone<T extends PhonesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PhonesDefaultArgs<ExtArgs>>): Prisma__PhonesClient<$Result.GetResult<Prisma.$PhonesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PhoneTrend model
+   */
+  interface PhoneTrendFieldRefs {
+    readonly phoneId: FieldRef<"PhoneTrend", 'String'>
+    readonly trendScore: FieldRef<"PhoneTrend", 'Float'>
+    readonly views7d: FieldRef<"PhoneTrend", 'Int'>
+    readonly clicks7d: FieldRef<"PhoneTrend", 'Int'>
+    readonly impressions7d: FieldRef<"PhoneTrend", 'Int'>
+    readonly updatedAt: FieldRef<"PhoneTrend", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PhoneTrend findUnique
+   */
+  export type PhoneTrendFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneTrend to fetch.
+     */
+    where: PhoneTrendWhereUniqueInput
+  }
+
+  /**
+   * PhoneTrend findUniqueOrThrow
+   */
+  export type PhoneTrendFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneTrend to fetch.
+     */
+    where: PhoneTrendWhereUniqueInput
+  }
+
+  /**
+   * PhoneTrend findFirst
+   */
+  export type PhoneTrendFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneTrend to fetch.
+     */
+    where?: PhoneTrendWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneTrends to fetch.
+     */
+    orderBy?: PhoneTrendOrderByWithRelationInput | PhoneTrendOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PhoneTrends.
+     */
+    cursor?: PhoneTrendWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneTrends from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneTrends.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneTrends.
+     */
+    distinct?: PhoneTrendScalarFieldEnum | PhoneTrendScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneTrend findFirstOrThrow
+   */
+  export type PhoneTrendFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneTrend to fetch.
+     */
+    where?: PhoneTrendWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneTrends to fetch.
+     */
+    orderBy?: PhoneTrendOrderByWithRelationInput | PhoneTrendOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PhoneTrends.
+     */
+    cursor?: PhoneTrendWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneTrends from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneTrends.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneTrends.
+     */
+    distinct?: PhoneTrendScalarFieldEnum | PhoneTrendScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneTrend findMany
+   */
+  export type PhoneTrendFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+    /**
+     * Filter, which PhoneTrends to fetch.
+     */
+    where?: PhoneTrendWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PhoneTrends to fetch.
+     */
+    orderBy?: PhoneTrendOrderByWithRelationInput | PhoneTrendOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PhoneTrends.
+     */
+    cursor?: PhoneTrendWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PhoneTrends from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PhoneTrends.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PhoneTrends.
+     */
+    distinct?: PhoneTrendScalarFieldEnum | PhoneTrendScalarFieldEnum[]
+  }
+
+  /**
+   * PhoneTrend create
+   */
+  export type PhoneTrendCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PhoneTrend.
+     */
+    data: XOR<PhoneTrendCreateInput, PhoneTrendUncheckedCreateInput>
+  }
+
+  /**
+   * PhoneTrend createMany
+   */
+  export type PhoneTrendCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PhoneTrends.
+     */
+    data: PhoneTrendCreateManyInput | PhoneTrendCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PhoneTrend createManyAndReturn
+   */
+  export type PhoneTrendCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * The data used to create many PhoneTrends.
+     */
+    data: PhoneTrendCreateManyInput | PhoneTrendCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PhoneTrend update
+   */
+  export type PhoneTrendUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PhoneTrend.
+     */
+    data: XOR<PhoneTrendUpdateInput, PhoneTrendUncheckedUpdateInput>
+    /**
+     * Choose, which PhoneTrend to update.
+     */
+    where: PhoneTrendWhereUniqueInput
+  }
+
+  /**
+   * PhoneTrend updateMany
+   */
+  export type PhoneTrendUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PhoneTrends.
+     */
+    data: XOR<PhoneTrendUpdateManyMutationInput, PhoneTrendUncheckedUpdateManyInput>
+    /**
+     * Filter which PhoneTrends to update
+     */
+    where?: PhoneTrendWhereInput
+    /**
+     * Limit how many PhoneTrends to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PhoneTrend updateManyAndReturn
+   */
+  export type PhoneTrendUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * The data used to update PhoneTrends.
+     */
+    data: XOR<PhoneTrendUpdateManyMutationInput, PhoneTrendUncheckedUpdateManyInput>
+    /**
+     * Filter which PhoneTrends to update
+     */
+    where?: PhoneTrendWhereInput
+    /**
+     * Limit how many PhoneTrends to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PhoneTrend upsert
+   */
+  export type PhoneTrendUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PhoneTrend to update in case it exists.
+     */
+    where: PhoneTrendWhereUniqueInput
+    /**
+     * In case the PhoneTrend found by the `where` argument doesn't exist, create a new PhoneTrend with this data.
+     */
+    create: XOR<PhoneTrendCreateInput, PhoneTrendUncheckedCreateInput>
+    /**
+     * In case the PhoneTrend was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PhoneTrendUpdateInput, PhoneTrendUncheckedUpdateInput>
+  }
+
+  /**
+   * PhoneTrend delete
+   */
+  export type PhoneTrendDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+    /**
+     * Filter which PhoneTrend to delete.
+     */
+    where: PhoneTrendWhereUniqueInput
+  }
+
+  /**
+   * PhoneTrend deleteMany
+   */
+  export type PhoneTrendDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PhoneTrends to delete
+     */
+    where?: PhoneTrendWhereInput
+    /**
+     * Limit how many PhoneTrends to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PhoneTrend without action
+   */
+  export type PhoneTrendDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PhoneTrend
+     */
+    select?: PhoneTrendSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PhoneTrend
+     */
+    omit?: PhoneTrendOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PhoneTrendInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TrainingImpression
+   */
+
+  export type AggregateTrainingImpression = {
+    _count: TrainingImpressionCountAggregateOutputType | null
+    _avg: TrainingImpressionAvgAggregateOutputType | null
+    _sum: TrainingImpressionSumAggregateOutputType | null
+    _min: TrainingImpressionMinAggregateOutputType | null
+    _max: TrainingImpressionMaxAggregateOutputType | null
+  }
+
+  export type TrainingImpressionAvgAggregateOutputType = {
+    position: number | null
+    viewportIndex: number | null
+    sCompatibility: number | null
+    sCustomerPref: number | null
+    sContentSim: number | null
+    sSearchHistory: number | null
+    sValue: number | null
+    sFreshness: number | null
+    daysSinceRelease: number | null
+    labelDwellMs: number | null
+  }
+
+  export type TrainingImpressionSumAggregateOutputType = {
+    position: number | null
+    viewportIndex: number | null
+    sCompatibility: number | null
+    sCustomerPref: number | null
+    sContentSim: number | null
+    sSearchHistory: number | null
+    sValue: number | null
+    sFreshness: number | null
+    daysSinceRelease: number | null
+    labelDwellMs: number | null
+  }
+
+  export type TrainingImpressionMinAggregateOutputType = {
+    impressionId: string | null
+    requestId: string | null
+    userId: string | null
+    phoneId: string | null
+    source: string | null
+    position: number | null
+    viewportIndex: number | null
+    sCompatibility: number | null
+    sCustomerPref: number | null
+    sContentSim: number | null
+    sSearchHistory: number | null
+    sValue: number | null
+    sFreshness: number | null
+    inStock: boolean | null
+    daysSinceRelease: number | null
+    userPersona: string | null
+    userSegment: string | null
+    hasHistory: boolean | null
+    labelClicked: boolean | null
+    labelClickedAt: Date | null
+    labelDwellMs: number | null
+    labelSkipped: boolean | null
+    labelPurchased: boolean | null
+    labelPurchasedAt: Date | null
+    isTrainingEligible: boolean | null
+    observedAt: Date | null
+    labelledAt: Date | null
+  }
+
+  export type TrainingImpressionMaxAggregateOutputType = {
+    impressionId: string | null
+    requestId: string | null
+    userId: string | null
+    phoneId: string | null
+    source: string | null
+    position: number | null
+    viewportIndex: number | null
+    sCompatibility: number | null
+    sCustomerPref: number | null
+    sContentSim: number | null
+    sSearchHistory: number | null
+    sValue: number | null
+    sFreshness: number | null
+    inStock: boolean | null
+    daysSinceRelease: number | null
+    userPersona: string | null
+    userSegment: string | null
+    hasHistory: boolean | null
+    labelClicked: boolean | null
+    labelClickedAt: Date | null
+    labelDwellMs: number | null
+    labelSkipped: boolean | null
+    labelPurchased: boolean | null
+    labelPurchasedAt: Date | null
+    isTrainingEligible: boolean | null
+    observedAt: Date | null
+    labelledAt: Date | null
+  }
+
+  export type TrainingImpressionCountAggregateOutputType = {
+    impressionId: number
+    requestId: number
+    userId: number
+    phoneId: number
+    source: number
+    position: number
+    viewportIndex: number
+    sCompatibility: number
+    sCustomerPref: number
+    sContentSim: number
+    sSearchHistory: number
+    sValue: number
+    sFreshness: number
+    inStock: number
+    daysSinceRelease: number
+    userPersona: number
+    userSegment: number
+    hasHistory: number
+    labelClicked: number
+    labelClickedAt: number
+    labelDwellMs: number
+    labelSkipped: number
+    labelPurchased: number
+    labelPurchasedAt: number
+    isTrainingEligible: number
+    observedAt: number
+    labelledAt: number
+    _all: number
+  }
+
+
+  export type TrainingImpressionAvgAggregateInputType = {
+    position?: true
+    viewportIndex?: true
+    sCompatibility?: true
+    sCustomerPref?: true
+    sContentSim?: true
+    sSearchHistory?: true
+    sValue?: true
+    sFreshness?: true
+    daysSinceRelease?: true
+    labelDwellMs?: true
+  }
+
+  export type TrainingImpressionSumAggregateInputType = {
+    position?: true
+    viewportIndex?: true
+    sCompatibility?: true
+    sCustomerPref?: true
+    sContentSim?: true
+    sSearchHistory?: true
+    sValue?: true
+    sFreshness?: true
+    daysSinceRelease?: true
+    labelDwellMs?: true
+  }
+
+  export type TrainingImpressionMinAggregateInputType = {
+    impressionId?: true
+    requestId?: true
+    userId?: true
+    phoneId?: true
+    source?: true
+    position?: true
+    viewportIndex?: true
+    sCompatibility?: true
+    sCustomerPref?: true
+    sContentSim?: true
+    sSearchHistory?: true
+    sValue?: true
+    sFreshness?: true
+    inStock?: true
+    daysSinceRelease?: true
+    userPersona?: true
+    userSegment?: true
+    hasHistory?: true
+    labelClicked?: true
+    labelClickedAt?: true
+    labelDwellMs?: true
+    labelSkipped?: true
+    labelPurchased?: true
+    labelPurchasedAt?: true
+    isTrainingEligible?: true
+    observedAt?: true
+    labelledAt?: true
+  }
+
+  export type TrainingImpressionMaxAggregateInputType = {
+    impressionId?: true
+    requestId?: true
+    userId?: true
+    phoneId?: true
+    source?: true
+    position?: true
+    viewportIndex?: true
+    sCompatibility?: true
+    sCustomerPref?: true
+    sContentSim?: true
+    sSearchHistory?: true
+    sValue?: true
+    sFreshness?: true
+    inStock?: true
+    daysSinceRelease?: true
+    userPersona?: true
+    userSegment?: true
+    hasHistory?: true
+    labelClicked?: true
+    labelClickedAt?: true
+    labelDwellMs?: true
+    labelSkipped?: true
+    labelPurchased?: true
+    labelPurchasedAt?: true
+    isTrainingEligible?: true
+    observedAt?: true
+    labelledAt?: true
+  }
+
+  export type TrainingImpressionCountAggregateInputType = {
+    impressionId?: true
+    requestId?: true
+    userId?: true
+    phoneId?: true
+    source?: true
+    position?: true
+    viewportIndex?: true
+    sCompatibility?: true
+    sCustomerPref?: true
+    sContentSim?: true
+    sSearchHistory?: true
+    sValue?: true
+    sFreshness?: true
+    inStock?: true
+    daysSinceRelease?: true
+    userPersona?: true
+    userSegment?: true
+    hasHistory?: true
+    labelClicked?: true
+    labelClickedAt?: true
+    labelDwellMs?: true
+    labelSkipped?: true
+    labelPurchased?: true
+    labelPurchasedAt?: true
+    isTrainingEligible?: true
+    observedAt?: true
+    labelledAt?: true
+    _all?: true
+  }
+
+  export type TrainingImpressionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TrainingImpression to aggregate.
+     */
+    where?: TrainingImpressionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrainingImpressions to fetch.
+     */
+    orderBy?: TrainingImpressionOrderByWithRelationInput | TrainingImpressionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TrainingImpressionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrainingImpressions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrainingImpressions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TrainingImpressions
+    **/
+    _count?: true | TrainingImpressionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TrainingImpressionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TrainingImpressionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TrainingImpressionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TrainingImpressionMaxAggregateInputType
+  }
+
+  export type GetTrainingImpressionAggregateType<T extends TrainingImpressionAggregateArgs> = {
+        [P in keyof T & keyof AggregateTrainingImpression]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTrainingImpression[P]>
+      : GetScalarType<T[P], AggregateTrainingImpression[P]>
+  }
+
+
+
+
+  export type TrainingImpressionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TrainingImpressionWhereInput
+    orderBy?: TrainingImpressionOrderByWithAggregationInput | TrainingImpressionOrderByWithAggregationInput[]
+    by: TrainingImpressionScalarFieldEnum[] | TrainingImpressionScalarFieldEnum
+    having?: TrainingImpressionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TrainingImpressionCountAggregateInputType | true
+    _avg?: TrainingImpressionAvgAggregateInputType
+    _sum?: TrainingImpressionSumAggregateInputType
+    _min?: TrainingImpressionMinAggregateInputType
+    _max?: TrainingImpressionMaxAggregateInputType
+  }
+
+  export type TrainingImpressionGroupByOutputType = {
+    impressionId: string
+    requestId: string
+    userId: string
+    phoneId: string
+    source: string
+    position: number
+    viewportIndex: number | null
+    sCompatibility: number
+    sCustomerPref: number
+    sContentSim: number
+    sSearchHistory: number
+    sValue: number
+    sFreshness: number | null
+    inStock: boolean | null
+    daysSinceRelease: number | null
+    userPersona: string | null
+    userSegment: string | null
+    hasHistory: boolean
+    labelClicked: boolean | null
+    labelClickedAt: Date | null
+    labelDwellMs: number | null
+    labelSkipped: boolean | null
+    labelPurchased: boolean | null
+    labelPurchasedAt: Date | null
+    isTrainingEligible: boolean
+    observedAt: Date
+    labelledAt: Date | null
+    _count: TrainingImpressionCountAggregateOutputType | null
+    _avg: TrainingImpressionAvgAggregateOutputType | null
+    _sum: TrainingImpressionSumAggregateOutputType | null
+    _min: TrainingImpressionMinAggregateOutputType | null
+    _max: TrainingImpressionMaxAggregateOutputType | null
+  }
+
+  type GetTrainingImpressionGroupByPayload<T extends TrainingImpressionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TrainingImpressionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TrainingImpressionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TrainingImpressionGroupByOutputType[P]>
+            : GetScalarType<T[P], TrainingImpressionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TrainingImpressionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    impressionId?: boolean
+    requestId?: boolean
+    userId?: boolean
+    phoneId?: boolean
+    source?: boolean
+    position?: boolean
+    viewportIndex?: boolean
+    sCompatibility?: boolean
+    sCustomerPref?: boolean
+    sContentSim?: boolean
+    sSearchHistory?: boolean
+    sValue?: boolean
+    sFreshness?: boolean
+    inStock?: boolean
+    daysSinceRelease?: boolean
+    userPersona?: boolean
+    userSegment?: boolean
+    hasHistory?: boolean
+    labelClicked?: boolean
+    labelClickedAt?: boolean
+    labelDwellMs?: boolean
+    labelSkipped?: boolean
+    labelPurchased?: boolean
+    labelPurchasedAt?: boolean
+    isTrainingEligible?: boolean
+    observedAt?: boolean
+    labelledAt?: boolean
+  }, ExtArgs["result"]["trainingImpression"]>
+
+  export type TrainingImpressionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    impressionId?: boolean
+    requestId?: boolean
+    userId?: boolean
+    phoneId?: boolean
+    source?: boolean
+    position?: boolean
+    viewportIndex?: boolean
+    sCompatibility?: boolean
+    sCustomerPref?: boolean
+    sContentSim?: boolean
+    sSearchHistory?: boolean
+    sValue?: boolean
+    sFreshness?: boolean
+    inStock?: boolean
+    daysSinceRelease?: boolean
+    userPersona?: boolean
+    userSegment?: boolean
+    hasHistory?: boolean
+    labelClicked?: boolean
+    labelClickedAt?: boolean
+    labelDwellMs?: boolean
+    labelSkipped?: boolean
+    labelPurchased?: boolean
+    labelPurchasedAt?: boolean
+    isTrainingEligible?: boolean
+    observedAt?: boolean
+    labelledAt?: boolean
+  }, ExtArgs["result"]["trainingImpression"]>
+
+  export type TrainingImpressionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    impressionId?: boolean
+    requestId?: boolean
+    userId?: boolean
+    phoneId?: boolean
+    source?: boolean
+    position?: boolean
+    viewportIndex?: boolean
+    sCompatibility?: boolean
+    sCustomerPref?: boolean
+    sContentSim?: boolean
+    sSearchHistory?: boolean
+    sValue?: boolean
+    sFreshness?: boolean
+    inStock?: boolean
+    daysSinceRelease?: boolean
+    userPersona?: boolean
+    userSegment?: boolean
+    hasHistory?: boolean
+    labelClicked?: boolean
+    labelClickedAt?: boolean
+    labelDwellMs?: boolean
+    labelSkipped?: boolean
+    labelPurchased?: boolean
+    labelPurchasedAt?: boolean
+    isTrainingEligible?: boolean
+    observedAt?: boolean
+    labelledAt?: boolean
+  }, ExtArgs["result"]["trainingImpression"]>
+
+  export type TrainingImpressionSelectScalar = {
+    impressionId?: boolean
+    requestId?: boolean
+    userId?: boolean
+    phoneId?: boolean
+    source?: boolean
+    position?: boolean
+    viewportIndex?: boolean
+    sCompatibility?: boolean
+    sCustomerPref?: boolean
+    sContentSim?: boolean
+    sSearchHistory?: boolean
+    sValue?: boolean
+    sFreshness?: boolean
+    inStock?: boolean
+    daysSinceRelease?: boolean
+    userPersona?: boolean
+    userSegment?: boolean
+    hasHistory?: boolean
+    labelClicked?: boolean
+    labelClickedAt?: boolean
+    labelDwellMs?: boolean
+    labelSkipped?: boolean
+    labelPurchased?: boolean
+    labelPurchasedAt?: boolean
+    isTrainingEligible?: boolean
+    observedAt?: boolean
+    labelledAt?: boolean
+  }
+
+  export type TrainingImpressionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"impressionId" | "requestId" | "userId" | "phoneId" | "source" | "position" | "viewportIndex" | "sCompatibility" | "sCustomerPref" | "sContentSim" | "sSearchHistory" | "sValue" | "sFreshness" | "inStock" | "daysSinceRelease" | "userPersona" | "userSegment" | "hasHistory" | "labelClicked" | "labelClickedAt" | "labelDwellMs" | "labelSkipped" | "labelPurchased" | "labelPurchasedAt" | "isTrainingEligible" | "observedAt" | "labelledAt", ExtArgs["result"]["trainingImpression"]>
+
+  export type $TrainingImpressionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TrainingImpression"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      impressionId: string
+      requestId: string
+      userId: string
+      phoneId: string
+      source: string
+      position: number
+      viewportIndex: number | null
+      sCompatibility: number
+      sCustomerPref: number
+      sContentSim: number
+      sSearchHistory: number
+      sValue: number
+      sFreshness: number | null
+      inStock: boolean | null
+      daysSinceRelease: number | null
+      userPersona: string | null
+      userSegment: string | null
+      hasHistory: boolean
+      labelClicked: boolean | null
+      labelClickedAt: Date | null
+      labelDwellMs: number | null
+      labelSkipped: boolean | null
+      labelPurchased: boolean | null
+      labelPurchasedAt: Date | null
+      isTrainingEligible: boolean
+      observedAt: Date
+      labelledAt: Date | null
+    }, ExtArgs["result"]["trainingImpression"]>
+    composites: {}
+  }
+
+  type TrainingImpressionGetPayload<S extends boolean | null | undefined | TrainingImpressionDefaultArgs> = $Result.GetResult<Prisma.$TrainingImpressionPayload, S>
+
+  type TrainingImpressionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TrainingImpressionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TrainingImpressionCountAggregateInputType | true
+    }
+
+  export interface TrainingImpressionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TrainingImpression'], meta: { name: 'TrainingImpression' } }
+    /**
+     * Find zero or one TrainingImpression that matches the filter.
+     * @param {TrainingImpressionFindUniqueArgs} args - Arguments to find a TrainingImpression
+     * @example
+     * // Get one TrainingImpression
+     * const trainingImpression = await prisma.trainingImpression.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TrainingImpressionFindUniqueArgs>(args: SelectSubset<T, TrainingImpressionFindUniqueArgs<ExtArgs>>): Prisma__TrainingImpressionClient<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TrainingImpression that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TrainingImpressionFindUniqueOrThrowArgs} args - Arguments to find a TrainingImpression
+     * @example
+     * // Get one TrainingImpression
+     * const trainingImpression = await prisma.trainingImpression.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TrainingImpressionFindUniqueOrThrowArgs>(args: SelectSubset<T, TrainingImpressionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TrainingImpressionClient<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TrainingImpression that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrainingImpressionFindFirstArgs} args - Arguments to find a TrainingImpression
+     * @example
+     * // Get one TrainingImpression
+     * const trainingImpression = await prisma.trainingImpression.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TrainingImpressionFindFirstArgs>(args?: SelectSubset<T, TrainingImpressionFindFirstArgs<ExtArgs>>): Prisma__TrainingImpressionClient<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TrainingImpression that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrainingImpressionFindFirstOrThrowArgs} args - Arguments to find a TrainingImpression
+     * @example
+     * // Get one TrainingImpression
+     * const trainingImpression = await prisma.trainingImpression.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TrainingImpressionFindFirstOrThrowArgs>(args?: SelectSubset<T, TrainingImpressionFindFirstOrThrowArgs<ExtArgs>>): Prisma__TrainingImpressionClient<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TrainingImpressions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrainingImpressionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TrainingImpressions
+     * const trainingImpressions = await prisma.trainingImpression.findMany()
+     * 
+     * // Get first 10 TrainingImpressions
+     * const trainingImpressions = await prisma.trainingImpression.findMany({ take: 10 })
+     * 
+     * // Only select the `impressionId`
+     * const trainingImpressionWithImpressionIdOnly = await prisma.trainingImpression.findMany({ select: { impressionId: true } })
+     * 
+     */
+    findMany<T extends TrainingImpressionFindManyArgs>(args?: SelectSubset<T, TrainingImpressionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TrainingImpression.
+     * @param {TrainingImpressionCreateArgs} args - Arguments to create a TrainingImpression.
+     * @example
+     * // Create one TrainingImpression
+     * const TrainingImpression = await prisma.trainingImpression.create({
+     *   data: {
+     *     // ... data to create a TrainingImpression
+     *   }
+     * })
+     * 
+     */
+    create<T extends TrainingImpressionCreateArgs>(args: SelectSubset<T, TrainingImpressionCreateArgs<ExtArgs>>): Prisma__TrainingImpressionClient<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TrainingImpressions.
+     * @param {TrainingImpressionCreateManyArgs} args - Arguments to create many TrainingImpressions.
+     * @example
+     * // Create many TrainingImpressions
+     * const trainingImpression = await prisma.trainingImpression.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TrainingImpressionCreateManyArgs>(args?: SelectSubset<T, TrainingImpressionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TrainingImpressions and returns the data saved in the database.
+     * @param {TrainingImpressionCreateManyAndReturnArgs} args - Arguments to create many TrainingImpressions.
+     * @example
+     * // Create many TrainingImpressions
+     * const trainingImpression = await prisma.trainingImpression.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TrainingImpressions and only return the `impressionId`
+     * const trainingImpressionWithImpressionIdOnly = await prisma.trainingImpression.createManyAndReturn({
+     *   select: { impressionId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TrainingImpressionCreateManyAndReturnArgs>(args?: SelectSubset<T, TrainingImpressionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TrainingImpression.
+     * @param {TrainingImpressionDeleteArgs} args - Arguments to delete one TrainingImpression.
+     * @example
+     * // Delete one TrainingImpression
+     * const TrainingImpression = await prisma.trainingImpression.delete({
+     *   where: {
+     *     // ... filter to delete one TrainingImpression
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TrainingImpressionDeleteArgs>(args: SelectSubset<T, TrainingImpressionDeleteArgs<ExtArgs>>): Prisma__TrainingImpressionClient<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TrainingImpression.
+     * @param {TrainingImpressionUpdateArgs} args - Arguments to update one TrainingImpression.
+     * @example
+     * // Update one TrainingImpression
+     * const trainingImpression = await prisma.trainingImpression.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TrainingImpressionUpdateArgs>(args: SelectSubset<T, TrainingImpressionUpdateArgs<ExtArgs>>): Prisma__TrainingImpressionClient<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TrainingImpressions.
+     * @param {TrainingImpressionDeleteManyArgs} args - Arguments to filter TrainingImpressions to delete.
+     * @example
+     * // Delete a few TrainingImpressions
+     * const { count } = await prisma.trainingImpression.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TrainingImpressionDeleteManyArgs>(args?: SelectSubset<T, TrainingImpressionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TrainingImpressions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrainingImpressionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TrainingImpressions
+     * const trainingImpression = await prisma.trainingImpression.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TrainingImpressionUpdateManyArgs>(args: SelectSubset<T, TrainingImpressionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TrainingImpressions and returns the data updated in the database.
+     * @param {TrainingImpressionUpdateManyAndReturnArgs} args - Arguments to update many TrainingImpressions.
+     * @example
+     * // Update many TrainingImpressions
+     * const trainingImpression = await prisma.trainingImpression.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TrainingImpressions and only return the `impressionId`
+     * const trainingImpressionWithImpressionIdOnly = await prisma.trainingImpression.updateManyAndReturn({
+     *   select: { impressionId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TrainingImpressionUpdateManyAndReturnArgs>(args: SelectSubset<T, TrainingImpressionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TrainingImpression.
+     * @param {TrainingImpressionUpsertArgs} args - Arguments to update or create a TrainingImpression.
+     * @example
+     * // Update or create a TrainingImpression
+     * const trainingImpression = await prisma.trainingImpression.upsert({
+     *   create: {
+     *     // ... data to create a TrainingImpression
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TrainingImpression we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TrainingImpressionUpsertArgs>(args: SelectSubset<T, TrainingImpressionUpsertArgs<ExtArgs>>): Prisma__TrainingImpressionClient<$Result.GetResult<Prisma.$TrainingImpressionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TrainingImpressions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrainingImpressionCountArgs} args - Arguments to filter TrainingImpressions to count.
+     * @example
+     * // Count the number of TrainingImpressions
+     * const count = await prisma.trainingImpression.count({
+     *   where: {
+     *     // ... the filter for the TrainingImpressions we want to count
+     *   }
+     * })
+    **/
+    count<T extends TrainingImpressionCountArgs>(
+      args?: Subset<T, TrainingImpressionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TrainingImpressionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TrainingImpression.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrainingImpressionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TrainingImpressionAggregateArgs>(args: Subset<T, TrainingImpressionAggregateArgs>): Prisma.PrismaPromise<GetTrainingImpressionAggregateType<T>>
+
+    /**
+     * Group by TrainingImpression.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TrainingImpressionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TrainingImpressionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TrainingImpressionGroupByArgs['orderBy'] }
+        : { orderBy?: TrainingImpressionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TrainingImpressionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTrainingImpressionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TrainingImpression model
+   */
+  readonly fields: TrainingImpressionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TrainingImpression.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TrainingImpressionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TrainingImpression model
+   */
+  interface TrainingImpressionFieldRefs {
+    readonly impressionId: FieldRef<"TrainingImpression", 'String'>
+    readonly requestId: FieldRef<"TrainingImpression", 'String'>
+    readonly userId: FieldRef<"TrainingImpression", 'String'>
+    readonly phoneId: FieldRef<"TrainingImpression", 'String'>
+    readonly source: FieldRef<"TrainingImpression", 'String'>
+    readonly position: FieldRef<"TrainingImpression", 'Int'>
+    readonly viewportIndex: FieldRef<"TrainingImpression", 'Int'>
+    readonly sCompatibility: FieldRef<"TrainingImpression", 'Float'>
+    readonly sCustomerPref: FieldRef<"TrainingImpression", 'Float'>
+    readonly sContentSim: FieldRef<"TrainingImpression", 'Float'>
+    readonly sSearchHistory: FieldRef<"TrainingImpression", 'Float'>
+    readonly sValue: FieldRef<"TrainingImpression", 'Float'>
+    readonly sFreshness: FieldRef<"TrainingImpression", 'Float'>
+    readonly inStock: FieldRef<"TrainingImpression", 'Boolean'>
+    readonly daysSinceRelease: FieldRef<"TrainingImpression", 'Int'>
+    readonly userPersona: FieldRef<"TrainingImpression", 'String'>
+    readonly userSegment: FieldRef<"TrainingImpression", 'String'>
+    readonly hasHistory: FieldRef<"TrainingImpression", 'Boolean'>
+    readonly labelClicked: FieldRef<"TrainingImpression", 'Boolean'>
+    readonly labelClickedAt: FieldRef<"TrainingImpression", 'DateTime'>
+    readonly labelDwellMs: FieldRef<"TrainingImpression", 'Int'>
+    readonly labelSkipped: FieldRef<"TrainingImpression", 'Boolean'>
+    readonly labelPurchased: FieldRef<"TrainingImpression", 'Boolean'>
+    readonly labelPurchasedAt: FieldRef<"TrainingImpression", 'DateTime'>
+    readonly isTrainingEligible: FieldRef<"TrainingImpression", 'Boolean'>
+    readonly observedAt: FieldRef<"TrainingImpression", 'DateTime'>
+    readonly labelledAt: FieldRef<"TrainingImpression", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TrainingImpression findUnique
+   */
+  export type TrainingImpressionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * Filter, which TrainingImpression to fetch.
+     */
+    where: TrainingImpressionWhereUniqueInput
+  }
+
+  /**
+   * TrainingImpression findUniqueOrThrow
+   */
+  export type TrainingImpressionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * Filter, which TrainingImpression to fetch.
+     */
+    where: TrainingImpressionWhereUniqueInput
+  }
+
+  /**
+   * TrainingImpression findFirst
+   */
+  export type TrainingImpressionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * Filter, which TrainingImpression to fetch.
+     */
+    where?: TrainingImpressionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrainingImpressions to fetch.
+     */
+    orderBy?: TrainingImpressionOrderByWithRelationInput | TrainingImpressionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TrainingImpressions.
+     */
+    cursor?: TrainingImpressionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrainingImpressions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrainingImpressions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TrainingImpressions.
+     */
+    distinct?: TrainingImpressionScalarFieldEnum | TrainingImpressionScalarFieldEnum[]
+  }
+
+  /**
+   * TrainingImpression findFirstOrThrow
+   */
+  export type TrainingImpressionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * Filter, which TrainingImpression to fetch.
+     */
+    where?: TrainingImpressionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrainingImpressions to fetch.
+     */
+    orderBy?: TrainingImpressionOrderByWithRelationInput | TrainingImpressionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TrainingImpressions.
+     */
+    cursor?: TrainingImpressionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrainingImpressions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrainingImpressions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TrainingImpressions.
+     */
+    distinct?: TrainingImpressionScalarFieldEnum | TrainingImpressionScalarFieldEnum[]
+  }
+
+  /**
+   * TrainingImpression findMany
+   */
+  export type TrainingImpressionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * Filter, which TrainingImpressions to fetch.
+     */
+    where?: TrainingImpressionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TrainingImpressions to fetch.
+     */
+    orderBy?: TrainingImpressionOrderByWithRelationInput | TrainingImpressionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TrainingImpressions.
+     */
+    cursor?: TrainingImpressionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TrainingImpressions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TrainingImpressions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TrainingImpressions.
+     */
+    distinct?: TrainingImpressionScalarFieldEnum | TrainingImpressionScalarFieldEnum[]
+  }
+
+  /**
+   * TrainingImpression create
+   */
+  export type TrainingImpressionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TrainingImpression.
+     */
+    data: XOR<TrainingImpressionCreateInput, TrainingImpressionUncheckedCreateInput>
+  }
+
+  /**
+   * TrainingImpression createMany
+   */
+  export type TrainingImpressionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TrainingImpressions.
+     */
+    data: TrainingImpressionCreateManyInput | TrainingImpressionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TrainingImpression createManyAndReturn
+   */
+  export type TrainingImpressionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * The data used to create many TrainingImpressions.
+     */
+    data: TrainingImpressionCreateManyInput | TrainingImpressionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TrainingImpression update
+   */
+  export type TrainingImpressionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TrainingImpression.
+     */
+    data: XOR<TrainingImpressionUpdateInput, TrainingImpressionUncheckedUpdateInput>
+    /**
+     * Choose, which TrainingImpression to update.
+     */
+    where: TrainingImpressionWhereUniqueInput
+  }
+
+  /**
+   * TrainingImpression updateMany
+   */
+  export type TrainingImpressionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TrainingImpressions.
+     */
+    data: XOR<TrainingImpressionUpdateManyMutationInput, TrainingImpressionUncheckedUpdateManyInput>
+    /**
+     * Filter which TrainingImpressions to update
+     */
+    where?: TrainingImpressionWhereInput
+    /**
+     * Limit how many TrainingImpressions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TrainingImpression updateManyAndReturn
+   */
+  export type TrainingImpressionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * The data used to update TrainingImpressions.
+     */
+    data: XOR<TrainingImpressionUpdateManyMutationInput, TrainingImpressionUncheckedUpdateManyInput>
+    /**
+     * Filter which TrainingImpressions to update
+     */
+    where?: TrainingImpressionWhereInput
+    /**
+     * Limit how many TrainingImpressions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TrainingImpression upsert
+   */
+  export type TrainingImpressionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TrainingImpression to update in case it exists.
+     */
+    where: TrainingImpressionWhereUniqueInput
+    /**
+     * In case the TrainingImpression found by the `where` argument doesn't exist, create a new TrainingImpression with this data.
+     */
+    create: XOR<TrainingImpressionCreateInput, TrainingImpressionUncheckedCreateInput>
+    /**
+     * In case the TrainingImpression was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TrainingImpressionUpdateInput, TrainingImpressionUncheckedUpdateInput>
+  }
+
+  /**
+   * TrainingImpression delete
+   */
+  export type TrainingImpressionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
+    /**
+     * Filter which TrainingImpression to delete.
+     */
+    where: TrainingImpressionWhereUniqueInput
+  }
+
+  /**
+   * TrainingImpression deleteMany
+   */
+  export type TrainingImpressionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TrainingImpressions to delete
+     */
+    where?: TrainingImpressionWhereInput
+    /**
+     * Limit how many TrainingImpressions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TrainingImpression without action
+   */
+  export type TrainingImpressionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingImpression
+     */
+    select?: TrainingImpressionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingImpression
+     */
+    omit?: TrainingImpressionOmit<ExtArgs> | null
   }
 
 
@@ -31929,6 +34747,9 @@ export namespace Prisma {
     batteryMah: 'batteryMah',
     source: 'source',
     sourceUrl: 'sourceUrl',
+    releasedAt: 'releasedAt',
+    stockState: 'stockState',
+    stockUpdatedAt: 'stockUpdatedAt',
     isActive: 'isActive',
     discontinuedAt: 'discontinuedAt',
     createdAt: 'createdAt',
@@ -32067,8 +34888,15 @@ export namespace Prisma {
     phoneId: 'phoneId',
     finalScore: 'finalScore',
     rank: 'rank',
+    source: 'source',
+    requestId: 'requestId',
+    dwellMs: 'dwellMs',
+    clicked: 'clicked',
+    skipped: 'skipped',
+    isTrainingEligible: 'isTrainingEligible',
+    explorationArm: 'explorationArm',
     shownAt: 'shownAt',
-    clicked: 'clicked'
+    firstSeenAt: 'firstSeenAt'
   };
 
   export type RecommendationLogScalarFieldEnum = (typeof RecommendationLogScalarFieldEnum)[keyof typeof RecommendationLogScalarFieldEnum]
@@ -32084,6 +34912,51 @@ export namespace Prisma {
   };
 
   export type RecommendationCallScalarFieldEnum = (typeof RecommendationCallScalarFieldEnum)[keyof typeof RecommendationCallScalarFieldEnum]
+
+
+  export const PhoneTrendScalarFieldEnum: {
+    phoneId: 'phoneId',
+    trendScore: 'trendScore',
+    views7d: 'views7d',
+    clicks7d: 'clicks7d',
+    impressions7d: 'impressions7d',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PhoneTrendScalarFieldEnum = (typeof PhoneTrendScalarFieldEnum)[keyof typeof PhoneTrendScalarFieldEnum]
+
+
+  export const TrainingImpressionScalarFieldEnum: {
+    impressionId: 'impressionId',
+    requestId: 'requestId',
+    userId: 'userId',
+    phoneId: 'phoneId',
+    source: 'source',
+    position: 'position',
+    viewportIndex: 'viewportIndex',
+    sCompatibility: 'sCompatibility',
+    sCustomerPref: 'sCustomerPref',
+    sContentSim: 'sContentSim',
+    sSearchHistory: 'sSearchHistory',
+    sValue: 'sValue',
+    sFreshness: 'sFreshness',
+    inStock: 'inStock',
+    daysSinceRelease: 'daysSinceRelease',
+    userPersona: 'userPersona',
+    userSegment: 'userSegment',
+    hasHistory: 'hasHistory',
+    labelClicked: 'labelClicked',
+    labelClickedAt: 'labelClickedAt',
+    labelDwellMs: 'labelDwellMs',
+    labelSkipped: 'labelSkipped',
+    labelPurchased: 'labelPurchased',
+    labelPurchasedAt: 'labelPurchasedAt',
+    isTrainingEligible: 'isTrainingEligible',
+    observedAt: 'observedAt',
+    labelledAt: 'labelledAt'
+  };
+
+  export type TrainingImpressionScalarFieldEnum = (typeof TrainingImpressionScalarFieldEnum)[keyof typeof TrainingImpressionScalarFieldEnum]
 
 
   export const CustomerProfileScalarFieldEnum: {
@@ -32822,6 +35695,9 @@ export namespace Prisma {
     batteryMah?: IntNullableFilter<"Phones"> | number | null
     source?: StringNullableFilter<"Phones"> | string | null
     sourceUrl?: StringNullableFilter<"Phones"> | string | null
+    releasedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
+    stockState?: StringNullableFilter<"Phones"> | string | null
+    stockUpdatedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
     isActive?: BoolFilter<"Phones"> | boolean
     discontinuedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
     createdAt?: DateTimeFilter<"Phones"> | Date | string
@@ -32829,6 +35705,7 @@ export namespace Prisma {
     brand?: XOR<BrandsScalarRelationFilter, BrandsWhereInput>
     variants?: PhoneVariantsListRelationFilter
     specs?: XOR<PhoneSpecsNullableScalarRelationFilter, PhoneSpecsWhereInput> | null
+    trend?: XOR<PhoneTrendNullableScalarRelationFilter, PhoneTrendWhereInput> | null
     recommendationHistory?: RecommendationHistoryListRelationFilter
     recommendationLogs?: RecommendationLogListRelationFilter
     wishlist?: WishlistListRelationFilter
@@ -32849,6 +35726,9 @@ export namespace Prisma {
     batteryMah?: SortOrderInput | SortOrder
     source?: SortOrderInput | SortOrder
     sourceUrl?: SortOrderInput | SortOrder
+    releasedAt?: SortOrderInput | SortOrder
+    stockState?: SortOrderInput | SortOrder
+    stockUpdatedAt?: SortOrderInput | SortOrder
     isActive?: SortOrder
     discontinuedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -32856,6 +35736,7 @@ export namespace Prisma {
     brand?: BrandsOrderByWithRelationInput
     variants?: PhoneVariantsOrderByRelationAggregateInput
     specs?: PhoneSpecsOrderByWithRelationInput
+    trend?: PhoneTrendOrderByWithRelationInput
     recommendationHistory?: RecommendationHistoryOrderByRelationAggregateInput
     recommendationLogs?: RecommendationLogOrderByRelationAggregateInput
     wishlist?: WishlistOrderByRelationAggregateInput
@@ -32880,6 +35761,9 @@ export namespace Prisma {
     batteryMah?: IntNullableFilter<"Phones"> | number | null
     source?: StringNullableFilter<"Phones"> | string | null
     sourceUrl?: StringNullableFilter<"Phones"> | string | null
+    releasedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
+    stockState?: StringNullableFilter<"Phones"> | string | null
+    stockUpdatedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
     isActive?: BoolFilter<"Phones"> | boolean
     discontinuedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
     createdAt?: DateTimeFilter<"Phones"> | Date | string
@@ -32887,6 +35771,7 @@ export namespace Prisma {
     brand?: XOR<BrandsScalarRelationFilter, BrandsWhereInput>
     variants?: PhoneVariantsListRelationFilter
     specs?: XOR<PhoneSpecsNullableScalarRelationFilter, PhoneSpecsWhereInput> | null
+    trend?: XOR<PhoneTrendNullableScalarRelationFilter, PhoneTrendWhereInput> | null
     recommendationHistory?: RecommendationHistoryListRelationFilter
     recommendationLogs?: RecommendationLogListRelationFilter
     wishlist?: WishlistListRelationFilter
@@ -32907,6 +35792,9 @@ export namespace Prisma {
     batteryMah?: SortOrderInput | SortOrder
     source?: SortOrderInput | SortOrder
     sourceUrl?: SortOrderInput | SortOrder
+    releasedAt?: SortOrderInput | SortOrder
+    stockState?: SortOrderInput | SortOrder
+    stockUpdatedAt?: SortOrderInput | SortOrder
     isActive?: SortOrder
     discontinuedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -32931,6 +35819,9 @@ export namespace Prisma {
     batteryMah?: IntNullableWithAggregatesFilter<"Phones"> | number | null
     source?: StringNullableWithAggregatesFilter<"Phones"> | string | null
     sourceUrl?: StringNullableWithAggregatesFilter<"Phones"> | string | null
+    releasedAt?: DateTimeNullableWithAggregatesFilter<"Phones"> | Date | string | null
+    stockState?: StringNullableWithAggregatesFilter<"Phones"> | string | null
+    stockUpdatedAt?: DateTimeNullableWithAggregatesFilter<"Phones"> | Date | string | null
     isActive?: BoolWithAggregatesFilter<"Phones"> | boolean
     discontinuedAt?: DateTimeNullableWithAggregatesFilter<"Phones"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Phones"> | Date | string
@@ -33578,8 +36469,15 @@ export namespace Prisma {
     phoneId?: UuidFilter<"RecommendationLog"> | string
     finalScore?: FloatFilter<"RecommendationLog"> | number
     rank?: IntFilter<"RecommendationLog"> | number
-    shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
+    source?: StringFilter<"RecommendationLog"> | string
+    requestId?: UuidNullableFilter<"RecommendationLog"> | string | null
+    dwellMs?: IntFilter<"RecommendationLog"> | number
     clicked?: BoolFilter<"RecommendationLog"> | boolean
+    skipped?: BoolFilter<"RecommendationLog"> | boolean
+    isTrainingEligible?: BoolFilter<"RecommendationLog"> | boolean
+    explorationArm?: StringNullableFilter<"RecommendationLog"> | string | null
+    shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
+    firstSeenAt?: DateTimeNullableFilter<"RecommendationLog"> | Date | string | null
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
     phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
   }
@@ -33590,14 +36488,22 @@ export namespace Prisma {
     phoneId?: SortOrder
     finalScore?: SortOrder
     rank?: SortOrder
-    shownAt?: SortOrder
+    source?: SortOrder
+    requestId?: SortOrderInput | SortOrder
+    dwellMs?: SortOrder
     clicked?: SortOrder
+    skipped?: SortOrder
+    isTrainingEligible?: SortOrder
+    explorationArm?: SortOrderInput | SortOrder
+    shownAt?: SortOrder
+    firstSeenAt?: SortOrderInput | SortOrder
     user?: UsersOrderByWithRelationInput
     phone?: PhonesOrderByWithRelationInput
   }
 
   export type RecommendationLogWhereUniqueInput = Prisma.AtLeast<{
     logId?: string
+    impression_unique?: RecommendationLogImpression_uniqueCompoundUniqueInput
     AND?: RecommendationLogWhereInput | RecommendationLogWhereInput[]
     OR?: RecommendationLogWhereInput[]
     NOT?: RecommendationLogWhereInput | RecommendationLogWhereInput[]
@@ -33605,11 +36511,18 @@ export namespace Prisma {
     phoneId?: UuidFilter<"RecommendationLog"> | string
     finalScore?: FloatFilter<"RecommendationLog"> | number
     rank?: IntFilter<"RecommendationLog"> | number
-    shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
+    source?: StringFilter<"RecommendationLog"> | string
+    requestId?: UuidNullableFilter<"RecommendationLog"> | string | null
+    dwellMs?: IntFilter<"RecommendationLog"> | number
     clicked?: BoolFilter<"RecommendationLog"> | boolean
+    skipped?: BoolFilter<"RecommendationLog"> | boolean
+    isTrainingEligible?: BoolFilter<"RecommendationLog"> | boolean
+    explorationArm?: StringNullableFilter<"RecommendationLog"> | string | null
+    shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
+    firstSeenAt?: DateTimeNullableFilter<"RecommendationLog"> | Date | string | null
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
     phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
-  }, "logId">
+  }, "logId" | "impression_unique">
 
   export type RecommendationLogOrderByWithAggregationInput = {
     logId?: SortOrder
@@ -33617,8 +36530,15 @@ export namespace Prisma {
     phoneId?: SortOrder
     finalScore?: SortOrder
     rank?: SortOrder
-    shownAt?: SortOrder
+    source?: SortOrder
+    requestId?: SortOrderInput | SortOrder
+    dwellMs?: SortOrder
     clicked?: SortOrder
+    skipped?: SortOrder
+    isTrainingEligible?: SortOrder
+    explorationArm?: SortOrderInput | SortOrder
+    shownAt?: SortOrder
+    firstSeenAt?: SortOrderInput | SortOrder
     _count?: RecommendationLogCountOrderByAggregateInput
     _avg?: RecommendationLogAvgOrderByAggregateInput
     _max?: RecommendationLogMaxOrderByAggregateInput
@@ -33635,8 +36555,15 @@ export namespace Prisma {
     phoneId?: UuidWithAggregatesFilter<"RecommendationLog"> | string
     finalScore?: FloatWithAggregatesFilter<"RecommendationLog"> | number
     rank?: IntWithAggregatesFilter<"RecommendationLog"> | number
-    shownAt?: DateTimeWithAggregatesFilter<"RecommendationLog"> | Date | string
+    source?: StringWithAggregatesFilter<"RecommendationLog"> | string
+    requestId?: UuidNullableWithAggregatesFilter<"RecommendationLog"> | string | null
+    dwellMs?: IntWithAggregatesFilter<"RecommendationLog"> | number
     clicked?: BoolWithAggregatesFilter<"RecommendationLog"> | boolean
+    skipped?: BoolWithAggregatesFilter<"RecommendationLog"> | boolean
+    isTrainingEligible?: BoolWithAggregatesFilter<"RecommendationLog"> | boolean
+    explorationArm?: StringNullableWithAggregatesFilter<"RecommendationLog"> | string | null
+    shownAt?: DateTimeWithAggregatesFilter<"RecommendationLog"> | Date | string
+    firstSeenAt?: DateTimeNullableWithAggregatesFilter<"RecommendationLog"> | Date | string | null
   }
 
   export type RecommendationCallWhereInput = {
@@ -33697,6 +36624,232 @@ export namespace Prisma {
     budget?: JsonNullableWithAggregatesFilter<"RecommendationCall">
     topResults?: JsonNullableWithAggregatesFilter<"RecommendationCall">
     servedAt?: DateTimeWithAggregatesFilter<"RecommendationCall"> | Date | string
+  }
+
+  export type PhoneTrendWhereInput = {
+    AND?: PhoneTrendWhereInput | PhoneTrendWhereInput[]
+    OR?: PhoneTrendWhereInput[]
+    NOT?: PhoneTrendWhereInput | PhoneTrendWhereInput[]
+    phoneId?: UuidFilter<"PhoneTrend"> | string
+    trendScore?: FloatFilter<"PhoneTrend"> | number
+    views7d?: IntFilter<"PhoneTrend"> | number
+    clicks7d?: IntFilter<"PhoneTrend"> | number
+    impressions7d?: IntFilter<"PhoneTrend"> | number
+    updatedAt?: DateTimeFilter<"PhoneTrend"> | Date | string
+    phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
+  }
+
+  export type PhoneTrendOrderByWithRelationInput = {
+    phoneId?: SortOrder
+    trendScore?: SortOrder
+    views7d?: SortOrder
+    clicks7d?: SortOrder
+    impressions7d?: SortOrder
+    updatedAt?: SortOrder
+    phone?: PhonesOrderByWithRelationInput
+  }
+
+  export type PhoneTrendWhereUniqueInput = Prisma.AtLeast<{
+    phoneId?: string
+    AND?: PhoneTrendWhereInput | PhoneTrendWhereInput[]
+    OR?: PhoneTrendWhereInput[]
+    NOT?: PhoneTrendWhereInput | PhoneTrendWhereInput[]
+    trendScore?: FloatFilter<"PhoneTrend"> | number
+    views7d?: IntFilter<"PhoneTrend"> | number
+    clicks7d?: IntFilter<"PhoneTrend"> | number
+    impressions7d?: IntFilter<"PhoneTrend"> | number
+    updatedAt?: DateTimeFilter<"PhoneTrend"> | Date | string
+    phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
+  }, "phoneId">
+
+  export type PhoneTrendOrderByWithAggregationInput = {
+    phoneId?: SortOrder
+    trendScore?: SortOrder
+    views7d?: SortOrder
+    clicks7d?: SortOrder
+    impressions7d?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PhoneTrendCountOrderByAggregateInput
+    _avg?: PhoneTrendAvgOrderByAggregateInput
+    _max?: PhoneTrendMaxOrderByAggregateInput
+    _min?: PhoneTrendMinOrderByAggregateInput
+    _sum?: PhoneTrendSumOrderByAggregateInput
+  }
+
+  export type PhoneTrendScalarWhereWithAggregatesInput = {
+    AND?: PhoneTrendScalarWhereWithAggregatesInput | PhoneTrendScalarWhereWithAggregatesInput[]
+    OR?: PhoneTrendScalarWhereWithAggregatesInput[]
+    NOT?: PhoneTrendScalarWhereWithAggregatesInput | PhoneTrendScalarWhereWithAggregatesInput[]
+    phoneId?: UuidWithAggregatesFilter<"PhoneTrend"> | string
+    trendScore?: FloatWithAggregatesFilter<"PhoneTrend"> | number
+    views7d?: IntWithAggregatesFilter<"PhoneTrend"> | number
+    clicks7d?: IntWithAggregatesFilter<"PhoneTrend"> | number
+    impressions7d?: IntWithAggregatesFilter<"PhoneTrend"> | number
+    updatedAt?: DateTimeWithAggregatesFilter<"PhoneTrend"> | Date | string
+  }
+
+  export type TrainingImpressionWhereInput = {
+    AND?: TrainingImpressionWhereInput | TrainingImpressionWhereInput[]
+    OR?: TrainingImpressionWhereInput[]
+    NOT?: TrainingImpressionWhereInput | TrainingImpressionWhereInput[]
+    impressionId?: UuidFilter<"TrainingImpression"> | string
+    requestId?: UuidFilter<"TrainingImpression"> | string
+    userId?: UuidFilter<"TrainingImpression"> | string
+    phoneId?: UuidFilter<"TrainingImpression"> | string
+    source?: StringFilter<"TrainingImpression"> | string
+    position?: IntFilter<"TrainingImpression"> | number
+    viewportIndex?: IntNullableFilter<"TrainingImpression"> | number | null
+    sCompatibility?: FloatFilter<"TrainingImpression"> | number
+    sCustomerPref?: FloatFilter<"TrainingImpression"> | number
+    sContentSim?: FloatFilter<"TrainingImpression"> | number
+    sSearchHistory?: FloatFilter<"TrainingImpression"> | number
+    sValue?: FloatFilter<"TrainingImpression"> | number
+    sFreshness?: FloatNullableFilter<"TrainingImpression"> | number | null
+    inStock?: BoolNullableFilter<"TrainingImpression"> | boolean | null
+    daysSinceRelease?: IntNullableFilter<"TrainingImpression"> | number | null
+    userPersona?: StringNullableFilter<"TrainingImpression"> | string | null
+    userSegment?: StringNullableFilter<"TrainingImpression"> | string | null
+    hasHistory?: BoolFilter<"TrainingImpression"> | boolean
+    labelClicked?: BoolNullableFilter<"TrainingImpression"> | boolean | null
+    labelClickedAt?: DateTimeNullableFilter<"TrainingImpression"> | Date | string | null
+    labelDwellMs?: IntNullableFilter<"TrainingImpression"> | number | null
+    labelSkipped?: BoolNullableFilter<"TrainingImpression"> | boolean | null
+    labelPurchased?: BoolNullableFilter<"TrainingImpression"> | boolean | null
+    labelPurchasedAt?: DateTimeNullableFilter<"TrainingImpression"> | Date | string | null
+    isTrainingEligible?: BoolFilter<"TrainingImpression"> | boolean
+    observedAt?: DateTimeFilter<"TrainingImpression"> | Date | string
+    labelledAt?: DateTimeNullableFilter<"TrainingImpression"> | Date | string | null
+  }
+
+  export type TrainingImpressionOrderByWithRelationInput = {
+    impressionId?: SortOrder
+    requestId?: SortOrder
+    userId?: SortOrder
+    phoneId?: SortOrder
+    source?: SortOrder
+    position?: SortOrder
+    viewportIndex?: SortOrderInput | SortOrder
+    sCompatibility?: SortOrder
+    sCustomerPref?: SortOrder
+    sContentSim?: SortOrder
+    sSearchHistory?: SortOrder
+    sValue?: SortOrder
+    sFreshness?: SortOrderInput | SortOrder
+    inStock?: SortOrderInput | SortOrder
+    daysSinceRelease?: SortOrderInput | SortOrder
+    userPersona?: SortOrderInput | SortOrder
+    userSegment?: SortOrderInput | SortOrder
+    hasHistory?: SortOrder
+    labelClicked?: SortOrderInput | SortOrder
+    labelClickedAt?: SortOrderInput | SortOrder
+    labelDwellMs?: SortOrderInput | SortOrder
+    labelSkipped?: SortOrderInput | SortOrder
+    labelPurchased?: SortOrderInput | SortOrder
+    labelPurchasedAt?: SortOrderInput | SortOrder
+    isTrainingEligible?: SortOrder
+    observedAt?: SortOrder
+    labelledAt?: SortOrderInput | SortOrder
+  }
+
+  export type TrainingImpressionWhereUniqueInput = Prisma.AtLeast<{
+    impressionId?: string
+    AND?: TrainingImpressionWhereInput | TrainingImpressionWhereInput[]
+    OR?: TrainingImpressionWhereInput[]
+    NOT?: TrainingImpressionWhereInput | TrainingImpressionWhereInput[]
+    requestId?: UuidFilter<"TrainingImpression"> | string
+    userId?: UuidFilter<"TrainingImpression"> | string
+    phoneId?: UuidFilter<"TrainingImpression"> | string
+    source?: StringFilter<"TrainingImpression"> | string
+    position?: IntFilter<"TrainingImpression"> | number
+    viewportIndex?: IntNullableFilter<"TrainingImpression"> | number | null
+    sCompatibility?: FloatFilter<"TrainingImpression"> | number
+    sCustomerPref?: FloatFilter<"TrainingImpression"> | number
+    sContentSim?: FloatFilter<"TrainingImpression"> | number
+    sSearchHistory?: FloatFilter<"TrainingImpression"> | number
+    sValue?: FloatFilter<"TrainingImpression"> | number
+    sFreshness?: FloatNullableFilter<"TrainingImpression"> | number | null
+    inStock?: BoolNullableFilter<"TrainingImpression"> | boolean | null
+    daysSinceRelease?: IntNullableFilter<"TrainingImpression"> | number | null
+    userPersona?: StringNullableFilter<"TrainingImpression"> | string | null
+    userSegment?: StringNullableFilter<"TrainingImpression"> | string | null
+    hasHistory?: BoolFilter<"TrainingImpression"> | boolean
+    labelClicked?: BoolNullableFilter<"TrainingImpression"> | boolean | null
+    labelClickedAt?: DateTimeNullableFilter<"TrainingImpression"> | Date | string | null
+    labelDwellMs?: IntNullableFilter<"TrainingImpression"> | number | null
+    labelSkipped?: BoolNullableFilter<"TrainingImpression"> | boolean | null
+    labelPurchased?: BoolNullableFilter<"TrainingImpression"> | boolean | null
+    labelPurchasedAt?: DateTimeNullableFilter<"TrainingImpression"> | Date | string | null
+    isTrainingEligible?: BoolFilter<"TrainingImpression"> | boolean
+    observedAt?: DateTimeFilter<"TrainingImpression"> | Date | string
+    labelledAt?: DateTimeNullableFilter<"TrainingImpression"> | Date | string | null
+  }, "impressionId">
+
+  export type TrainingImpressionOrderByWithAggregationInput = {
+    impressionId?: SortOrder
+    requestId?: SortOrder
+    userId?: SortOrder
+    phoneId?: SortOrder
+    source?: SortOrder
+    position?: SortOrder
+    viewportIndex?: SortOrderInput | SortOrder
+    sCompatibility?: SortOrder
+    sCustomerPref?: SortOrder
+    sContentSim?: SortOrder
+    sSearchHistory?: SortOrder
+    sValue?: SortOrder
+    sFreshness?: SortOrderInput | SortOrder
+    inStock?: SortOrderInput | SortOrder
+    daysSinceRelease?: SortOrderInput | SortOrder
+    userPersona?: SortOrderInput | SortOrder
+    userSegment?: SortOrderInput | SortOrder
+    hasHistory?: SortOrder
+    labelClicked?: SortOrderInput | SortOrder
+    labelClickedAt?: SortOrderInput | SortOrder
+    labelDwellMs?: SortOrderInput | SortOrder
+    labelSkipped?: SortOrderInput | SortOrder
+    labelPurchased?: SortOrderInput | SortOrder
+    labelPurchasedAt?: SortOrderInput | SortOrder
+    isTrainingEligible?: SortOrder
+    observedAt?: SortOrder
+    labelledAt?: SortOrderInput | SortOrder
+    _count?: TrainingImpressionCountOrderByAggregateInput
+    _avg?: TrainingImpressionAvgOrderByAggregateInput
+    _max?: TrainingImpressionMaxOrderByAggregateInput
+    _min?: TrainingImpressionMinOrderByAggregateInput
+    _sum?: TrainingImpressionSumOrderByAggregateInput
+  }
+
+  export type TrainingImpressionScalarWhereWithAggregatesInput = {
+    AND?: TrainingImpressionScalarWhereWithAggregatesInput | TrainingImpressionScalarWhereWithAggregatesInput[]
+    OR?: TrainingImpressionScalarWhereWithAggregatesInput[]
+    NOT?: TrainingImpressionScalarWhereWithAggregatesInput | TrainingImpressionScalarWhereWithAggregatesInput[]
+    impressionId?: UuidWithAggregatesFilter<"TrainingImpression"> | string
+    requestId?: UuidWithAggregatesFilter<"TrainingImpression"> | string
+    userId?: UuidWithAggregatesFilter<"TrainingImpression"> | string
+    phoneId?: UuidWithAggregatesFilter<"TrainingImpression"> | string
+    source?: StringWithAggregatesFilter<"TrainingImpression"> | string
+    position?: IntWithAggregatesFilter<"TrainingImpression"> | number
+    viewportIndex?: IntNullableWithAggregatesFilter<"TrainingImpression"> | number | null
+    sCompatibility?: FloatWithAggregatesFilter<"TrainingImpression"> | number
+    sCustomerPref?: FloatWithAggregatesFilter<"TrainingImpression"> | number
+    sContentSim?: FloatWithAggregatesFilter<"TrainingImpression"> | number
+    sSearchHistory?: FloatWithAggregatesFilter<"TrainingImpression"> | number
+    sValue?: FloatWithAggregatesFilter<"TrainingImpression"> | number
+    sFreshness?: FloatNullableWithAggregatesFilter<"TrainingImpression"> | number | null
+    inStock?: BoolNullableWithAggregatesFilter<"TrainingImpression"> | boolean | null
+    daysSinceRelease?: IntNullableWithAggregatesFilter<"TrainingImpression"> | number | null
+    userPersona?: StringNullableWithAggregatesFilter<"TrainingImpression"> | string | null
+    userSegment?: StringNullableWithAggregatesFilter<"TrainingImpression"> | string | null
+    hasHistory?: BoolWithAggregatesFilter<"TrainingImpression"> | boolean
+    labelClicked?: BoolNullableWithAggregatesFilter<"TrainingImpression"> | boolean | null
+    labelClickedAt?: DateTimeNullableWithAggregatesFilter<"TrainingImpression"> | Date | string | null
+    labelDwellMs?: IntNullableWithAggregatesFilter<"TrainingImpression"> | number | null
+    labelSkipped?: BoolNullableWithAggregatesFilter<"TrainingImpression"> | boolean | null
+    labelPurchased?: BoolNullableWithAggregatesFilter<"TrainingImpression"> | boolean | null
+    labelPurchasedAt?: DateTimeNullableWithAggregatesFilter<"TrainingImpression"> | Date | string | null
+    isTrainingEligible?: BoolWithAggregatesFilter<"TrainingImpression"> | boolean
+    observedAt?: DateTimeWithAggregatesFilter<"TrainingImpression"> | Date | string
+    labelledAt?: DateTimeNullableWithAggregatesFilter<"TrainingImpression"> | Date | string | null
   }
 
   export type CustomerProfileWhereInput = {
@@ -34902,6 +38055,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -34909,6 +38065,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
@@ -34929,12 +38086,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
@@ -34954,6 +38115,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -34961,6 +38125,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
@@ -34981,12 +38146,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
@@ -35007,6 +38176,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -35022,6 +38194,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -35038,6 +38213,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -35797,8 +38975,15 @@ export namespace Prisma {
     logId?: string
     finalScore: number
     rank: number
-    shownAt?: Date | string
+    source?: string
+    requestId?: string | null
+    dwellMs?: number
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: string | null
+    shownAt?: Date | string
+    firstSeenAt?: Date | string | null
     user: UsersCreateNestedOneWithoutRecommendationLogsInput
     phone: PhonesCreateNestedOneWithoutRecommendationLogsInput
   }
@@ -35809,16 +38994,30 @@ export namespace Prisma {
     phoneId: string
     finalScore: number
     rank: number
-    shownAt?: Date | string
+    source?: string
+    requestId?: string | null
+    dwellMs?: number
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: string | null
+    shownAt?: Date | string
+    firstSeenAt?: Date | string | null
   }
 
   export type RecommendationLogUpdateInput = {
     logId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
     rank?: IntFieldUpdateOperationsInput | number
-    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    source?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    dwellMs?: IntFieldUpdateOperationsInput | number
     clicked?: BoolFieldUpdateOperationsInput | boolean
+    skipped?: BoolFieldUpdateOperationsInput | boolean
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UsersUpdateOneRequiredWithoutRecommendationLogsNestedInput
     phone?: PhonesUpdateOneRequiredWithoutRecommendationLogsNestedInput
   }
@@ -35829,8 +39028,15 @@ export namespace Prisma {
     phoneId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
     rank?: IntFieldUpdateOperationsInput | number
-    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    source?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    dwellMs?: IntFieldUpdateOperationsInput | number
     clicked?: BoolFieldUpdateOperationsInput | boolean
+    skipped?: BoolFieldUpdateOperationsInput | boolean
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RecommendationLogCreateManyInput = {
@@ -35839,16 +39045,30 @@ export namespace Prisma {
     phoneId: string
     finalScore: number
     rank: number
-    shownAt?: Date | string
+    source?: string
+    requestId?: string | null
+    dwellMs?: number
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: string | null
+    shownAt?: Date | string
+    firstSeenAt?: Date | string | null
   }
 
   export type RecommendationLogUpdateManyMutationInput = {
     logId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
     rank?: IntFieldUpdateOperationsInput | number
-    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    source?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    dwellMs?: IntFieldUpdateOperationsInput | number
     clicked?: BoolFieldUpdateOperationsInput | boolean
+    skipped?: BoolFieldUpdateOperationsInput | boolean
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RecommendationLogUncheckedUpdateManyInput = {
@@ -35857,8 +39077,15 @@ export namespace Prisma {
     phoneId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
     rank?: IntFieldUpdateOperationsInput | number
-    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    source?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    dwellMs?: IntFieldUpdateOperationsInput | number
     clicked?: BoolFieldUpdateOperationsInput | boolean
+    skipped?: BoolFieldUpdateOperationsInput | boolean
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RecommendationCallCreateInput = {
@@ -35921,6 +39148,278 @@ export namespace Prisma {
     budget?: NullableJsonNullValueInput | InputJsonValue
     topResults?: NullableJsonNullValueInput | InputJsonValue
     servedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneTrendCreateInput = {
+    trendScore?: number
+    views7d?: number
+    clicks7d?: number
+    impressions7d?: number
+    updatedAt?: Date | string
+    phone: PhonesCreateNestedOneWithoutTrendInput
+  }
+
+  export type PhoneTrendUncheckedCreateInput = {
+    phoneId: string
+    trendScore?: number
+    views7d?: number
+    clicks7d?: number
+    impressions7d?: number
+    updatedAt?: Date | string
+  }
+
+  export type PhoneTrendUpdateInput = {
+    trendScore?: FloatFieldUpdateOperationsInput | number
+    views7d?: IntFieldUpdateOperationsInput | number
+    clicks7d?: IntFieldUpdateOperationsInput | number
+    impressions7d?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    phone?: PhonesUpdateOneRequiredWithoutTrendNestedInput
+  }
+
+  export type PhoneTrendUncheckedUpdateInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    trendScore?: FloatFieldUpdateOperationsInput | number
+    views7d?: IntFieldUpdateOperationsInput | number
+    clicks7d?: IntFieldUpdateOperationsInput | number
+    impressions7d?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneTrendCreateManyInput = {
+    phoneId: string
+    trendScore?: number
+    views7d?: number
+    clicks7d?: number
+    impressions7d?: number
+    updatedAt?: Date | string
+  }
+
+  export type PhoneTrendUpdateManyMutationInput = {
+    trendScore?: FloatFieldUpdateOperationsInput | number
+    views7d?: IntFieldUpdateOperationsInput | number
+    clicks7d?: IntFieldUpdateOperationsInput | number
+    impressions7d?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneTrendUncheckedUpdateManyInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    trendScore?: FloatFieldUpdateOperationsInput | number
+    views7d?: IntFieldUpdateOperationsInput | number
+    clicks7d?: IntFieldUpdateOperationsInput | number
+    impressions7d?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TrainingImpressionCreateInput = {
+    impressionId?: string
+    requestId: string
+    userId: string
+    phoneId: string
+    source: string
+    position: number
+    viewportIndex?: number | null
+    sCompatibility: number
+    sCustomerPref: number
+    sContentSim: number
+    sSearchHistory: number
+    sValue: number
+    sFreshness?: number | null
+    inStock?: boolean | null
+    daysSinceRelease?: number | null
+    userPersona?: string | null
+    userSegment?: string | null
+    hasHistory: boolean
+    labelClicked?: boolean | null
+    labelClickedAt?: Date | string | null
+    labelDwellMs?: number | null
+    labelSkipped?: boolean | null
+    labelPurchased?: boolean | null
+    labelPurchasedAt?: Date | string | null
+    isTrainingEligible: boolean
+    observedAt: Date | string
+    labelledAt?: Date | string | null
+  }
+
+  export type TrainingImpressionUncheckedCreateInput = {
+    impressionId?: string
+    requestId: string
+    userId: string
+    phoneId: string
+    source: string
+    position: number
+    viewportIndex?: number | null
+    sCompatibility: number
+    sCustomerPref: number
+    sContentSim: number
+    sSearchHistory: number
+    sValue: number
+    sFreshness?: number | null
+    inStock?: boolean | null
+    daysSinceRelease?: number | null
+    userPersona?: string | null
+    userSegment?: string | null
+    hasHistory: boolean
+    labelClicked?: boolean | null
+    labelClickedAt?: Date | string | null
+    labelDwellMs?: number | null
+    labelSkipped?: boolean | null
+    labelPurchased?: boolean | null
+    labelPurchasedAt?: Date | string | null
+    isTrainingEligible: boolean
+    observedAt: Date | string
+    labelledAt?: Date | string | null
+  }
+
+  export type TrainingImpressionUpdateInput = {
+    impressionId?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    source?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    viewportIndex?: NullableIntFieldUpdateOperationsInput | number | null
+    sCompatibility?: FloatFieldUpdateOperationsInput | number
+    sCustomerPref?: FloatFieldUpdateOperationsInput | number
+    sContentSim?: FloatFieldUpdateOperationsInput | number
+    sSearchHistory?: FloatFieldUpdateOperationsInput | number
+    sValue?: FloatFieldUpdateOperationsInput | number
+    sFreshness?: NullableFloatFieldUpdateOperationsInput | number | null
+    inStock?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    daysSinceRelease?: NullableIntFieldUpdateOperationsInput | number | null
+    userPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    userSegment?: NullableStringFieldUpdateOperationsInput | string | null
+    hasHistory?: BoolFieldUpdateOperationsInput | boolean
+    labelClicked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelClickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    labelDwellMs?: NullableIntFieldUpdateOperationsInput | number | null
+    labelSkipped?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelPurchased?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelPurchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    labelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TrainingImpressionUncheckedUpdateInput = {
+    impressionId?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    source?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    viewportIndex?: NullableIntFieldUpdateOperationsInput | number | null
+    sCompatibility?: FloatFieldUpdateOperationsInput | number
+    sCustomerPref?: FloatFieldUpdateOperationsInput | number
+    sContentSim?: FloatFieldUpdateOperationsInput | number
+    sSearchHistory?: FloatFieldUpdateOperationsInput | number
+    sValue?: FloatFieldUpdateOperationsInput | number
+    sFreshness?: NullableFloatFieldUpdateOperationsInput | number | null
+    inStock?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    daysSinceRelease?: NullableIntFieldUpdateOperationsInput | number | null
+    userPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    userSegment?: NullableStringFieldUpdateOperationsInput | string | null
+    hasHistory?: BoolFieldUpdateOperationsInput | boolean
+    labelClicked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelClickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    labelDwellMs?: NullableIntFieldUpdateOperationsInput | number | null
+    labelSkipped?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelPurchased?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelPurchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    labelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TrainingImpressionCreateManyInput = {
+    impressionId?: string
+    requestId: string
+    userId: string
+    phoneId: string
+    source: string
+    position: number
+    viewportIndex?: number | null
+    sCompatibility: number
+    sCustomerPref: number
+    sContentSim: number
+    sSearchHistory: number
+    sValue: number
+    sFreshness?: number | null
+    inStock?: boolean | null
+    daysSinceRelease?: number | null
+    userPersona?: string | null
+    userSegment?: string | null
+    hasHistory: boolean
+    labelClicked?: boolean | null
+    labelClickedAt?: Date | string | null
+    labelDwellMs?: number | null
+    labelSkipped?: boolean | null
+    labelPurchased?: boolean | null
+    labelPurchasedAt?: Date | string | null
+    isTrainingEligible: boolean
+    observedAt: Date | string
+    labelledAt?: Date | string | null
+  }
+
+  export type TrainingImpressionUpdateManyMutationInput = {
+    impressionId?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    source?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    viewportIndex?: NullableIntFieldUpdateOperationsInput | number | null
+    sCompatibility?: FloatFieldUpdateOperationsInput | number
+    sCustomerPref?: FloatFieldUpdateOperationsInput | number
+    sContentSim?: FloatFieldUpdateOperationsInput | number
+    sSearchHistory?: FloatFieldUpdateOperationsInput | number
+    sValue?: FloatFieldUpdateOperationsInput | number
+    sFreshness?: NullableFloatFieldUpdateOperationsInput | number | null
+    inStock?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    daysSinceRelease?: NullableIntFieldUpdateOperationsInput | number | null
+    userPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    userSegment?: NullableStringFieldUpdateOperationsInput | string | null
+    hasHistory?: BoolFieldUpdateOperationsInput | boolean
+    labelClicked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelClickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    labelDwellMs?: NullableIntFieldUpdateOperationsInput | number | null
+    labelSkipped?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelPurchased?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelPurchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    labelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TrainingImpressionUncheckedUpdateManyInput = {
+    impressionId?: StringFieldUpdateOperationsInput | string
+    requestId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    phoneId?: StringFieldUpdateOperationsInput | string
+    source?: StringFieldUpdateOperationsInput | string
+    position?: IntFieldUpdateOperationsInput | number
+    viewportIndex?: NullableIntFieldUpdateOperationsInput | number | null
+    sCompatibility?: FloatFieldUpdateOperationsInput | number
+    sCustomerPref?: FloatFieldUpdateOperationsInput | number
+    sContentSim?: FloatFieldUpdateOperationsInput | number
+    sSearchHistory?: FloatFieldUpdateOperationsInput | number
+    sValue?: FloatFieldUpdateOperationsInput | number
+    sFreshness?: NullableFloatFieldUpdateOperationsInput | number | null
+    inStock?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    daysSinceRelease?: NullableIntFieldUpdateOperationsInput | number | null
+    userPersona?: NullableStringFieldUpdateOperationsInput | string | null
+    userSegment?: NullableStringFieldUpdateOperationsInput | string | null
+    hasHistory?: BoolFieldUpdateOperationsInput | boolean
+    labelClicked?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelClickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    labelDwellMs?: NullableIntFieldUpdateOperationsInput | number | null
+    labelSkipped?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelPurchased?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    labelPurchasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    labelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CustomerProfileCreateInput = {
@@ -37360,6 +40859,11 @@ export namespace Prisma {
     isNot?: PhoneSpecsWhereInput | null
   }
 
+  export type PhoneTrendNullableScalarRelationFilter = {
+    is?: PhoneTrendWhereInput | null
+    isNot?: PhoneTrendWhereInput | null
+  }
+
   export type AdminStatsCacheListRelationFilter = {
     every?: AdminStatsCacheWhereInput
     some?: AdminStatsCacheWhereInput
@@ -37389,6 +40893,9 @@ export namespace Prisma {
     batteryMah?: SortOrder
     source?: SortOrder
     sourceUrl?: SortOrder
+    releasedAt?: SortOrder
+    stockState?: SortOrder
+    stockUpdatedAt?: SortOrder
     isActive?: SortOrder
     discontinuedAt?: SortOrder
     createdAt?: SortOrder
@@ -37410,6 +40917,9 @@ export namespace Prisma {
     batteryMah?: SortOrder
     source?: SortOrder
     sourceUrl?: SortOrder
+    releasedAt?: SortOrder
+    stockState?: SortOrder
+    stockUpdatedAt?: SortOrder
     isActive?: SortOrder
     discontinuedAt?: SortOrder
     createdAt?: SortOrder
@@ -37426,6 +40936,9 @@ export namespace Prisma {
     batteryMah?: SortOrder
     source?: SortOrder
     sourceUrl?: SortOrder
+    releasedAt?: SortOrder
+    stockState?: SortOrder
+    stockUpdatedAt?: SortOrder
     isActive?: SortOrder
     discontinuedAt?: SortOrder
     createdAt?: SortOrder
@@ -38059,19 +41572,34 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type RecommendationLogImpression_uniqueCompoundUniqueInput = {
+    userId: string
+    phoneId: string
+    source: string
+    requestId: string
+  }
+
   export type RecommendationLogCountOrderByAggregateInput = {
     logId?: SortOrder
     userId?: SortOrder
     phoneId?: SortOrder
     finalScore?: SortOrder
     rank?: SortOrder
-    shownAt?: SortOrder
+    source?: SortOrder
+    requestId?: SortOrder
+    dwellMs?: SortOrder
     clicked?: SortOrder
+    skipped?: SortOrder
+    isTrainingEligible?: SortOrder
+    explorationArm?: SortOrder
+    shownAt?: SortOrder
+    firstSeenAt?: SortOrder
   }
 
   export type RecommendationLogAvgOrderByAggregateInput = {
     finalScore?: SortOrder
     rank?: SortOrder
+    dwellMs?: SortOrder
   }
 
   export type RecommendationLogMaxOrderByAggregateInput = {
@@ -38080,8 +41608,15 @@ export namespace Prisma {
     phoneId?: SortOrder
     finalScore?: SortOrder
     rank?: SortOrder
-    shownAt?: SortOrder
+    source?: SortOrder
+    requestId?: SortOrder
+    dwellMs?: SortOrder
     clicked?: SortOrder
+    skipped?: SortOrder
+    isTrainingEligible?: SortOrder
+    explorationArm?: SortOrder
+    shownAt?: SortOrder
+    firstSeenAt?: SortOrder
   }
 
   export type RecommendationLogMinOrderByAggregateInput = {
@@ -38090,13 +41625,21 @@ export namespace Prisma {
     phoneId?: SortOrder
     finalScore?: SortOrder
     rank?: SortOrder
-    shownAt?: SortOrder
+    source?: SortOrder
+    requestId?: SortOrder
+    dwellMs?: SortOrder
     clicked?: SortOrder
+    skipped?: SortOrder
+    isTrainingEligible?: SortOrder
+    explorationArm?: SortOrder
+    shownAt?: SortOrder
+    firstSeenAt?: SortOrder
   }
 
   export type RecommendationLogSumOrderByAggregateInput = {
     finalScore?: SortOrder
     rank?: SortOrder
+    dwellMs?: SortOrder
   }
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -38136,6 +41679,190 @@ export namespace Prisma {
     userId?: SortOrder
     persona?: SortOrder
     servedAt?: SortOrder
+  }
+
+  export type PhoneTrendCountOrderByAggregateInput = {
+    phoneId?: SortOrder
+    trendScore?: SortOrder
+    views7d?: SortOrder
+    clicks7d?: SortOrder
+    impressions7d?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhoneTrendAvgOrderByAggregateInput = {
+    trendScore?: SortOrder
+    views7d?: SortOrder
+    clicks7d?: SortOrder
+    impressions7d?: SortOrder
+  }
+
+  export type PhoneTrendMaxOrderByAggregateInput = {
+    phoneId?: SortOrder
+    trendScore?: SortOrder
+    views7d?: SortOrder
+    clicks7d?: SortOrder
+    impressions7d?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhoneTrendMinOrderByAggregateInput = {
+    phoneId?: SortOrder
+    trendScore?: SortOrder
+    views7d?: SortOrder
+    clicks7d?: SortOrder
+    impressions7d?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PhoneTrendSumOrderByAggregateInput = {
+    trendScore?: SortOrder
+    views7d?: SortOrder
+    clicks7d?: SortOrder
+    impressions7d?: SortOrder
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type TrainingImpressionCountOrderByAggregateInput = {
+    impressionId?: SortOrder
+    requestId?: SortOrder
+    userId?: SortOrder
+    phoneId?: SortOrder
+    source?: SortOrder
+    position?: SortOrder
+    viewportIndex?: SortOrder
+    sCompatibility?: SortOrder
+    sCustomerPref?: SortOrder
+    sContentSim?: SortOrder
+    sSearchHistory?: SortOrder
+    sValue?: SortOrder
+    sFreshness?: SortOrder
+    inStock?: SortOrder
+    daysSinceRelease?: SortOrder
+    userPersona?: SortOrder
+    userSegment?: SortOrder
+    hasHistory?: SortOrder
+    labelClicked?: SortOrder
+    labelClickedAt?: SortOrder
+    labelDwellMs?: SortOrder
+    labelSkipped?: SortOrder
+    labelPurchased?: SortOrder
+    labelPurchasedAt?: SortOrder
+    isTrainingEligible?: SortOrder
+    observedAt?: SortOrder
+    labelledAt?: SortOrder
+  }
+
+  export type TrainingImpressionAvgOrderByAggregateInput = {
+    position?: SortOrder
+    viewportIndex?: SortOrder
+    sCompatibility?: SortOrder
+    sCustomerPref?: SortOrder
+    sContentSim?: SortOrder
+    sSearchHistory?: SortOrder
+    sValue?: SortOrder
+    sFreshness?: SortOrder
+    daysSinceRelease?: SortOrder
+    labelDwellMs?: SortOrder
+  }
+
+  export type TrainingImpressionMaxOrderByAggregateInput = {
+    impressionId?: SortOrder
+    requestId?: SortOrder
+    userId?: SortOrder
+    phoneId?: SortOrder
+    source?: SortOrder
+    position?: SortOrder
+    viewportIndex?: SortOrder
+    sCompatibility?: SortOrder
+    sCustomerPref?: SortOrder
+    sContentSim?: SortOrder
+    sSearchHistory?: SortOrder
+    sValue?: SortOrder
+    sFreshness?: SortOrder
+    inStock?: SortOrder
+    daysSinceRelease?: SortOrder
+    userPersona?: SortOrder
+    userSegment?: SortOrder
+    hasHistory?: SortOrder
+    labelClicked?: SortOrder
+    labelClickedAt?: SortOrder
+    labelDwellMs?: SortOrder
+    labelSkipped?: SortOrder
+    labelPurchased?: SortOrder
+    labelPurchasedAt?: SortOrder
+    isTrainingEligible?: SortOrder
+    observedAt?: SortOrder
+    labelledAt?: SortOrder
+  }
+
+  export type TrainingImpressionMinOrderByAggregateInput = {
+    impressionId?: SortOrder
+    requestId?: SortOrder
+    userId?: SortOrder
+    phoneId?: SortOrder
+    source?: SortOrder
+    position?: SortOrder
+    viewportIndex?: SortOrder
+    sCompatibility?: SortOrder
+    sCustomerPref?: SortOrder
+    sContentSim?: SortOrder
+    sSearchHistory?: SortOrder
+    sValue?: SortOrder
+    sFreshness?: SortOrder
+    inStock?: SortOrder
+    daysSinceRelease?: SortOrder
+    userPersona?: SortOrder
+    userSegment?: SortOrder
+    hasHistory?: SortOrder
+    labelClicked?: SortOrder
+    labelClickedAt?: SortOrder
+    labelDwellMs?: SortOrder
+    labelSkipped?: SortOrder
+    labelPurchased?: SortOrder
+    labelPurchasedAt?: SortOrder
+    isTrainingEligible?: SortOrder
+    observedAt?: SortOrder
+    labelledAt?: SortOrder
+  }
+
+  export type TrainingImpressionSumOrderByAggregateInput = {
+    position?: SortOrder
+    viewportIndex?: SortOrder
+    sCompatibility?: SortOrder
+    sCustomerPref?: SortOrder
+    sContentSim?: SortOrder
+    sSearchHistory?: SortOrder
+    sValue?: SortOrder
+    sFreshness?: SortOrder
+    daysSinceRelease?: SortOrder
+    labelDwellMs?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type EnumBudgetSegmentNullableFilter<$PrismaModel = never> = {
@@ -39500,6 +43227,12 @@ export namespace Prisma {
     connect?: PhoneSpecsWhereUniqueInput
   }
 
+  export type PhoneTrendCreateNestedOneWithoutPhoneInput = {
+    create?: XOR<PhoneTrendCreateWithoutPhoneInput, PhoneTrendUncheckedCreateWithoutPhoneInput>
+    connectOrCreate?: PhoneTrendCreateOrConnectWithoutPhoneInput
+    connect?: PhoneTrendWhereUniqueInput
+  }
+
   export type RecommendationHistoryCreateNestedManyWithoutPhoneInput = {
     create?: XOR<RecommendationHistoryCreateWithoutPhoneInput, RecommendationHistoryUncheckedCreateWithoutPhoneInput> | RecommendationHistoryCreateWithoutPhoneInput[] | RecommendationHistoryUncheckedCreateWithoutPhoneInput[]
     connectOrCreate?: RecommendationHistoryCreateOrConnectWithoutPhoneInput | RecommendationHistoryCreateOrConnectWithoutPhoneInput[]
@@ -39567,6 +43300,12 @@ export namespace Prisma {
     create?: XOR<PhoneSpecsCreateWithoutPhoneInput, PhoneSpecsUncheckedCreateWithoutPhoneInput>
     connectOrCreate?: PhoneSpecsCreateOrConnectWithoutPhoneInput
     connect?: PhoneSpecsWhereUniqueInput
+  }
+
+  export type PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput = {
+    create?: XOR<PhoneTrendCreateWithoutPhoneInput, PhoneTrendUncheckedCreateWithoutPhoneInput>
+    connectOrCreate?: PhoneTrendCreateOrConnectWithoutPhoneInput
+    connect?: PhoneTrendWhereUniqueInput
   }
 
   export type RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput = {
@@ -39667,6 +43406,16 @@ export namespace Prisma {
     delete?: PhoneSpecsWhereInput | boolean
     connect?: PhoneSpecsWhereUniqueInput
     update?: XOR<XOR<PhoneSpecsUpdateToOneWithWhereWithoutPhoneInput, PhoneSpecsUpdateWithoutPhoneInput>, PhoneSpecsUncheckedUpdateWithoutPhoneInput>
+  }
+
+  export type PhoneTrendUpdateOneWithoutPhoneNestedInput = {
+    create?: XOR<PhoneTrendCreateWithoutPhoneInput, PhoneTrendUncheckedCreateWithoutPhoneInput>
+    connectOrCreate?: PhoneTrendCreateOrConnectWithoutPhoneInput
+    upsert?: PhoneTrendUpsertWithoutPhoneInput
+    disconnect?: PhoneTrendWhereInput | boolean
+    delete?: PhoneTrendWhereInput | boolean
+    connect?: PhoneTrendWhereUniqueInput
+    update?: XOR<XOR<PhoneTrendUpdateToOneWithWhereWithoutPhoneInput, PhoneTrendUpdateWithoutPhoneInput>, PhoneTrendUncheckedUpdateWithoutPhoneInput>
   }
 
   export type RecommendationHistoryUpdateManyWithoutPhoneNestedInput = {
@@ -39803,6 +43552,16 @@ export namespace Prisma {
     delete?: PhoneSpecsWhereInput | boolean
     connect?: PhoneSpecsWhereUniqueInput
     update?: XOR<XOR<PhoneSpecsUpdateToOneWithWhereWithoutPhoneInput, PhoneSpecsUpdateWithoutPhoneInput>, PhoneSpecsUncheckedUpdateWithoutPhoneInput>
+  }
+
+  export type PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput = {
+    create?: XOR<PhoneTrendCreateWithoutPhoneInput, PhoneTrendUncheckedCreateWithoutPhoneInput>
+    connectOrCreate?: PhoneTrendCreateOrConnectWithoutPhoneInput
+    upsert?: PhoneTrendUpsertWithoutPhoneInput
+    disconnect?: PhoneTrendWhereInput | boolean
+    delete?: PhoneTrendWhereInput | boolean
+    connect?: PhoneTrendWhereUniqueInput
+    update?: XOR<XOR<PhoneTrendUpdateToOneWithWhereWithoutPhoneInput, PhoneTrendUpdateWithoutPhoneInput>, PhoneTrendUncheckedUpdateWithoutPhoneInput>
   }
 
   export type RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput = {
@@ -40101,6 +43860,28 @@ export namespace Prisma {
     upsert?: UsersUpsertWithoutRecommendationCallsInput
     connect?: UsersWhereUniqueInput
     update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutRecommendationCallsInput, UsersUpdateWithoutRecommendationCallsInput>, UsersUncheckedUpdateWithoutRecommendationCallsInput>
+  }
+
+  export type PhonesCreateNestedOneWithoutTrendInput = {
+    create?: XOR<PhonesCreateWithoutTrendInput, PhonesUncheckedCreateWithoutTrendInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutTrendInput
+    connect?: PhonesWhereUniqueInput
+  }
+
+  export type PhonesUpdateOneRequiredWithoutTrendNestedInput = {
+    create?: XOR<PhonesCreateWithoutTrendInput, PhonesUncheckedCreateWithoutTrendInput>
+    connectOrCreate?: PhonesCreateOrConnectWithoutTrendInput
+    upsert?: PhonesUpsertWithoutTrendInput
+    connect?: PhonesWhereUniqueInput
+    update?: XOR<XOR<PhonesUpdateToOneWithWhereWithoutTrendInput, PhonesUpdateWithoutTrendInput>, PhonesUncheckedUpdateWithoutTrendInput>
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type UsersCreateNestedOneWithoutCustomerProfileInput = {
@@ -40780,6 +44561,22 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumBudgetSegmentNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.BudgetSegment | EnumBudgetSegmentFieldRefInput<$PrismaModel> | null
     in?: $Enums.BudgetSegment[] | ListEnumBudgetSegmentFieldRefInput<$PrismaModel> | null
@@ -41336,8 +45133,15 @@ export namespace Prisma {
     logId?: string
     finalScore: number
     rank: number
-    shownAt?: Date | string
+    source?: string
+    requestId?: string | null
+    dwellMs?: number
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: string | null
+    shownAt?: Date | string
+    firstSeenAt?: Date | string | null
     phone: PhonesCreateNestedOneWithoutRecommendationLogsInput
   }
 
@@ -41346,8 +45150,15 @@ export namespace Prisma {
     phoneId: string
     finalScore: number
     rank: number
-    shownAt?: Date | string
+    source?: string
+    requestId?: string | null
+    dwellMs?: number
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: string | null
+    shownAt?: Date | string
+    firstSeenAt?: Date | string | null
   }
 
   export type RecommendationLogCreateOrConnectWithoutUserInput = {
@@ -41881,8 +45692,15 @@ export namespace Prisma {
     phoneId?: UuidFilter<"RecommendationLog"> | string
     finalScore?: FloatFilter<"RecommendationLog"> | number
     rank?: IntFilter<"RecommendationLog"> | number
-    shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
+    source?: StringFilter<"RecommendationLog"> | string
+    requestId?: UuidNullableFilter<"RecommendationLog"> | string | null
+    dwellMs?: IntFilter<"RecommendationLog"> | number
     clicked?: BoolFilter<"RecommendationLog"> | boolean
+    skipped?: BoolFilter<"RecommendationLog"> | boolean
+    isTrainingEligible?: BoolFilter<"RecommendationLog"> | boolean
+    explorationArm?: StringNullableFilter<"RecommendationLog"> | string | null
+    shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
+    firstSeenAt?: DateTimeNullableFilter<"RecommendationLog"> | Date | string | null
   }
 
   export type CustomerClusterUpsertWithoutUserInput = {
@@ -42101,12 +45919,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
@@ -42126,12 +45948,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
@@ -42213,6 +46039,9 @@ export namespace Prisma {
     batteryMah?: IntNullableFilter<"Phones"> | number | null
     source?: StringNullableFilter<"Phones"> | string | null
     sourceUrl?: StringNullableFilter<"Phones"> | string | null
+    releasedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
+    stockState?: StringNullableFilter<"Phones"> | string | null
+    stockUpdatedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
     isActive?: BoolFilter<"Phones"> | boolean
     discontinuedAt?: DateTimeNullableFilter<"Phones"> | Date | string | null
     createdAt?: DateTimeFilter<"Phones"> | Date | string
@@ -42414,6 +46243,27 @@ export namespace Prisma {
     create: XOR<PhoneSpecsCreateWithoutPhoneInput, PhoneSpecsUncheckedCreateWithoutPhoneInput>
   }
 
+  export type PhoneTrendCreateWithoutPhoneInput = {
+    trendScore?: number
+    views7d?: number
+    clicks7d?: number
+    impressions7d?: number
+    updatedAt?: Date | string
+  }
+
+  export type PhoneTrendUncheckedCreateWithoutPhoneInput = {
+    trendScore?: number
+    views7d?: number
+    clicks7d?: number
+    impressions7d?: number
+    updatedAt?: Date | string
+  }
+
+  export type PhoneTrendCreateOrConnectWithoutPhoneInput = {
+    where: PhoneTrendWhereUniqueInput
+    create: XOR<PhoneTrendCreateWithoutPhoneInput, PhoneTrendUncheckedCreateWithoutPhoneInput>
+  }
+
   export type RecommendationHistoryCreateWithoutPhoneInput = {
     historyId?: string
     searchDate?: Date | string
@@ -42468,8 +46318,15 @@ export namespace Prisma {
     logId?: string
     finalScore: number
     rank: number
-    shownAt?: Date | string
+    source?: string
+    requestId?: string | null
+    dwellMs?: number
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: string | null
+    shownAt?: Date | string
+    firstSeenAt?: Date | string | null
     user: UsersCreateNestedOneWithoutRecommendationLogsInput
   }
 
@@ -42478,8 +46335,15 @@ export namespace Prisma {
     userId: string
     finalScore: number
     rank: number
-    shownAt?: Date | string
+    source?: string
+    requestId?: string | null
+    dwellMs?: number
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: string | null
+    shownAt?: Date | string
+    firstSeenAt?: Date | string | null
   }
 
   export type RecommendationLogCreateOrConnectWithoutPhoneInput = {
@@ -42832,6 +46696,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PhoneTrendUpsertWithoutPhoneInput = {
+    update: XOR<PhoneTrendUpdateWithoutPhoneInput, PhoneTrendUncheckedUpdateWithoutPhoneInput>
+    create: XOR<PhoneTrendCreateWithoutPhoneInput, PhoneTrendUncheckedCreateWithoutPhoneInput>
+    where?: PhoneTrendWhereInput
+  }
+
+  export type PhoneTrendUpdateToOneWithWhereWithoutPhoneInput = {
+    where?: PhoneTrendWhereInput
+    data: XOR<PhoneTrendUpdateWithoutPhoneInput, PhoneTrendUncheckedUpdateWithoutPhoneInput>
+  }
+
+  export type PhoneTrendUpdateWithoutPhoneInput = {
+    trendScore?: FloatFieldUpdateOperationsInput | number
+    views7d?: IntFieldUpdateOperationsInput | number
+    clicks7d?: IntFieldUpdateOperationsInput | number
+    impressions7d?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PhoneTrendUncheckedUpdateWithoutPhoneInput = {
+    trendScore?: FloatFieldUpdateOperationsInput | number
+    views7d?: IntFieldUpdateOperationsInput | number
+    clicks7d?: IntFieldUpdateOperationsInput | number
+    impressions7d?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type RecommendationHistoryUpsertWithWhereUniqueWithoutPhoneInput = {
     where: RecommendationHistoryWhereUniqueInput
     update: XOR<RecommendationHistoryUpdateWithoutPhoneInput, RecommendationHistoryUncheckedUpdateWithoutPhoneInput>
@@ -42984,12 +46875,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     brand: BrandsCreateNestedOneWithoutPhonesInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
@@ -43010,11 +46905,15 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
@@ -43050,12 +46949,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
@@ -43076,11 +46979,15 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
@@ -43100,12 +47007,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
@@ -43126,11 +47037,15 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
@@ -43166,12 +47081,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
@@ -43192,11 +47111,15 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
@@ -43573,6 +47496,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -43580,6 +47506,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
@@ -43599,12 +47526,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
@@ -43702,6 +47633,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43709,6 +47643,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
@@ -43728,12 +47663,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
@@ -43809,6 +47748,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -43816,6 +47758,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
@@ -43835,12 +47778,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
@@ -43938,6 +47885,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43945,6 +47895,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
@@ -43964,12 +47915,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
@@ -44097,6 +48052,138 @@ export namespace Prisma {
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutUserNestedInput
     customerCluster?: CustomerClusterUncheckedUpdateOneWithoutUserNestedInput
     cfRecommendationLogs?: CfRecommendationLogUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type PhonesCreateWithoutTrendInput = {
+    phoneId?: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    brand: BrandsCreateNestedOneWithoutPhonesInput
+    variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesUncheckedCreateWithoutTrendInput = {
+    phoneId?: string
+    brandId: string
+    modelName: string
+    imageUrl?: string | null
+    imagePath?: string | null
+    antutuScore?: number | null
+    batteryMah?: number | null
+    source?: string | null
+    sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
+    isActive?: boolean
+    discontinuedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
+    specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
+    recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
+    wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
+    comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
+    comparedAsB?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneBInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostRecommendedPhoneInput
+    mostComparedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostComparedPhoneInput
+    mostViewedInStats?: AdminStatsCacheUncheckedCreateNestedManyWithoutMostViewedPhoneInput
+  }
+
+  export type PhonesCreateOrConnectWithoutTrendInput = {
+    where: PhonesWhereUniqueInput
+    create: XOR<PhonesCreateWithoutTrendInput, PhonesUncheckedCreateWithoutTrendInput>
+  }
+
+  export type PhonesUpsertWithoutTrendInput = {
+    update: XOR<PhonesUpdateWithoutTrendInput, PhonesUncheckedUpdateWithoutTrendInput>
+    create: XOR<PhonesCreateWithoutTrendInput, PhonesUncheckedCreateWithoutTrendInput>
+    where?: PhonesWhereInput
+  }
+
+  export type PhonesUpdateToOneWithWhereWithoutTrendInput = {
+    where?: PhonesWhereInput
+    data: XOR<PhonesUpdateWithoutTrendInput, PhonesUncheckedUpdateWithoutTrendInput>
+  }
+
+  export type PhonesUpdateWithoutTrendInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
+    variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUpdateManyWithoutMostViewedPhoneNestedInput
+  }
+
+  export type PhonesUncheckedUpdateWithoutTrendInput = {
+    phoneId?: StringFieldUpdateOperationsInput | string
+    brandId?: StringFieldUpdateOperationsInput | string
+    modelName?: StringFieldUpdateOperationsInput | string
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    imagePath?: NullableStringFieldUpdateOperationsInput | string | null
+    antutuScore?: NullableIntFieldUpdateOperationsInput | number | null
+    batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
+    source?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
+    specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
+    recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
+    wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
+    comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
+    comparedAsB?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneBNestedInput
+    mostRecommendedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostRecommendedPhoneNestedInput
+    mostComparedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostComparedPhoneNestedInput
+    mostViewedInStats?: AdminStatsCacheUncheckedUpdateManyWithoutMostViewedPhoneNestedInput
   }
 
   export type UsersCreateWithoutCustomerProfileInput = {
@@ -44285,6 +48372,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -44292,6 +48382,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryCreateNestedManyWithoutPhoneAInput
@@ -44311,12 +48402,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     comparedAsA?: ComparisonHistoryUncheckedCreateNestedManyWithoutPhoneAInput
@@ -44414,6 +48509,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44421,6 +48519,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUpdateManyWithoutPhoneANestedInput
@@ -44440,12 +48539,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     comparedAsA?: ComparisonHistoryUncheckedUpdateManyWithoutPhoneANestedInput
@@ -44521,6 +48624,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -44528,6 +48634,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
@@ -44547,12 +48654,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
@@ -44576,6 +48687,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -44583,6 +48697,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
@@ -44602,12 +48717,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
@@ -44705,6 +48824,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44712,6 +48834,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
@@ -44731,12 +48854,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
@@ -44766,6 +48893,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44773,6 +48903,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
@@ -44792,12 +48923,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
@@ -45176,6 +49311,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -45183,6 +49321,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
@@ -45202,12 +49341,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
@@ -45231,6 +49374,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -45238,6 +49384,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
@@ -45257,12 +49404,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
@@ -45286,6 +49437,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -45293,6 +49447,7 @@ export namespace Prisma {
     brand: BrandsCreateNestedOneWithoutPhonesInput
     variants?: PhoneVariantsCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistCreateNestedManyWithoutPhoneInput
@@ -45312,12 +49467,16 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     variants?: PhoneVariantsUncheckedCreateNestedManyWithoutPhoneInput
     specs?: PhoneSpecsUncheckedCreateNestedOneWithoutPhoneInput
+    trend?: PhoneTrendUncheckedCreateNestedOneWithoutPhoneInput
     recommendationHistory?: RecommendationHistoryUncheckedCreateNestedManyWithoutPhoneInput
     recommendationLogs?: RecommendationLogUncheckedCreateNestedManyWithoutPhoneInput
     wishlist?: WishlistUncheckedCreateNestedManyWithoutPhoneInput
@@ -45352,6 +49511,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45359,6 +49521,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
@@ -45378,12 +49541,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
@@ -45413,6 +49580,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45420,6 +49590,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
@@ -45439,12 +49610,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
@@ -45474,6 +49649,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -45481,6 +49659,7 @@ export namespace Prisma {
     brand?: BrandsUpdateOneRequiredWithoutPhonesNestedInput
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
@@ -45500,12 +49679,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
@@ -46161,8 +50344,15 @@ export namespace Prisma {
     phoneId: string
     finalScore: number
     rank: number
-    shownAt?: Date | string
+    source?: string
+    requestId?: string | null
+    dwellMs?: number
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: string | null
+    shownAt?: Date | string
+    firstSeenAt?: Date | string | null
   }
 
   export type CfRecommendationLogCreateManyUserInput = {
@@ -46454,8 +50644,15 @@ export namespace Prisma {
     logId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
     rank?: IntFieldUpdateOperationsInput | number
-    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    source?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    dwellMs?: IntFieldUpdateOperationsInput | number
     clicked?: BoolFieldUpdateOperationsInput | boolean
+    skipped?: BoolFieldUpdateOperationsInput | boolean
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     phone?: PhonesUpdateOneRequiredWithoutRecommendationLogsNestedInput
   }
 
@@ -46464,8 +50661,15 @@ export namespace Prisma {
     phoneId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
     rank?: IntFieldUpdateOperationsInput | number
-    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    source?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    dwellMs?: IntFieldUpdateOperationsInput | number
     clicked?: BoolFieldUpdateOperationsInput | boolean
+    skipped?: BoolFieldUpdateOperationsInput | boolean
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RecommendationLogUncheckedUpdateManyWithoutUserInput = {
@@ -46473,8 +50677,15 @@ export namespace Prisma {
     phoneId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
     rank?: IntFieldUpdateOperationsInput | number
-    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    source?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    dwellMs?: IntFieldUpdateOperationsInput | number
     clicked?: BoolFieldUpdateOperationsInput | boolean
+    skipped?: BoolFieldUpdateOperationsInput | boolean
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CfRecommendationLogUpdateWithoutUserInput = {
@@ -46540,6 +50751,9 @@ export namespace Prisma {
     batteryMah?: number | null
     source?: string | null
     sourceUrl?: string | null
+    releasedAt?: Date | string | null
+    stockState?: string | null
+    stockUpdatedAt?: Date | string | null
     isActive?: boolean
     discontinuedAt?: Date | string | null
     createdAt?: Date | string
@@ -46566,12 +50780,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUpdateManyWithoutPhoneNestedInput
@@ -46591,12 +50809,16 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     variants?: PhoneVariantsUncheckedUpdateManyWithoutPhoneNestedInput
     specs?: PhoneSpecsUncheckedUpdateOneWithoutPhoneNestedInput
+    trend?: PhoneTrendUncheckedUpdateOneWithoutPhoneNestedInput
     recommendationHistory?: RecommendationHistoryUncheckedUpdateManyWithoutPhoneNestedInput
     recommendationLogs?: RecommendationLogUncheckedUpdateManyWithoutPhoneNestedInput
     wishlist?: WishlistUncheckedUpdateManyWithoutPhoneNestedInput
@@ -46616,6 +50838,9 @@ export namespace Prisma {
     batteryMah?: NullableIntFieldUpdateOperationsInput | number | null
     source?: NullableStringFieldUpdateOperationsInput | string | null
     sourceUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    releasedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stockState?: NullableStringFieldUpdateOperationsInput | string | null
+    stockUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     discontinuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -46692,8 +50917,15 @@ export namespace Prisma {
     userId: string
     finalScore: number
     rank: number
-    shownAt?: Date | string
+    source?: string
+    requestId?: string | null
+    dwellMs?: number
     clicked?: boolean
+    skipped?: boolean
+    isTrainingEligible?: boolean
+    explorationArm?: string | null
+    shownAt?: Date | string
+    firstSeenAt?: Date | string | null
   }
 
   export type WishlistCreateManyPhoneInput = {
@@ -46849,8 +51081,15 @@ export namespace Prisma {
     logId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
     rank?: IntFieldUpdateOperationsInput | number
-    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    source?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    dwellMs?: IntFieldUpdateOperationsInput | number
     clicked?: BoolFieldUpdateOperationsInput | boolean
+    skipped?: BoolFieldUpdateOperationsInput | boolean
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UsersUpdateOneRequiredWithoutRecommendationLogsNestedInput
   }
 
@@ -46859,8 +51098,15 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
     rank?: IntFieldUpdateOperationsInput | number
-    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    source?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    dwellMs?: IntFieldUpdateOperationsInput | number
     clicked?: BoolFieldUpdateOperationsInput | boolean
+    skipped?: BoolFieldUpdateOperationsInput | boolean
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RecommendationLogUncheckedUpdateManyWithoutPhoneInput = {
@@ -46868,8 +51114,15 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     finalScore?: FloatFieldUpdateOperationsInput | number
     rank?: IntFieldUpdateOperationsInput | number
-    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    source?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    dwellMs?: IntFieldUpdateOperationsInput | number
     clicked?: BoolFieldUpdateOperationsInput | boolean
+    skipped?: BoolFieldUpdateOperationsInput | boolean
+    isTrainingEligible?: BoolFieldUpdateOperationsInput | boolean
+    explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
+    shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type WishlistUpdateWithoutPhoneInput = {
