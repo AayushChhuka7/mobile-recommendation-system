@@ -18,6 +18,13 @@ import {
   loadUserLikedAndViewed,
   safeRecordRecommendationLog,
 } from "./profileService.mjs";
+import { AUTO_MULTI_RETRIEVER_ENABLED } from "../config/autoRetrieval.mjs";
+import {
+  bucketUserForRollout,
+  orchestrate as orchestrateMultiRetriever,
+  LEGACY_VERSION,
+} from "./autoMultiRetriever.mjs";
+import { isColdStart } from "./coldStartService.mjs";
 import {
   getCfRecommendations,
   checkCfHealth,
@@ -1109,6 +1116,47 @@ export const getAutoRecommendations = async (userId, opts = {}) => {
     max: maxBudget != null && maxBudget > 0 ? maxBudget : 1500,
   };
 
+  // ---- Multi-retriever rollout bucketing (Step 1B) --------------------
+  // When the kill switch is OFF, AUTO stays on the legacy single-source
+  // path (this file's `getRecommendations` call below). When ON, the
+  // user is bucketed by a deterministic hash of `userId` against the
+  // rollout percentage; users outside the bucket keep the legacy path
+  // (untouched percentage forms the canary control group).
+  const rolloutBucket = bucketUserForRollout(userId);
+  // Step 1 (plan): cold-start users should NEVER trigger a
+  // behavior_scores query — the orchestrator's `loadBehaviorScoreMap`
+  // call is wasted work because the user has no rows yet. Skip the
+  // orchestrator for cold-start users and let them fall through to the
+  // legacy `getRecommendations` path, which short-circuits via its own
+  // cold-start handling (returns the global persona top-N).
+  const userIsColdStart = await isColdStart(userId);
+  const useMultiRetriever =
+    AUTO_MULTI_RETRIEVER_ENABLED &&
+    !userIsColdStart &&
+    rolloutBucket !== "legacy";
+
+  if (useMultiRetriever) {
+    try {
+      return await getAutoRecommendationsMultiRetriever(userId, {
+        source,
+        requestId,
+        persona,
+        budget,
+        defaultedAt,
+      });
+    } catch (err) {
+      // Orchestrator has internal Promise.allSettled + persona fallback
+      // for per-source failures. This catch is only for catastrophic
+      // orchestration failures — fall through to the legacy path.
+      if (process.env.NODE_ENV === "production") {
+        console.warn("[auto-recommend] orchestrator crashed, falling back:", err?.message || err);
+      } else {
+        console.error("[auto-recommend] orchestrator crashed, falling back:", err);
+      }
+      // intentional fall-through
+    }
+  }
+
   // Skip the explicit-prefs layer in the click flow — auto-recommend
   // is offline-of-the-moment, so fused weights do all the work.
   //
@@ -1143,7 +1191,7 @@ export const getAutoRecommendations = async (userId, opts = {}) => {
     // eagerCount }. The auto path returns the full shape so the FE
     // can drive lazy expansion.
     if (response && Array.isArray(response.results)) {
-      return { ...response, defaultedAt };
+      return { ...response, defaultedAt, recommendationVersion: "legacy_v0" };
     }
     // Legacy fallback (the inner getRecommendations returned a plain
     // array; preserve the old contract).
@@ -1165,8 +1213,131 @@ export const getAutoRecommendations = async (userId, opts = {}) => {
     totalRanked: results.length,
     eagerCount: results.length,
     defaultedAt,
+    // Tag every legacy AUTO response so analytics reading the API can
+    // always compare legacy_v0 vs multi_retriever_v1 outcomes using
+    // the rollout split as a control group. See autoRetrieval.mjs +
+    // migration 20260822000000_add_recommendation_version.
+    recommendationVersion: "legacy_v0",
   };
 };
+
+// ---------------------------------------------------------------------------
+// Multi-retriever AUTO path. Runs `orchestrateMultiRetriever` to fetch
+// candidates from the new persona + behavioral union, then runs the
+// existing personalisedRank + eager/lazy slice pipeline. Used only when
+// `AUTO_MULTI_RETRIEVER_ENABLED=true` and the user is bucketed into
+// `multi_retriever_v1`. All POST callers are unaffected — this function
+// is reachable only from `getAutoRecommendations`.
+// ---------------------------------------------------------------------------
+async function getAutoRecommendationsMultiRetriever(userId, opts) {
+  const { source, requestId, persona, budget, defaultedAt } = opts;
+
+  const orchestrated = await orchestrateMultiRetriever(userId, {
+    requestId,
+    persona,
+    budget,
+  });
+  const enriched = Array.isArray(orchestrated?.candidates)
+    ? orchestrated.candidates
+    : [];
+
+  // Empty pool — return empty response, do NOT cold-start (user is
+  // warm; multi-retriever just had nothing to give).
+  if (enriched.length === 0) {
+    return {
+      results: [],
+      lazy: [],
+      totalRanked: 0,
+      eagerCount: 0,
+      defaultedAt,
+      recommendationVersion: orchestrated?.recommendationVersion || "multi_retriever_v1",
+    };
+  }
+
+  // Behaviour score map for the search_history sub-score (same as the
+  // legacy `getRecommendations` does at lines 700-702).
+  const behaviorScoresMap = userId
+    ? await loadBehaviorScoreMap(userId)
+    : null;
+
+  // Short-term interest vector (same as legacy lines 704-718).
+  let interestVec = new Map();
+  let candidateMetaMap = new Map();
+  if (userId) {
+    const recentEvents = await getRecentEvents(userId);
+    if (Array.isArray(recentEvents) && recentEvents.length > 0) {
+      const interactedIds = recentEvents.map((e) => e.phoneId).filter(Boolean);
+      const candidateIds = enriched.map((c) => c.id).filter(Boolean);
+      candidateMetaMap = await loadPhoneMetaMap([
+        ...interactedIds,
+        ...candidateIds,
+      ]);
+      interestVec = buildShortTermInterest(recentEvents, candidateMetaMap);
+    }
+  }
+
+  // Step E — personalised fusion. The stock multiplier is a function
+  // so each candidate can have its own penalty (low_stock → 0.85,
+  // in_stock → 1.0). Mirrors legacy lines 720-731.
+  const stockMultiplier = (c) =>
+    Number.isFinite(c.stockPenalty) ? c.stockPenalty : 1.0;
+  const ranked = personalizedRank(
+    enriched,
+    behaviorScoresMap,
+    interestVec,
+    candidateMetaMap,
+    stockMultiplier,
+  );
+
+  // Re-shape for FE — same as legacy lines 738-742.
+  const finalRanked = ranked.map((c) => ({
+    ...c,
+    matchScore: c.finalScore * 100,
+    matchComponents: c.components,
+  }));
+
+  const finalRankedUnique = dedupeByStableId(finalRanked);
+
+  // Eager/lazy slice (Fix #8) — mirrors legacy lines 779-790.
+  const eagerSlice = finalRankedUnique.slice(0, EAGER_TOP_N);
+  const lazyQueue = finalRankedUnique.slice(EAGER_TOP_N);
+  const response = {
+    results: eagerSlice,
+    lazy: lazyQueue.map((c, i) => ({
+      offset: EAGER_TOP_N + i,
+      phoneId: c.id,
+      finalScore: c.matchScore,
+    })),
+    totalRanked: finalRankedUnique.length,
+    eagerCount: eagerSlice.length,
+  };
+
+  // Impression log with `recommendationVersion = "multi_retriever_v1"`.
+  // POST callers are unaffected — they go through `getRecommendations`
+  // which does not pass `recommendationVersion`.
+  if (userId && Array.isArray(finalRankedUnique) && finalRankedUnique.length > 0) {
+    const topLogged = finalRankedUnique.slice(0, REC_LOG_WRITE_CAP);
+    void safeRecordRecommendationLog(
+      userId,
+      topLogged.map((c, i) => ({
+        rank: i + 1,
+        phoneId: c.id,
+        finalScore: c.matchScore,
+        source,
+        requestId,
+        explorationArm: c.explorationArm || null,
+        firstSeenAt: new Date(),
+        recommendationVersion: orchestrated?.recommendationVersion || "multi_retriever_v1",
+      })),
+    );
+  }
+
+  return {
+    ...response,
+    defaultedAt,
+    recommendationVersion: orchestrated?.recommendationVersion || "multi_retriever_v1",
+  };
+}
 
 // Format ML result + DB data into frontend-friendly shape
 const formatRecommendation = (mlItem, phone) => {
