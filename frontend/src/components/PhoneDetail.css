@@ -4,7 +4,7 @@
 .phone-detail-page {
   width: 100%;
   min-height: 100vh;
-  background: var(--bg);
+  background: #fff7e8;
   padding-bottom: 64px;
 }
 
@@ -373,7 +373,7 @@
   --text-muted: #9ca3af;
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
     0 2px 4px -1px rgba(0, 0, 0, 0.3);
-  background: var(--bg);
+  background: #fff7e8;
 }
 
 .dashboard-page.dash-dark .phone-detail-topbar,
