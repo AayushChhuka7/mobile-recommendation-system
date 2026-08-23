@@ -221,20 +221,14 @@ export const resendOtpService = async (email) => {
   }
 
   const code = generateOtp();
-  await prisma.$transaction([
-    prisma.otp.updateMany({
-      where: { userId: user.userId, isUsed: false },
-      data: { isUsed: true },
-    }),
-    prisma.otp.create({
-      data: {
-        code,
-        userId: user.userId,
-        purpose: "Registration",
-        expiresAt: newOtpExpiry(),
-      },
-    }),
-  ]);
+  await prisma.otp.create({
+    data: {
+      code,
+      userId: user.userId,
+      purpose: "Registration",
+      expiresAt: newOtpExpiry(),
+    },
+  });
 
   await sendEmail(email, code);
 };
