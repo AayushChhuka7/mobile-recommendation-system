@@ -125,7 +125,7 @@ export const getAssignableRoles = () => {
 
 export const isAssignableRole = (roleName) => {
   if (typeof roleName !== "string" || roleName.length === 0) return false;
-  return getAssignableRolesList().includes(roleName);
+  return getAssignableRoles().includes(roleName);
 };
 
 export const assertUserRoleMatches = async (userId, roleName) => {
