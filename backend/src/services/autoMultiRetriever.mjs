@@ -55,7 +55,7 @@ import {
   AUTO_MULTI_RETRIEVER_ROLLOUT_PCT,
 } from "../config/autoRetrieval.mjs";
 import { loadBehaviorScoreMap } from "./profileService.mjs";
-import { hashModelName } from "./behaviorAnalyzer.mjs";
+import { hashModelName, inferTier } from "./behaviorAnalyzer.mjs";
 import { enrichPhonesById, resolvePhoneIds } from "./enrichmentClient.mjs";
 import { loadStockAndTrend } from "./stockSignal.mjs";
 import { prisma } from "../config/prisma.mjs";
@@ -182,11 +182,16 @@ function matchesBrandTag(phone, tag) {
   return expected && actual && expected === actual;
 }
 
+// Resolves a `tier:<flagship|mid|budget>` tag against a candidate phone.
+// `Phones` has NO `tier` column — tier is derived on the fly from
+// `antutuScore` via the SAME `inferTier` the BehaviorScore writer uses
+// (behaviorAnalyzer.mjs), so the reader here and the writer never drift.
+// `inferTier` returns "flagship" | "mid" | "budget" (already lowercase),
+// or null when the phone has no antutuScore.
 function matchesTierTag(phone, tag) {
   if (!phone) return false;
   const expected = tag.slice(TAG_PREFIXES.tier.length);
-  const actual =
-    typeof phone.tier === "string" ? phone.tier.toLowerCase() : null;
+  const actual = inferTier(phone);
   return expected && actual && expected === actual;
 }
 
@@ -530,7 +535,11 @@ export async function orchestrate(userId, opts = {}) {
             select: {
               phoneId: true,
               modelName: true,
-              tier: true,
+              // `Phones` has no `tier` column. Tier is computed from
+              // `antutuScore` via `inferTier` (see matchesTierTag) using
+              // the same thresholds the BehaviorScore writer uses. Select
+              // the raw signal, not a non-existent `tier` field.
+              antutuScore: true,
               brand: { select: { name: true } },
               variants: {
                 select: { ramGb: true, price: true },
