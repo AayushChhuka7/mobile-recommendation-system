@@ -303,7 +303,8 @@ exports.Prisma.RecommendationLogScalarFieldEnum = {
   isTrainingEligible: 'isTrainingEligible',
   explorationArm: 'explorationArm',
   shownAt: 'shownAt',
-  firstSeenAt: 'firstSeenAt'
+  firstSeenAt: 'firstSeenAt',
+  recommendationVersion: 'recommendationVersion'
 };
 
 exports.Prisma.RecommendationCallScalarFieldEnum = {

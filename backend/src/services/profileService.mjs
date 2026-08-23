@@ -1263,6 +1263,16 @@ export const safeRecordRecommendationLog = async (userId, rowOrRows) => {
           typeof r.explorationArm === "string" ? r.explorationArm.slice(0, 40) : null,
         firstSeenAt: r.firstSeenAt ? new Date(r.firstSeenAt) : new Date(),
         isTrainingEligible: false, // initial write — set to true via /impressions
+        // Auto-rec multi-retriever instrumentation. Defaults to "legacy_v0"
+        // when not provided so existing POST callers (which never set this)
+        // keep byte-identical output. The AUTO orchestrator passes either
+        // "legacy_v0" or "multi_retriever_v1". FE /impressions upsert is
+        // a label-only update (dwell/click/skip) — this column is never
+        // overwritten by the FE path.
+        recommendationVersion:
+          typeof r.recommendationVersion === "string"
+            ? r.recommendationVersion.slice(0, 32)
+            : "legacy_v0",
       })),
       skipDuplicates: true,
     });

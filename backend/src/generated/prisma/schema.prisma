@@ -441,20 +441,28 @@ model RecommendationHistory {
 // is what lets the FE's `POST /impressions` endpoint be a true
 // upsert — multiple dwell deltas in a session collapse to one row.
 model RecommendationLog {
-  logId              String    @id @default(uuid()) @map("log_id") @db.Uuid
-  userId             String    @map("user_id") @db.Uuid
-  phoneId            String    @map("phone_id") @db.Uuid
-  finalScore         Float     @map("final_score")
-  rank               Int
-  source             String    @default("click") @map("source") @db.VarChar(20)
-  requestId          String?   @map("request_id") @db.Uuid
-  dwellMs            Int       @default(0) @map("dwell_ms")
-  clicked            Boolean   @default(false)
-  skipped            Boolean   @default(false) @map("skipped")
-  isTrainingEligible Boolean   @default(false) @map("is_training_eligible")
-  explorationArm     String?   @map("exploration_arm") @db.VarChar(40)
-  shownAt            DateTime  @default(now()) @map("shown_at")
-  firstSeenAt        DateTime? @map("first_seen_at")
+  logId                 String    @id @default(uuid()) @map("log_id") @db.Uuid
+  userId                String    @map("user_id") @db.Uuid
+  phoneId               String    @map("phone_id") @db.Uuid
+  finalScore            Float     @map("final_score")
+  rank                  Int
+  source                String    @default("click") @map("source") @db.VarChar(20)
+  requestId             String?   @map("request_id") @db.Uuid
+  dwellMs               Int       @default(0) @map("dwell_ms")
+  clicked               Boolean   @default(false)
+  skipped               Boolean   @default(false) @map("skipped")
+  isTrainingEligible    Boolean   @default(false) @map("is_training_eligible")
+  explorationArm        String?   @map("exploration_arm") @db.VarChar(40)
+  shownAt               DateTime  @default(now()) @map("shown_at")
+  firstSeenAt           DateTime? @map("first_seen_at")
+  // AUTO-rec instrumentation. Defaults to "legacy_v0" so existing
+  // POST callers (which never set this) keep byte-identical output.
+  // The new multi-retriever orchestrator writes either "legacy_v0"
+  // (rollout-bucketed into the legacy path) or "multi_retriever_v1"
+  // (served from the new orchestrator). FE /impressions upsert is a
+  // label-only update (dwell/click/skip) — this column is never
+  // overwritten by the FE path.
+  recommendationVersion String?   @default("legacy_v0") @map("recommendation_version") @db.VarChar(32)
 
   user  Users  @relation(fields: [userId], references: [userId], onDelete: Cascade)
   phone Phones @relation(fields: [phoneId], references: [phoneId])
@@ -464,6 +472,9 @@ model RecommendationLog {
   @@index([userId, shownAt(sort: Desc)])
   @@index([phoneId])
   @@index([isTrainingEligible, shownAt(sort: Desc)], map: "training_eligible_idx")
+  // Powers the legacy vs multi-retriever comparison metric (every
+  // impression is tagged with `recommendation_version`).
+  @@index([recommendationVersion, shownAt(sort: Desc)], map: "recommendation_version_idx")
   @@map("recommendation_logs")
 }
 

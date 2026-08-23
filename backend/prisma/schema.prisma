@@ -455,6 +455,14 @@ model RecommendationLog {
   explorationArm String? @map("exploration_arm") @db.VarChar(40)
   shownAt    DateTime @default(now()) @map("shown_at")
   firstSeenAt DateTime? @map("first_seen_at")
+  // AUTO-rec instrumentation. Defaults to "legacy_v0" so existing
+  // POST callers (which never set this) keep byte-identical output.
+  // The new multi-retriever orchestrator writes either "legacy_v0"
+  // (rollout-bucketed into the legacy path) or "multi_retriever_v1"
+  // (served from the new orchestrator). FE /impressions upsert is a
+  // label-only update (dwell/click/skip) — this column is never
+  // overwritten by the FE path.
+  recommendationVersion String? @default("legacy_v0") @map("recommendation_version") @db.VarChar(32)
 
   user  Users  @relation(fields: [userId], references: [userId], onDelete: Cascade)
   phone Phones @relation(fields: [phoneId], references: [phoneId])
@@ -464,6 +472,9 @@ model RecommendationLog {
   @@index([userId, shownAt(sort: Desc)])
   @@index([phoneId])
   @@index([isTrainingEligible, shownAt(sort: Desc)], map: "training_eligible_idx")
+  // Powers the legacy vs multi-retriever comparison metric (every
+  // impression is tagged with `recommendation_version`).
+  @@index([recommendationVersion, shownAt(sort: Desc)], map: "recommendation_version_idx")
   @@map("recommendation_logs")
 }
 

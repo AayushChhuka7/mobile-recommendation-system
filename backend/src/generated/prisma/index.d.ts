@@ -17342,6 +17342,7 @@ export namespace Prisma {
     explorationArm: string | null
     shownAt: Date | null
     firstSeenAt: Date | null
+    recommendationVersion: string | null
   }
 
   export type RecommendationLogMaxAggregateOutputType = {
@@ -17359,6 +17360,7 @@ export namespace Prisma {
     explorationArm: string | null
     shownAt: Date | null
     firstSeenAt: Date | null
+    recommendationVersion: string | null
   }
 
   export type RecommendationLogCountAggregateOutputType = {
@@ -17376,6 +17378,7 @@ export namespace Prisma {
     explorationArm: number
     shownAt: number
     firstSeenAt: number
+    recommendationVersion: number
     _all: number
   }
 
@@ -17407,6 +17410,7 @@ export namespace Prisma {
     explorationArm?: true
     shownAt?: true
     firstSeenAt?: true
+    recommendationVersion?: true
   }
 
   export type RecommendationLogMaxAggregateInputType = {
@@ -17424,6 +17428,7 @@ export namespace Prisma {
     explorationArm?: true
     shownAt?: true
     firstSeenAt?: true
+    recommendationVersion?: true
   }
 
   export type RecommendationLogCountAggregateInputType = {
@@ -17441,6 +17446,7 @@ export namespace Prisma {
     explorationArm?: true
     shownAt?: true
     firstSeenAt?: true
+    recommendationVersion?: true
     _all?: true
   }
 
@@ -17545,6 +17551,7 @@ export namespace Prisma {
     explorationArm: string | null
     shownAt: Date
     firstSeenAt: Date | null
+    recommendationVersion: string | null
     _count: RecommendationLogCountAggregateOutputType | null
     _avg: RecommendationLogAvgAggregateOutputType | null
     _sum: RecommendationLogSumAggregateOutputType | null
@@ -17581,6 +17588,7 @@ export namespace Prisma {
     explorationArm?: boolean
     shownAt?: boolean
     firstSeenAt?: boolean
+    recommendationVersion?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
     phone?: boolean | PhonesDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["recommendationLog"]>
@@ -17600,6 +17608,7 @@ export namespace Prisma {
     explorationArm?: boolean
     shownAt?: boolean
     firstSeenAt?: boolean
+    recommendationVersion?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
     phone?: boolean | PhonesDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["recommendationLog"]>
@@ -17619,6 +17628,7 @@ export namespace Prisma {
     explorationArm?: boolean
     shownAt?: boolean
     firstSeenAt?: boolean
+    recommendationVersion?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
     phone?: boolean | PhonesDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["recommendationLog"]>
@@ -17638,9 +17648,10 @@ export namespace Prisma {
     explorationArm?: boolean
     shownAt?: boolean
     firstSeenAt?: boolean
+    recommendationVersion?: boolean
   }
 
-  export type RecommendationLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"logId" | "userId" | "phoneId" | "finalScore" | "rank" | "source" | "requestId" | "dwellMs" | "clicked" | "skipped" | "isTrainingEligible" | "explorationArm" | "shownAt" | "firstSeenAt", ExtArgs["result"]["recommendationLog"]>
+  export type RecommendationLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"logId" | "userId" | "phoneId" | "finalScore" | "rank" | "source" | "requestId" | "dwellMs" | "clicked" | "skipped" | "isTrainingEligible" | "explorationArm" | "shownAt" | "firstSeenAt" | "recommendationVersion", ExtArgs["result"]["recommendationLog"]>
   export type RecommendationLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
     phone?: boolean | PhonesDefaultArgs<ExtArgs>
@@ -17675,6 +17686,7 @@ export namespace Prisma {
       explorationArm: string | null
       shownAt: Date
       firstSeenAt: Date | null
+      recommendationVersion: string | null
     }, ExtArgs["result"]["recommendationLog"]>
     composites: {}
   }
@@ -18114,6 +18126,7 @@ export namespace Prisma {
     readonly explorationArm: FieldRef<"RecommendationLog", 'String'>
     readonly shownAt: FieldRef<"RecommendationLog", 'DateTime'>
     readonly firstSeenAt: FieldRef<"RecommendationLog", 'DateTime'>
+    readonly recommendationVersion: FieldRef<"RecommendationLog", 'String'>
   }
     
 
@@ -34867,7 +34880,8 @@ export namespace Prisma {
     isTrainingEligible: 'isTrainingEligible',
     explorationArm: 'explorationArm',
     shownAt: 'shownAt',
-    firstSeenAt: 'firstSeenAt'
+    firstSeenAt: 'firstSeenAt',
+    recommendationVersion: 'recommendationVersion'
   };
 
   export type RecommendationLogScalarFieldEnum = (typeof RecommendationLogScalarFieldEnum)[keyof typeof RecommendationLogScalarFieldEnum]
@@ -36449,6 +36463,7 @@ export namespace Prisma {
     explorationArm?: StringNullableFilter<"RecommendationLog"> | string | null
     shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
     firstSeenAt?: DateTimeNullableFilter<"RecommendationLog"> | Date | string | null
+    recommendationVersion?: StringNullableFilter<"RecommendationLog"> | string | null
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
     phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
   }
@@ -36468,6 +36483,7 @@ export namespace Prisma {
     explorationArm?: SortOrderInput | SortOrder
     shownAt?: SortOrder
     firstSeenAt?: SortOrderInput | SortOrder
+    recommendationVersion?: SortOrderInput | SortOrder
     user?: UsersOrderByWithRelationInput
     phone?: PhonesOrderByWithRelationInput
   }
@@ -36491,6 +36507,7 @@ export namespace Prisma {
     explorationArm?: StringNullableFilter<"RecommendationLog"> | string | null
     shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
     firstSeenAt?: DateTimeNullableFilter<"RecommendationLog"> | Date | string | null
+    recommendationVersion?: StringNullableFilter<"RecommendationLog"> | string | null
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
     phone?: XOR<PhonesScalarRelationFilter, PhonesWhereInput>
   }, "logId" | "impression_unique">
@@ -36510,6 +36527,7 @@ export namespace Prisma {
     explorationArm?: SortOrderInput | SortOrder
     shownAt?: SortOrder
     firstSeenAt?: SortOrderInput | SortOrder
+    recommendationVersion?: SortOrderInput | SortOrder
     _count?: RecommendationLogCountOrderByAggregateInput
     _avg?: RecommendationLogAvgOrderByAggregateInput
     _max?: RecommendationLogMaxOrderByAggregateInput
@@ -36535,6 +36553,7 @@ export namespace Prisma {
     explorationArm?: StringNullableWithAggregatesFilter<"RecommendationLog"> | string | null
     shownAt?: DateTimeWithAggregatesFilter<"RecommendationLog"> | Date | string
     firstSeenAt?: DateTimeNullableWithAggregatesFilter<"RecommendationLog"> | Date | string | null
+    recommendationVersion?: StringNullableWithAggregatesFilter<"RecommendationLog"> | string | null
   }
 
   export type RecommendationCallWhereInput = {
@@ -38955,6 +38974,7 @@ export namespace Prisma {
     explorationArm?: string | null
     shownAt?: Date | string
     firstSeenAt?: Date | string | null
+    recommendationVersion?: string | null
     user: UsersCreateNestedOneWithoutRecommendationLogsInput
     phone: PhonesCreateNestedOneWithoutRecommendationLogsInput
   }
@@ -38974,6 +38994,7 @@ export namespace Prisma {
     explorationArm?: string | null
     shownAt?: Date | string
     firstSeenAt?: Date | string | null
+    recommendationVersion?: string | null
   }
 
   export type RecommendationLogUpdateInput = {
@@ -38989,6 +39010,7 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recommendationVersion?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UsersUpdateOneRequiredWithoutRecommendationLogsNestedInput
     phone?: PhonesUpdateOneRequiredWithoutRecommendationLogsNestedInput
   }
@@ -39008,6 +39030,7 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recommendationVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RecommendationLogCreateManyInput = {
@@ -39025,6 +39048,7 @@ export namespace Prisma {
     explorationArm?: string | null
     shownAt?: Date | string
     firstSeenAt?: Date | string | null
+    recommendationVersion?: string | null
   }
 
   export type RecommendationLogUpdateManyMutationInput = {
@@ -39040,6 +39064,7 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recommendationVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RecommendationLogUncheckedUpdateManyInput = {
@@ -39057,6 +39082,7 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recommendationVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RecommendationCallCreateInput = {
@@ -41565,6 +41591,7 @@ export namespace Prisma {
     explorationArm?: SortOrder
     shownAt?: SortOrder
     firstSeenAt?: SortOrder
+    recommendationVersion?: SortOrder
   }
 
   export type RecommendationLogAvgOrderByAggregateInput = {
@@ -41588,6 +41615,7 @@ export namespace Prisma {
     explorationArm?: SortOrder
     shownAt?: SortOrder
     firstSeenAt?: SortOrder
+    recommendationVersion?: SortOrder
   }
 
   export type RecommendationLogMinOrderByAggregateInput = {
@@ -41605,6 +41633,7 @@ export namespace Prisma {
     explorationArm?: SortOrder
     shownAt?: SortOrder
     firstSeenAt?: SortOrder
+    recommendationVersion?: SortOrder
   }
 
   export type RecommendationLogSumOrderByAggregateInput = {
@@ -45113,6 +45142,7 @@ export namespace Prisma {
     explorationArm?: string | null
     shownAt?: Date | string
     firstSeenAt?: Date | string | null
+    recommendationVersion?: string | null
     phone: PhonesCreateNestedOneWithoutRecommendationLogsInput
   }
 
@@ -45130,6 +45160,7 @@ export namespace Prisma {
     explorationArm?: string | null
     shownAt?: Date | string
     firstSeenAt?: Date | string | null
+    recommendationVersion?: string | null
   }
 
   export type RecommendationLogCreateOrConnectWithoutUserInput = {
@@ -45672,6 +45703,7 @@ export namespace Prisma {
     explorationArm?: StringNullableFilter<"RecommendationLog"> | string | null
     shownAt?: DateTimeFilter<"RecommendationLog"> | Date | string
     firstSeenAt?: DateTimeNullableFilter<"RecommendationLog"> | Date | string | null
+    recommendationVersion?: StringNullableFilter<"RecommendationLog"> | string | null
   }
 
   export type CustomerClusterUpsertWithoutUserInput = {
@@ -46298,6 +46330,7 @@ export namespace Prisma {
     explorationArm?: string | null
     shownAt?: Date | string
     firstSeenAt?: Date | string | null
+    recommendationVersion?: string | null
     user: UsersCreateNestedOneWithoutRecommendationLogsInput
   }
 
@@ -46315,6 +46348,7 @@ export namespace Prisma {
     explorationArm?: string | null
     shownAt?: Date | string
     firstSeenAt?: Date | string | null
+    recommendationVersion?: string | null
   }
 
   export type RecommendationLogCreateOrConnectWithoutPhoneInput = {
@@ -50324,6 +50358,7 @@ export namespace Prisma {
     explorationArm?: string | null
     shownAt?: Date | string
     firstSeenAt?: Date | string | null
+    recommendationVersion?: string | null
   }
 
   export type CfRecommendationLogCreateManyUserInput = {
@@ -50624,6 +50659,7 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recommendationVersion?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: PhonesUpdateOneRequiredWithoutRecommendationLogsNestedInput
   }
 
@@ -50641,6 +50677,7 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recommendationVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RecommendationLogUncheckedUpdateManyWithoutUserInput = {
@@ -50657,6 +50694,7 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recommendationVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CfRecommendationLogUpdateWithoutUserInput = {
@@ -50897,6 +50935,7 @@ export namespace Prisma {
     explorationArm?: string | null
     shownAt?: Date | string
     firstSeenAt?: Date | string | null
+    recommendationVersion?: string | null
   }
 
   export type WishlistCreateManyPhoneInput = {
@@ -51061,6 +51100,7 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recommendationVersion?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UsersUpdateOneRequiredWithoutRecommendationLogsNestedInput
   }
 
@@ -51078,6 +51118,7 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recommendationVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type RecommendationLogUncheckedUpdateManyWithoutPhoneInput = {
@@ -51094,6 +51135,7 @@ export namespace Prisma {
     explorationArm?: NullableStringFieldUpdateOperationsInput | string | null
     shownAt?: DateTimeFieldUpdateOperationsInput | Date | string
     firstSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    recommendationVersion?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type WishlistUpdateWithoutPhoneInput = {
