@@ -350,21 +350,6 @@
   object-fit: contain;
 }
 
-/* When a phone card has no usable image (BE returned `imageUrl: null`
-   or the remote <img> 404'd), the placeholder SVG is what the user
-   sees. The placeholder is rendered as a sibling of the <img> on
-   every card and is visible BY DEFAULT. We hide it in two cases:
-     - `.phone-card-image.has-image` is added by the JSX when an
-       <img> successfully loads (we don't paint both).
-     - the broken <img> gets `.is-hidden` via the onError handler
-       so the broken-image icon disappears and the SVG takes over. */
-.phone-card-image.has-image .phone-card-placeholder-svg {
-  display: none;
-}
-.phone-card-image img.is-hidden {
-  display: none;
-}
-
 .phone-card-emoji {
   font-size: 48px;
 }

@@ -57,88 +57,12 @@ import { eurFromNpr, formatPriceNpr } from "../utils/formatPrice.js";
 //   );
 // }
 
-// Inline phone-image placeholder. Used by both auto-rec and catalog
-// cards when `imageUrl` is null/empty or the remote <img> 404s. The
-// previous CSS `content: url("../assets/backup.png")` fallback did
-// not actually render — `content: url(...)` is a CSS-spec quirk that
-// only works for generated-content boxes, and the JSX `onError` only
-// hid the broken image without supplying a replacement. This SVG is
-// a flat outline phone on a soft gradient — looks intentional in
-// both light and dark mode and renders the same in every browser.
-//
-// The shared `<linearGradient id="phoneCardPlaceholderGrad">` defs
-// live in a single hidden `<svg>` rendered once near the top of the
-// page (see `<PhonePlaceholderDefs />` below). All card placeholders
-// reference the same gradient by URL — no per-card `useId` or
-// regex-stripped ids, so 12+ cards don't allocate 12+ unique
-// gradient nodes.
-const PHONE_PLACEHOLDER_GRAD_ID = "phoneCardPlaceholderGrad";
-
-function PhonePlaceholder({ size = 56 }) {
-  return (
-    <svg
-      className="phone-card-placeholder-svg"
-      width={size}
-      height={size}
-      viewBox="0 0 64 64"
-      fill="none"
-      aria-hidden="true"
-    >
-      <rect
-        x="18"
-        y="6"
-        width="28"
-        height="52"
-        rx="5"
-        ry="5"
-        fill={`url(#${PHONE_PLACEHOLDER_GRAD_ID})`}
-        stroke="#94a3b8"
-        strokeWidth="1.5"
-      />
-      <rect
-        x="22"
-        y="12"
-        width="20"
-        height="34"
-        rx="1.5"
-        ry="1.5"
-        fill="#f8fafc"
-        stroke="#cbd5e1"
-        strokeWidth="1"
-      />
-      <circle cx="32" cy="51" r="2" fill="#94a3b8" />
-    </svg>
-  );
-}
-
-// Hidden SVG that hosts the shared gradient defs. Rendered once per
-// page so `PhonePlaceholder` instances can reference the gradient
-// without each allocating their own defs block. The SVG itself is
-// `width=0 height=0` and `aria-hidden` so it doesn't take up any
-// layout space and isn't announced to assistive tech.
-function PhonePlaceholderDefs() {
-  return (
-    <svg
-      width="0"
-      height="0"
-      style={{ position: "absolute" }}
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient
-          id={PHONE_PLACEHOLDER_GRAD_ID}
-          x1="0"
-          y1="0"
-          x2="1"
-          y2="1"
-        >
-          <stop offset="0%" stopColor="#e5e7eb" />
-          <stop offset="100%" stopColor="#cbd5e1" />
-        </linearGradient>
-      </defs>
-    </svg>
-  );
-}
+// Image-fallback strategy: each card always renders a single `<img>`.
+// The src is `p.imageUrl` when the BE supplied one, otherwise
+// `/backup.png` (served from `public/`). If the BE URL 404s, the
+// shared `handleImgError` swaps the src to `/backup.png` once — a
+// data-attr guards against re-firing and looping if the backup
+// itself is missing.
 
 const CATEGORY_OPTIONS = [
   { key: "gamer", label: "Gamer", Icon: GamerIcon },
@@ -540,18 +464,18 @@ function Dashboard() {
     setCatalogRetryToken((t) => t + 1);
   }, []);
 
-  // Shared image handlers. Both the auto-rec and catalog cards
-  // render a `<PhonePlaceholder />` as a sibling of the `<img>` and
-  // rely on the CSS class `.phone-card-image.has-image` to hide the
-  // placeholder once a real image has loaded successfully. We tag
-  // the broken <img> itself with `is-hidden` (via onError) so the
-  // browser stops painting its broken-image icon and the placeholder
-  // SVG takes over.
+  // Shared image handlers. The catalog card always renders an `<img>`
+  // — when the BE-supplied `imageUrl` is missing or 404s, the onError
+  // handler swaps the src to `/backup.png` (served from `public/`)
+  // so the user always sees a real image rather than a broken-icon.
+  // One-time swap only (tracked via a data-attr) so a backup.png 404
+  // doesn't loop.
   const handleImgError = useCallback((e) => {
-    e.currentTarget.classList.add("is-hidden");
-  }, []);
-  const handleImgLoad = useCallback((e) => {
-    e.currentTarget.parentElement.classList.add("has-image");
+    const el = e.currentTarget;
+    if (el.dataset.fallback !== "1") {
+      el.dataset.fallback = "1";
+      el.src = "/backup.png";
+    }
   }, []);
 
   // Auto-recommend — fire once on Dashboard mount so the user sees
@@ -1095,7 +1019,6 @@ function Dashboard() {
 
   return (
     <div className={`dashboard-page ${isDarkMode ? "dash-dark" : ""}`}>
-      <PhonePlaceholderDefs />
       <header className="dash-header">
         <div className="dash-header-actions">
           <button
@@ -1733,15 +1656,11 @@ function Dashboard() {
                     >
                       <div className="phone-card-top">
                         <div className="phone-card-image">
-                          {r.imageUrl ? (
-                            <img
-                              src={r.imageUrl}
-                              alt={r.modelName}
-                              onLoad={handleImgLoad}
-                              onError={handleImgError}
-                            />
-                          ) : null}
-                          <PhonePlaceholder size={56} />
+                          <img
+                            src={r.imageUrl || "/backup.png"}
+                            alt={r.modelName}
+                            onError={handleImgError}
+                          />
                           {/* Match Score badge: hidden for automatic
                               recommendations, shown for manual. */}
                           {typeof r.matchScore === "number" &&
@@ -1911,15 +1830,11 @@ function Dashboard() {
               >
                 <div className="phone-card-top">
                   <div className="phone-card-image">
-                    {p.imageUrl ? (
-                      <img
-                        src={p.imageUrl}
-                        alt={p.modelName}
-                        onLoad={handleImgLoad}
-                        onError={handleImgError}
-                      />
-                    ) : null}
-                    <PhonePlaceholder size={56} />
+                    <img
+                      src={p.imageUrl || "/backup.png"}
+                      alt={p.modelName}
+                      onError={handleImgError}
+                    />
                   </div>
                   <div className="phone-card-name">{p.modelName}</div>
                   <div className="phone-card-tagline">
