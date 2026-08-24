@@ -15,6 +15,7 @@ import {
   ChevronDownIcon,
 } from "./AuthShared";
 import { formatPriceNpr } from "../utils/formatPrice.js";
+import logo from "../assets/logo.png";
 
 // ---- Field-label maps ----
 // Each entry: { key in payload → human label + optional renderer + general? }.
@@ -150,7 +151,7 @@ function PhoneDetail() {
   if (loading) {
     return (
       <div className={pageClass}>
-        <TopBar onBack={handleBack} />
+        <TopBar onBack={handleBack} navigate={navigate} />
         <p
           className="dash-status"
           style={{ marginTop: 40, textAlign: "center" }}
@@ -164,7 +165,7 @@ function PhoneDetail() {
   if (error === "not-found") {
     return (
       <div className={pageClass}>
-        <TopBar onBack={handleBack} />
+        <TopBar onBack={handleBack} navigate={navigate} />
         <div className="phone-detail-empty">
           <h1>Phone not found</h1>
           <p>
@@ -186,7 +187,7 @@ function PhoneDetail() {
   if (error === "generic") {
     return (
       <div className={pageClass}>
-        <TopBar onBack={handleBack} />
+        <TopBar onBack={handleBack} navigate={navigate} />
         <div className="phone-detail-error">
           <h1>Couldn't load this phone</h1>
           <p>
@@ -208,13 +209,13 @@ function PhoneDetail() {
 
   return (
     <div className={pageClass}>
-      <TopBar onBack={handleBack} />
+      <TopBar onBack={handleBack} navigate={navigate} />
       <PhoneSpecsPage phone={phone} />
     </div>
   );
 }
 
-function TopBar({ onBack }) {
+function TopBar({ onBack, navigate }) {
   return (
     <div className="phone-detail-topbar">
       <button
@@ -227,6 +228,19 @@ function TopBar({ onBack }) {
         <span>Back</span>
       </button>
       <span className="phone-detail-breadcrumb">Phone details</span>
+      <button
+        type="button"
+        className="dash-brand"
+        onClick={() => navigate("/")}
+        title="Go to home"
+        aria-label="Go to home"
+      >
+        <img src={logo} alt="" className="dash-brand-logo" />
+        <span className="dash-brand-text">
+          <span className="dash-brand-title">Mobile</span>
+          <span className="dash-brand-sub">Recommendation System</span>
+        </span>
+      </button>
     </div>
   );
 }
@@ -270,8 +284,8 @@ export function PhoneDetailView({ phone }) {
       try {
         // Content-Based lookup — the BE proxies FastAPI's
         // GET /similarity/similar against the pre-computed NxN
-        // cosine matrix. Limit 12 (the BE clamps 1..50).
-        const list = await getSimilarPhones(phone.id, 12);
+        // cosine matrix. Limit 9 (the BE clamps 1..50).
+        const list = await getSimilarPhones(phone.id, 9);
         if (ignore) return;
         // Defensive: drop any rows that somehow resolved to the
         // seed phone (the BE already excludes it, but keep the
@@ -279,7 +293,7 @@ export function PhoneDetailView({ phone }) {
         // seed back into the grid).
         const filtered = (Array.isArray(list) ? list : [])
           .filter((p) => p && p.id !== phone.id)
-          .slice(0, 12);
+          .slice(0, 9);
         setRelatedPhones(filtered);
       } catch (err) {
         if (ignore) return;
@@ -505,10 +519,11 @@ export function PhoneDetailView({ phone }) {
 
       {/* ---- Related Phones ----
           Reuses the existing GET /phones endpoint (same one the Dashboard
-          already hits) — no new API. Renders exactly 12 cards in the same
-          .phone-grid layout the dashboard uses, so styling, hover animation
-          and card shadow are all inherited from Dashboard.css. The current
-          phone is filtered out if it happens to appear in the response. */}
+          already hits) — no new API. Renders exactly 9 cards in the same
+          .phone-grid layout the dashboard uses (3 columns × 3 rows), so
+          styling, hover animation and card shadow are all inherited from
+          Dashboard.css. The current phone is filtered out if it happens to
+          appear in the response. */}
       <section
         className="related-phones-section"
         aria-label="Related phones"
@@ -832,11 +847,11 @@ function PhoneSpecsPage({ phone }) {
     let ignore = false;
     (async () => {
       try {
-        const list = await getSimilarPhones(phone.id, 12);
+        const list = await getSimilarPhones(phone.id, 9);
         if (ignore) return;
         const filtered = (Array.isArray(list) ? list : [])
           .filter((p) => p && p.id !== phone.id)
-          .slice(0, 12);
+          .slice(0, 9);
         setRelatedPhones(filtered);
       } catch (err) {
         if (ignore) return;
