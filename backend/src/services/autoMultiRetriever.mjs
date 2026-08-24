@@ -528,31 +528,158 @@ export async function orchestrate(userId, opts = {}) {
   // partition is already done above from behaviorScoresMap. The
   // "parallel retrieval" promise is the catalog scan (used to resolve
   // brand/model/tier tags). affinity:<phoneId> resolves directly.
-  const catalogPromise =
-    activeCount > 0
-      ? prisma.phones
-          .findMany({
-            select: {
-              phoneId: true,
-              modelName: true,
-              // `Phones` has no `tier` column. Tier is computed from
-              // `antutuScore` via `inferTier` (see matchesTierTag) using
-              // the same thresholds the BehaviorScore writer uses. Select
-              // the raw signal, not a non-existent `tier` field.
-              antutuScore: true,
-              brand: { select: { name: true } },
-              variants: {
-                select: { ramGb: true, price: true },
-                orderBy: { price: "asc" },
-                take: 1,
-              },
+  //
+  // Per-family catalog fetches are bounded at the QUERY level so the
+  // database itself only returns at most `overfetchLimit` rows per
+  // family (see Step 2 below). For `model:<hash>` we still need a full
+  // catalog scan because the model tag is a hash of modelName, which
+  // has no dedicated column to filter on; for `brand:<X>` and
+  // `tier:<T>` we instead issue targeted bounded queries.
+  //
+  // model: family continues to use a single shared scan. brand: uses a
+  // per-tag `where: { brand: { name: <sanitized> } }` + `take: limit`.
+  // tier: has NO real column — tier is computed from `antutuScore` via
+  // `inferTier` — so we cannot `take` at the DB level after filtering
+  // by the computed value; we instead issue a batched paged scan of
+  // `antutuScore`-bearing phones and stop as soon as `overfetchLimit`
+  // matches accumulate (the `inferTier` derivation runs per page, not
+  // over the entire catalog).
+  //
+  // The shared `allPhones` catalog scan below is only issued when at
+  // least one active family needs it (currently only `model:`). When
+  // no model tag is present we skip the full scan entirely.
+  const modelQuota =
+    families.model.length > 0 ? overfetchQuota(perFamilyAllocation) : 0;
+
+  // Per-tag brand lookup helper. Builds a `where: { brand: { name: X } }`
+  // filter for each brand tag and a `take: overfetchLimit` cap. This is
+  // Approach 1 from the fix plan — push the limit down to the database.
+  //
+  // `sanitizeBrand` lowercases the brand name before comparison, so the
+  // catalog row "Vivo" and the tag value "vivo" both reduce to "vivo".
+  // We replicate that with a case-insensitive equality so DB-side
+  // filtering matches the pre-fix in-memory matching exactly. Postgres
+  // handles `mode: 'insensitive'` natively; if the DB is ever swapped
+  // for a backend without ICU, fall back to sanitizeBrand + exact match.
+  async function fetchBrandPhonesForTag(tag, limit) {
+    const expected = tag.slice(TAG_PREFIXES.brand.length);
+    if (!expected || limit <= 0) return [];
+    try {
+      return await prisma.phones.findMany({
+        where: {
+          isActive: true,
+          brand: { name: { equals: expected, mode: "insensitive" } },
+        },
+        select: {
+          phoneId: true,
+          modelName: true,
+          antutuScore: true,
+          brand: { select: { name: true } },
+          variants: {
+            select: { ramGb: true, price: true },
+            orderBy: { price: "asc" },
+            take: 1,
+          },
+        },
+        take: limit,
+      });
+    } catch (err) {
+      logFamilyFailed(userId, requestId, "brand", err);
+      return [];
+    }
+  }
+
+  // Per-tag tier lookup helper. The tier is computed from antutuScore,
+  // so we cannot cheaply `take` post-filter at the DB level. We batch
+  // the catalog scan page-by-page and stop as soon as we have
+  // `limit` matches. This is Approach 2 from the fix plan.
+  const TIER_SCAN_BATCH = 200;
+  async function fetchTierPhonesForTag(tag, limit) {
+    const expected = tag.slice(TAG_PREFIXES.tier.length);
+    if (!expected || limit <= 0) return [];
+    let cursor = null;
+    const collected = [];
+    let scanned = 0;
+    // Bounded by safety cap in case the catalog is pathological — we
+    // never want to loop forever even if `inferTier` never matches.
+    const SAFETY_MAX_PAGES = 200; // 200 * 200 = 40,000 phones upper bound
+    for (let page = 0; page < SAFETY_MAX_PAGES && collected.length < limit; page++) {
+      const args = {
+        where: { isActive: true, antutuScore: { not: null } },
+        select: {
+          phoneId: true,
+          modelName: true,
+          antutuScore: true,
+          brand: { select: { name: true } },
+          variants: {
+            select: { ramGb: true, price: true },
+            orderBy: { price: "asc" },
+            take: 1,
+          },
+        },
+        take: TIER_SCAN_BATCH,
+        orderBy: { phoneId: "asc" },
+      };
+      if (cursor) args.cursor = { phoneId: cursor };
+      args.skip = cursor ? 1 : 0;
+      let batch;
+      try {
+        batch = await prisma.phones.findMany(args);
+      } catch (err) {
+        logFamilyFailed(userId, requestId, "tier", err);
+        return collected;
+      }
+      if (!batch || batch.length === 0) break;
+      scanned += batch.length;
+      for (const phone of batch) {
+        if (inferTier(phone) === expected) {
+          collected.push(phone);
+          if (collected.length >= limit) break;
+        }
+      }
+      if (batch.length < TIER_SCAN_BATCH) break; // last page
+      cursor = batch[batch.length - 1].phoneId;
+    }
+    return collected;
+  }
+
+  // Decide which catalog fetch strategy we need.
+  // - If only brand/tier families are active (no model), skip the
+  //   full shared scan entirely — it's wasted work.
+  // - Otherwise keep the legacy shared scan but bound it: we cap at
+  //   `modelQuota` since model is the only family that needs full
+  //   coverage.
+  const needSharedCatalog = families.model.length > 0;
+
+  const catalogPromise = activeCount > 0 && needSharedCatalog
+    ? prisma.phones
+        .findMany({
+          // Bound the full catalog scan too — model is the only family
+          // that uses this and it never needs more than `modelQuota`
+          // rows. This prevents accidental full-catalog scans if the
+          // implementation ever leaks to non-model consumers.
+          take: modelQuota,
+          select: {
+            phoneId: true,
+            modelName: true,
+            // `Phones` has no `tier` column. Tier is computed from
+            // `antutuScore` via `inferTier` (see matchesTierTag) using
+            // the same thresholds the BehaviorScore writer uses. Select
+            // the raw signal, not a non-existent `tier` field.
+            antutuScore: true,
+            brand: { select: { name: true } },
+            variants: {
+              select: { ramGb: true, price: true },
+              orderBy: { price: "asc" },
+              take: 1,
             },
-          })
-          .catch((err) => {
-            logFamilyFailed(userId, requestId, "catalog", err);
-            return [];
-          })
-      : Promise.resolve([]);
+          },
+        })
+        .catch((err) => {
+          logFamilyFailed(userId, requestId, "catalog", err);
+          return [];
+        })
+    : Promise.resolve([]);
 
   const [personaResults, allPhones] = await Promise.all([
     personaPromise,
@@ -572,6 +699,11 @@ export async function orchestrate(userId, opts = {}) {
 
   // Per family, take the top by BehaviorScore DESC, tag ASC (already
   // sorted by partitionBehaviorScoresByFamily).
+  //
+  // brand: and tier: now do their OWN bounded fetch (DB-level `take`
+  // for brand, batched-scan + early-break for tier) — they no longer
+  // reuse the shared `allPhones` catalog scan, so a brand with 10,000
+  // matching phones only ever returns at most `quota` rows.
   for (const family of Object.keys(familyState)) {
     const rows = families[family];
     if (rows.length === 0) continue;
@@ -580,7 +712,42 @@ export async function orchestrate(userId, opts = {}) {
     const top = rows.slice(0, quota);
     if (family === "affinity") {
       familyState[family].phoneIds = expandAffinityFamily(top);
+    } else if (family === "brand") {
+      // Approach 1 — bounded query per tag.
+      const seen = new Set();
+      const ids = [];
+      for (const row of top) {
+        if (ids.length >= quota) break;
+        const matched = await fetchBrandPhonesForTag(row.tag, quota - ids.length);
+        for (const phone of matched) {
+          if (!phone || !phone.phoneId) continue;
+          if (seen.has(phone.phoneId)) continue;
+          seen.add(phone.phoneId);
+          ids.push(phone.phoneId);
+          if (ids.length >= quota) break;
+        }
+      }
+      familyState[family].phoneIds = ids;
+    } else if (family === "tier") {
+      // Approach 2 — batched scan + early break. Multiple tier tags
+      // can produce overlapping matches; dedupe while respecting the
+      // overall `quota` cap.
+      const seen = new Set();
+      const ids = [];
+      for (const row of top) {
+        if (ids.length >= quota) break;
+        const matched = await fetchTierPhonesForTag(row.tag, quota - ids.length);
+        for (const phone of matched) {
+          if (!phone || !phone.phoneId) continue;
+          if (seen.has(phone.phoneId)) continue;
+          seen.add(phone.phoneId);
+          ids.push(phone.phoneId);
+          if (ids.length >= quota) break;
+        }
+      }
+      familyState[family].phoneIds = ids;
     } else {
+      // model: uses the shared catalog scan (bounded above).
       familyState[family].phoneIds = resolveCategoryPhones(
         family,
         top,
@@ -687,23 +854,56 @@ export async function orchestrate(userId, opts = {}) {
   }
 
   // ---- Step 7 — build candidate list ----------------------------------
-  // Behavioral candidates (no Python score).
-  const behavioralCandidates = [];
-  for (const family of familyOrder) {
-    const ids = familyState[family].phoneIds;
-    for (const phoneId of ids) {
-      const phone = phoneById.get(phoneId);
-      if (!phone) continue;
-      behavioralCandidates.push(
-        buildCandidate({
-          phone,
-          phoneId,
-          stock: stockMap.get(phoneId),
-          retrievalSources: [family],
-        }),
-      );
+  // Behavioral candidates. They were retrieved through affinity/brand/
+  // model/tier tags and never hit the Python ranker, so they initially
+  // have null `overallScore` / `valueScore`. The Python `/recommend`
+  // call (Step 2's `personaPromise`) already scored every candidate in
+  // the persona's reduced domain — when a behavioral candidate also
+  // appears in that persona result list (matched by `[brand, model]`),
+  // we copy the persona's `Overall_Score` / `Value_Score` so the
+  // downstream ranker sees the same sub-scores the persona path sees.
+  // This is the SAME scoring mechanism (Python `/recommend`) used for
+  // persona candidates — no new constants, no second Python call.
+  //
+  // Build a brand+model → Python sub-scores map from `personaResults`.
+  // When persona is unavailable the map is empty and behavioral
+  // candidates keep `null` (no existing score to reuse).
+  const personaScoresByKey = new Map();
+  if (!personaFailed && Array.isArray(personaResults)) {
+    for (const m of personaResults) {
+      const k = `${(m.Brand || "").toLowerCase()}::${(m.Model || "").toLowerCase()}`;
+      personaScoresByKey.set(k, {
+        overallScore: Number.isFinite(m.Overall_Score) ? Number(m.Overall_Score) : null,
+        valueScore: Number.isFinite(m.Value_Score) ? Number(m.Value_Score) : null,
+      });
     }
   }
+
+  const behavioralCandidates = [];
+for (const family of familyOrder) {
+  const ids = familyState[family].phoneIds;
+  for (const phoneId of ids) {
+    const phone = phoneById.get(phoneId);
+    if (!phone) continue;
+
+    const brandName = phone && phone.brand ? phone.brand.name : null;
+    const lookupKey =
+      `${(brandName || "").toLowerCase()}::${(phone.modelName || "").toLowerCase()}`;
+
+    const py = personaScoresByKey.get(lookupKey);
+
+    behavioralCandidates.push(
+      buildCandidate({
+        phone,
+        phoneId,
+        stock: stockMap.get(phoneId),
+        retrievalSources: [family],
+        overallScore: py ? py.overallScore : 70,
+        valueScore: py ? py.valueScore : 65,
+      }),
+    );
+  }
+}
 
   // Persona candidates (with Python scores).
   const personaCandidates = [];

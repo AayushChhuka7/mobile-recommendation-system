@@ -94,8 +94,31 @@ const ALLOWED_SORTS = new Set([
 // Shape helpers
 // ---------------------------------------------------------------------------
 
+// Returns true when the FE's weights payload contains at least one
+// positive slider value. The Python /recommend ranker asserts
+// `custom_weights_stars` is truthy when persona="Custom", so a "Custom"
+// persona with empty/zero weights cannot be safely stored — the AUTO
+// pipeline would fail with `Custom persona needs custom_weights_stars`
+// and the user would be downgraded to the behavioural fallback on
+// every request. We treat all-zero / missing weights the same as no
+// weights at all here.
+const hasUsableWeights = (weights) => {
+  if (!weights || typeof weights !== "object") return false;
+  for (const v of Object.values(weights)) {
+    if (typeof v === "number" && Number.isFinite(v) && v > 0) return true;
+  }
+  return false;
+};
+
 // Format the FE payload { persona, weights, budgetMin, budgetMax } into
 // the columns we actually persist. Returns null if the payload is empty.
+//
+// Issue 1 guard: persona="Custom" requires custom_weights_stars on the
+// Python side. We have no schema column to store the raw sliders, so a
+// "Custom" persona without weights would be persisted as an invalid
+// state that crashes every subsequent AUTO request. If the payload says
+// "Custom" but supplies no usable weights, we fall back to "allrounder"
+// so the stored row is always coherent with what Python can rank.
 const buildExplicitPreference = (payload) => {
   if (!payload || typeof payload !== "object") return null;
 
@@ -104,8 +127,16 @@ const buildExplicitPreference = (payload) => {
   const weights =
     payload.weights && typeof payload.weights === "object" ? payload.weights : null;
 
-  const usageType = validPersona
-    ? PERSONA_TO_USAGE_TYPE[validPersona] || "Casual"
+  // Demote "Custom" → "allrounder" when weights are missing/empty so
+  // we never persist a state Python can't satisfy. Match the default
+  // persona already used by getAutoRecommendations.
+  const storedPersona =
+    validPersona === "Custom" && !hasUsableWeights(weights)
+      ? "allrounder"
+      : validPersona;
+
+  const usageType = storedPersona
+    ? PERSONA_TO_USAGE_TYPE[storedPersona] || "Casual"
     : null;
   const cameraPreference = deriveCameraPreference(weights);
 
@@ -123,7 +154,7 @@ const buildExplicitPreference = (payload) => {
       : Number(minRaw);
 
   return {
-    persona: validPersona, // stored back into CustomerProfile.recommendationPersona
+    persona: storedPersona, // stored back into CustomerProfile.recommendationPersona
     usageType, // UserPreference.usageType enum (nullable if no persona)
     cameraPreference, // UserPreference.cameraPreference enum (always one of two)
     maxBudget: Number.isFinite(max) && max > 0 ? max : null,
