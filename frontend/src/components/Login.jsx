@@ -211,15 +211,22 @@ function Login({ onLogin }) {
         if (error.response) {
           const msg = error.response.data?.message || "Login failed";
           setServerError(msg);
-          setShowVerification(
-            error.response.data?.code === "AUTH_NOT_AUTHENTICATED" &&
-              /verify your account/i.test(msg),
-          );
+          // If the BE says the account exists but isn't verified, hand the
+          // user off to the dedicated /register/otp page (the same one
+          // the registration flow lands on) instead of rendering an
+          // inline OTP block here. The OTP page pre-fills its email from
+          // location.state.email, so the user can just enter the code
+          // without re-typing anything.
           if (
             error.response.data?.code === "AUTH_NOT_AUTHENTICATED" &&
-            /verify your account/i.test(msg)
+            /verify your account/i.test(msg) &&
+            email
           ) {
-            await handleResendVerification();
+            navigate("/register/otp", {
+              state: { email, fromLogin: true },
+              replace: true,
+            });
+            return;
           }
         } else if (error.request) {
           setServerError("Cannot connect to server. Please try again.");
@@ -238,6 +245,7 @@ function Login({ onLogin }) {
       validateLogin,
       onLogin,
       handleResendVerification,
+      navigate,
     ],
   );
 

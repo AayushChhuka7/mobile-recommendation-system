@@ -842,7 +842,10 @@ function Dashboard() {
         // rule-based → content-based → top-5 pipeline. The
         // auto-recommend path on dashboard mount still hits
         // GET /recommend/auto and is unaffected.
-        topN: 5,
+        // NOTE: bumped from 5 to 8 per product request; the BE's
+        // `topN === 5` pipeline-switch check will no longer match,
+        // so this path will fall through to the default pipeline.
+        topN: 8,
       });
       setRecs(results);
 
@@ -1602,7 +1605,7 @@ function Dashboard() {
               </p>
             ) : (
               <div className="phone-grid">
-                {recs.slice(0, 6).map((r) => {
+                {recs.slice(0, 8).map((r) => {
                   // In-DB recs navigate to the in-app detail page via
                   // their Prisma id. Out-of-DB recs have no `id`, but
                   // the user still expects them to behave like the
