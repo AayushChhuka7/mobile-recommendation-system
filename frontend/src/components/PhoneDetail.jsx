@@ -15,6 +15,7 @@ import {
   ChevronDownIcon,
 } from "./AuthShared";
 import { formatPriceNpr } from "../utils/formatPrice.js";
+import logo from "../assets/logo.png";
 
 // ---- Field-label maps ----
 // Each entry: { key in payload → human label + optional renderer + general? }.
@@ -150,7 +151,7 @@ function PhoneDetail() {
   if (loading) {
     return (
       <div className={pageClass}>
-        <TopBar onBack={handleBack} />
+        <TopBar onBack={handleBack} navigate={navigate} />
         <p
           className="dash-status"
           style={{ marginTop: 40, textAlign: "center" }}
@@ -164,7 +165,7 @@ function PhoneDetail() {
   if (error === "not-found") {
     return (
       <div className={pageClass}>
-        <TopBar onBack={handleBack} />
+        <TopBar onBack={handleBack} navigate={navigate} />
         <div className="phone-detail-empty">
           <h1>Phone not found</h1>
           <p>
@@ -186,7 +187,7 @@ function PhoneDetail() {
   if (error === "generic") {
     return (
       <div className={pageClass}>
-        <TopBar onBack={handleBack} />
+        <TopBar onBack={handleBack} navigate={navigate} />
         <div className="phone-detail-error">
           <h1>Couldn't load this phone</h1>
           <p>
@@ -208,13 +209,13 @@ function PhoneDetail() {
 
   return (
     <div className={pageClass}>
-      <TopBar onBack={handleBack} />
+      <TopBar onBack={handleBack} navigate={navigate} />
       <PhoneSpecsPage phone={phone} />
     </div>
   );
 }
 
-function TopBar({ onBack }) {
+function TopBar({ onBack, navigate }) {
   return (
     <div className="phone-detail-topbar">
       <button
@@ -227,6 +228,19 @@ function TopBar({ onBack }) {
         <span>Back</span>
       </button>
       <span className="phone-detail-breadcrumb">Phone details</span>
+      <button
+        type="button"
+        className="dash-brand"
+        onClick={() => navigate("/")}
+        title="Go to home"
+        aria-label="Go to home"
+      >
+        <img src={logo} alt="" className="dash-brand-logo" />
+        <span className="dash-brand-text">
+          <span className="dash-brand-title">Mobile</span>
+          <span className="dash-brand-sub">Recommendation System</span>
+        </span>
+      </button>
     </div>
   );
 }
