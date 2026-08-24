@@ -18,13 +18,40 @@
 
 .dash-brand-title {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 26px;
   color: var(--text);
+  line-height: 1;
 }
 
 .dash-brand-sub {
-  font-size: 12px;
+  font-size: 16px;
   color: var(--text-muted);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dash-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dash-brand-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  margin-left: 16px;
+}
+
+.dash-brand-text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.1;
 }
 
 .dash-section-title {
@@ -1527,6 +1554,10 @@
 .dashboard-page.dash-dark .input-error,
 .dashboard-page.dash-dark .dash-status-error {
   color: var(--danger);
+}
+
+.dashboard-page.dash-dark .dash-brand-logo {
+  filter: invert(1) hue-rotate(180deg) opacity(0.6);
 }
 
 .dashboard-page.dash-dark .icon-btn {

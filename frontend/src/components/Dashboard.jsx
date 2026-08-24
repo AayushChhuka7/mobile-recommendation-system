@@ -12,6 +12,7 @@ import {
   saveMyPreferences,
 } from "../services/profile";
 import { useAuth } from "../hooks/useAuth.jsx";
+import logo from "../assets/logo.png";
 import "./Login.css";
 import "./Dashboard.css";
 import {
@@ -1020,6 +1021,19 @@ function Dashboard() {
   return (
     <div className={`dashboard-page ${isDarkMode ? "dash-dark" : ""}`}>
       <header className="dash-header">
+        <button
+          type="button"
+          className="dash-brand"
+          onClick={() => navigate("/")}
+          title="Go to home"
+          aria-label="Go to home"
+        >
+          <img src={logo} alt="" className="dash-brand-logo" />
+          <span className="dash-brand-text">
+            <span className="dash-brand-title">Mobile</span>
+            <span className="dash-brand-sub">Recommendation System</span>
+          </span>
+        </button>
         <div className="dash-header-actions">
           <button
             type="button"
