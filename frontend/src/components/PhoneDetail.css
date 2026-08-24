@@ -465,8 +465,30 @@
   margin: 0 0 20px;
 }
 
-.related-phones-grid {
-  /* Inherits the responsive grid from .phone-grid in Dashboard.css. */
+/* Force a 3-column horizontal layout for related phones on the
+   specs page. Earlier the rule was empty, relying on inheritance from
+   Dashboard.css's `.phone-grid` (3 cols) — but in the specs page
+   context the cards were stacking one-per-row. We set the grid
+   explicitly with a higher-specificity selector so it always wins,
+   regardless of any inherited or cascade-overridden rules. The 9
+   related cards then naturally fall into 3 rows of 3. */
+.related-phones-grid.related-phones-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .related-phones-grid.related-phones-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .related-phones-grid.related-phones-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .related-phone-card {
