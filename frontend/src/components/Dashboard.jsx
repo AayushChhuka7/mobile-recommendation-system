@@ -37,6 +37,12 @@ import {
   PASSWORD_RULES,
   PASSWORD_MIN_LENGTH,
   EditIcon,
+  // Change-email modal — reuses the same OTP input row + cooldown
+  // constants the registration + login flows already import.
+  OtpInputRow,
+  EMPTY_OTP,
+  OTP_LENGTH,
+  RESEND_COOLDOWN_SECONDS,
 } from "./AuthShared";
 import ComparePanel from "./ComparePanel.jsx";
 import { eurFromNpr, formatPriceNpr } from "../utils/formatPrice.js";
@@ -217,6 +223,28 @@ function Dashboard() {
   const [isEditProfileSubmitting, setIsEditProfileSubmitting] =
     useState(false);
 
+  // Change-email modal state — mirrors changePwPhase/editProfilePhase
+  // so the same open/closing animation + CSS classes can be reused.
+  // The body swaps between two steps:
+  //   "request" → current-password + new-email fields
+  //   "verify"  → 6-digit OTP that the BE sent to the new address
+  const [changeEmailPhase, setChangeEmailPhase] = useState("closed");
+  const changeEmailCloseTimerRef = useRef(null);
+  // Step 1 inputs.
+  const [emailCurrentPassword, setEmailCurrentPassword] = useState("");
+  const [emailNewEmail, setEmailNewEmail] = useState("");
+  const [changeEmailErrors, setChangeEmailErrors] = useState({});
+  const [changeEmailSubmitError, setChangeEmailSubmitError] = useState("");
+  const [isChangeEmailSubmitting, setIsChangeEmailSubmitting] =
+    useState(false);
+  // Step 2 (OTP) inputs.
+  const [changeEmailStep, setChangeEmailStep] = useState("request");
+  const [emailOtp, setEmailOtp] = useState(EMPTY_OTP);
+  const [emailOtpError, setEmailOtpError] = useState("");
+  const [isEmailOtpSubmitting, setIsEmailOtpSubmitting] = useState(false);
+  const [emailResendCooldown, setEmailResendCooldown] = useState(0);
+  const [emailResendLoading, setEmailResendLoading] = useState(false);
+
   const DARK_MODE_KEY = "dashboardDarkMode";
   const [isDarkMode, setIsDarkMode] = useState(
     () => localStorage.getItem(DARK_MODE_KEY) === "true",
@@ -225,6 +253,18 @@ function Dashboard() {
   useEffect(() => {
     localStorage.setItem(DARK_MODE_KEY, String(isDarkMode));
   }, [isDarkMode]);
+
+  // Resend cooldown for the change-email OTP step. Same pattern as
+  // Login.jsx / Registration.jsx — a 1Hz ticker that decrements the
+  // remaining seconds until the user can request a fresh code.
+  useEffect(() => {
+    if (emailResendCooldown <= 0) return undefined;
+    const timer = setTimeout(
+      () => setEmailResendCooldown((current) => current - 1),
+      1000,
+    );
+    return () => clearTimeout(timer);
+  }, [emailResendCooldown]);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode((d) => !d);
@@ -384,6 +424,8 @@ function Dashboard() {
         clearTimeout(changePwCloseTimerRef.current);
       if (editProfileCloseTimerRef.current)
         clearTimeout(editProfileCloseTimerRef.current);
+      if (changeEmailCloseTimerRef.current)
+        clearTimeout(changeEmailCloseTimerRef.current);
     };
   }, []);
   useEffect(() => {
@@ -641,6 +683,53 @@ function Dashboard() {
     }, CLOSE_ANIM_MS);
   }, [resetEditProfileForm]);
 
+  // ---- Change-email modal lifecycle ----
+  // Mirrors openChangePassword / openEditProfile. Closes the profile
+  // menu and pre-clears all the change-email state, then drives the
+  // phase machine into "open". Resets the OTP array back to all-empty
+  // so a re-open from a previous attempt can't show stale digits.
+  const openChangeEmail = useCallback(() => {
+    if (changeEmailCloseTimerRef.current) {
+      clearTimeout(changeEmailCloseTimerRef.current);
+      changeEmailCloseTimerRef.current = null;
+    }
+    setEmailCurrentPassword("");
+    setEmailNewEmail("");
+    setChangeEmailErrors({});
+    setChangeEmailSubmitError("");
+    setChangeEmailStep("request");
+    setEmailOtp(EMPTY_OTP);
+    setEmailOtpError("");
+    setEmailResendCooldown(0);
+    setChangeEmailPhase("open");
+    setProfileOpen(false);
+  }, []);
+
+  const resetChangeEmailForm = useCallback(() => {
+    setEmailCurrentPassword("");
+    setEmailNewEmail("");
+    setChangeEmailErrors({});
+    setChangeEmailSubmitError("");
+    setIsChangeEmailSubmitting(false);
+    setChangeEmailStep("request");
+    setEmailOtp(EMPTY_OTP);
+    setEmailOtpError("");
+    setIsEmailOtpSubmitting(false);
+    setEmailResendCooldown(0);
+    setEmailResendLoading(false);
+  }, []);
+
+  const closeChangeEmail = useCallback(() => {
+    setChangeEmailPhase("closing");
+    if (changeEmailCloseTimerRef.current)
+      clearTimeout(changeEmailCloseTimerRef.current);
+    changeEmailCloseTimerRef.current = setTimeout(() => {
+      setChangeEmailPhase("closed");
+      changeEmailCloseTimerRef.current = null;
+      resetChangeEmailForm();
+    }, CLOSE_ANIM_MS);
+  }, [resetChangeEmailForm]);
+
   const validateEditProfile = useCallback(() => {
     const errs = {};
     if (!editName || !editName.trim()) errs.name = "Username is required";
@@ -818,6 +907,212 @@ function Dashboard() {
       mapChangePwFieldErrors,
     ],
   );
+
+  // ---- Change-email step 1 (request) ----
+  // Validates the current-password + new-email pair, posts to
+  // `/auth/me/email/request`, and on success swaps the modal body
+  // over to the OTP step. Mirrors the change-password flow's
+  // 401-on-wrong-password handling.
+  const validateChangeEmail = useCallback(() => {
+    const errs = {};
+    if (!emailCurrentPassword)
+      errs.currentPassword = "Current password is required";
+    if (!emailNewEmail) errs.newEmail = "New email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailNewEmail.trim()))
+      errs.newEmail = "Enter a valid email address";
+    else if (
+      user?.email &&
+      emailNewEmail.trim().toLowerCase() ===
+        String(user.email).trim().toLowerCase()
+    )
+      errs.newEmail = "New email must be different from your current one";
+    return errs;
+  }, [emailCurrentPassword, emailNewEmail, user]);
+
+  // Map backend `details` array (express-validator) onto the FE's
+  // per-field error map, falling back to a banner for unknown fields.
+  // Same pattern as mapChangePwFieldErrors.
+  const mapChangeEmailFieldErrors = useCallback((details) => {
+    const fieldErrors = {};
+    let bannerMessage = "";
+    if (!Array.isArray(details)) return { fieldErrors, bannerMessage };
+    for (const entry of details) {
+      const serverKey = entry?.path || entry?.field;
+      const msg = entry?.msg || entry?.message;
+      if (!msg) continue;
+      if (serverKey === "currentPassword")
+        fieldErrors.currentPassword = msg;
+      else if (serverKey === "newEmail") fieldErrors.newEmail = msg;
+      else bannerMessage = bannerMessage ? `${bannerMessage}; ${msg}` : msg;
+    }
+    return { fieldErrors, bannerMessage };
+  }, []);
+
+  const handleChangeEmailSubmit = useCallback(
+    async (e) => {
+      e?.preventDefault();
+      const errs = validateChangeEmail();
+      setChangeEmailErrors(errs);
+      if (Object.keys(errs).length) {
+        setChangeEmailSubmitError("");
+        return;
+      }
+      setIsChangeEmailSubmitting(true);
+      setChangeEmailSubmitError("");
+      try {
+        await api.post("/auth/me/email/request", {
+          currentPassword: emailCurrentPassword,
+          newEmail: emailNewEmail.trim(),
+        });
+        // Swap the modal body over to the OTP step. The BE has already
+        // sent the verification code to the new address.
+        setChangeEmailStep("verify");
+        setEmailOtp(EMPTY_OTP);
+        setEmailOtpError("");
+        setEmailResendCooldown(RESEND_COOLDOWN_SECONDS);
+      } catch (err) {
+        const data = err?.response?.data;
+        if (err?.response?.status === 401) {
+          // Wrong current password — surface on the password field.
+          setChangeEmailErrors((prev) => ({
+            ...prev,
+            currentPassword: data?.message || "Current password is incorrect",
+          }));
+        } else if (data?.code === "EMAIL_SEND_FAILED") {
+          // The BE's SMTP layer couldn't deliver (e.g. Gmail
+          // rejected the App Password). Don't echo back the raw
+          // provider error text — show a single clean sentence.
+          setChangeEmailSubmitError(
+            "We couldn't send the verification email right now. " +
+              "Please try again in a few minutes, or contact support " +
+              "if the problem persists.",
+          );
+        } else {
+          const { fieldErrors, bannerMessage } =
+            mapChangeEmailFieldErrors(data?.details);
+          if (Object.keys(fieldErrors).length) {
+            setChangeEmailErrors((prev) => ({ ...prev, ...fieldErrors }));
+          }
+          setChangeEmailSubmitError(
+            bannerMessage ||
+              data?.message ||
+              "Couldn't start the email change. Please try again.",
+          );
+        }
+      } finally {
+        setIsChangeEmailSubmitting(false);
+      }
+    },
+    [
+      validateChangeEmail,
+      emailCurrentPassword,
+      emailNewEmail,
+      mapChangeEmailFieldErrors,
+    ],
+  );
+
+  // ---- Change-email step 2 (OTP) ----
+  // Per-digit input + paste handling for the 6-digit code the BE
+  // sent to the new address. Mirrors the OTP handlers in
+  // Registration.jsx (handleOtpChange / handleOtpKeyDown /
+  // handleOtpPaste) so the typing feel is identical.
+  const handleEmailOtpChange = useCallback((index, value) => {
+    if (!/^\d?$/.test(value)) return;
+    setEmailOtp((prev) => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
+    setEmailOtpError("");
+    if (value && index < OTP_LENGTH - 1) {
+      document.getElementById(`change-email-otp-${index + 1}`)?.focus();
+    }
+  }, []);
+
+  const handleEmailOtpKeyDown = useCallback((index, e) => {
+    if (e.key === "Backspace" && !e.target.value && index > 0) {
+      document.getElementById(`change-email-otp-${index - 1}`)?.focus();
+    }
+  }, []);
+
+  const handleEmailOtpPaste = useCallback((e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").slice(0, OTP_LENGTH);
+    if (new RegExp(`^\\d{${OTP_LENGTH}}$`).test(pasted)) {
+      setEmailOtp(pasted.split(""));
+      document.getElementById(
+        `change-email-otp-${OTP_LENGTH - 1}`,
+      )?.focus();
+    }
+  }, []);
+
+  const handleEmailOtpVerify = useCallback(
+    async (e) => {
+      e?.preventDefault();
+      const otpString = emailOtp.join("");
+      if (otpString.length !== OTP_LENGTH) {
+        setEmailOtpError("Please enter the full 6-digit code");
+        return;
+      }
+      setIsEmailOtpSubmitting(true);
+      setEmailOtpError("");
+      try {
+        await api.post("/auth/me/email/verify", { otp: otpString });
+        // Mirror the new email into AuthContext so the profile-menu
+        // display updates immediately, the same way the edit-profile
+        // path mirrors name/phoneNo.
+        setUser({ email: emailNewEmail.trim() });
+        closeChangeEmail();
+      } catch (err) {
+        setEmailOtpError(
+          err?.response?.data?.message ||
+            "We couldn't verify that code. Please try again.",
+        );
+      } finally {
+        setIsEmailOtpSubmitting(false);
+      }
+    },
+    [emailOtp, emailNewEmail, closeChangeEmail, setUser],
+  );
+
+  // Resend — re-issues the OTP by re-posting the original
+  // current-password + new-email pair to the request endpoint.
+  // The BE doesn't expose a "resend OTP for email change" call
+  // separately, but re-submitting the request is a no-op on the
+  // server side and emits a fresh code.
+  const handleEmailResend = useCallback(async () => {
+    setEmailResendLoading(true);
+    try {
+      await api.post("/auth/me/email/request", {
+        currentPassword: emailCurrentPassword,
+        newEmail: emailNewEmail.trim(),
+      });
+      setEmailResendCooldown(RESEND_COOLDOWN_SECONDS);
+      setEmailOtp(EMPTY_OTP);
+      setEmailOtpError("");
+    } catch (err) {
+      const data = err?.response?.data;
+      if (data?.code === "EMAIL_SEND_FAILED") {
+        setEmailOtpError(
+          "We couldn't resend the verification email right now. " +
+            "Please try again in a few minutes.",
+        );
+      } else {
+        setEmailOtpError(data?.message || "Couldn't resend the code");
+      }
+    } finally {
+      setEmailResendLoading(false);
+    }
+  }, [emailCurrentPassword, emailNewEmail]);
+
+  // Go back from the OTP step to the request step without closing
+  // the modal. Resets the OTP-related state so the user can edit
+  // the email and re-submit if they mistyped.
+  const handleEmailOtpBack = useCallback(() => {
+    setChangeEmailStep("request");
+    setEmailOtp(EMPTY_OTP);
+    setEmailOtpError("");
+  }, []);
 
   const handleWeightChange = useCallback((key, value) => {
     setWeights((prev) => ({ ...prev, [key]: Number(value) }));
@@ -1199,6 +1494,14 @@ function Dashboard() {
                   >
                     <LockIcon />
                     Change password
+                  </button>
+                  <button
+                    type="button"
+                    className="change-password-btn"
+                    onClick={openChangeEmail}
+                  >
+                    <MailIcon />
+                    Change email
                   </button>
                   {user?.role === "Admin" && (
                     <>
@@ -2428,6 +2731,186 @@ function Dashboard() {
                 {isEditProfileSubmitting ? "Saving..." : "Save changes"}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Change-email modal — one modal, two steps. The body swaps
+          between "request" (current-password + new-email) and
+          "verify" (6-digit OTP) on successful step-1 submit. The
+          same open/closing animation + overlay classes as the
+          change-password + edit-profile modals. */}
+      {changeEmailPhase !== "closed" && (
+        <div
+          className={`search-overlay dash-change-email-overlay ${changeEmailPhase === "closing" ? "closing" : ""}`}
+          onClick={closeChangeEmail}
+        >
+          <div
+            className={`search-modal dash-change-email-modal ${changeEmailPhase === "closing" ? "closing" : ""}`}
+            role="dialog"
+            aria-label="Change email"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="search-modal-header">
+              <div>
+                <div className="auth-title" style={{ marginBottom: 4 }}>
+                  Change email
+                </div>
+                <div className="auth-subtitle" style={{ marginBottom: 0 }}>
+                  {changeEmailStep === "request"
+                    ? "Enter your current password and the new email address."
+                    : `Enter the 6-digit code we sent to ${emailNewEmail.trim()}.`}
+                </div>
+              </div>
+              <button
+                type="button"
+                className="icon-btn"
+                aria-label="Close change email"
+                onClick={closeChangeEmail}
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            {changeEmailStep === "request" ? (
+              <form
+                className="dash-change-email-body"
+                onSubmit={handleChangeEmailSubmit}
+                noValidate
+              >
+                <PasswordField
+                  label="Current password"
+                  name="current-password"
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  value={emailCurrentPassword}
+                  onChange={(e) => {
+                    setEmailCurrentPassword(e.target.value);
+                    if (changeEmailErrors.currentPassword)
+                      setChangeEmailErrors((prev) => ({
+                        ...prev,
+                        currentPassword: "",
+                      }));
+                  }}
+                  error={changeEmailErrors.currentPassword}
+                />
+
+                <label
+                  className="form-field-label"
+                  htmlFor="change-email-new-email"
+                  style={{ marginTop: 12 }}
+                >
+                  New email
+                </label>
+                <input
+                  id="change-email-new-email"
+                  type="email"
+                  className="form-input"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  value={emailNewEmail}
+                  onChange={(e) => {
+                    setEmailNewEmail(e.target.value);
+                    if (changeEmailErrors.newEmail)
+                      setChangeEmailErrors((prev) => ({
+                        ...prev,
+                        newEmail: "",
+                      }));
+                  }}
+                  aria-invalid={!!changeEmailErrors.newEmail}
+                />
+                {changeEmailErrors.newEmail && (
+                  <div className="form-field-error" role="alert">
+                    {changeEmailErrors.newEmail}
+                  </div>
+                )}
+
+                {changeEmailSubmitError && (
+                  <div className="form-submit-error" role="alert">
+                    {changeEmailSubmitError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="btn btn-primary w-full"
+                  disabled={isChangeEmailSubmitting}
+                  style={{ marginTop: 16 }}
+                >
+                  {isChangeEmailSubmitting ? "Sending code..." : "Send code"}
+                </button>
+              </form>
+            ) : (
+              <form
+                className="dash-change-email-body"
+                onSubmit={handleEmailOtpVerify}
+                noValidate
+              >
+                <OtpInputRow
+                  idPrefix="change-email-otp"
+                  otp={emailOtp}
+                  error={emailOtpError}
+                  onChange={handleEmailOtpChange}
+                  onKeyDown={handleEmailOtpKeyDown}
+                  onPaste={handleEmailOtpPaste}
+                />
+                {emailOtpError && (
+                  <div
+                    className="form-submit-error"
+                    role="alert"
+                    style={{ marginTop: 8 }}
+                  >
+                    {emailOtpError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="btn btn-primary w-full"
+                  disabled={isEmailOtpSubmitting}
+                  style={{ marginTop: 16 }}
+                >
+                  {isEmailOtpSubmitting ? "Verifying..." : "Verify code"}
+                </button>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginTop: 12,
+                    fontSize: 13,
+                  }}
+                >
+                  <span
+                    className="auth-link"
+                    onClick={
+                      isEmailOtpSubmitting ? undefined : handleEmailOtpBack
+                    }
+                    role="button"
+                    tabIndex={0}
+                  >
+                    Use a different email
+                  </span>
+                  {emailResendCooldown > 0 ? (
+                    <span className="otp-timer">
+                      Resend in {emailResendCooldown}s
+                    </span>
+                  ) : (
+                    <span
+                      className="auth-link"
+                      onClick={
+                        emailResendLoading ? undefined : handleEmailResend
+                      }
+                      role="button"
+                      tabIndex={0}
+                    >
+                      {emailResendLoading ? "Resending..." : "Resend code"}
+                    </span>
+                  )}
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
