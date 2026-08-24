@@ -210,6 +210,17 @@ function Login({ onLogin }) {
 
         if (error.response) {
           const msg = error.response.data?.message || "Login failed";
+          // Deactivated accounts (BE 403 with code
+          // AUTH_ACCOUNT_DEACTIVATED) get a friendlier banner than the
+          // raw BE message, with a contact-support hint so the user
+          // knows there's a recovery path.
+          if (error.response.data?.code === "AUTH_ACCOUNT_DEACTIVATED") {
+            setServerError(
+              "This account has been deactivated. " +
+                "Please contact support to reactivate it.",
+            );
+            return;
+          }
           setServerError(msg);
           // If the BE says the account exists but isn't verified, hand the
           // user off to the dedicated /register/otp page (the same one

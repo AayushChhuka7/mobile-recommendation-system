@@ -3,7 +3,7 @@ import { Strategy } from "passport-local";
 import { prisma } from "../config/prisma.mjs";
 import { findUserByEmail } from "../services/userService.mjs";
 import { verifyPassword } from "../utils/crypto.mjs";
-import { invalidCredentials, unauthorized } from "../utils/ApiError.mjs";
+import { invalidCredentials, unauthorized, accountDeactivated } from "../utils/ApiError.mjs";
 
 passport.serializeUser((user, done) => {
   done(null, user.userId);
@@ -59,7 +59,18 @@ export default passport.use(
       if (!findUser.isVerified) {
         throw unauthorized('Please verify your account first');
       }
-      
+
+      // Deactivation gate. `deactivateOwnAccountService` flips
+      // `isActive = false`; without this check a deactivated user
+      // could still sign in because nothing else in the login path
+      // (roleGuard, passport.authenticate) inspects the flag. The
+      // `accountDeactivated` factory returns 403 with code
+      // AUTH_ACCOUNT_DEACTIVATED, which the FE surfaces as a
+      // dedicated "this account has been deactivated" banner.
+      if (findUser.isActive === false) {
+        throw accountDeactivated('This account has been deactivated');
+      }
+
       done(null, findUser);
     } catch (error) {
       done(error, null);

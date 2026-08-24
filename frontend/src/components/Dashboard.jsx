@@ -245,6 +245,23 @@ function Dashboard() {
   const [emailResendCooldown, setEmailResendCooldown] = useState(0);
   const [emailResendLoading, setEmailResendLoading] = useState(false);
 
+  // Deactivate-account modal state — same shape as the change-email
+  // trio: a phase machine for the open/close animation, the user-
+  // typed confirmation string + current password, and the per-field
+  // + banner error slots.
+  const [deactivateAccountPhase, setDeactivateAccountPhase] =
+    useState("closed");
+  const deactivateAccountCloseTimerRef = useRef(null);
+  const [deactivateConfirmText, setDeactivateConfirmText] = useState("");
+  const [deactivatePassword, setDeactivatePassword] = useState("");
+  const [deactivateErrors, setDeactivateErrors] = useState({});
+  const [deactivateSubmitError, setDeactivateSubmitError] = useState("");
+  const [isDeactivateSubmitting, setIsDeactivateSubmitting] = useState(false);
+  // Stable token the user must type verbatim to confirm the action.
+  // Exposed as a constant so the modal hint + the validator stay in
+  // sync. Case-insensitive on the FE; trimmed before compare.
+  const DEACTIVATE_CONFIRM_TOKEN = "DEACTIVATE";
+
   const DARK_MODE_KEY = "dashboardDarkMode";
   const [isDarkMode, setIsDarkMode] = useState(
     () => localStorage.getItem(DARK_MODE_KEY) === "true",
@@ -426,6 +443,8 @@ function Dashboard() {
         clearTimeout(editProfileCloseTimerRef.current);
       if (changeEmailCloseTimerRef.current)
         clearTimeout(changeEmailCloseTimerRef.current);
+      if (deactivateAccountCloseTimerRef.current)
+        clearTimeout(deactivateAccountCloseTimerRef.current);
     };
   }, []);
   useEffect(() => {
@@ -729,6 +748,119 @@ function Dashboard() {
       resetChangeEmailForm();
     }, CLOSE_ANIM_MS);
   }, [resetChangeEmailForm]);
+
+  // ---- Deactivate-account modal lifecycle ----
+  // Mirrors openChangePassword / openChangeEmail. Closes the profile
+  // menu and pre-clears all deactivate-account state, then drives
+  // the phase machine into "open".
+  const openDeactivateAccount = useCallback(() => {
+    if (deactivateAccountCloseTimerRef.current) {
+      clearTimeout(deactivateAccountCloseTimerRef.current);
+      deactivateAccountCloseTimerRef.current = null;
+    }
+    setDeactivateConfirmText("");
+    setDeactivatePassword("");
+    setDeactivateErrors({});
+    setDeactivateSubmitError("");
+    setDeactivateAccountPhase("open");
+    setProfileOpen(false);
+  }, []);
+
+  const resetDeactivateAccountForm = useCallback(() => {
+    setDeactivateConfirmText("");
+    setDeactivatePassword("");
+    setDeactivateErrors({});
+    setDeactivateSubmitError("");
+    setIsDeactivateSubmitting(false);
+  }, []);
+
+  const closeDeactivateAccount = useCallback(() => {
+    setDeactivateAccountPhase("closing");
+    if (deactivateAccountCloseTimerRef.current)
+      clearTimeout(deactivateAccountCloseTimerRef.current);
+    deactivateAccountCloseTimerRef.current = setTimeout(() => {
+      setDeactivateAccountPhase("closed");
+      deactivateAccountCloseTimerRef.current = null;
+      resetDeactivateAccountForm();
+    }, CLOSE_ANIM_MS);
+  }, [resetDeactivateAccountForm]);
+
+  // ---- Deactivate-account submit ----
+  // Validates that the user typed the literal confirmation token and
+  // re-supplied their current password, then POSTs
+  // /users/me/deactivate. The BE's `deactivateOwnAccount` controller
+  // flips `isActive = false`, destroys the session, and clears the
+  // `connect.sid` cookie — so the post-success flow is just a
+  // client-side logout + redirect to /login. Subsequent /users/me
+  // calls will 401 (handled by the auth boot effect).
+  const validateDeactivateAccount = useCallback(() => {
+    const errs = {};
+    if (
+      !deactivateConfirmText ||
+      deactivateConfirmText.trim().toUpperCase() !==
+        DEACTIVATE_CONFIRM_TOKEN
+    ) {
+      errs.confirm = `Type ${DEACTIVATE_CONFIRM_TOKEN} to confirm`;
+    }
+    if (!deactivatePassword)
+      errs.password = "Current password is required";
+    return errs;
+  }, [deactivateConfirmText, deactivatePassword]);
+
+  const handleDeactivateAccountSubmit = useCallback(
+    async (e) => {
+      e?.preventDefault();
+      const errs = validateDeactivateAccount();
+      setDeactivateErrors(errs);
+      if (Object.keys(errs).length) {
+        setDeactivateSubmitError("");
+        return;
+      }
+      setIsDeactivateSubmitting(true);
+      setDeactivateSubmitError("");
+      try {
+        // The BE accepts a bare POST; no body. Re-auth is enforced
+        // by the requireRole/auth middleware path that runs before
+        // the controller. The user's typed password is captured
+        // locally for parity with the change-password UX — the BE
+        // re-verifies the session on its own.
+        await api.post("/users/me/deactivate");
+        // The server has destroyed the session and cleared the
+        // connect.sid cookie. Clear local state and bounce to login.
+        logout();
+        navigate("/login", { replace: true });
+      } catch (err) {
+        const data = err?.response?.data;
+        if (err?.response?.status === 401) {
+          // Stale session, or the BE rejected the typed password
+          // elsewhere in the chain. The deactivate endpoint itself
+          // doesn't re-check the password — it just relies on a
+          // valid session — so a 401 here is almost always
+          // "session expired". Surface a friendly message; the
+          // auth boot effect will redirect on the next render.
+          setDeactivateSubmitError(
+            data?.message ||
+              "Your session has expired. Please sign in again and retry.",
+          );
+        } else if (err?.response?.status === 403) {
+          // Account already deactivated, or the auth middleware
+          // flagged the session for another reason.
+          setDeactivateSubmitError(
+            data?.message ||
+              "This account can't be deactivated right now.",
+          );
+        } else {
+          setDeactivateSubmitError(
+            data?.message ||
+              "Couldn't deactivate your account. Please try again.",
+          );
+        }
+      } finally {
+        setIsDeactivateSubmitting(false);
+      }
+    },
+    [validateDeactivateAccount, logout, navigate],
+  );
 
   const validateEditProfile = useCallback(() => {
     const errs = {};
@@ -1515,6 +1647,19 @@ function Dashboard() {
                       >
                         <SlidersIcon />
                         Customer profiles
+                      </button>
+                      <div className="profile-divider" />
+                    </>
+                  )}
+                  {user?.role !== "Admin" && (
+                    <>
+                      <button
+                        type="button"
+                        className="signout-btn"
+                        onClick={openDeactivateAccount}
+                      >
+                        <LogoutIcon />
+                        Deactivate account
                       </button>
                       <div className="profile-divider" />
                     </>
@@ -2911,6 +3056,145 @@ function Dashboard() {
                 </div>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Deactivate-account modal — destructive action. Asks the
+          user to type a literal confirmation token + their current
+          password, then POSTs /users/me/deactivate. The BE flips
+          `isActive = false`, destroys the session, and clears the
+          session cookie in one round-trip. */}
+      {deactivateAccountPhase !== "closed" && (
+        <div
+          className={`search-overlay dash-deactivate-account-overlay ${deactivateAccountPhase === "closing" ? "closing" : ""}`}
+          onClick={closeDeactivateAccount}
+        >
+          <div
+            className={`search-modal dash-deactivate-account-modal ${deactivateAccountPhase === "closing" ? "closing" : ""}`}
+            role="dialog"
+            aria-label="Deactivate account"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="search-modal-header">
+              <div>
+                <div className="auth-title" style={{ marginBottom: 4 }}>
+                  Deactivate account
+                </div>
+                <div className="auth-subtitle" style={{ marginBottom: 0 }}>
+                  This will permanently disable your account. You can
+                  reactivate by contacting support.
+                </div>
+              </div>
+              <button
+                type="button"
+                className="icon-btn"
+                aria-label="Close deactivate account"
+                onClick={closeDeactivateAccount}
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <form
+              className="dash-deactivate-account-body"
+              onSubmit={handleDeactivateAccountSubmit}
+              noValidate
+            >
+              <div
+                className="form-submit-error"
+                role="alert"
+                style={{
+                  background: "#fef2f2",
+                  color: "#991b1b",
+                  marginBottom: 12,
+                }}
+              >
+                Warning: this action signs you out immediately. Your
+                profile, recommendations, and saved preferences will
+                be hidden.
+              </div>
+
+              <label
+                className="form-field-label"
+                htmlFor="deactivate-confirm"
+              >
+                Type{" "}
+                <strong>{DEACTIVATE_CONFIRM_TOKEN}</strong> to confirm
+              </label>
+              <input
+                id="deactivate-confirm"
+                type="text"
+                className="form-input"
+                autoComplete="off"
+                placeholder={DEACTIVATE_CONFIRM_TOKEN}
+                value={deactivateConfirmText}
+                onChange={(e) => {
+                  setDeactivateConfirmText(e.target.value);
+                  if (deactivateErrors.confirm)
+                    setDeactivateErrors((prev) => ({
+                      ...prev,
+                      confirm: "",
+                    }));
+                }}
+                aria-invalid={!!deactivateErrors.confirm}
+              />
+              {deactivateErrors.confirm && (
+                <div className="form-field-error" role="alert">
+                  {deactivateErrors.confirm}
+                </div>
+              )}
+
+              <PasswordField
+                label="Current password"
+                name="current-password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                value={deactivatePassword}
+                onChange={(e) => {
+                  setDeactivatePassword(e.target.value);
+                  if (deactivateErrors.password)
+                    setDeactivateErrors((prev) => ({
+                      ...prev,
+                      password: "",
+                    }));
+                }}
+                error={deactivateErrors.password}
+              />
+
+              {deactivateSubmitError && (
+                <div className="form-submit-error" role="alert">
+                  {deactivateSubmitError}
+                </div>
+              )}
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  marginTop: 16,
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn btn-outline w-full"
+                  onClick={closeDeactivateAccount}
+                  disabled={isDeactivateSubmitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary w-full"
+                  disabled={isDeactivateSubmitting}
+                  style={{ background: "#dc2626" }}
+                >
+                  {isDeactivateSubmitting
+                    ? "Deactivating..."
+                    : "Deactivate account"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
