@@ -842,7 +842,10 @@ function Dashboard() {
         // rule-based → content-based → top-5 pipeline. The
         // auto-recommend path on dashboard mount still hits
         // GET /recommend/auto and is unaffected.
-        topN: 5,
+        // NOTE: bumped from 5 to 8 per product request; the BE's
+        // `topN === 5` pipeline-switch check will no longer match,
+        // so this path will fall through to the default pipeline.
+        topN: 8,
       });
       setRecs(results);
 
