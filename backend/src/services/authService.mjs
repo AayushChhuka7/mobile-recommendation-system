@@ -69,6 +69,18 @@ export const registerUserService = async (userData) => {
   const validPersona =
     typeof persona === "string" && ALLOWED_PERSONAS.has(persona) ? persona : null;
 
+  // Issue 1 guard: persona="Custom" requires custom_weights_stars on
+  // the Python side. The onboarding flow accepts weights but we have no
+  // schema column to persist them, so a "Custom" persona without
+  // weights would crash every subsequent AUTO request with
+  // `Custom persona needs custom_weights_stars`. Demote to "allrounder"
+  // when no usable weights arrive — matches the default-persona
+  // fallback used in getAutoRecommendations.
+  const storedPersona =
+    validPersona === "Custom" && !(weights && typeof weights === "object")
+      ? "allrounder"
+      : validPersona;
+
   const maxBudgetRaw = budgetMax;
   const maxBudget =
     Number.isFinite(Number(maxBudgetRaw)) && Number(maxBudgetRaw) > 0
@@ -148,14 +160,14 @@ export const registerUserService = async (userData) => {
         create: {
           userId: createdUser.userId,
           ...(budgetSegment ? { budgetSegment } : {}),
-          ...(validPersona ? { recommendationPersona: validPersona } : {}),
+          ...(storedPersona ? { recommendationPersona: storedPersona } : {}),
           ...(cameraPreference ? { cameraPreference } : {}),
           ...(maxBudget != null ? { avgBudget: maxBudget } : {}),
           segmentConfidence: "confirmed",
         },
         update: {
           ...(budgetSegment ? { budgetSegment } : {}),
-          ...(validPersona ? { recommendationPersona: validPersona } : {}),
+          ...(storedPersona ? { recommendationPersona: storedPersona } : {}),
           ...(cameraPreference ? { cameraPreference } : {}),
         },
       });
