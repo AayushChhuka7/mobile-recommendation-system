@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { getPhones } from "../services/phones";
 import {
   getAutoRecommendations,
   getRecommendations,
@@ -11,6 +12,7 @@ import {
   saveMyPreferences,
 } from "../services/profile";
 import { useAuth } from "../hooks/useAuth.jsx";
+import logo from "../assets/logo.png";
 import "./Login.css";
 import "./Dashboard.css";
 import {
@@ -55,6 +57,13 @@ import { eurFromNpr, formatPriceNpr } from "../utils/formatPrice.js";
 //     </svg>
 //   );
 // }
+
+// Image-fallback strategy: each card always renders a single `<img>`.
+// The src is `p.imageUrl` when the BE supplied one, otherwise
+// `/backup.png` (served from `public/`). If the BE URL 404s, the
+// shared `handleImgError` swaps the src to `/backup.png` once — a
+// data-attr guards against re-firing and looping if the backup
+// itself is missing.
 
 const CATEGORY_OPTIONS = [
   { key: "gamer", label: "Gamer", Icon: GamerIcon },
@@ -157,26 +166,6 @@ function buildPhonesQuery(filters, sort, extra = {}) {
   if (filters.hasNfc) params.hasNfc = "true";
   if (filters.hasOis) params.hasOis = "true";
   return params;
-}
-
-function unwrapPhones(res) {
-  const apiResponse = res?.data;
-
-  if (!apiResponse) {
-    console.warn("No data in response");
-    return [];
-  }
-
-  if (apiResponse.data && Array.isArray(apiResponse.data)) {
-    return apiResponse.data;
-  }
-
-  if (apiResponse.phones && Array.isArray(apiResponse.phones)) {
-    return apiResponse.phones;
-  }
-
-  console.warn("Unexpected API response shape:", apiResponse);
-  return [];
 }
 
 function Dashboard() {
@@ -286,7 +275,15 @@ function Dashboard() {
 
   const [phones, setPhones] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // Catalog-load error. Kept separate from the recs error so a failing
+  // /phones call doesn't blank out the recs/header — the user keeps
+  // seeing whatever *did* load and gets a small non-blocking banner
+  // with a Retry button above the "Explore more phones" heading. The
+  // banner is dismissed automatically on the next successful load.
+  const [catalogError, setCatalogError] = useState(null);
+  // Bumped by the Retry button to force the loadPhones effect to re-run
+  // without changing any of its real inputs.
+  const [catalogRetryToken, setCatalogRetryToken] = useState(0);
 
   const profileRef = useRef(null);
   const filterRef = useRef(null);
@@ -383,19 +380,19 @@ function Dashboard() {
 
     async function loadPhones() {
       setIsLoading(true);
-      setError(null);
       try {
         const extra = { page };
         if (searchTerm) extra.search = searchTerm;
 
         const params = buildPhonesQuery(filters, sort, extra);
-        const res = await api.get("/phones", { params });
+        const {
+          phones: phoneList,
+          meta,
+          fromFallback,
+        } = await getPhones(params);
 
         if (!ignore) {
-          const phoneList = unwrapPhones(res);
           setPhones(phoneList);
-
-          const meta = res?.data?.meta;
           if (meta) {
             setTotalPages(meta.totalPages || 1);
             setTotal(meta.total || phoneList.length);
@@ -403,18 +400,41 @@ function Dashboard() {
             setTotalPages(1);
             setTotal(phoneList.length);
           }
+          // Successful load — whether from the live BE or the local
+          // snapshot — clears any previous catalog banner. The
+          // `fromFallback` flag is set when the service served the
+          // curated JSON because the BE 500'd, which would otherwise
+          // land in the catch block and surface the Prisma message.
+          setCatalogError(null);
+          // Surface a one-time, low-key note that we're on the
+          // snapshot — the user otherwise has no idea why they're
+          // seeing phones despite the banner that just disappeared.
+          // Skipped silently when the live BE served the data.
+          if (fromFallback) {
+            console.info(
+              "[dashboard] /phones 5xx'd — serving local fallback catalog.",
+            );
+          }
         }
       } catch (err) {
         if (!ignore) {
           if (err.response?.status === 401) {
-            setError("Session expired. Please login again.");
+            // Auth failure is fatal — bounce to login. We still clear
+            // the catalogError so a stale banner doesn't linger under
+            // the redirect spinner.
+            setCatalogError(null);
             setTimeout(() => {
               logout();
               navigate("/login", { replace: true });
             }, 2000);
           } else {
-            setError(
+            // Non-blocking: keep the last good phone list (if any) on
+            // screen, surface the failure as a banner above the
+            // "Explore more phones" heading. The Retry button bumps
+            // `catalogRetryToken` which is a dep of this effect.
+            setCatalogError(
               err.response?.data?.message ||
+                err?.message ||
                 "Couldn't load phones. Please try again.",
             );
           }
@@ -428,7 +448,36 @@ function Dashboard() {
     return () => {
       ignore = true;
     };
-  }, [searchTerm, filters, sort, page, navigate, logout]);
+  }, [
+    searchTerm,
+    filters,
+    sort,
+    page,
+    navigate,
+    logout,
+    catalogRetryToken,
+  ]);
+
+  // Catalog Retry — bumps the effect's dep so the same loadPhones
+  // pipeline re-runs without forcing a full app reload (which the
+  // old `window.location.reload()` retry used to do).
+  const handleRetryCatalog = useCallback(() => {
+    setCatalogRetryToken((t) => t + 1);
+  }, []);
+
+  // Shared image handlers. The catalog card always renders an `<img>`
+  // — when the BE-supplied `imageUrl` is missing or 404s, the onError
+  // handler swaps the src to `/backup.png` (served from `public/`)
+  // so the user always sees a real image rather than a broken-icon.
+  // One-time swap only (tracked via a data-attr) so a backup.png 404
+  // doesn't loop.
+  const handleImgError = useCallback((e) => {
+    const el = e.currentTarget;
+    if (el.dataset.fallback !== "1") {
+      el.dataset.fallback = "1";
+      el.src = "/backup.png";
+    }
+  }, []);
 
   // Auto-recommend — fire once on Dashboard mount so the user sees
   // personalised picks without clicking anything. Reuses the existing
@@ -972,6 +1021,19 @@ function Dashboard() {
   return (
     <div className={`dashboard-page ${isDarkMode ? "dash-dark" : ""}`}>
       <header className="dash-header">
+        <button
+          type="button"
+          className="dash-brand"
+          onClick={() => navigate("/")}
+          title="Go to home"
+          aria-label="Go to home"
+        >
+          <img src={logo} alt="" className="dash-brand-logo" />
+          <span className="dash-brand-text">
+            <span className="dash-brand-title">Mobile</span>
+            <span className="dash-brand-sub">Recommendation System</span>
+          </span>
+        </button>
         <div className="dash-header-actions">
           <button
             type="button"
@@ -1457,18 +1519,27 @@ function Dashboard() {
           </p>
         </div>
 
-        {isLoading && <p className="dash-status">Loading phones…</p>}
+        {isLoading && !catalogError && (
+          <p className="dash-status">Loading phones…</p>
+        )}
 
-        {error && (
-          <div className="dash-status dash-status-error">
-            <p>{error}</p>
+        {/* Catalog-error banner — non-blocking. The recs section above
+            (and the search/filter UI) stay interactive even when
+            /phones 5xxs. The banner sits above the "Explore more
+            phones" heading and offers a one-click retry that re-runs
+            the same effect without forcing a full page reload. */}
+        {catalogError && !isLoading && (
+          <div className="dash-catalog-banner" role="status">
+            <div className="dash-catalog-banner-text">
+              <strong>Couldn't load the phone catalog.</strong>
+              <span className="dash-catalog-banner-detail">{catalogError}</span>
+            </div>
             <button
               type="button"
-              className="btn btn-small"
-              onClick={() => window.location.reload()}
-              style={{ marginTop: 8 }}
+              className="btn btn-small btn-outline"
+              onClick={handleRetryCatalog}
             >
-              Retry
+              Retry catalog
             </button>
           </div>
         )}
@@ -1532,9 +1603,27 @@ function Dashboard() {
             ) : (
               <div className="phone-grid">
                 {recs.slice(0, 6).map((r) => {
-                  const isClickable = r.id && r.inDatabase !== false;
+                  // In-DB recs navigate to the in-app detail page via
+                  // their Prisma id. Out-of-DB recs have no `id`, but
+                  // the user still expects them to behave like the
+                  // catalog cards — so we mint a synthetic id of the
+                  // form `csv:<brand>:<model>` and route through the
+                  // same `/phones/:id` path. `getPhoneById` recognises
+                  // the `csv:` prefix and serves the matching row
+                  // from `fallback-phones.json` shaped like
+                  // `formatPhoneDetail`, so PhoneDetail.jsx renders
+                  // the same way it does for catalog cards.
+                  const synthId =
+                    !r.id && r.brand?.name && r.modelName
+                      ? `csv:${encodeURIComponent(r.brand.name)}:${encodeURIComponent(r.modelName)}`
+                      : null;
+                  const detailId = r.id || synthId;
+                  const hasInternalTarget = !!detailId;
+                  const isClickable = hasInternalTarget;
                   const handleRecClick = () => {
-                    if (isClickable) navigate(`/phones/${r.id}`);
+                    if (hasInternalTarget) {
+                      navigate(`/phones/${detailId}`);
+                    }
                   };
                   const handleRecKeyDown = (e) => {
                     if (!isClickable) return;
@@ -1561,44 +1650,49 @@ function Dashboard() {
                   // rule so the spec panel (OS, camera, battery,
                   // price + RAM/Storage) is revealed on hover,
                   // matching what the non-recommended cards do.
-                  const isExpanded = r.id && hoveredCard === r.id;
+                  const isExpanded = detailId && hoveredCard === detailId;
                   const wrapperClass =
                     recommendationSource === "auto"
                       ? `phone-card${isExpanded ? " expanded" : ""}`
                       : `phone-card rec-card${isExpanded ? " expanded" : ""}`;
+                  // The Python ML ranker often returns `modelName`
+                  // already prefixed with the brand — e.g.
+                  // `modelName: "Honor Magic8 Pro"` + `brand: { name: "Honor" }`.
+                  // Without this filter the card renders the brand
+                  // twice ("Honor" tagline + "Honor Magic8 Pro" name).
+                  // Hide the tagline when the name already starts with
+                  // the brand string (case-insensitive, trimmed).
+                  const brandName = r.brand?.name?.trim() || "";
+                  const modelName = r.modelName?.trim() || "";
+                  const brandIsRedundant =
+                    brandName.length > 0 &&
+                    modelName.toLowerCase().startsWith(
+                      brandName.toLowerCase(),
+                    );
                   return (
                     <div
-                      key={r.id || `${r.brand?.name}-${r.modelName}`}
+                      key={detailId || `${r.brand?.name}-${r.modelName}`}
                       className={wrapperClass}
                       role={isClickable ? "button" : undefined}
                       tabIndex={isClickable ? 0 : -1}
                       aria-label={
-                        isClickable
+                        hasInternalTarget
                           ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
                           : undefined
                       }
                       onClick={handleRecClick}
                       onKeyDown={handleRecKeyDown}
-                      onMouseEnter={() => r.id && setHoveredCard(r.id)}
+                      onMouseEnter={() => detailId && setHoveredCard(detailId)}
                       onMouseLeave={() => setHoveredCard(null)}
                       style={{ cursor: isClickable ? "pointer" : "default" }}
                     >
                       <div className="phone-card-top">
                         <div className="phone-card-image">
-                          {r.imageUrl ? (
-                            <img
-                              src={r.imageUrl}
-                              alt={r.modelName}
-                              onError={(e) => {
-                                e.target.style.display = "none";
-                                e.target.parentElement.classList.add(
-                                  "no-image",
-                                );
-                              }}
-                            />
-                          ) : (
-                            <span className="phone-card-emoji">📱</span>
-                          )}
+                          <img
+                            src={r.imageUrl || "/backup.png"}
+                            alt={r.modelName}
+                            onError={handleImgError}
+                          />
                           {/* Match Score badge: hidden for automatic
                               recommendations, shown for manual. */}
                           {typeof r.matchScore === "number" &&
@@ -1627,11 +1721,30 @@ function Dashboard() {
                                 Boosted by your activity
                               </span>
                             )}
+                          {/* "Not in our catalog" — only for items the
+                              recommender knows about but the local DB
+                              doesn't have a row for. Rendered as a
+                              small chip pinned to the top-right of the
+                              card image so it doesn't push the phone
+                              name down or get misread as a third
+                              tagline line. `pointer-events: none`
+                              keeps it from blocking the card's hover
+                              or click target. */}
+                          {r.inDatabase === false && (
+                            <span
+                              className="rec-not-in-db-chip"
+                              title="Recommended by the ML model, but not currently in the local catalog"
+                            >
+                              Not in our catalog
+                            </span>
+                          )}
                         </div>
                         <div className="phone-card-name">{r.modelName}</div>
-                        <div className="phone-card-tagline">
-                          {r.brand?.name || "Unknown brand"}
-                        </div>
+                        {!brandIsRedundant && (
+                          <div className="phone-card-tagline">
+                            {r.brand?.name || "Unknown brand"}
+                          </div>
+                        )}
                       </div>
 
                       <div className="phone-card-details">
@@ -1720,10 +1833,6 @@ function Dashboard() {
                             </span>
                           </div>
                         )}
-
-                      {r.inDatabase === false && (
-                        <div className="rec-not-in-db">Not in our catalog</div>
-                      )}
                     </div>
                   );
                 })}
@@ -1732,13 +1841,13 @@ function Dashboard() {
           </section>
         )}
 
-        {!isLoading && !error && phones.length === 0 && (
+        {!isLoading && !catalogError && phones.length === 0 && (
           <p className="dash-status">
             No phones found. Try adjusting your search or filters.
           </p>
         )}
 
-        {!isLoading && !error && phones.length > 0 && (
+        {!isLoading && !catalogError && phones.length > 0 && (
           <>
             <h2 className="dash-section-title">Explore more phones</h2>
             <div className="phone-grid">
@@ -1753,18 +1862,11 @@ function Dashboard() {
               >
                 <div className="phone-card-top">
                   <div className="phone-card-image">
-                    {p.imageUrl ? (
-                      <img
-                        src={p.imageUrl}
-                        alt={p.modelName}
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                          e.target.parentElement.classList.add("no-image");
-                        }}
-                      />
-                    ) : (
-                      <span className="phone-card-emoji">📱</span>
-                    )}
+                    <img
+                      src={p.imageUrl || "/backup.png"}
+                      alt={p.modelName}
+                      onError={handleImgError}
+                    />
                   </div>
                   <div className="phone-card-name">{p.modelName}</div>
                   <div className="phone-card-tagline">
@@ -1810,7 +1912,7 @@ function Dashboard() {
         )}
 
         {/* Pagination — only when there is more than one page */}
-        {!isLoading && !error && totalPages > 1 && (
+        {!isLoading && !catalogError && totalPages > 1 && (
           <div className="pagination" aria-label="Pagination">
             <button
               type="button"
