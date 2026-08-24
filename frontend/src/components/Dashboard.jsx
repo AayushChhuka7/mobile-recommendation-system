@@ -1602,7 +1602,7 @@ function Dashboard() {
               </p>
             ) : (
               <div className="phone-grid">
-                {recs.slice(0, 6).map((r) => {
+                {recs.slice(0, 8).map((r) => {
                   // In-DB recs navigate to the in-app detail page via
                   // their Prisma id. Out-of-DB recs have no `id`, but
                   // the user still expects them to behave like the
