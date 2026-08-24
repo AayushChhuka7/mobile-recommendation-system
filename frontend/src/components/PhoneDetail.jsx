@@ -270,8 +270,8 @@ export function PhoneDetailView({ phone }) {
       try {
         // Content-Based lookup — the BE proxies FastAPI's
         // GET /similarity/similar against the pre-computed NxN
-        // cosine matrix. Limit 12 (the BE clamps 1..50).
-        const list = await getSimilarPhones(phone.id, 12);
+        // cosine matrix. Limit 9 (the BE clamps 1..50).
+        const list = await getSimilarPhones(phone.id, 9);
         if (ignore) return;
         // Defensive: drop any rows that somehow resolved to the
         // seed phone (the BE already excludes it, but keep the
@@ -279,7 +279,7 @@ export function PhoneDetailView({ phone }) {
         // seed back into the grid).
         const filtered = (Array.isArray(list) ? list : [])
           .filter((p) => p && p.id !== phone.id)
-          .slice(0, 12);
+          .slice(0, 9);
         setRelatedPhones(filtered);
       } catch (err) {
         if (ignore) return;
@@ -505,10 +505,11 @@ export function PhoneDetailView({ phone }) {
 
       {/* ---- Related Phones ----
           Reuses the existing GET /phones endpoint (same one the Dashboard
-          already hits) — no new API. Renders exactly 12 cards in the same
-          .phone-grid layout the dashboard uses, so styling, hover animation
-          and card shadow are all inherited from Dashboard.css. The current
-          phone is filtered out if it happens to appear in the response. */}
+          already hits) — no new API. Renders exactly 9 cards in the same
+          .phone-grid layout the dashboard uses (3 columns × 3 rows), so
+          styling, hover animation and card shadow are all inherited from
+          Dashboard.css. The current phone is filtered out if it happens to
+          appear in the response. */}
       <section
         className="related-phones-section"
         aria-label="Related phones"
@@ -832,11 +833,11 @@ function PhoneSpecsPage({ phone }) {
     let ignore = false;
     (async () => {
       try {
-        const list = await getSimilarPhones(phone.id, 12);
+        const list = await getSimilarPhones(phone.id, 9);
         if (ignore) return;
         const filtered = (Array.isArray(list) ? list : [])
           .filter((p) => p && p.id !== phone.id)
-          .slice(0, 12);
+          .slice(0, 9);
         setRelatedPhones(filtered);
       } catch (err) {
         if (ignore) return;
