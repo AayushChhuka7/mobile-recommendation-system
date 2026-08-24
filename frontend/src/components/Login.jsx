@@ -462,14 +462,6 @@ function Login({ onLogin }) {
               </div>
 
               <div className="login-options">
-                <label className="remember-me">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                  />
-                  Remember me
-                </label>
                 <span
                   className="auth-link"
                   onClick={() => navigate("/forgot-password")}
