@@ -1190,8 +1190,19 @@ export const getAutoRecommendations = async (userId, opts = {}) => {
   // pull behavior_scores, so we don't double-load that table here.
   const bundle = await getProfileBundle(userId);
 
+  // Issue 1 defense — persona="Custom" requires custom_weights_stars on
+  // the Python side. If a stale row carries persona="Custom" without
+  // weights (legacy bad data, import script, admin write), the AUTO
+  // request would fail with `Custom persona needs custom_weights_stars`
+  // on EVERY call and degrade this user to the behavioural fallback
+  // forever. Substitute "allrounder" (matching the existing default-
+  // persona fallback above) when persona="Custom" but no weights are
+  // available on this request — same default the FE's `getAuto` mount
+  // would have produced pre-issue.
+  const storedPersona =
+    bundle?.customerProfile?.recommendationPersona || null;
   const persona =
-    bundle?.customerProfile?.recommendationPersona || "allrounder";
+    storedPersona === "Custom" ? "allrounder" : storedPersona || "allrounder";
   const maxBudget =
     bundle?.preference?.maxBudget != null
       ? Number(bundle.preference.maxBudget)
@@ -1199,8 +1210,10 @@ export const getAutoRecommendations = async (userId, opts = {}) => {
 
   // Track which fields we defaulted so the FE can show a
   // "Suggested for you — no preferences yet" badge if both defaulted.
+  // Issue 1 — count a stored "Custom" persona as defaulted too, since
+  // the AUTO path substitutes "allrounder" when weights are absent.
   const defaultedAt = {
-    persona: !bundle?.customerProfile?.recommendationPersona,
+    persona: !storedPersona || storedPersona === "Custom",
     budget: maxBudget == null,
   };
 
