@@ -68,6 +68,79 @@ export async function getPhones(params = {}) {
   }
 }
 
+// Out-of-DB rec cards don't have a `phones.id` (no Prisma row), but
+// the user expects them to be clickable like the catalog cards. We
+// mint a synthetic id of the form `csv:<brand>:<model>` and route the
+// FE to `/phones/<that id>`. `getPhoneById` detects the prefix, looks
+// up the matching row in `fallback-phones.json`, and returns it shaped
+// like the BE's `formatPhoneDetail` so the existing PhoneDetail.jsx
+// can render it without changes.
+const CSV_ID_PREFIX = "csv:";
+const isCsvSyntheticId = (id) =>
+  typeof id === "string" && id.startsWith(CSV_ID_PREFIX);
+
+const findFallbackBySyntheticId = async (id) => {
+  // id format: "csv:<brand>:<model>"
+  const rest = id.slice(CSV_ID_PREFIX.length);
+  const colonAt = rest.indexOf(":");
+  if (colonAt === -1) return null;
+  const brand = decodeURIComponent(rest.slice(0, colonAt));
+  const model = decodeURIComponent(rest.slice(colonAt + 1));
+  const rows = await loadFallback();
+  if (!rows) return null;
+  return rows.find(
+    (p) =>
+      (p.brand?.name || "").toLowerCase() === brand.toLowerCase() &&
+      (p.modelName || "").toLowerCase() === model.toLowerCase(),
+  );
+};
+
+// Map a fallback JSON row to the BE's `formatPhoneDetail` shape so
+// PhoneDetail.jsx can render it via the same code path. Fields the
+// snapshot doesn't carry (e.g. specs.network, variants[].isAvailable)
+// come back as null / empty — the detail page already tolerates those
+// via its `formatValue` helper.
+const shapeFallbackAsDetail = (row) => {
+  if (!row) return null;
+  const cheapest = row.cheapestVariant || {};
+  const specs = row.keySpecs || {};
+  return {
+    id: row.id,
+    modelName: row.modelName,
+    imageUrl: row.imageUrl ?? null,
+    antutuScore: null,
+    isActive: true,
+    source: "fallback_snapshot",
+    brand: row.brand
+      ? { id: row.brand.id ?? null, name: row.brand.name }
+      : { name: "" },
+    specs: {
+      // The snapshot's keySpecs is a flat OS/camera/battery triple;
+      // mirror it into the slots PhoneDetail reads.
+      display: specs.display ?? null,
+      platform: { os: specs.os ?? null },
+      camera: { mainCamera: specs.camera ?? null },
+      battery: { batteryMah: specs.battery ?? null },
+    },
+    variants: cheapest.price
+      ? [
+          {
+            ram: cheapest.ram ?? null,
+            storage: cheapest.storage ?? null,
+            storageType: cheapest.storageType ?? null,
+            price: cheapest.price,
+            isAvailable: true,
+          },
+        ]
+      : [],
+    pricing: {
+      cheapest: cheapest.price ?? null,
+      range: { min: cheapest.price ?? null, max: cheapest.price ?? null },
+      currency: "EUR",
+    },
+  };
+};
+
 /**
  * Hit the backend's phone-detail endpoint.
  *
@@ -94,9 +167,21 @@ export async function getPhones(params = {}) {
  * Each nested `specs.*` object has the same shape documented in
  * backend/docs/api.md under `formatPhoneDetail`. Missing fields come
  * back as `null`; missing nested objects are omitted.
+ *
+ * If `id` starts with `csv:` (synthetic id minted by the dashboard for
+ * an out-of-DB rec card), this returns the matching fallback row
+ * shaped like `formatPhoneDetail` instead of hitting the BE.
  */
 export async function getPhoneById(id) {
   if (!id) return null;
+
+  // Out-of-DB rec click path — read from the local fallback snapshot.
+  // Skips the BE entirely because there's no Prisma row to look up.
+  if (isCsvSyntheticId(id)) {
+    const row = await findFallbackBySyntheticId(id);
+    return shapeFallbackAsDetail(row);
+  }
+
   const res = await api.get(`/phones/${id}`);
   // Backend success envelope: { success, data, message? }
   return res?.data?.data ?? null;

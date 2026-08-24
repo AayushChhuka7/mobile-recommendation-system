@@ -1589,9 +1589,27 @@ function Dashboard() {
             ) : (
               <div className="phone-grid">
                 {recs.slice(0, 6).map((r) => {
-                  const isClickable = r.id && r.inDatabase !== false;
+                  // In-DB recs navigate to the in-app detail page via
+                  // their Prisma id. Out-of-DB recs have no `id`, but
+                  // the user still expects them to behave like the
+                  // catalog cards — so we mint a synthetic id of the
+                  // form `csv:<brand>:<model>` and route through the
+                  // same `/phones/:id` path. `getPhoneById` recognises
+                  // the `csv:` prefix and serves the matching row
+                  // from `fallback-phones.json` shaped like
+                  // `formatPhoneDetail`, so PhoneDetail.jsx renders
+                  // the same way it does for catalog cards.
+                  const synthId =
+                    !r.id && r.brand?.name && r.modelName
+                      ? `csv:${encodeURIComponent(r.brand.name)}:${encodeURIComponent(r.modelName)}`
+                      : null;
+                  const detailId = r.id || synthId;
+                  const hasInternalTarget = !!detailId;
+                  const isClickable = hasInternalTarget;
                   const handleRecClick = () => {
-                    if (isClickable) navigate(`/phones/${r.id}`);
+                    if (hasInternalTarget) {
+                      navigate(`/phones/${detailId}`);
+                    }
                   };
                   const handleRecKeyDown = (e) => {
                     if (!isClickable) return;
@@ -1618,7 +1636,7 @@ function Dashboard() {
                   // rule so the spec panel (OS, camera, battery,
                   // price + RAM/Storage) is revealed on hover,
                   // matching what the non-recommended cards do.
-                  const isExpanded = r.id && hoveredCard === r.id;
+                  const isExpanded = detailId && hoveredCard === detailId;
                   const wrapperClass =
                     recommendationSource === "auto"
                       ? `phone-card${isExpanded ? " expanded" : ""}`
@@ -1639,18 +1657,18 @@ function Dashboard() {
                     );
                   return (
                     <div
-                      key={r.id || `${r.brand?.name}-${r.modelName}`}
+                      key={detailId || `${r.brand?.name}-${r.modelName}`}
                       className={wrapperClass}
                       role={isClickable ? "button" : undefined}
                       tabIndex={isClickable ? 0 : -1}
                       aria-label={
-                        isClickable
+                        hasInternalTarget
                           ? `View ${r.brand?.name || ""} ${r.modelName || "phone"} details`
                           : undefined
                       }
                       onClick={handleRecClick}
                       onKeyDown={handleRecKeyDown}
-                      onMouseEnter={() => r.id && setHoveredCard(r.id)}
+                      onMouseEnter={() => detailId && setHoveredCard(detailId)}
                       onMouseLeave={() => setHoveredCard(null)}
                       style={{ cursor: isClickable ? "pointer" : "default" }}
                     >

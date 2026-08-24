@@ -31,6 +31,95 @@ import {
   safeRecordCfLog,
   safeUpsertCustomerCluster,
 } from "./cfRecommendationService.mjs";
+import { readFileSync, existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// ---------------------------------------------------------------------------
+// CSV-backed image lookup
+//
+// The Python ML ranker and CF service both surface phones that the local
+// `phones` table doesn't have a row for — the catalog grid below renders
+// their real `imageUrl` because that endpoint filters down to DB rows,
+// but the auto-rec cards end up with `imageUrl: null` and the FE falls
+// through to the generic `backup.png` placeholder.
+//
+// To avoid that, we read the GSMArena CSV snapshot once at module load
+// and index it by `(brand, modelName)` → `Model_Image` URL. When the rec
+// service builds a row that's not in the DB, it looks up the CSV image
+// by brand+model and attaches it as `imageUrl`. The CSV's `Model_Image`
+// is the same GSMArena CDN URL the importer used to seed the DB's
+// `phones.image_url` column, so the rec card image is consistent with
+// the catalog grid for in-DB phones.
+//
+// We use a lazy loader with try/catch so a missing CSV (fresh checkout,
+// CI) just leaves `imageUrl: null` — same behaviour as before, no crash.
+// ---------------------------------------------------------------------------
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const CSV_PATH = join(
+  __dirname,
+  "..",
+  "..",
+  "..",
+  "dataset",
+  "GSMArena_Cleaned_Dataset.csv",
+);
+
+let csvImageIndex = null;
+const loadCsvImageIndex = () => {
+  if (csvImageIndex !== null) return csvImageIndex;
+  csvImageIndex = new Map();
+  if (!existsSync(CSV_PATH)) return csvImageIndex;
+  try {
+    const raw = readFileSync(CSV_PATH, "utf-8");
+    // Minimal CSV split — the rows we need (Brand, Model_Name,
+    // Model_Image, Model_URL) don't contain embedded commas in this
+    // dataset because GSMArena model names never do. A full csv-parse
+    // round-trip would also work, but the header-locating first-row
+    // scan is enough for the ~10k rows and avoids an import.
+    const lines = raw.split(/\r?\n/);
+    const header = lines[0].split(",");
+    const brandIdx = header.indexOf("Brand");
+    const modelIdx = header.indexOf("Model_Name");
+    const imageIdx = header.indexOf("Model_Image");
+    const urlIdx = header.indexOf("Model_URL");
+    if (brandIdx === -1 || modelIdx === -1 || imageIdx === -1) {
+      return csvImageIndex;
+    }
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split(",");
+      const brand = (cols[brandIdx] || "").trim();
+      const model = (cols[modelIdx] || "").trim();
+      const image = (cols[imageIdx] || "").trim();
+      const url = urlIdx >= 0 ? (cols[urlIdx] || "").trim() : "";
+      if (!brand || !model || !image) continue;
+      // Each entry holds both the image and the GSMArena detail page.
+      // Out-of-DB recs use the URL as a click-through target when
+      // there's no `phones.id` to navigate to.
+      csvImageIndex.set(`${brand}::${model}`, { image, url });
+    }
+  } catch (err) {
+    console.warn(
+      "[recommendService] CSV image index failed to load:",
+      err?.message || err,
+    );
+    csvImageIndex = new Map();
+  }
+  return csvImageIndex;
+};
+
+const csvEntryFor = (brand, modelName) => {
+  if (!brand || !modelName) return null;
+  const idx = loadCsvImageIndex();
+  return idx.get(`${brand}::${modelName}`) || null;
+};
+
+const csvImageFor = (brand, modelName) =>
+  csvEntryFor(brand, modelName)?.image || null;
+
+const csvUrlFor = (brand, modelName) =>
+  csvEntryFor(brand, modelName)?.url || null;
 
 
 // Auto-recommend pulls FULL_LIST_TOP_N candidates back from the
@@ -162,7 +251,12 @@ const buildCfCandidate = (cfItem) => {
     id: null,
     modelName,
     brand: { name: inferredBrand },
-    imageUrl: null,
+    // Same CSV-image fallback as `formatRecommendation` so the CF path
+    // shows the right photo when the row isn't in the DB.
+    imageUrl: csvImageFor(inferredBrand, modelName),
+    // GSMArena URL — FE opens this in a new tab when the row isn't
+    // navigable to an in-app detail page.
+    sourceUrl: csvUrlFor(inferredBrand, modelName),
     keySpecs: null,
     cheapestVariant: null,
     matchScore: score * 100,
@@ -1346,7 +1440,14 @@ const formatRecommendation = (mlItem, phone) => {
       id: null,
       modelName: mlItem.Model,
       brand: { name: mlItem.Brand },
-      imageUrl: null,
+      // Out-of-DB recs: still try the CSV image index so the card
+      // shows the actual GSMArena photo instead of the generic
+      // placeholder. Falls through to null if the CSV doesn't have
+      // an entry (e.g. extremely new ML-only entries).
+      imageUrl: csvImageFor(mlItem.Brand, mlItem.Model),
+      // GSMArena URL from the CSV. The FE uses this as a click target
+      // since there's no `phones.id` to open the in-app detail page.
+      sourceUrl: csvUrlFor(mlItem.Brand, mlItem.Model),
       keySpecs: null,
       cheapestVariant: { price: mlItem.Price_EUR },
       matchScore: mlItem.Match_Score,
