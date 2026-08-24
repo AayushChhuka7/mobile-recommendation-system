@@ -120,6 +120,17 @@ const EMPTY_FILTERS = {
   hasOis: false,
 };
 
+// Matches the close animation defined in Dashboard.css for both the
+// change-password and edit-profile modals (`dash-change-pw-modal.closing`
+// / `dash-edit-profile-modal.closing`). Used by the close timers in
+// `closeChangePassword` and `closeEditProfile` to wait for the fade-out
+// before fully unmounting. Was previously referenced as a free variable
+// that never got defined, which made every "close after success" path
+// throw a ReferenceError into the submit's catch block — surfacing as
+// the generic "Couldn't update profile. Please try again." banner even
+// though the PATCH actually succeeded (the dropdown already updated).
+const CLOSE_ANIM_MS = 220;
+
 // Resolve a persisted persona string back to the FE's PERSONA_WEIGHT_PRESETS
 // key. The backend may store either a category ("gamer", "camera", ...)
 // or "Custom" (when the user moved the sliders). Anything we don't
@@ -590,7 +601,7 @@ function Dashboard() {
       setChangePwPhase("closed");
       changePwCloseTimerRef.current = null;
       resetChangePwForm();
-    }, closeAnimMs);
+    }, CLOSE_ANIM_MS);
   }, [resetChangePwForm]);
 
   // ---- Edit profile (username / phone) handlers ----
@@ -627,7 +638,7 @@ function Dashboard() {
       setEditProfilePhase("closed");
       editProfileCloseTimerRef.current = null;
       resetEditProfileForm();
-    }, closeAnimMs);
+    }, CLOSE_ANIM_MS);
   }, [resetEditProfileForm]);
 
   const validateEditProfile = useCallback(() => {
@@ -654,26 +665,57 @@ function Dashboard() {
       try {
         // PATCH /users/me — sibling of the password patch endpoint.
         // The BE persists `name` / `phoneNo` to the user row.
-        const res = await api.patch("/users/me", {
-          name: editName.trim(),
-          phoneNo: editPhone.trim(),
-        });
+        //
+        // Only send fields the user actually changed. The BE's
+        // `checkPhoneNo` uniqueness validator looks up the phoneNo
+        // against the entire users table (without excluding the
+        // current row), so echoing back the user's own existing
+        // phoneNo when they only meant to change the username
+        // triggers a "phoneNo is already registered" rejection
+        // — surfacing in the UI as a generic "verification error".
+        // Same logic for `name`: don't touch it when untouched so the
+        // BE doesn't have to re-run `checkUserName` on a value the
+        // user didn't actually edit.
+        const originalPhone = user?.phoneNo || user?.phone || "";
+        const trimmedPhone = editPhone.trim();
+        const trimmedName = editName.trim();
+        const phoneChanged = trimmedPhone !== (originalPhone || "").trim();
+        const payload = { name: trimmedName };
+        if (phoneChanged) payload.phoneNo = trimmedPhone;
+        const res = await api.patch("/users/me", payload);
         // Mirror the saved values back into AuthContext so the
         // dropdown re-renders with the new display name + phone
         // without a full page reload.
+        //
+        // When the user only edited the username we never sent
+        // `phoneNo` — so fall back to the pre-existing value rather
+        // than blanking it out in AuthContext.
         const saved =
           res?.data?.data && typeof res.data.data === "object"
             ? res.data.data
-            : { name: editName.trim(), phoneNo: editPhone.trim() };
+            : null;
         setUser({
-          name: saved.name ?? editName.trim(),
-          phoneNo: saved.phoneNo ?? editPhone.trim(),
+          name: saved?.name ?? editName.trim(),
+          phoneNo: phoneChanged
+            ? (saved?.phoneNo ?? trimmedPhone)
+            : originalPhone,
         });
         closeEditProfile();
       } catch (err) {
         const data = err?.response?.data;
+        // Prefer the most specific message the BE gave us. The
+        // validator returns its errors inside `data.details[*].msg`
+        // (express-validator array) — when present, surface the
+        // first one instead of the generic "validation failed"
+        // envelope message. Falls back to the top-level message,
+        // then the hardcoded default.
+        const firstDetailMsg = Array.isArray(data?.details)
+          ? data.details.find((d) => d?.msg)?.msg
+          : null;
         setEditProfileSubmitError(
-          data?.message || "Couldn't update profile. Please try again.",
+          firstDetailMsg ||
+            data?.message ||
+            "Couldn't update profile. Please try again.",
         );
       } finally {
         setIsEditProfileSubmitting(false);
