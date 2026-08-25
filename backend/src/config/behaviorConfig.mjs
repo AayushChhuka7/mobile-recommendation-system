@@ -91,7 +91,7 @@ export const BEHAVIOR_CONFIG = Object.freeze({
   // out the deltas within 5-10 events). 1% loss is enough to gently
   // age out very old interest without erasing recent activity.
   score: Object.freeze({
-    alpha: 0.99,            // 1% per-event decay (was 7%)
+    alpha: 0.94,            // 1% per-event decay (was 7%)
     positiveCap: 4.0,       // tanh saturates near here at ~95% of cap
     negativeFloor: -2.0,    // ignore / dismiss asymptote
     saturationTanhK: 0.6,   // tanh(K * raw) ∈ (−1, 1)

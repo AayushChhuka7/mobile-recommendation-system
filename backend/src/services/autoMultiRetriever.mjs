@@ -948,8 +948,8 @@ for (const family of familyOrder) {
         phoneId,
         stock: stockMap.get(phoneId),
         retrievalSources: [family],
-        overallScore: py ? py.overallScore : 80,
-        valueScore: py ? py.valueScore : 80,
+        overallScore: py ? py.overallScore : 70,
+        valueScore: py ? py.valueScore : 70,
       }),
     );
   }
