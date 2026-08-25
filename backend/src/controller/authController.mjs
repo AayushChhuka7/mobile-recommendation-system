@@ -7,6 +7,7 @@ import {
   userLogoutService,
   verifyEmailChangeService,
   verifyEmailService,
+  verifyUnverifiedAccountService,
   verifyPasswordChangeService,
 } from "../services/authService.mjs";
 import { getAssignableRoles } from "../services/rbacService.mjs";
@@ -38,6 +39,18 @@ export const resendOtp = asyncHandler(async (req, res) => {
   return sendSuccess(res, null, {
     message: "A new OTP has been sent successfully.",
   });
+});
+
+export const resendVerification = asyncHandler(async (req, res) => {
+  await resendOtpService(req.data.email);
+  return sendSuccess(res, null, {
+    message: "A new verification code has been sent successfully.",
+  });
+});
+
+export const verifyAccount = asyncHandler(async (req, res) => {
+  await verifyUnverifiedAccountService(req.data.email, req.data.otp);
+  return sendSuccess(res, null, { message: "Account verification complete" });
 });
 
 export const userLogin = asyncHandler(async (req, res) => {

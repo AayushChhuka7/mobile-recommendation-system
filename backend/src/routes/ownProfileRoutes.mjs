@@ -30,7 +30,7 @@ import {
 export const ownProfileRoutes = Router();
 
 // All endpoints below require an authenticated, active session.
-// No role check — every logged-in user (Customer / Salesman / Admin) can
+// No role check — every logged-in user (Customer / Admin) can
 // read and write their own profile.
 ownProfileRoutes.use(isAuthenticate, loadUserContext);
 

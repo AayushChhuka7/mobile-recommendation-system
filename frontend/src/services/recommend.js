@@ -12,6 +12,7 @@ import api from "./api";
  *     persona: "gamer" | "camera" | "battery" | "allrounder",
  *     budget:  { min?: number, max: number },
  *     preferences?: { gaming?, camera?, battery?, display? },  // 1..5
+ *     brandFilter?: { mode: "include" | "exclude", list: string[] },
  *     topN?: number                                            // default 6
  *   }
  *
@@ -29,16 +30,42 @@ export async function getRecommendations({
   persona,
   budget,
   preferences,
+  brandFilter,
   topN = 6,
 }) {
+  // Forward `brandFilter` only when the user actually picked something —
+  // an empty list would otherwise tell the ML ranker "include nothing",
+  // which is the wrong default. `undefined` is dropped by JSON.stringify.
+  const hasBrandFilter =
+    brandFilter &&
+    (brandFilter.mode === "include" || brandFilter.mode === "exclude") &&
+    Array.isArray(brandFilter.list) &&
+    brandFilter.list.length > 0;
+
   const res = await api.post("/recommend/recommend", {
     persona,
     budget,
     preferences,
+    ...(hasBrandFilter ? { brandFilter } : {}),
     topN,
   });
-  // Backend success envelope: { success, data, message? }
-  return res?.data?.data ?? [];
+  // Backend success envelope: { success, data, message? }.
+  //
+  // The `POST /recommend/recommend` endpoint returns the new lazy/slice
+  // shape: data = { results, lazy, totalRanked, eagerCount }. Earlier
+  // this path returned a bare array (when topN === 5 forced the
+  // two-stage pipeline) — that bare array fell through this service
+  // unchanged and worked. Now that non-5 topN values hit the full
+  // fusion path, the response is always the wrapped object, and the
+  // bare-array fallback `?? []` is no longer enough — the render code
+  // calls `recs.length` and `recs.slice(...)`, which throw on a
+  // non-array. Unwrap `data.results` here and fall back to the
+  // raw value (handles the older bare-array shape) before the final
+  // empty-array safety net.
+  const data = res?.data?.data;
+  if (Array.isArray(data)) return data;
+  if (data && Array.isArray(data.results)) return data.results;
+  return [];
 }
 
 /**

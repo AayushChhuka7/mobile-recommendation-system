@@ -1,0 +1,24 @@
+# CF Recommender service dependencies.
+#
+# numpy is pinned to >=2.0 because the existing `cf_recommender.pkl` was
+# trained with a numpy 2.x environment (its serialized objects reference
+# `numpy._core.*` modules that only exist in 2.x). Using numpy 1.x at
+# runtime will trigger `ModuleNotFoundError: No module named
+# 'numpy._core.numeric'` during the startup pickle.load.
+#
+# `implicit` is pinned to 0.7.2 because the 0.8.x release has a
+# circular-import bug that breaks unpickling the trained ALS model
+# (the pickle's `als_model` field references `implicit.als.AlternatingLeastSquares`).
+# Even with `als_model=None` stored, pickle needs to import the class
+# to recognise the object graph.
+#
+# scikit-learn / scipy / pandas versions match `ML Model/requirements.txt`
+# for the rest of the stack so the loaded matrices stay compatible.
+fastapi==0.115.6
+uvicorn==0.34.0
+pydantic==2.10.3
+pandas==2.2.3
+numpy>=2.0,<2.3
+scikit-learn==1.5.2
+scipy>=1.14,<1.16
+implicit==0.7.2

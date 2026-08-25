@@ -1,29 +1,47 @@
 # syntax=docker/dockerfile:1.7
 # ─────────────────────────────────────────────────────────────────────────────
-# Backend — Node.js + Express + Prisma
+# Backend — Node.js + Express + Prisma (Prisma 7)
 #
 # Multi-stage build:
-#   1. `deps`     — installs ALL deps (dev + prod) for prisma generate
-#   2. `builder`  — runs prisma generate (uses dev deps via `npx prisma`)
-#   3. `runtime`  — slimmer base, copies ONLY the generated client and the
-#                   production node_modules. Final image is ~400 MB smaller
-#                   than a single-stage build that ships devDependencies
-#                   (nodemon, prisma CLI binaries, etc.) into the runtime.
+#   1. `deps`      — installs ALL deps (dev + prod) so `prisma generate`
+#                    has the prisma CLI available.
+#   2. `prisma`    — runs `npx prisma generate` to produce the typed
+#                    client at src/generated/prisma (see `output` in
+#                    schema.prisma). Uses devDeps from the `deps` stage.
+#   3. `runtime`   — slim base with PRODUCTION-only node_modules + the
+#                    prebuilt Prisma client. No prisma CLI binaries, no
+#                    nodemon.
 #
 # Why node:20-bookworm-slim (not alpine):
 #   bcrypt@6 in package.json has no prebuilt musl wheels for Node 20 +
 #   Alpine, so `npm install` falls back to a node-gyp compilation that
 #   takes 60-180s on a cold cache (and can fail entirely in low-RAM CI).
 #   glibc + Debian = bcrypt ships a prebuilt binary that installs in <2s.
-#   Image size cost: ~50 MB larger than the Alpine version. Build time
-#   win: ~3 min saved on the very first build and ~30-90s on every rebuild
-#   that has bcrypt source changes.
 #
-# Why two package*.json COPYs (not `COPY . .` first):
-#   Layer cache for `npm ci` is keyed off `package.json` + `package-lock.json`.
-#   Those files change rarely. Source code changes often. By isolating the
-#   dependency install in its own layer, code edits skip the `npm ci` step
-#   entirely on rebuild.
+# Production CMD notes (Prisma 7):
+#   * `prisma migrate deploy` is the canonical production migration
+#     command — it applies pending migrations WITHOUT creating new ones
+#     and WITHOUT resetting the database. We do NOT call it at container
+#     start (it can run on app boot via a separate one-shot job — see
+#     docker-compose.yml `db-migrate` profile or the deploy guide).
+#   * `prisma db push` is NOT used in production (it's for prototyping
+#     and can cause data loss).
+#   * `prisma migrate dev` is NEVER used in production (creates new
+#     migrations interactively).
+#
+# PORT handling:
+#   The runtime CMD starts the Express app via `node src/index.mjs`,
+#   which reads `process.env.PORT` (default 8001). The container EXPOSES
+#   8001 but the runtime port is whatever the platform / compose
+#   provides — Render, Railway, Fly.io, and AWS App Runner all set
+#   PORT automatically and our code already respects it.
+#
+# Runtime hardening:
+#   * Runs as the unprivileged `node` user (uid 1000) shipped by the base
+#     image. No need to run as root in production.
+#   * `tini` is PID 1 so SIGTERM is forwarded correctly and containers
+#     shut down within docker compose's 10s grace window.
+#   * `.env` files are NEVER COPY'd — see backend/.dockerignore.
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── Stage 1: install ALL deps (dev + prod) ───────────────────────────────────
@@ -31,45 +49,41 @@ FROM node:20-bookworm-slim AS deps
 
 WORKDIR /app
 
-# We need OpenSSL in the runtime image for connect-pg-simple + bcrypt salts
-# (cryptographically secure random). Cheap; install once.
+# openssl: bcrypt salts + connect-pg-simple need cryptographically secure RNG.
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
         openssl \
  && rm -rf /var/lib/apt/lists/*
 
-# Copy ONLY the lockfile + manifest first. This is the long-cache layer:
-#   - When ONLY .js source changes, this layer is reused (skip npm ci).
-#   - When package.json / package-lock.json change, this layer rebuilds.
-# `npm ci` is the canonical CI/CD install (vs `npm install`):
-#   - Strictly uses the lockfile; reproducible.
-#   - Faster than `npm install` because it skips version negotiation.
-#   - Removes node_modules first, so the resulting tree is always clean.
+# Long-cache layer: only invalidated when package*.json changes.
 COPY package.json package-lock.json ./
+# `npm ci` is reproducible, faster than `npm install`, and never mutates
+# the lockfile. Both devDeps (prisma CLI, nodemon) and prod deps are
+# installed here so the next stage can run `prisma generate`.
 RUN npm ci --no-audit --no-fund --loglevel=error
 
 
 # ── Stage 2: prisma generate ────────────────────────────────────────────────
-# Prisma generate is split into its own stage so:
-#   1. The generated client is produced from the schema and the installed
-#      prisma CLI, both of which only change when the schema or
-#      package.json/lock changes (rare).
-#   2. The runtime stage does NOT need the prisma CLI (~50 MB of binaries)
-#      or the schema.prisma file — only the generated client.
+# Produces the typed Prisma client from schema.prisma. Output path is
+# declared by the `output` directive in schema.prisma
+# (../src/generated/prisma relative to schema.prisma = /app/src/generated/prisma).
+# This stage does NOT install anything new; it reuses the devDeps from `deps`.
 FROM node:20-bookworm-slim AS prisma-gen
 
 WORKDIR /app
 
-# Reuse the node_modules from the `deps` stage. This stage does NOT install
-# anything new; it just runs `prisma generate` to produce the typed client.
 COPY --from=deps /app/node_modules ./node_modules
 COPY prisma ./prisma
 COPY package.json package-lock.json ./
+COPY prisma.config.ts ./
 
-# Generate the typed Prisma client. The output is at src/generated/prisma
-# (per the `output` directive in schema.prisma). Runs from devDeps
-# (prisma is in devDependencies) so this MUST happen before the prod-only
-# prune in the next stage.
+# Generate the Prisma client. Prisma 7 reads DATABASE_URL from prisma.config.ts
+# (which itself imports dotenv/config), so a real DATABASE_URL must be
+# available at build time for the generator to introspect the datasource.
+# We pass it via build-arg so it never ends up in the runtime layer.
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+
 RUN npx prisma generate
 
 
@@ -78,51 +92,42 @@ FROM node:20-bookworm-slim AS runtime
 
 WORKDIR /app
 
-# Runtime-only system libraries. openssl was already explained above.
+# Runtime-only system libraries: openssl (bcrypt / session) + tini (init).
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
         openssl \
         tini \
  && rm -rf /var/lib/apt/lists/*
 
-# tini = a tiny init that reaps zombie processes and forwards signals
-# (Ctrl-C, SIGTERM) correctly. Critical for nodemon + docker stop to
-# behave the way you expect. Adds ~30 KB.
-
-# Install PRODUCTION-only deps onto a fresh tree, then copy our generated
-# Prisma client on top. Two reasons to do this rather than pruning:
-#   1. `npm prune --production` leaves dev binaries and .bin scripts in
-#      place even though their imports fail; clean install is safer.
-#   2. Future-proofing: when you add a build step (e.g. esbuild bundle),
-#      it goes in the builder stage and the runtime stays clean.
+# PRODUCTION-only deps on a fresh tree. Two reasons over `npm prune`:
+#   1. `npm prune --production` leaves dev .bin stubs behind.
+#   2. The runtime stage must NOT contain the prisma CLI or nodemon.
 COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund --loglevel=error \
+RUN npm ci --omit=dev --no-audit --no-fund --loglevel=error \
  && npm cache clean --force
 
-# Copy the prebuilt Prisma client from the prisma-gen stage. This is the
-# entire reason we have a separate prisma-gen stage.
+# Copy the prebuilt Prisma client from the prisma-gen stage.
 COPY --from=prisma-gen /app/src/generated ./src/generated
 
-# Copy source code last. This layer invalidates on every code edit (which
-# is fine — it must), but all the heavy install layers above stay cached.
-COPY src ./src
+# Copy the schema + config + seeds + source. Schema is small and is
+# needed if `prisma migrate deploy` is invoked at runtime from the image.
 COPY prisma ./prisma
-COPY seed.mjs ./
 COPY prisma.config.ts ./
+COPY seed.mjs seedAdmin.mjs ./
+COPY src ./src
 
 EXPOSE 8001
 
-# Drop privileges. node:20-bookworm-slim ships a `node` user (uid 1000).
-# Without this, the container runs as root, which is a security risk.
+# Drop privileges: node:20-bookworm-slim ships a `node` user (uid 1000).
 USER node
 
-# tini as PID 1 — handles SIGTERM correctly so nodemon exits cleanly.
-# docker compose `stop` (vs `kill`) sends SIGTERM and waits 10s; without
-# tini, nodemon occasionally traps the signal and the stop times out.
+# tini as PID 1 — handles SIGTERM cleanly so `docker compose stop` and
+# cloud-platform shutdown signals exit the app within the grace window.
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
-# `npm run dev` is the same command the previous Dockerfile used. The
-# `db-init` service in docker-compose.yml overrides this CMD with its own
-# one-shot command — that override still works because compose replaces CMD
-# at the service level, not at the image level.
-CMD ["npm", "run", "dev"]
+# PRODUCTION command — `node src/index.mjs` is the existing app entry,
+# not nodemon. The PORT env var is read by index.mjs (defaults to 8001).
+# The `db-init` service in docker-compose.yml overrides this CMD with
+# its own one-shot seed command — that override still works because
+# compose replaces CMD at the service level, not at the image level.
+CMD ["node", "src/index.mjs"]

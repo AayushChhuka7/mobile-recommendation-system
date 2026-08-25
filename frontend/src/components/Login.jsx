@@ -25,7 +25,10 @@ import p19 from "../assets/nokia6280.jpg";
 import p20 from "../assets/group.jpeg";
 
 import {
+  EMPTY_OTP,
   MailIcon,
+  OTP_LENGTH,
+  RESEND_COOLDOWN_SECONDS,
   TextField,
   PasswordField,
   EMAIL_REGEX,
@@ -70,6 +73,12 @@ function Login({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationOtp, setVerificationOtp] = useState(EMPTY_OTP);
+  const [verificationError, setVerificationError] = useState("");
+  const [verificationLoading, setVerificationLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const carouselPhones = useMemo(() => getRandomFourPhones(), []);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const dragStartX = useRef(null);
@@ -132,6 +141,15 @@ function Login({ onLogin }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (resendCooldown <= 0) return undefined;
+    const timer = setTimeout(
+      () => setResendCooldown((current) => current - 1),
+      1000,
+    );
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
+
   const validateLogin = useCallback(() => {
     const e = {};
     if (!email) e.email = "Email is required";
@@ -144,6 +162,23 @@ function Login({ onLogin }) {
         "Password must include uppercase, lowercase, number, and special character";
     return e;
   }, [email, password]);
+
+  const handleResendVerification = useCallback(async () => {
+    setResendLoading(true);
+    setVerificationError("");
+    try {
+      await api.post("/auth/resend-verification", { email });
+      setResendCooldown(RESEND_COOLDOWN_SECONDS);
+      setVerificationOtp(EMPTY_OTP);
+    } catch (error) {
+      setVerificationError(
+        error.response?.data?.message ||
+          "Couldn't send a new verification code.",
+      );
+    } finally {
+      setResendLoading(false);
+    }
+  }, [email]);
 
   const handleLoginSubmit = useCallback(
     async (e) => {
@@ -176,6 +211,23 @@ function Login({ onLogin }) {
         if (error.response) {
           const msg = error.response.data?.message || "Login failed";
           setServerError(msg);
+          // If the BE says the account exists but isn't verified, hand the
+          // user off to the dedicated /register/otp page (the same one
+          // the registration flow lands on) instead of rendering an
+          // inline OTP block here. The OTP page pre-fills its email from
+          // location.state.email, so the user can just enter the code
+          // without re-typing anything.
+          if (
+            error.response.data?.code === "AUTH_NOT_AUTHENTICATED" &&
+            /verify your account/i.test(msg) &&
+            email
+          ) {
+            navigate("/register/otp", {
+              state: { email, fromLogin: true },
+              replace: true,
+            });
+            return;
+          }
         } else if (error.request) {
           setServerError("Cannot connect to server. Please try again.");
         } else {
@@ -185,7 +237,59 @@ function Login({ onLogin }) {
         setLoading(false);
       }
     },
-    [email, password, rememberMe, roleName, validateLogin, onLogin],
+    [
+      email,
+      password,
+      rememberMe,
+      roleName,
+      validateLogin,
+      onLogin,
+      handleResendVerification,
+      navigate,
+    ],
+  );
+
+  const handleVerificationOtpChange = useCallback((index, value) => {
+    if (!/^\d?$/.test(value)) return;
+    setVerificationOtp((current) => {
+      const next = [...current];
+      next[index] = value;
+      return next;
+    });
+    setVerificationError("");
+    if (value && index < OTP_LENGTH - 1) {
+      document.getElementById(`login-verification-otp-${index + 1}`)?.focus();
+    }
+  }, []);
+
+  const handleVerifyAccount = useCallback(
+    async (event) => {
+      event.preventDefault();
+      const otp = verificationOtp.join("");
+      if (otp.length !== OTP_LENGTH) {
+        setVerificationError("Please enter the full 6-digit code");
+        return;
+      }
+
+      setVerificationLoading(true);
+      setVerificationError("");
+      try {
+        await api.post("/auth/verify-account", { email, otp });
+        const response = await api.post("/auth/login", {
+          email,
+          password,
+          roleName,
+        });
+        if (onLogin) onLogin(response.data);
+      } catch (error) {
+        setVerificationError(
+          error.response?.data?.message || "We couldn't verify your account.",
+        );
+      } finally {
+        setVerificationLoading(false);
+      }
+    },
+    [email, password, roleName, onLogin, verificationOtp],
   );
 
   return (
@@ -273,6 +377,62 @@ function Login({ onLogin }) {
                 </div>
               )}
 
+              {showVerification && (
+                <div className="login-verification-panel">
+                  <strong>Verify your email</strong>
+                  <p>
+                    Enter the code sent to {email} to activate your account.
+                  </p>
+                  <div
+                    className="otp-inputs"
+                    role="group"
+                    aria-label="Verification code"
+                  >
+                    {verificationOtp.map((digit, index) => (
+                      <input
+                        key={index}
+                        id={`login-verification-otp-${index}`}
+                        className="otp-input"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(event) =>
+                          handleVerificationOtpChange(index, event.target.value)
+                        }
+                        aria-label={`Verification digit ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                  {verificationError && (
+                    <div className="otp-error">{verificationError}</div>
+                  )}
+                  <button
+                    type="button"
+                    className="btn btn-primary w-full otp-verify-btn"
+                    onClick={handleVerifyAccount}
+                    disabled={verificationLoading}
+                  >
+                    {verificationLoading ? "Verifying..." : "Verify account"}
+                  </button>
+                  <div className="otp-resend">
+                    {resendCooldown > 0 ? (
+                      <span className="otp-timer">
+                        Resend in {resendCooldown}s
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        className="auth-link"
+                        onClick={handleResendVerification}
+                        disabled={resendLoading}
+                      >
+                        {resendLoading ? "Sending..." : "Send a new code"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <TextField
                 label="Email address"
                 icon={<MailIcon />}
@@ -306,19 +466,10 @@ function Login({ onLogin }) {
                 >
                   <option value="Customer">Customer</option>
                   <option value="Admin">Admin</option>
-                  <option value="Salesman">Salesman</option>
                 </select>
               </div>
 
               <div className="login-options">
-                <label className="remember-me">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                  />
-                  Remember me
-                </label>
                 <span
                   className="auth-link"
                   onClick={() => navigate("/forgot-password")}

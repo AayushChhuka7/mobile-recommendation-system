@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: unsrt.bst
+Reallocating 'name_of_file' (item size: 1) to 4 items.
+Database file #1: ref.bib
+Warning--empty journal in predictive
+Warning--empty journal in segmentrecommend
+You've used 24 entries,
+            1791 wiz_defined-function locations,
+            572 strings with 7240 characters,
+and the built_in function-call counts, 4764 in all, are:
+= -- 433
+> -- 152
+< -- 8
++ -- 64
+- -- 40
+* -- 204
+:= -- 724
+add.period$ -- 77
+call.type$ -- 24
+change.case$ -- 23
+chr.to.int$ -- 0
+cite$ -- 26
+duplicate$ -- 247
+empty$ -- 520
+format.name$ -- 40
+if$ -- 1109
+int.to.chr$ -- 0
+int.to.str$ -- 24
+missing$ -- 19
+newline$ -- 127
+num.names$ -- 24
+pop$ -- 107
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 139
+stack$ -- 0
+substring$ -- 216
+swap$ -- 76
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 2
+while$ -- 43
+width$ -- 26
+write$ -- 261
+(There were 2 warnings)

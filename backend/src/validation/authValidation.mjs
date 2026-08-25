@@ -13,6 +13,33 @@ export const forgetPasswordValidation = checkSchema({
   },
 });
 
+export const verificationEmailValidation = checkSchema({
+  email: {
+    in: ["body"],
+    trim: true,
+    notEmpty: { errorMessage: "Should not be Empty" },
+    isEmail: { errorMessage: "Please enter a valid email" },
+  },
+});
+
+export const accountVerificationValidation = checkSchema({
+  email: {
+    in: ["body"],
+    trim: true,
+    notEmpty: { errorMessage: "Should not be Empty" },
+    isEmail: { errorMessage: "Please enter a valid email" },
+  },
+  otp: {
+    in: ["body"],
+    trim: true,
+    isLength: {
+      options: { min: 6, max: 6 },
+      errorMessage: "OTP must be 6 digits",
+    },
+    isNumeric: { errorMessage: "OTP must contain only digits" },
+  },
+});
+
 export const changePasswordValidation = checkSchema({
   password: checkPassword,
   confirmPassword: {

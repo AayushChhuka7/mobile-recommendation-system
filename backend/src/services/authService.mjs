@@ -67,7 +67,21 @@ export const registerUserService = async (userData) => {
   // the user filled the onboarding step or only ever used the
   // "Recommend Me" modal after login.
   const validPersona =
-    typeof persona === "string" && ALLOWED_PERSONAS.has(persona) ? persona : null;
+    typeof persona === "string" && ALLOWED_PERSONAS.has(persona)
+      ? persona
+      : null;
+
+  // Issue 1 guard: persona="Custom" requires custom_weights_stars on
+  // the Python side. The onboarding flow accepts weights but we have no
+  // schema column to persist them, so a "Custom" persona without
+  // weights would crash every subsequent AUTO request with
+  // `Custom persona needs custom_weights_stars`. Demote to "allrounder"
+  // when no usable weights arrive — matches the default-persona
+  // fallback used in getAutoRecommendations.
+  const storedPersona =
+    validPersona === "Custom" && !(weights && typeof weights === "object")
+      ? "allrounder"
+      : validPersona;
 
   const maxBudgetRaw = budgetMax;
   const maxBudget =
@@ -84,7 +98,8 @@ export const registerUserService = async (userData) => {
     ? PERSONA_TO_USAGE_TYPE[validPersona] || "Casual"
     : null;
   const cameraPreference = deriveCameraPreference(weights);
-  const budgetSegment = maxBudget != null ? deriveBudgetSegment(maxBudget) : null;
+  const budgetSegment =
+    maxBudget != null ? deriveBudgetSegment(maxBudget) : null;
 
   // Whitelist the brands array down to non-empty strings. We accept
   // anything the FE sends and let the DB column (JSON-shaped) hold it.
@@ -148,14 +163,14 @@ export const registerUserService = async (userData) => {
         create: {
           userId: createdUser.userId,
           ...(budgetSegment ? { budgetSegment } : {}),
-          ...(validPersona ? { recommendationPersona: validPersona } : {}),
+          ...(storedPersona ? { recommendationPersona: storedPersona } : {}),
           ...(cameraPreference ? { cameraPreference } : {}),
           ...(maxBudget != null ? { avgBudget: maxBudget } : {}),
           segmentConfidence: "confirmed",
         },
         update: {
           ...(budgetSegment ? { budgetSegment } : {}),
-          ...(validPersona ? { recommendationPersona: validPersona } : {}),
+          ...(storedPersona ? { recommendationPersona: storedPersona } : {}),
           ...(cameraPreference ? { cameraPreference } : {}),
         },
       });
@@ -218,22 +233,46 @@ export const resendOtpService = async (email) => {
   }
 
   const code = generateOtp();
-  await prisma.$transaction([
-    prisma.otp.updateMany({
-      where: { userId: user.userId, isUsed: false },
-      data: { isUsed: true },
-    }),
-    prisma.otp.create({
-      data: {
-        code,
-        userId: user.userId,
-        purpose: "Registration",
-        expiresAt: newOtpExpiry(),
-      },
-    }),
-  ]);
+  await prisma.otp.create({
+    data: {
+      code,
+      userId: user.userId,
+      purpose: "Registration",
+      expiresAt: newOtpExpiry(),
+    },
+  });
 
   await sendEmail(email, code);
+};
+
+export const verifyUnverifiedAccountService = async (email, otp) => {
+  const user = await prisma.users.findUnique({ where: { email } });
+  if (!user) {
+    throw notFound("User not found");
+  }
+  if (user.isVerified === true) {
+    throw badRequest("User is already verified, please log in", {
+      reason: "already_verified",
+    });
+  }
+
+  const validOtp = await findValidOtp(otp, user.userId, "Registration");
+  if (!validOtp) {
+    throw badRequest("Invalid or expired verification code", {
+      reason: "invalid_verification_code",
+    });
+  }
+
+  await prisma.$transaction([
+    prisma.users.update({
+      where: { userId: user.userId },
+      data: { isVerified: true },
+    }),
+    prisma.otp.update({
+      where: { otpId: validOtp.otpId },
+      data: { isUsed: true },
+    }),
+  ]);
 };
 
 export const userLoginService = (req) => {

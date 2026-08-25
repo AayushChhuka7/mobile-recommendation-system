@@ -18,19 +18,54 @@
 
 .dash-brand-title {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 26px;
   color: var(--text);
+  line-height: 1;
 }
 
 .dash-brand-sub {
-  font-size: 12px;
+  font-size: 16px;
   color: var(--text-muted);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.dash-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dash-brand-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  margin-left: 16px;
+}
+
+.dash-brand-text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.dash-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 24px 0 12px;
 }
 
 .dash-header-actions {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-left: auto;
 }
 
 .icon-btn {
@@ -272,7 +307,7 @@
 }
 
 .dash-main {
-  max-width: 1100px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 28px 40px 80px;
 }
@@ -299,8 +334,8 @@
 .phone-card {
   background: var(--white);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px 20px;
+  border-radius: 16px;
+  padding: 32px 28px;
   box-shadow: var(--shadow-md);
   cursor: pointer;
   transition:
@@ -326,25 +361,20 @@
 
 .phone-card-image {
   width: 100%;
-  height: 160px;
+  height: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #f3f4f6;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .phone-card-image img {
   max-width: 80%;
   max-height: 80%;
   object-fit: contain;
-}
-
-.phone-card-image.no-image::after {
-  content: url("../assets/backup.png");
-  font-size: 48px;
 }
 
 .phone-card-emoji {
@@ -728,6 +758,87 @@
   border: 2px solid var(--white);
   box-shadow: 0 0 0 1px var(--primary);
   cursor: pointer;
+}
+
+/* Phone brands selector — keep compact, reuse the existing palette.
+   Visual language matches .usage-chip / .usage-chip.selected from
+   Login.css so the modal stays visually unified. */
+.dash-brands-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.dash-brands-count {
+  color: var(--slate-light);
+  font-weight: 500;
+}
+
+.dash-brand-clear {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--primary);
+  transition: color var(--transition);
+}
+
+.dash-brand-clear:hover {
+  color: var(--primary-dark, var(--primary));
+  text-decoration: underline;
+}
+
+.dash-brand-mode {
+  display: inline-flex;
+  background: var(--bg-soft, var(--border-light, transparent));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2px;
+  margin-bottom: 10px;
+}
+
+.dash-brand-mode-btn {
+  flex: 1 1 auto;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--slate-dark);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+
+.dash-brand-mode-btn.selected {
+  background: var(--white);
+  color: var(--primary);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.dash-brand-mode-btn:not(.selected):hover {
+  color: var(--primary);
+}
+
+.dash-brands-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 132px;
+  overflow-y: auto;
+  padding: 2px 0 4px;
+}
+
+.dash-brand-hint {
+  font-size: 12.5px;
+  color: var(--slate-light);
+  margin-top: 4px;
 }
 
 .dash-search-section {
@@ -1122,6 +1233,51 @@
   padding: 12px 0 4px;
 }
 
+/* Catalog-load error banner. Non-blocking: the recs/header above keep
+   working and the user can dismiss by retrying. Sits above the
+   "Explore more phones" heading so the failure is local to the
+   section it affects. */
+.dash-catalog-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  color: #78350f;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin: 12px 0 18px;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.dash-catalog-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.dash-catalog-banner-text strong {
+  color: #78350f;
+  font-weight: 700;
+}
+.dash-catalog-banner-detail {
+  color: #92400e;
+  font-size: 12.5px;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.dashboard-page.dash-dark .dash-catalog-banner {
+  background: rgba(252, 211, 77, 0.12);
+  border-color: rgba(252, 211, 77, 0.35);
+  color: #fde68a;
+}
+.dashboard-page.dash-dark .dash-catalog-banner-text strong,
+.dashboard-page.dash-dark .dash-catalog-banner-detail {
+  color: #fde68a;
+}
+
 .pagination .btn {
   padding: 8px 12px;
   font-size: 14px;
@@ -1400,6 +1556,10 @@
   color: var(--danger);
 }
 
+.dashboard-page.dash-dark .dash-brand-logo {
+  filter: invert(1) hue-rotate(180deg) opacity(0.6);
+}
+
 .dashboard-page.dash-dark .icon-btn {
   background: var(--white);
   border-color: var(--border);
@@ -1559,14 +1719,65 @@
   font-weight: 700;
 }
 
-.rec-not-in-db {
-  font-size: 0.7rem;
-  color: #b45309;
-  background: #fef3c7;
-  padding: 4px 8px;
-  margin: 0 12px 12px;
-  border-radius: 6px;
-  text-align: center;
+.rec-not-in-db-chip {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(254, 243, 199, 0.95);
+  color: #92400e;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  max-width: calc(100% - 16px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+}
+
+/* "People like you also liked" badge — appended to phone cards whose
+   row was contributed (or confirmed) by the collaborative-filtering
+   service. Renders the first CF reason as a compact, non-blocking
+   hint. Hidden on auto-recommendations (gated by the same
+   `recommendationSource === "manual"` check as the SHAP "why" list)
+   so the auto-rec card stays visually quiet. */
+.cf-reason-badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: #6d28d9;
+  background: #ede9fe;
+  border-top: 1px solid var(--border);
+  padding: 8px 12px 10px;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.cf-reason-badge::before {
+  content: "👥";
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.cf-reason-badge .cf-reason-text {
+  display: block;
+  flex: 1 1 auto;
+}
+
+.cf-reason-badge .cf-reason-text strong {
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.dashboard-page.dash-dark .cf-reason-badge {
+  color: #c4b5fd;
+  background: rgba(124, 58, 237, 0.12);
+  border-top-color: var(--border);
 }
 
 .dashboard-page.dash-dark .rec-why-list {

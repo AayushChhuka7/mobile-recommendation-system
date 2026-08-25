@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../services/api";
 import "./Login.css";
@@ -22,7 +22,7 @@ import {
   TOAST_DURATION_MS,
 } from "./AuthShared";
 
-const REGISTER_ROLE_OPTIONS = [...SELF_ASSIGNABLE_ROLES, "Admin"];
+const REGISTER_ROLE_OPTIONS = [...SELF_ASSIGNABLE_ROLES];
 
 function Registration({ onLogin }) {
   const navigate = useNavigate();
@@ -67,6 +67,9 @@ function Registration({ onLogin }) {
   const [resendCooldown, setResendCooldown] = useState(0);
   const [resendLoading, setResendLoading] = useState(false);
   const [otpResult, setOtpResult] = useState(null);
+  // Guard so the Login-redirect auto-resend only fires once per mount,
+  // even if the location/state effect re-runs while the user types.
+  const loginRedirectResentRef = useRef(false);
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -78,10 +81,45 @@ function Registration({ onLogin }) {
     // the new /register/preferences step is allowed even when the
     // email hasn't been entered yet — it'll just bounce back to
     // step 1 when the user clicks "Create account".
-    if (step === 3 && !registerData.email) {
+    //
+    // Bounce carve-out: if the user lands on /register/otp directly
+    // (e.g. from the Login page, where they entered an email but
+    // weren't verified yet) with an email in location.state, seed
+    // registerData.email from that state and let them stay. The
+    // Login page navigates here with
+    // `state: { email, fromLogin: true }`.
+    const stateEmail =
+      typeof location.state?.email === "string" ? location.state.email.trim() : "";
+    if (stateEmail && stateEmail !== registerData.email) {
+      setRegisterData((prev) => ({ ...prev, email: stateEmail }));
+    }
+    if (step === 3 && !registerData.email && !stateEmail) {
       navigate("/register", { replace: true });
     }
-  }, [step, registerData.email, navigate]);
+    // When the user lands on the OTP step via the Login-page redirect,
+    // they haven't just registered — the BE may have an old code in
+    // their inbox, or none at all. Fire one resend so a fresh code is
+    // on the way. Guarded by a ref so the effect re-runs from the
+    // `setRegisterData` above don't trigger a second resend.
+    if (
+      step === 3 &&
+      location.state?.fromLogin &&
+      stateEmail &&
+      !loginRedirectResentRef.current
+    ) {
+      loginRedirectResentRef.current = true;
+      void api
+        .post("/auth/resend", { email: stateEmail })
+        .then(() => setResendCooldown(RESEND_COOLDOWN_SECONDS))
+        .catch((err) => {
+          // Soft-fail — the user can still hit "Resend" manually.
+          console.warn(
+            "[register/otp] login-redirect resend failed:",
+            err?.message || err,
+          );
+        });
+    }
+  }, [step, registerData.email, navigate, location.state]);
 
   // Issue 2 — load the brand list on mount so the preferences step's
   // multi-select can render. Same source as PhoneListing.jsx uses
@@ -393,8 +431,16 @@ function Registration({ onLogin }) {
     setOtp(EMPTY_OTP);
     setOtpError("");
     setOtpResult(null);
+    // When the user landed on /register/otp from the Login page (i.e.
+    // they have an account but never verified it), going back to
+    // /register/preferences makes no sense — they don't have any
+    // onboarding answers to edit. Send them back to /login instead.
+    if (location.state?.fromLogin) {
+      navigate("/login", { replace: true });
+      return;
+    }
     navigate("/register/preferences");
-  }, [navigate]);
+  }, [navigate, location.state]);
 
   const handlePrefBack = useCallback(() => {
     setPrefErrors({});

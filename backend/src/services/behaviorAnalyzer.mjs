@@ -110,7 +110,12 @@ function tagsFromSearchQuery(q) {
 // tier (flagship / mid / budget) even if no `tier:<X>` was hard-coded
 // for the brand. Mirrors the original `inferTier` so legacy callers
 // that depend on these tags keep working.
-function inferTier(meta) {
+//
+// Exported so the AUTO multi-retriever (`autoMultiRetriever.mjs`) can
+// resolve `tier:<T>` BehaviorScore tags against the phone catalog using
+// the SAME thresholds this writer uses — `Phones` has no `tier` column,
+// so reader and writer must share this single derivation to never drift.
+export function inferTier(meta) {
   if (!meta) return null;
   const antutu =
     typeof meta.antutuScore === "number" ? meta.antutuScore : null;
@@ -862,6 +867,20 @@ export async function recordEvent(userId, eventType, opts = {}) {
     phoneId,
     payload,
   );
+  // Diagnostic — dev-only. Confirms whether the per-tag deltas the writer
+  // would produce contain a `brand:<X>` row for the touched phone.
+  // Gated to NODE_ENV !== "production" so it has zero prod cost. Remove
+  // once the `brand:apple`-missing investigation is closed.
+  if (process.env.NODE_ENV !== "production" && deltas.size > 0) {
+    const brandTag = Array.from(deltas.keys()).find((k) => k.startsWith("brand:"));
+    console.log(
+      "[behaviorAnalyzer] event=%s phoneId=%s brand=%s deltas.size=%d",
+      eventType,
+      phoneId || "<none>",
+      brandTag || "<none>",
+      deltas.size,
+    );
+  }
   if (deltas.size === 0) {
     // Still worth recording the Event row so the audit trail exists,
     // even though no BehaviourScore bump is meaningful.

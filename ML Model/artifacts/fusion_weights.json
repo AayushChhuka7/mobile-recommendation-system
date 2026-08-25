@@ -1,0 +1,22 @@
+{
+  "version": "2026-08-21",
+  "weights": {
+    "compatibility": 0.286,
+    "customer_preference": 0.428,
+    "content_similarity": 0.0,
+    "search_history": 0.128,
+    "value": 0.122,
+    "freshness_trending": 0.037
+  },
+  "training_rows": 0,
+  "ctr": 0.0,
+  "feature_cols": [
+    "compatibility",
+    "customer_preference",
+    "content_similarity",
+    "search_history",
+    "value",
+    "freshness_trending"
+  ],
+  "_note": "content_similarity zeroed to reflect the auto-recommendation path no longer using it (recommendService.mjs USE_CONTENT_SIMILARITY_FOR_AUTO = false). Remaining slots rescaled by 1/0.82 to keep sum at 1.0; the trainer will converge to this shape naturally once it sees s_content_sim = 0 for all auto-source rows."
+}
