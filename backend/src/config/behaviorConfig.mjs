@@ -72,13 +72,13 @@ export const BEHAVIOR_CONFIG = Object.freeze({
   // old 0.60–1.00 weights combined with a 7% decay rate and a 0.15
   // confidence floor cancelled out most of the accumulation).
   featureWeight: Object.freeze({
-    gaming:       0.15,
-    camera:       0.12,
-    battery:      0.10,
-    performance:  0.13,
-    display:      0.08,
-    brand:        0.13,  // 1 recommend → ~0.36 bump on brand:<X>
-    tier:         0.10,  // 1 recommend → ~0.27 bump on tier:<T>
+    gaming:       1.00,
+    camera:       0.82,
+    battery:      0.70,
+    performance:  0.90,
+    display:      0.55,
+    brand:        0.60,  // 1 recommend → ~0.36 bump on brand:<X>
+    tier:         0.40,  // 1 recommend → ~0.27 bump on tier:<T>
   }),
 
   // Score bounds. The `applyDecay` helper reads these every event.
@@ -121,8 +121,8 @@ export const BEHAVIOR_CONFIG = Object.freeze({
   // `behaviorAnalyzer.recordEvent`, not the score at read time, so
   // legacy rows in `BehaviorScore` are left untouched.
   confidence: Object.freeze({
-    rampEvents: 4,           // saturates by event 4 (was 12)
-    floor: 0.60,             // first event writes ≥ 60% of base (was 15%)
+    rampEvents: 10,           // saturates by event 4 (was 12)
+    floor: 0.20,             // first event writes ≥ 60% of base (was 15%)
     ceiling: 1.0,
   }),
 
@@ -221,11 +221,11 @@ export const BEHAVIOR_CONFIG = Object.freeze({
   // saturated the tanh cap of 4.0 — visible score growth stopped
   // after 1-2 events.
   affinity: Object.freeze({
-    phoneAffinity:      0.12, // 1 compare → ~0.36 bump on affinity:<id>
-    modelAffinity:      0.06, // 1 compare → ~0.18 bump on model:<hash>
-    brandGatedAffinity: 0.07, // 1 compare → ~0.21 bump on brand:<X>
-    tierAffinity:       0.05, // 1 compare → ~0.15 bump on tier:<T>
-    featureAffinity:    0.08, // 1 compare → ~0.24 bump on feature:<dim>
+    phoneAffinity:      1.00, // 1 compare → ~0.36 bump on affinity:<id>
+    modelAffinity:      0.50, // 1 compare → ~0.18 bump on model:<hash>
+    brandGatedAffinity: 0.60, // 1 compare → ~0.21 bump on brand:<X>
+    tierAffinity:       0.40, // 1 compare → ~0.15 bump on tier:<T>
+    featureAffinity:    0.60, // 1 compare → ~0.24 bump on feature:<dim>
   }),
 
   // Event-dedup: hard-deduplicate repeats inside this window so a
