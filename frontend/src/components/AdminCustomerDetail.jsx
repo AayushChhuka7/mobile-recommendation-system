@@ -6,7 +6,7 @@
 // `useAdminGuard`. Reads the userId from the URL path (manual switch in
 // App.jsx — not React Router sub-routes).
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdminGuard } from "../hooks/useAdminGuard.jsx";
 import {
@@ -57,12 +57,91 @@ function AdminCustomerDetail() {
   // alongside the bundle. Renders as a top-N list in its own card.
   const [behavior, setBehavior] = useState([]);
   const [behaviorError, setBehaviorError] = useState("");
+  // Bump to force a re-fetch (manual refresh button + window focus).
+  // BehaviorScore rows are written server-side from other tabs (e.g. the
+  // customer clicks "Recommend me a phone" while the admin's profile
+  // page is open). Without re-fetching, the admin sees stale rows until
+  // they navigate away and back.
+  const [reloadToken, setReloadToken] = useState(0);
   // Map of phoneId → full phone record (imageUrl, brand.name, modelName,
   // specs, pricing). Hydrated lazily as the topResults come back from
   // the bundle endpoint so the "Top results" rail can render real
   // phone cards (image, model, price) the same way the dashboard does,
   // instead of plain "Brand · Model" text rows.
   const [topResultPhones, setTopResultPhones] = useState({});
+
+  // Re-fetch the profile bundle + behaviour scores. Extracted so the
+  // window-focus listener and the manual Refresh button can both call it
+  // — BehaviorScore rows are written server-side from the customer's tab,
+  // so without re-fetching the admin sees stale rows until they navigate
+  // away and back. We also surface behaviour-fetch errors to the same
+  // error path as profile errors so a transient 5xx on `/behavior` no
+  // longer silently renders "No behaviour events yet."
+  //
+  // `bundle` is read from a ref (not the deps array) so the callback
+  // stays referentially stable and the consumer useEffect doesn't
+  // re-fire on every successful fetch (which would otherwise create an
+  // infinite loop: fetch → setBundle → loadProfile rebuilds → useEffect
+  // fires → fetch …).
+  const bundleRef = useRef(null);
+  // Keep the ref in sync with the latest bundle without rebuilding
+  // `loadProfile` (and therefore without re-firing the consumer
+  // useEffect).
+  bundleRef.current = bundle;
+  const loadProfile = useCallback(async () => {
+    if (!isAdmin || !userId) return;
+    setFetching(true);
+    setError("");
+    setErrorCode("");
+    setBehaviorError("");
+    try {
+      // Run both reads in parallel. Errors from either call now surface
+      // to the outer catch — a transient failure on `/behavior` should
+      // not be silently swallowed into an empty list.
+      const [data, behaviorRows] = await Promise.all([
+        getCustomerProfileById(userId),
+        getCustomerBehavior(userId),
+      ]);
+      setBundle(data);
+      setBehavior(Array.isArray(behaviorRows) ? behaviorRows : []);
+    } catch (err) {
+      const status = err?.response?.status;
+      const code = err?.response?.data?.code || String(status || "");
+      setErrorCode(code);
+      // Distinguish a behaviour-only failure from a profile failure so
+      // we can render the rest of the page (which only needs `data`)
+      // and show a small inline "couldn't refresh behaviour scores"
+      // note. We treat a 404 on the *behaviour* endpoint as "no scores
+      // yet" (the service client already normalises 404 → []), so a
+      // thrown error here is always a real failure worth surfacing.
+      const isBehaviorOnly =
+        status !== 404 &&
+        status !== 403 &&
+        status !== 401 &&
+        bundleRef.current !== null;
+      if (isBehaviorOnly) {
+        setBehaviorError(
+          err?.response?.data?.message || err?.message || "—",
+        );
+        // Don't blow away the existing `bundle` — the customer info
+        // card is still valid; only the behaviour list failed.
+      } else {
+        setError(
+          status === 404
+            ? "User not found."
+            : status === 403
+              ? "You don't have permission to view this page."
+              : status === 401
+                ? "Your session has expired. Please log in again."
+                : err?.response?.data?.message ||
+                    err?.message ||
+                    "Failed to load profile."
+        );
+      }
+    } finally {
+      setFetching(false);
+    }
+  }, [isAdmin, userId, bundleRef]);
 
   useEffect(() => {
     if (!isAdmin) return; // guard will redirect; skip fetch
@@ -72,54 +151,21 @@ function AdminCustomerDetail() {
       setFetching(false);
       return;
     }
-    let ignore = false;
-    (async () => {
-      setFetching(true);
-      setError("");
-      setErrorCode("");
-      setBehaviorError("");
-      try {
-        // Fetch the bundle and behaviour scores in parallel — they're
-        // independent reads so we don't have to gate one on the other.
-        // The behaviour read has its own try/catch so a 404 / 500 on
-        // the new endpoint doesn't fail the page render.
-        const [data, behaviorRows] = await Promise.all([
-          getCustomerProfileById(userId),
-          getCustomerBehavior(userId).catch((err) => {
-            if (!ignore) {
-              setBehaviorError(
-                err?.response?.data?.message || err?.message || "—",
-              );
-            }
-            return [];
-          }),
-        ]);
-        if (ignore) return;
-        setBundle(data);
-        setBehavior(Array.isArray(behaviorRows) ? behaviorRows : []);
-      } catch (err) {
-        if (!ignore) {
-          const status = err?.response?.status;
-          const code = err?.response?.data?.code || String(status || "");
-          setErrorCode(code);
-          setError(
-            status === 404
-              ? "User not found."
-              : status === 403
-                ? "You don't have permission to view this page."
-                : status === 401
-                  ? "Your session has expired. Please log in again."
-                  : err?.response?.data?.message ||
-                      err?.message ||
-                      "Failed to load profile."
-          );
-        }
-      } finally {
-        if (!ignore) setFetching(false);
-      }
-    })();
+    loadProfile();
+  }, [isAdmin, userId, reloadToken, loadProfile]);
+
+  // When the admin tab regains focus (or becomes visible), re-fetch the
+  // behaviour scores. The customer may have fired events from another
+  // tab/session in the meantime and the admin shouldn't have to refresh
+  // manually to see the new BehaviorScore rows.
+  useEffect(() => {
+    if (!isAdmin || !userId) return undefined;
+    const onFocus = () => setReloadToken((t) => t + 1);
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
     return () => {
-      ignore = true;
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
     };
   }, [isAdmin, userId]);
 
@@ -185,6 +231,22 @@ function AdminCustomerDetail() {
               ? `User profile of ${bundle.user.name}`
               : "User profile"}
           </h1>
+          {/* Manual refresh — BehaviorScore rows are written by the
+            * customer's own tab; the admin can press this to pick up
+            * any new events without leaving the page. Window-focus
+            * re-fetch above covers the same case automatically, but a
+            * button is the only reliable affordance when the admin's
+            * tab never loses focus (e.g. a multi-monitor setup). */}
+          <button
+            type="button"
+            className="btn btn-outline btn-small admin-refresh-btn"
+            onClick={() => setReloadToken((t) => t + 1)}
+            disabled={fetching}
+            title="Reload profile and behaviour scores"
+            aria-label="Reload profile and behaviour scores"
+          >
+            {fetching ? "Refreshing…" : "Refresh"}
+          </button>
         </div>
       </header>
 

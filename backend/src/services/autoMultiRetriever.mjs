@@ -758,23 +758,68 @@ export async function orchestrate(userId, opts = {}) {
   }
 
   // ---- Step 4 — enrich all candidates ---------------------------------
-  // Build the union of behavioral candidate phoneIds and resolve Python
-  // ML results to phoneIds, then enrich + stock in one batch (Fix #7).
-  const personaPhoneIds =
-    !personaFailed && Array.isArray(personaResults) && personaResults.length > 0
-      ? Array.from(
-          new Set(
-            (
-              await resolvePhoneIds(
-                personaResults.map((m) => ({
-                  brand: m.Brand,
-                  modelName: m.Model,
-                })),
-              )
-            ).values(),
-          ),
-        )
-      : [];
+  // Resolve the Python ML persona results to phoneIds ONCE here, and
+  // reuse the resolution for both enrichment AND the candidate-assembly
+  // loops below (Issues 1 + 2). Previously Step 4 resolved persona to
+  // a phoneId set for enrichment, and then Step 7 re-ran `resolvePhoneIds`
+  // on the same data — the second call could return a different
+  // phoneId for the same (brand, model) under catalog collisions,
+  // causing the persona-assembly `phoneById.get(phoneId)` lookup to
+  // silently miss and drop the row even though the family telemetry
+  // already counted it as "survived".
+  //
+  // We now build `personaByPhoneId` (phoneId → persona row) up front
+  // and key `personaScoresByKey` by phoneId instead of a
+  // brand/model string. This both eliminates the string-match miss
+  // class (Python CSV strings vs Postgres brand.name can drift on
+  // whitespace / punctuation / casing) and eliminates the silent drop
+  // class (no second `resolvePhoneIds` call, no chance of ordering
+  // drift between the two calls).
+  //
+  // Catalog collisions are still possible — multiple Phones rows
+  // sharing the same (brand, model) — and `resolvePhoneIds` resolves
+  // them with first-hit-wins. That's a data-quality issue we surface
+  // here as `personaCollisions` in the telemetry rather than silently
+  // picking.
+  let personaByPhoneId = new Map();
+  let personaCollisions = 0;
+  let personaUnresolved = 0;
+  if (
+    !personaFailed &&
+    Array.isArray(personaResults) &&
+    personaResults.length > 0
+  ) {
+    const personaIdMap = await resolvePhoneIds(
+      personaResults.map((m) => ({ brand: m.Brand, modelName: m.Model })),
+    );
+    // Build a reverse map AND count collisions / unresolved rows so
+    // we can attribute every persona row's fate to a specific cause.
+    const seenKeys = new Map(); // key → phoneId already assigned
+    for (const m of personaResults) {
+      const key = `${(m.Brand || "").toLowerCase()}::${(m.Model || "").toLowerCase()}`;
+      const phoneId = personaIdMap.get(key) || null;
+      if (!phoneId) {
+        personaUnresolved += 1;
+        continue;
+      }
+      const prior = seenKeys.get(key);
+      if (prior && prior !== phoneId) {
+        // Second resolvePhoneIds returned a different phoneId for the
+        // same key — catalog collision. Count it; keep the first hit.
+        personaCollisions += 1;
+        continue;
+      }
+      seenKeys.set(key, phoneId);
+      // First row for this phoneId wins; subsequent persona rows for
+      // the same phoneId are ignored (they'd be the same Python
+      // recommendation scored twice).
+      if (!personaByPhoneId.has(phoneId)) {
+        personaByPhoneId.set(phoneId, m);
+      }
+    }
+  }
+
+  const personaPhoneIds = Array.from(personaByPhoneId.keys());
 
   const behavioralPhoneIds = Array.from(
     new Set(
@@ -859,20 +904,27 @@ export async function orchestrate(userId, opts = {}) {
   // have null `overallScore` / `valueScore`. The Python `/recommend`
   // call (Step 2's `personaPromise`) already scored every candidate in
   // the persona's reduced domain — when a behavioral candidate also
-  // appears in that persona result list (matched by `[brand, model]`),
-  // we copy the persona's `Overall_Score` / `Value_Score` so the
-  // downstream ranker sees the same sub-scores the persona path sees.
-  // This is the SAME scoring mechanism (Python `/recommend`) used for
-  // persona candidates — no new constants, no second Python call.
+  // appears in that persona result list, we copy the persona's
+  // `Overall_Score` / `Value_Score` so the downstream ranker sees the
+  // same sub-scores the persona path sees. This is the SAME scoring
+  // mechanism (Python `/recommend`) used for persona candidates — no
+  // new constants, no second Python call.
   //
-  // Build a brand+model → Python sub-scores map from `personaResults`.
-  // When persona is unavailable the map is empty and behavioral
-  // candidates keep `null` (no existing score to reuse).
-  const personaScoresByKey = new Map();
+  // Previously keyed by `"brand::model"` string. That string-match was
+  // fragile: Python's CSV `Brand`/`Model` can carry whitespace, legal-
+  // entity suffixes, or casing drift vs Postgres `brand.name`/
+  // `modelName`, causing a literal `.toLowerCase()` compare to miss
+  // even when the same physical phone was scored by Python. Misses
+  // silently zeroed the candidate's `compatibility` and `value` slots
+  // downstream (fusionRanker.mjs:309-322) for up to ~0.29 of weighted
+  // score.
+  //
+  // Now keyed by `phoneId` — populated from the single `resolvePhoneIds`
+  // call at the top of Step 4. No string-match, no drift.
+  const personaScoresByPhoneId = new Map();
   if (!personaFailed && Array.isArray(personaResults)) {
-    for (const m of personaResults) {
-      const k = `${(m.Brand || "").toLowerCase()}::${(m.Model || "").toLowerCase()}`;
-      personaScoresByKey.set(k, {
+    for (const [phoneId, m] of personaByPhoneId.entries()) {
+      personaScoresByPhoneId.set(phoneId, {
         overallScore: Number.isFinite(m.Overall_Score) ? Number(m.Overall_Score) : null,
         valueScore: Number.isFinite(m.Value_Score) ? Number(m.Value_Score) : null,
       });
@@ -880,17 +932,15 @@ export async function orchestrate(userId, opts = {}) {
   }
 
   const behavioralCandidates = [];
+let __behavioralResolvedByPersona = 0;
 for (const family of familyOrder) {
   const ids = familyState[family].phoneIds;
   for (const phoneId of ids) {
     const phone = phoneById.get(phoneId);
     if (!phone) continue;
 
-    const brandName = phone && phone.brand ? phone.brand.name : null;
-    const lookupKey =
-      `${(brandName || "").toLowerCase()}::${(phone.modelName || "").toLowerCase()}`;
-
-    const py = personaScoresByKey.get(lookupKey);
+    const py = personaScoresByPhoneId.get(phoneId) || null;
+    if (py) __behavioralResolvedByPersona += 1;
 
     behavioralCandidates.push(
       buildCandidate({
@@ -898,37 +948,39 @@ for (const family of familyOrder) {
         phoneId,
         stock: stockMap.get(phoneId),
         retrievalSources: [family],
-        overallScore: py ? py.overallScore : 70,
-        valueScore: py ? py.valueScore : 65,
+        overallScore: py ? py.overallScore : 80,
+        valueScore: py ? py.valueScore : 80,
       }),
     );
   }
 }
 
   // Persona candidates (with Python scores).
+  //
+  // We reuse the single `personaByPhoneId` map built at the top of
+  // Step 4 (Issues 1 + 2 refactor). The previous code re-ran
+  // `resolvePhoneIds` here, which could return a different phoneId
+  // for the same (brand, model) under catalog collisions — silently
+  // dropping persona rows here via `phoneById.get(phoneId) === undef`
+  // even though `personaResults.length` had already been counted in
+  // the persona telemetry as "survived".
+  //
+  // `personaUnresolved` and `personaCollisions` are pre-computed in
+  // Step 4; `droppedAtAssembly` is incremented here for any remaining
+  // gap (e.g. a phoneId that's in `personaByPhoneId` but not in
+  // `phoneById` because the candidate was filtered by hard rules
+  // between Step 4 and Step 7). The `persona` family telemetry now
+  // surfaces all three counters so the failure mode is no longer
+  // invisible.
   const personaCandidates = [];
+  let droppedAtAssembly = 0;
   if (!personaFailed && Array.isArray(personaResults)) {
-    // We need to re-resolve (brand, model) → phoneId for persona items
-    // because phoneById may have entries from elsewhere — but we built
-    // it from the union. Use resolvePhoneIds again for the slice we
-    // need; if it fails, fall back to a lookup against phoneById.
-    let personaIdMap = new Map();
-    try {
-      personaIdMap = await resolvePhoneIds(
-        personaResults.map((m) => ({
-          brand: m.Brand,
-          modelName: m.Model,
-        })),
-      );
-    } catch (_) {
-      // best-effort
-    }
-    for (const m of personaResults) {
-      const key = `${(m.Brand || "").toLowerCase()}::${(m.Model || "").toLowerCase()}`;
-      const phoneId = personaIdMap.get(key) || null;
-      if (!phoneId) continue;
+    for (const [phoneId, m] of personaByPhoneId.entries()) {
       const phone = phoneById.get(phoneId);
-      if (!phone) continue;
+      if (!phone) {
+        droppedAtAssembly += 1;
+        continue;
+      }
       personaCandidates.push(
         buildCandidate({
           phone,
@@ -1010,12 +1062,27 @@ for (const family of familyOrder) {
     });
   }
   // Persona metrics.
+  //
+  // Surfaces the failure modes that used to be invisible:
+  //   - `personaUnresolved`   : persona rows whose (brand, model) did
+  //                             not resolve to any phoneId.
+  //   - `personaCollisions`   : rows dropped because the same (brand,
+  //                             model) already had a different phoneId
+  //                             assigned earlier in the loop (catalog
+  //                             collision, first-hit-wins).
+  //   - `droppedAtAssembly`   : rows dropped HERE because their phoneId
+  //                             wasn't in `phoneById` (e.g. filtered
+  //                             between Step 4 and Step 7). The
+  //                             pre-refactor version did this silently.
   if (!personaFailed) {
     logFamilyMetric(userId, requestId, "persona", {
       requested: AUTO_FINAL_POOL_TARGET,
       overfetched: personaResults.length,
       survivedFilter: personaCandidates.length,
       survivedDedup: personaCandidates.length,
+      personaUnresolved,
+      personaCollisions,
+      droppedAtAssembly,
     });
   }
 
@@ -1027,6 +1094,10 @@ for (const family of familyOrder) {
     retrievalSources: uniqueSources,
     personaFailed,
     behavioralFallbackServed,
+    // How many behavioral candidates found a Python sub-score via the
+    // (now phoneId-keyed) persona map. Useful sanity check: a low
+    // number means persona didn't overlap the behavioral families.
+    behavioralResolvedByPersona: __behavioralResolvedByPersona,
   });
 
   return {
