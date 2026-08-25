@@ -1,0 +1,23 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Block diagram of the System}}{12}{figure.caption.33}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Data Collection and Integration Process}}{13}{figure.caption.35}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Data Processing Flow}}{15}{figure.caption.41}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Customer Segmentation Flow}}{19}{figure.caption.49}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Recommendation Engine Workflow}}{20}{figure.caption.51}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces XGBoost Ensemble of Decision Trees \cite {xgboostimg}}}{22}{figure.caption.57}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces K-Means Clustering of Customers \cite {kmeansimg}}}{24}{figure.caption.60}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces System Architecture of the Mobile Recommendation System}}{32}{figure.caption.94}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Use Case Diagram of the Mobile Recommendation System}}{34}{figure.caption.96}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Level 0 Data Flow Diagram}}{35}{figure.caption.98}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Level 1 Data Flow Diagram}}{36}{figure.caption.99}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Iterative Development Model}}{37}{figure.caption.101}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Visualizations of XGBoost Regressor Performance on the Test Set}}{42}{figure.caption.111}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces SHAP Feature Importance Summary Plot}}{43}{figure.caption.112}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Frontend User Interface of the Mobile Recommendation System}}{44}{figure.caption.117}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }

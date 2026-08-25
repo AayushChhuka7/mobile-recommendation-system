@@ -7,17 +7,19 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/index.mjs",
     "seed:rbac": "node ./seed.mjs",
+    "seed:admin": "node ./seedAdmin.mjs",
     "seed:phones": "node ./prisma/import-gsmarena-bulk.mjs",
     "seed:customers": "node ./prisma/imports/customer-csv/importCustomers.mjs",
-    "db:init": "prisma db push --skip-generate && npm run seed:rbac && npm run seed:phones"
+    "seed:demo-customer": "node ./prisma/imports/customer-csv/seedDemoCustomer.mjs",
+    "db:init": "prisma migrate deploy && npm run seed:rbac && npm run seed:admin && npm run seed:phones && npm run seed:demo-customer"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
+    "@prisma/adapter-pg": "7.8.0",
+    "@prisma/client": "7.8.0",
     "axios": "^1.18.1",
     "bcrypt": "^6.0.0",
     "connect-pg-simple": "^10.0.0",
@@ -35,6 +37,6 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.14",
-    "prisma": "^7.8.0"
+    "prisma": "7.8.0"
   }
 }

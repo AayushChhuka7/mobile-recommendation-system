@@ -6,13 +6,14 @@
 // `useAdminGuard`. Reads the userId from the URL path (manual switch in
 // App.jsx — not React Router sub-routes).
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdminGuard } from "../hooks/useAdminGuard.jsx";
 import {
   getCustomerProfileById,
   getCustomerBehavior,
 } from "../services/adminProfiles";
+import { getPhoneById } from "../services/phones";
 import { ChevronIcon } from "./AuthShared";
 import "./AdminCustomerDetail.css";
 
@@ -56,6 +57,91 @@ function AdminCustomerDetail() {
   // alongside the bundle. Renders as a top-N list in its own card.
   const [behavior, setBehavior] = useState([]);
   const [behaviorError, setBehaviorError] = useState("");
+  // Bump to force a re-fetch (manual refresh button + window focus).
+  // BehaviorScore rows are written server-side from other tabs (e.g. the
+  // customer clicks "Recommend me a phone" while the admin's profile
+  // page is open). Without re-fetching, the admin sees stale rows until
+  // they navigate away and back.
+  const [reloadToken, setReloadToken] = useState(0);
+  // Map of phoneId → full phone record (imageUrl, brand.name, modelName,
+  // specs, pricing). Hydrated lazily as the topResults come back from
+  // the bundle endpoint so the "Top results" rail can render real
+  // phone cards (image, model, price) the same way the dashboard does,
+  // instead of plain "Brand · Model" text rows.
+  const [topResultPhones, setTopResultPhones] = useState({});
+
+  // Re-fetch the profile bundle + behaviour scores. Extracted so the
+  // window-focus listener and the manual Refresh button can both call it
+  // — BehaviorScore rows are written server-side from the customer's tab,
+  // so without re-fetching the admin sees stale rows until they navigate
+  // away and back. We also surface behaviour-fetch errors to the same
+  // error path as profile errors so a transient 5xx on `/behavior` no
+  // longer silently renders "No behaviour events yet."
+  //
+  // `bundle` is read from a ref (not the deps array) so the callback
+  // stays referentially stable and the consumer useEffect doesn't
+  // re-fire on every successful fetch (which would otherwise create an
+  // infinite loop: fetch → setBundle → loadProfile rebuilds → useEffect
+  // fires → fetch …).
+  const bundleRef = useRef(null);
+  // Keep the ref in sync with the latest bundle without rebuilding
+  // `loadProfile` (and therefore without re-firing the consumer
+  // useEffect).
+  bundleRef.current = bundle;
+  const loadProfile = useCallback(async () => {
+    if (!isAdmin || !userId) return;
+    setFetching(true);
+    setError("");
+    setErrorCode("");
+    setBehaviorError("");
+    try {
+      // Run both reads in parallel. Errors from either call now surface
+      // to the outer catch — a transient failure on `/behavior` should
+      // not be silently swallowed into an empty list.
+      const [data, behaviorRows] = await Promise.all([
+        getCustomerProfileById(userId),
+        getCustomerBehavior(userId),
+      ]);
+      setBundle(data);
+      setBehavior(Array.isArray(behaviorRows) ? behaviorRows : []);
+    } catch (err) {
+      const status = err?.response?.status;
+      const code = err?.response?.data?.code || String(status || "");
+      setErrorCode(code);
+      // Distinguish a behaviour-only failure from a profile failure so
+      // we can render the rest of the page (which only needs `data`)
+      // and show a small inline "couldn't refresh behaviour scores"
+      // note. We treat a 404 on the *behaviour* endpoint as "no scores
+      // yet" (the service client already normalises 404 → []), so a
+      // thrown error here is always a real failure worth surfacing.
+      const isBehaviorOnly =
+        status !== 404 &&
+        status !== 403 &&
+        status !== 401 &&
+        bundleRef.current !== null;
+      if (isBehaviorOnly) {
+        setBehaviorError(
+          err?.response?.data?.message || err?.message || "—",
+        );
+        // Don't blow away the existing `bundle` — the customer info
+        // card is still valid; only the behaviour list failed.
+      } else {
+        setError(
+          status === 404
+            ? "User not found."
+            : status === 403
+              ? "You don't have permission to view this page."
+              : status === 401
+                ? "Your session has expired. Please log in again."
+                : err?.response?.data?.message ||
+                    err?.message ||
+                    "Failed to load profile."
+        );
+      }
+    } finally {
+      setFetching(false);
+    }
+  }, [isAdmin, userId, bundleRef]);
 
   useEffect(() => {
     if (!isAdmin) return; // guard will redirect; skip fetch
@@ -65,56 +151,55 @@ function AdminCustomerDetail() {
       setFetching(false);
       return;
     }
+    loadProfile();
+  }, [isAdmin, userId, reloadToken, loadProfile]);
+
+  // When the admin tab regains focus (or becomes visible), re-fetch the
+  // behaviour scores. The customer may have fired events from another
+  // tab/session in the meantime and the admin shouldn't have to refresh
+  // manually to see the new BehaviorScore rows.
+  useEffect(() => {
+    if (!isAdmin || !userId) return undefined;
+    const onFocus = () => setReloadToken((t) => t + 1);
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
+  }, [isAdmin, userId]);
+
+  // Hydrate the topResults phones — the BE returns just phoneId /
+  // overallCompatibility / searchDate, so we need to fan out one
+  // GET /phones/:id per row to get the image + brand + model needed
+  // to render real phone cards. Independent reads run in parallel;
+  // any single failure is swallowed so the page still renders.
+  useEffect(() => {
+    const rows = bundle?.lastRecommendation?.topResults;
+    if (!Array.isArray(rows) || rows.length === 0) {
+      setTopResultPhones({});
+      return undefined;
+    }
+    const ids = rows.map((r) => r?.phoneId).filter(Boolean);
+    if (ids.length === 0) return undefined;
     let ignore = false;
     (async () => {
-      setFetching(true);
-      setError("");
-      setErrorCode("");
-      setBehaviorError("");
-      try {
-        // Fetch the bundle and behaviour scores in parallel — they're
-        // independent reads so we don't have to gate one on the other.
-        // The behaviour read has its own try/catch so a 404 / 500 on
-        // the new endpoint doesn't fail the page render.
-        const [data, behaviorRows] = await Promise.all([
-          getCustomerProfileById(userId),
-          getCustomerBehavior(userId).catch((err) => {
-            if (!ignore) {
-              setBehaviorError(
-                err?.response?.data?.message || err?.message || "—",
-              );
-            }
-            return [];
-          }),
-        ]);
-        if (ignore) return;
-        setBundle(data);
-        setBehavior(Array.isArray(behaviorRows) ? behaviorRows : []);
-      } catch (err) {
-        if (!ignore) {
-          const status = err?.response?.status;
-          const code = err?.response?.data?.code || String(status || "");
-          setErrorCode(code);
-          setError(
-            status === 404
-              ? "User not found."
-              : status === 403
-                ? "You don't have permission to view this page."
-                : status === 401
-                  ? "Your session has expired. Please log in again."
-                  : err?.response?.data?.message ||
-                      err?.message ||
-                      "Failed to load profile."
-          );
-        }
-      } finally {
-        if (!ignore) setFetching(false);
-      }
+      const fetched = await Promise.all(
+        ids.map((id) =>
+          getPhoneById(id).catch(() => null),
+        ),
+      );
+      if (ignore) return;
+      const next = {};
+      ids.forEach((id, i) => {
+        if (fetched[i]) next[id] = fetched[i];
+      });
+      setTopResultPhones(next);
     })();
     return () => {
       ignore = true;
     };
-  }, [isAdmin, userId]);
+  }, [bundle?.lastRecommendation]);
 
   if (loading || !isAdmin) {
     return (
@@ -127,21 +212,41 @@ function AdminCustomerDetail() {
   return (
     <div className="admin-detail-page">
       <header className="admin-detail-header">
-        <button
-          type="button"
-          className="admin-back-btn"
-          onClick={() => navigate("/admin/customer-profiles")}
-          aria-label="Back to customer list"
-        >
-          <ChevronIcon /> <span>Back to list</span>
-        </button>
-        <div>
+        <div className="admin-detail-header-row">
+          <button
+            type="button"
+            className="admin-back-btn"
+            onClick={() => navigate("/admin/customer-profiles")}
+            aria-label="Back to customer list"
+          >
+            <ChevronIcon /> <span>Back to list</span>
+          </button>
+          {/* Page-level title lives below the back button on its own
+            * line. Renders as "User profile of <name>" so the admin
+            * still knows whose detail page they're on at a glance,
+            * even though the per-field values (email, phone, etc.)
+            * also appear in the "User" card below. */}
           <h1 className="admin-detail-title">
-            {bundle?.user?.name || "Customer profile"}
+            {bundle?.user?.name
+              ? `User profile of ${bundle.user.name}`
+              : "User profile"}
           </h1>
-          <p className="admin-detail-sub">
-            {bundle?.user?.email || userId}
-          </p>
+          {/* Manual refresh — BehaviorScore rows are written by the
+            * customer's own tab; the admin can press this to pick up
+            * any new events without leaving the page. Window-focus
+            * re-fetch above covers the same case automatically, but a
+            * button is the only reliable affordance when the admin's
+            * tab never loses focus (e.g. a multi-monitor setup). */}
+          <button
+            type="button"
+            className="btn btn-outline btn-small admin-refresh-btn"
+            onClick={() => setReloadToken((t) => t + 1)}
+            disabled={fetching}
+            title="Reload profile and behaviour scores"
+            aria-label="Reload profile and behaviour scores"
+          >
+            {fetching ? "Refreshing…" : "Refresh"}
+          </button>
         </div>
       </header>
 
@@ -155,23 +260,51 @@ function AdminCustomerDetail() {
 
       {!fetching && !error && bundle && (
         <div className="admin-detail-grid">
-          {/* USER */}
+          {/* USER — rendered as a single info-per-row list (label above
+            * value) rather than the two-column dl grid the other cards
+            * use, so each field gets its own line and reads like a
+            * profile detail sheet. The ":" between label and value is
+            * injected in JSX so we don't need a CSS pseudo-element. */}
           <section className="admin-card">
-            <h2 className="admin-card-title">User</h2>
-            <dl className="admin-dl">
-              <dt>Name</dt>
-              <dd>{bundle.user?.name || "—"}</dd>
-              <dt>Email</dt>
-              <dd>{bundle.user?.email || "—"}</dd>
-              <dt>Phone</dt>
-              <dd>{bundle.user?.phoneNo || "—"}</dd>
-              <dt>Role</dt>
-              <dd>{bundle.user?.role || "—"}</dd>
-              <dt>Active</dt>
-              <dd>{bundle.user?.isActive ? "Yes" : "No"}</dd>
-              <dt>Verified</dt>
-              <dd>{bundle.user?.isVerified ? "Yes" : "No"}</dd>
-            </dl>
+            <h2 className="admin-card-title">User's information</h2>
+            <ul className="admin-info-list">
+              <li>
+                <span className="admin-info-label">Name:</span>
+                <span className="admin-info-value">
+                  {bundle.user?.name || "—"}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Email:</span>
+                <span className="admin-info-value">
+                  {bundle.user?.email || "—"}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Phone:</span>
+                <span className="admin-info-value">
+                  {bundle.user?.phoneNo || "—"}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Role:</span>
+                <span className="admin-info-value">
+                  {bundle.user?.role || "—"}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Active:</span>
+                <span className="admin-info-value">
+                  {bundle.user?.isActive ? "Yes" : "No"}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Verified:</span>
+                <span className="admin-info-value">
+                  {bundle.user?.isVerified ? "Yes" : "No"}
+                </span>
+              </li>
+            </ul>
           </section>
 
           {/* PREFERENCE
@@ -184,76 +317,128 @@ function AdminCustomerDetail() {
             * They render as "—" instead of being fabricated. */}
           <section className="admin-card">
             <h2 className="admin-card-title">Preference</h2>
-            <dl className="admin-dl">
-              <dt>Preferred brand</dt>
-              <dd>
-                {bundle.preference?.preferredBrands || (
-                  <span className="admin-muted">Not specified</span>
-                )}
-              </dd>
-              <dt>Budget</dt>
-              <dd>
-                {formatNumber(bundle.preference?.maxBudget)}
-                {bundle.customerProfile?.avgBudget ? (
-                  <span className="admin-muted">
-                    {" "}
-                    · avg {formatNumber(bundle.customerProfile.avgBudget)}
-                  </span>
-                ) : null}
-              </dd>
+            <ul className="admin-info-list">
+              <li>
+                <span className="admin-info-label">Preferred brand:</span>
+                <span className="admin-info-value">
+                  {bundle.preference?.preferredBrands || (
+                    <span className="admin-muted">Not specified</span>
+                  )}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Budget:</span>
+                <span className="admin-info-value">
+                  {formatNumber(bundle.preference?.maxBudget)}
+                  {bundle.customerProfile?.avgBudget ? (
+                    <span className="admin-muted">
+                      {" "}
+                      · avg {formatNumber(bundle.customerProfile.avgBudget)}
+                    </span>
+                  ) : null}
+                </span>
+              </li>
               {/* Storage / RAM are derived from the user's modal
                 * recommendation rows by profileAggregator. Until the
                 * user has triggered at least MIN_NEW_ROWS=5
                 * recommendations the values stay null and we surface
                 * a "Not tracked yet" hint rather than a bare "—". */}
-              <dt>Storage</dt>
-              <dd>
-                {bundle.customerProfile?.preferredStorageGb != null
-                  ? `${formatNumber(bundle.customerProfile.preferredStorageGb)} GB`
-                  : <span className="admin-muted">Not tracked yet</span>}
-              </dd>
-              <dt>RAM</dt>
-              <dd>
-                {bundle.customerProfile?.preferredRamGb != null
-                  ? `${formatNumber(bundle.customerProfile.preferredRamGb)} GB`
-                  : <span className="admin-muted">Not tracked yet</span>}
-              </dd>
-              <dt>Battery</dt>
-              <dd>
-                <span className="admin-muted">Not tracked yet</span>
-              </dd>
-              <dt>Camera</dt>
-              <dd>{bundle.preference?.cameraPreference || "—"}</dd>
-              <dt>Usage type</dt>
-              <dd>{bundle.preference?.usageType || "—"}</dd>
-            </dl>
+              <li>
+                <span className="admin-info-label">Storage:</span>
+                <span className="admin-info-value">
+                  {bundle.customerProfile?.preferredStorageGb != null
+                    ? `${formatNumber(bundle.customerProfile.preferredStorageGb)} GB`
+                    : <span className="admin-muted">Not tracked yet</span>}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">RAM:</span>
+                <span className="admin-info-value">
+                  {bundle.customerProfile?.preferredRamGb != null
+                    ? `${formatNumber(bundle.customerProfile.preferredRamGb)} GB`
+                    : <span className="admin-muted">Not tracked yet</span>}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Battery:</span>
+                <span className="admin-info-value">
+                  <span className="admin-muted">Not tracked yet</span>
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Camera:</span>
+                <span className="admin-info-value">
+                  {bundle.preference?.cameraPreference || "—"}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Usage type:</span>
+                <span className="admin-info-value">
+                  {bundle.preference?.usageType || "—"}
+                </span>
+              </li>
+            </ul>
           </section>
 
           {/* CUSTOMER PROFILE */}
           <section className="admin-card">
             <h2 className="admin-card-title">Customer profile</h2>
-            <dl className="admin-dl">
-              <dt>Budget segment</dt>
-              <dd>{bundle.customerProfile?.budgetSegment || "—"}</dd>
-              <dt>Tech tier</dt>
-              <dd>{bundle.customerProfile?.techTier || "—"}</dd>
-              <dt>Recommendation persona</dt>
-              <dd>{bundle.customerProfile?.recommendationPersona || "—"}</dd>
-              <dt>Avg budget</dt>
-              <dd>{formatNumber(bundle.customerProfile?.avgBudget)}</dd>
-              <dt>Searches</dt>
-              <dd>{formatNumber(bundle.customerProfile?.searchCount)}</dd>
-              <dt>Recommendations</dt>
-              <dd>
-                {formatNumber(bundle.customerProfile?.totalRecommendations)}
-              </dd>
-              <dt>Comparisons</dt>
-              <dd>{formatNumber(bundle.customerProfile?.totalComparisons)}</dd>
-              <dt>Segment confidence</dt>
-              <dd>{bundle.customerProfile?.segmentConfidence || "—"}</dd>
-              <dt>Last updated</dt>
-              <dd>{formatDate(bundle.customerProfile?.lastUpdated)}</dd>
-            </dl>
+            <ul className="admin-info-list">
+              <li>
+                <span className="admin-info-label">Budget segment:</span>
+                <span className="admin-info-value">
+                  {bundle.customerProfile?.budgetSegment || "—"}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Tech tier:</span>
+                <span className="admin-info-value">
+                  {bundle.customerProfile?.techTier || "—"}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Recommendation persona:</span>
+                <span className="admin-info-value">
+                  {bundle.customerProfile?.recommendationPersona || "—"}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Avg budget:</span>
+                <span className="admin-info-value">
+                  {formatNumber(bundle.customerProfile?.avgBudget)}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Searches:</span>
+                <span className="admin-info-value">
+                  {formatNumber(bundle.customerProfile?.searchCount)}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Recommendations:</span>
+                <span className="admin-info-value">
+                  {formatNumber(bundle.customerProfile?.totalRecommendations)}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Comparisons:</span>
+                <span className="admin-info-value">
+                  {formatNumber(bundle.customerProfile?.totalComparisons)}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Segment confidence:</span>
+                <span className="admin-info-value">
+                  {bundle.customerProfile?.segmentConfidence || "—"}
+                </span>
+              </li>
+              <li>
+                <span className="admin-info-label">Last updated:</span>
+                <span className="admin-info-value">
+                  {formatDate(bundle.customerProfile?.lastUpdated)}
+                </span>
+              </li>
+            </ul>
           </section>
 
           {/* BEHAVIOUR SCORES — Step B.
@@ -279,7 +464,9 @@ function AdminCustomerDetail() {
               <ul className="admin-tag-list">
                 {behavior.slice(0, 10).map((row) => (
                   <li key={row.tag} className="admin-tag-row">
-                    <span className="admin-tag-label">{row.tag}</span>
+                    <span className="admin-tag-label">
+                      {row.phoneName ? `affinity:${row.phoneName}` : row.tag}
+                    </span>
                     <span className="admin-tag-score">
                       {Number(row.score).toFixed(2)}
                     </span>
@@ -297,50 +484,142 @@ function AdminCustomerDetail() {
             <h2 className="admin-card-title">Last recommendation</h2>
             {bundle.lastRecommendation ? (
               <>
-                <dl className="admin-dl">
-                  <dt>Persona</dt>
-                  <dd>{bundle.lastRecommendation.persona || "—"}</dd>
-                  <dt>Budget</dt>
-                  <dd>{formatNumber(bundle.lastRecommendation.budget)}</dd>
-                  <dt>Served at</dt>
-                  <dd>{formatDate(bundle.lastRecommendation.servedAt)}</dd>
-                </dl>
+                <ul className="admin-info-list">
+                  <li>
+                    <span className="admin-info-label">Persona:</span>
+                    <span className="admin-info-value">
+                      {bundle.lastRecommendation.persona || "—"}
+                    </span>
+                  </li>
+                  <li>
+                    <span className="admin-info-label">Budget:</span>
+                    <span className="admin-info-value">
+                      {(() => {
+                        // The BE sometimes returns the budget as a
+                        // pre-formatted { amount, currency } object
+                        // (from the RecommendationCall serializer) and
+                        // sometimes as a bare number depending on the
+                        // code path. Handle both shapes so we never
+                        // surface the literal string "[object Object]".
+                        const b = bundle.lastRecommendation.budget;
+                        if (b == null) return "—";
+                        if (typeof b === "number") return formatNumber(b);
+                        if (typeof b === "object") {
+                          const amt = b.amount ?? b.value ?? b.max;
+                          const cur = b.currency ? ` ${b.currency}` : "";
+                          return amt != null ? `${formatNumber(amt)}${cur}` : "—";
+                        }
+                        return String(b);
+                      })()}
+                    </span>
+                  </li>
+                  <li>
+                    <span className="admin-info-label">Served at:</span>
+                    <span className="admin-info-value">
+                      {formatDate(bundle.lastRecommendation.servedAt)}
+                    </span>
+                  </li>
+                </ul>
                 {Array.isArray(bundle.lastRecommendation.topResults) &&
                   bundle.lastRecommendation.topResults.length > 0 && (
                     <div className="admin-subsection">
                       <h3 className="admin-subsection-title">Top results</h3>
-                      <ul className="admin-list-clean">
+                      {/* Real phone cards — same shape as the
+                        * dashboard's recommended rail. We map each
+                        * topResults row to its full phone record
+                        * (fetched via getPhoneById above) so we can
+                        * show the image, brand and price. While the
+                        * enrichment fetch is still in flight we
+                        * render a lightweight placeholder card with
+                        * the brand · model string from the bundle so
+                        * the row doesn't pop in after the rest of
+                        * the page. */}
+                      <div className="phone-grid admin-top-results-grid">
                         {bundle.lastRecommendation.topResults.map((r, i) => {
-                          // Resolve phoneId → "Brand · Model" — the
-                          // backend already joins Phones on the
-                          // per-call RecommendationCall row so we
-                          // just render what we get. If the phone was
-                          // deleted between serving and reading we
-                          // fall back to "Unknown phone" so the admin
-                          // still sees *that* something was served.
-                          const label =
-                            r.brand && r.modelName
+                          const phone = topResultPhones[r.phoneId];
+                          const label = phone
+                            ? `${phone.brand?.name || ""} · ${phone.modelName || ""}`.trim()
+                            : r.brand && r.modelName
                               ? `${r.brand} · ${r.modelName}`
                               : r.modelName ||
                                 (r.phoneId ? "Unknown phone" : "—");
+                          const matchPct =
+                            r.score != null
+                              ? Math.round(Number(r.score))
+                              : r.overallCompatibility != null
+                                ? Math.round(Number(r.overallCompatibility))
+                                : null;
                           return (
-                            <li key={r.phoneId || i}>
-                              <span className="admin-timeline-what">
-                                <strong>{label}</strong>
-                                {r.score != null ? (
-                                  <span className="admin-muted">
-                                    {" "}
-                                    · {Math.round(Number(r.score))}% match
-                                  </span>
-                                ) : null}
-                              </span>
-                              <span className="admin-muted">
-                                {formatDate(r.servedAt || bundle.lastRecommendation.servedAt)}
-                              </span>
-                            </li>
+                            <div
+                              key={r.phoneId || i}
+                              className="phone-card"
+                              onClick={() =>
+                                r.phoneId &&
+                                navigate(`/phones/${r.phoneId}`)
+                              }
+                              style={{ cursor: "pointer" }}
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (
+                                  (e.key === "Enter" || e.key === " ") &&
+                                  r.phoneId
+                                ) {
+                                  e.preventDefault();
+                                  navigate(`/phones/${r.phoneId}`);
+                                }
+                              }}
+                            >
+                              <div className="phone-card-top">
+                                <div
+                                  className={`phone-card-image${phone?.imageUrl ? "" : " no-image"}`}
+                                >
+                                  {phone?.imageUrl ? (
+                                    <img
+                                      src={phone.imageUrl}
+                                      alt={phone.modelName || label}
+                                      onError={(e) => {
+                                        e.currentTarget.style.display =
+                                          "none";
+                                        e.currentTarget.parentElement.classList.add(
+                                          "no-image",
+                                        );
+                                      }}
+                                    />
+                                  ) : (
+                                    <span className="phone-card-emoji">📱</span>
+                                  )}
+                                  {matchPct != null && (
+                                    <span className="phone-card-match-badge">
+                                      {matchPct}% match
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="phone-card-name">
+                                  {phone?.modelName || r.modelName || "—"}
+                                </div>
+                                <div className="phone-card-tagline">
+                                  {phone?.brand?.name ||
+                                    r.brand ||
+                                    "Unknown brand"}
+                                </div>
+                              </div>
+                              {phone?.pricing?.cheapest != null && (
+                                <div className="phone-card-details">
+                                  <div className="phone-spec phone-price">
+                                    <span>
+                                      NPR{" "}
+                                      {formatNumber(
+                                        phone.pricing.cheapest,
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           );
                         })}
-                      </ul>
+                      </div>
                     </div>
                   )}
               </>
@@ -357,8 +636,6 @@ function AdminCustomerDetail() {
             * type at a glance. If all three are empty we show a single
             * "No recent activity." line per the feature spec. */}
           <section className="admin-card admin-card-wide">
-            <h2 className="admin-card-title">Recent signals</h2>
-
             {(!bundle.lastSearches || bundle.lastSearches.length === 0) &&
             (!bundle.lastBrowses || bundle.lastBrowses.length === 0) &&
             (!bundle.lastComparisons || bundle.lastComparisons.length === 0) ? (
@@ -388,16 +665,6 @@ function AdminCustomerDetail() {
 
                 <div className="admin-subsection">
                   <h3 className="admin-subsection-title">Browses</h3>
-                  <p className="admin-muted admin-subsection-hint">
-                    Each row is a phone-detail view. We keep at most
-                    the last 10 unique phones the customer touched —
-                    re-clicking an already-tracked phone is a no-op and
-                    does not bump any score. The label is the raw
-                    phone name as it appears on the catalog; we
-                    intentionally don't FK-resolve here because the
-                    original browse signal can be a fictional or
-                    pre-release phone.
-                  </p>
                   {Array.isArray(bundle.lastBrowses) &&
                   bundle.lastBrowses.length > 0 ? (
                     <ul className="admin-timeline">

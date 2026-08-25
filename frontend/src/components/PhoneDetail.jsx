@@ -12,116 +12,21 @@ import {
   BatteryIcon,
   CpuIcon,
   TagIcon,
+  ChevronDownIcon,
 } from "./AuthShared";
 import { formatPriceNpr } from "../utils/formatPrice.js";
+import logo from "../assets/logo.png";
 
 // ---- Field-label maps ----
-// Each entry: { key in payload → human label + optional renderer }.
+// Each entry: { key in payload → human label + optional renderer + general? }.
 // The renderer receives the raw value and returns the string to display,
 // or null/undefined to skip the row. Boolean values that aren't handled
 // by a custom renderer fall back to Yes/No in `formatValue`.
-
-const SPEC_SECTIONS = [
-  {
-    key: "network",
-    title: "Network",
-    fields: [
-      ["technology", "Technology"],
-      ["supports5g", "5G"],
-      ["supportsNfc", "NFC"],
-      ["dualSim", "Dual SIM"],
-      ["simType", "SIM type"],
-      ["wifi", "Wi-Fi"],
-      ["bluetooth", "Bluetooth"],
-      ["usbType", "USB"],
-      ["headphoneJack", "Headphone jack"],
-      ["gps", "GPS"],
-    ],
-  },
-  {
-    key: "display",
-    title: "Display",
-    fields: [
-      ["type", "Type"],
-      ["size", "Size"],
-      ["refreshRate", "Refresh rate", (v) => (v ? `${v} Hz` : null)],
-      ["resolution", "Resolution"],
-      ["ppiDensity", "Pixel density", (v) => (v ? `${v} ppi` : null)],
-      ["screenToBody", "Screen-to-body", (v) => (v ? `${v}%` : null)],
-      ["protection", "Protection"],
-    ],
-  },
-  {
-    key: "platform",
-    title: "Platform",
-    fields: [
-      ["os", "OS"],
-      ["chipset", "Chipset"],
-      ["processNode", "Process node"],
-      ["cpu", "CPU"],
-      ["gpu", "GPU"],
-    ],
-  },
-  {
-    key: "camera",
-    title: "Camera",
-    fields: [
-      ["main", "Main"],
-      ["lensCount", "Lens count"],
-      ["aperture", "Aperture"],
-      ["ois", "OIS"],
-      ["sensorSize", "Sensor size"],
-      ["video4k", "4K video"],
-      ["selfie", "Selfie"],
-      ["selfie4k", "Selfie 4K"],
-    ],
-  },
-  {
-    key: "physical",
-    title: "Physical",
-    fields: [
-      ["dimensions", "Dimensions"],
-      [
-        "weight",
-        "Weight",
-        (v) => (typeof v === "number" && v > 0 ? `${v} g` : null),
-      ],
-    ],
-  },
-  {
-    key: "battery",
-    title: "Battery",
-    fields: [
-      [
-        "capacity",
-        "Capacity",
-        (v) => (typeof v === "number" && v > 0 ? `${v} mAh` : null),
-      ],
-      [
-        "wiredCharging",
-        "Wired charging",
-        (v) => (typeof v === "number" && v > 0 ? `${v} W` : null),
-      ],
-      ["reverseWireless", "Reverse wireless charging"],
-    ],
-  },
-  {
-    key: "metadata",
-    title: "Release",
-    fields: [
-      [
-        "announced",
-        "Announced",
-        (v) => {
-          if (!v) return null;
-          const d = new Date(v);
-          return Number.isNaN(d.getTime()) ? String(v) : d.toLocaleDateString();
-        },
-      ],
-      ["status", "Status"],
-    ],
-  },
-];
+//
+// `general: true` rows are visible by default on the specs page; `false`
+// rows only render once the user clicks "See more details". Fields missing
+// the flag default to `general: true` (so legacy call-sites in
+// `PhoneDetailView`, used by the Compare page, still work unchanged).
 
 // ---- Helpers ----
 
@@ -246,7 +151,7 @@ function PhoneDetail() {
   if (loading) {
     return (
       <div className={pageClass}>
-        <TopBar onBack={handleBack} />
+        <TopBar onBack={handleBack} navigate={navigate} />
         <p
           className="dash-status"
           style={{ marginTop: 40, textAlign: "center" }}
@@ -260,7 +165,7 @@ function PhoneDetail() {
   if (error === "not-found") {
     return (
       <div className={pageClass}>
-        <TopBar onBack={handleBack} />
+        <TopBar onBack={handleBack} navigate={navigate} />
         <div className="phone-detail-empty">
           <h1>Phone not found</h1>
           <p>
@@ -282,7 +187,7 @@ function PhoneDetail() {
   if (error === "generic") {
     return (
       <div className={pageClass}>
-        <TopBar onBack={handleBack} />
+        <TopBar onBack={handleBack} navigate={navigate} />
         <div className="phone-detail-error">
           <h1>Couldn't load this phone</h1>
           <p>
@@ -304,13 +209,13 @@ function PhoneDetail() {
 
   return (
     <div className={pageClass}>
-      <TopBar onBack={handleBack} />
-      <PhoneDetailView phone={phone} />
+      <TopBar onBack={handleBack} navigate={navigate} />
+      <PhoneSpecsPage phone={phone} />
     </div>
   );
 }
 
-function TopBar({ onBack }) {
+function TopBar({ onBack, navigate }) {
   return (
     <div className="phone-detail-topbar">
       <button
@@ -323,6 +228,19 @@ function TopBar({ onBack }) {
         <span>Back</span>
       </button>
       <span className="phone-detail-breadcrumb">Phone details</span>
+      <button
+        type="button"
+        className="dash-brand"
+        onClick={() => navigate("/")}
+        title="Go to home"
+        aria-label="Go to home"
+      >
+        <img src={logo} alt="" className="dash-brand-logo" />
+        <span className="dash-brand-text">
+          <span className="dash-brand-title">Mobile</span>
+          <span className="dash-brand-sub">Recommendation System</span>
+        </span>
+      </button>
     </div>
   );
 }
@@ -366,8 +284,8 @@ export function PhoneDetailView({ phone }) {
       try {
         // Content-Based lookup — the BE proxies FastAPI's
         // GET /similarity/similar against the pre-computed NxN
-        // cosine matrix. Limit 12 (the BE clamps 1..50).
-        const list = await getSimilarPhones(phone.id, 12);
+        // cosine matrix. Limit 9 (the BE clamps 1..50).
+        const list = await getSimilarPhones(phone.id, 9);
         if (ignore) return;
         // Defensive: drop any rows that somehow resolved to the
         // seed phone (the BE already excludes it, but keep the
@@ -375,7 +293,7 @@ export function PhoneDetailView({ phone }) {
         // seed back into the grid).
         const filtered = (Array.isArray(list) ? list : [])
           .filter((p) => p && p.id !== phone.id)
-          .slice(0, 12);
+          .slice(0, 9);
         setRelatedPhones(filtered);
       } catch (err) {
         if (ignore) return;
@@ -601,10 +519,11 @@ export function PhoneDetailView({ phone }) {
 
       {/* ---- Related Phones ----
           Reuses the existing GET /phones endpoint (same one the Dashboard
-          already hits) — no new API. Renders exactly 12 cards in the same
-          .phone-grid layout the dashboard uses, so styling, hover animation
-          and card shadow are all inherited from Dashboard.css. The current
-          phone is filtered out if it happens to appear in the response. */}
+          already hits) — no new API. Renders exactly 9 cards in the same
+          .phone-grid layout the dashboard uses (3 columns × 3 rows), so
+          styling, hover animation and card shadow are all inherited from
+          Dashboard.css. The current phone is filtered out if it happens to
+          appear in the response. */}
       <section
         className="related-phones-section"
         aria-label="Related phones"
@@ -716,4 +635,544 @@ export function PhoneDetailView({ phone }) {
   );
 }
 
+// ---------------------------------------------------------------------------
+// New specs-page layout (`/phones/:id`).
+// Render order matches the requested design:
+//   1. Hero: image + name (small brand + big model name)
+//   2. Price (one line: "Price: <value>")
+//   3. Available colors (from variant-level `colors` field, if provided)
+//   4. AnTuTu + release date
+//   5. Variants — only the specs that vary (ram/storage) + per-variant price
+//      when the backend supplies one
+//   6. Description → general (camera, network, display, battery, platform,
+//      physical) with a "See more" toggle for the rest
+//   7. Related phones (unchanged)
+// No emojis anywhere on this page.
+// ---------------------------------------------------------------------------
+
+// Spec sections that should be shown by default in the "Description" block —
+// these are the headlines anyone understands at a glance. Each field entry
+// is `[fieldKey, label, renderer?, general]`. The `general` flag controls
+// whether the row is visible by default (`true`) or only after the user
+// clicks "See more details" (`false`).
+//
+// Example: Network has many fields; the ones an average buyer cares about
+// (`5G`, `Dual SIM`, `SIM type`, `USB`) are `general: true`. The
+// "Wi-Fi 802.11 a/b/g/n/ac/6e/7 dual-band, hotspot" string is something a
+// normal user won't read — that goes under "See more details".
+const SPEC_SECTIONS = [
+  {
+    key: "network",
+    title: "Network",
+    fields: [
+      ["technology", "Technology", null, false],
+      ["supports5g", "5G", null, true],
+      ["supportsNfc", "NFC", null, false],
+      ["dualSim", "Dual SIM", null, true],
+      ["simType", "SIM type", null, true],
+      ["wifi", "Wi-Fi", null, false],
+      ["bluetooth", "Bluetooth", null, false],
+      ["usbType", "USB", null, true],
+      ["headphoneJack", "Headphone jack", null, false],
+      ["gps", "GPS", null, false],
+    ],
+  },
+  {
+    key: "display",
+    title: "Display",
+    fields: [
+      ["type", "Type", null, false],
+      ["size", "Size", null, true],
+      [
+        "refreshRate",
+        "Refresh rate",
+        (v) => (v ? `${v} Hz` : null),
+        true,
+      ],
+      ["resolution", "Resolution", null, false],
+      [
+        "ppiDensity",
+        "Pixel density",
+        (v) => (v ? `${v} ppi` : null),
+        false,
+      ],
+      [
+        "screenToBody",
+        "Screen-to-body",
+        (v) => (v ? `${v}%` : null),
+        false,
+      ],
+      ["protection", "Protection", null, true],
+    ],
+  },
+  {
+    key: "platform",
+    title: "Platform",
+    fields: [
+      ["os", "OS", null, true],
+      ["chipset", "Chipset", null, false],
+      ["processNode", "Process node", null, false],
+      ["cpu", "CPU", null, false],
+      ["gpu", "GPU", null, false],
+    ],
+  },
+  {
+    key: "camera",
+    title: "Camera",
+    fields: [
+      ["main", "Main", null, true],
+      ["lensCount", "Lens count", null, true],
+      ["aperture", "Aperture", null, false],
+      ["ois", "OIS", null, false],
+      ["sensorSize", "Sensor size", null, false],
+      ["video4k", "4K video", null, true],
+      ["selfie", "Selfie", null, true],
+      ["selfie4k", "Selfie 4K", null, false],
+    ],
+  },
+  {
+    key: "physical",
+    title: "Physical",
+    fields: [
+      ["dimensions", "Dimensions", null, false],
+      [
+        "weight",
+        "Weight",
+        (v) => (typeof v === "number" && v > 0 ? `${v} g` : null),
+        true,
+      ],
+    ],
+  },
+  {
+    key: "battery",
+    title: "Battery",
+    fields: [
+      [
+        "capacity",
+        "Capacity",
+        (v) => (typeof v === "number" && v > 0 ? `${v} mAh` : null),
+        true,
+      ],
+      [
+        "wiredCharging",
+        "Wired charging",
+        (v) => (typeof v === "number" && v > 0 ? `${v} W` : null),
+        true,
+      ],
+      ["reverseWireless", "Reverse wireless charging", null, false],
+    ],
+  },
+  {
+    key: "metadata",
+    title: "Release",
+    fields: [
+      [
+        "announced",
+        "Announced",
+        (v) => {
+          if (!v) return null;
+          const d = new Date(v);
+          return Number.isNaN(d.getTime()) ? String(v) : d.toLocaleDateString();
+        },
+        false,
+      ],
+      ["status", "Status", null, false],
+    ],
+  },
+];
+
+// Normalise the BE's per-variant `colors` JSON into a flat, deduped string
+// list. The DB column is `Json?` so it can legitimately be `null`, a single
+// string, a string[], or a nested structure from older imports.
+function extractColors(variants) {
+  if (!Array.isArray(variants) || variants.length === 0) return [];
+
+  const seen = new Set();
+  for (const v of variants) {
+    const raw = v?.colors;
+    if (raw === null || raw === undefined) continue;
+    if (typeof raw === "string") {
+      // accept either a JSON string or a plain "Black" entry
+      const trimmed = raw.trim();
+      if (!trimmed) continue;
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) {
+          for (const c of parsed) {
+            if (typeof c === "string" && c.trim()) seen.add(c.trim());
+          }
+          continue;
+        }
+      } catch {
+        // not JSON — treat as a single color name
+      }
+      seen.add(trimmed);
+      continue;
+    }
+    if (Array.isArray(raw)) {
+      for (const c of raw) {
+        if (typeof c === "string" && c.trim()) seen.add(c.trim());
+        else if (c && typeof c === "object" && typeof c.name === "string") {
+          seen.add(c.name.trim());
+        }
+      }
+      continue;
+    }
+    if (typeof raw === "object") {
+      // tolerate { name, hex } style entries
+      const name = raw.name;
+      if (typeof name === "string" && name.trim()) seen.add(name.trim());
+    }
+  }
+
+  return Array.from(seen);
+}
+
+function PhoneSpecsPage({ phone }) {
+  // Hooks first — `if (!phone) return null` is below so hook order is stable.
+  const navigate = useNavigate();
+  const [relatedPhones, setRelatedPhones] = useState([]);
+  const [relatedLoading, setRelatedLoading] = useState(true);
+  const [relatedError, setRelatedError] = useState(null);
+  const [relatedHoveredId, setRelatedHoveredId] = useState(null);
+  const [showMoreSpecs, setShowMoreSpecs] = useState(false);
+
+  useEffect(() => {
+    if (!phone?.id) return;
+    setRelatedPhones([]);
+    setRelatedLoading(true);
+    setRelatedError(null);
+    setShowMoreSpecs(false); // collapse on phone change
+
+    let ignore = false;
+    (async () => {
+      try {
+        const list = await getSimilarPhones(phone.id, 9);
+        if (ignore) return;
+        const filtered = (Array.isArray(list) ? list : [])
+          .filter((p) => p && p.id !== phone.id)
+          .slice(0, 9);
+        setRelatedPhones(filtered);
+      } catch (err) {
+        if (ignore) return;
+        setRelatedError(
+          err?.response?.data?.message ||
+            "Couldn't load related phones right now.",
+        );
+      } finally {
+        if (!ignore) setRelatedLoading(false);
+      }
+    })();
+
+    return () => {
+      ignore = true;
+    };
+  }, [phone?.id]);
+
+  if (!phone) return null;
+
+  const brand = phone.brand || {};
+  const specs = phone.specs || {};
+  const pricing = phone.pricing || {};
+  const variants = Array.isArray(phone.variants) ? phone.variants : [];
+  const cheapest = pricing.cheapest || phone.cheapestVariant;
+
+  // ---- 1) Hero: image + name ----
+  const modelName = phone.modelName || "Unknown model";
+
+  // ---- 2) Price: the cheapest variant's price (rounded NPR) ----
+  const priceText = formatPrice(cheapest?.price);
+
+  // ---- 3) Available colors (collected from variant-level `colors`) ----
+  const colors = extractColors(variants);
+
+  // ---- 4) AnTuTu + release date ----
+  const antutu =
+    typeof phone.antutuScore === "number" && phone.antutuScore > 0
+      ? phone.antutuScore.toLocaleString()
+      : null;
+  const announcedRaw = specs.metadata?.announced;
+  const announcedText = (() => {
+    if (!announcedRaw) return null;
+    const d = new Date(announcedRaw);
+    return Number.isNaN(d.getTime())
+      ? String(announcedRaw)
+      : d.toLocaleDateString();
+  })();
+  const statusText = specs.metadata?.status || null;
+
+  // ---- 5) Description: each section renders its "general" rows by default
+  //          and its "details" rows in the same block, gated behind
+  //          "See more details". A field without a `general` flag is
+  //          treated as general (legacy 3-tuple entries are still safe).
+  // ----
+  const renderRow = (fieldKey, label, renderer, raw) => {
+    const display = renderer ? renderer(raw) : formatValue(raw);
+    if (display === null || display === undefined) return null;
+    const isBool = typeof raw === "boolean" && typeof display === "string";
+    return (
+      <div className="phone-detail-row" key={fieldKey}>
+        <span className="phone-detail-row-label">{label}</span>
+        <span
+          className={`phone-detail-row-value${
+            isBool ? (raw ? " boolean-yes" : " boolean-no") : ""
+          }`}
+        >
+          {display}
+        </span>
+      </div>
+    );
+  };
+
+  const renderSpecBlock = (sectionDef) => {
+    const section = specs[sectionDef.key];
+    if (!section) return null;
+    const generalRows = [];
+    const detailRows = [];
+    for (const [fieldKey, label, renderer, general] of sectionDef.fields) {
+      // 3-tuple legacy entries default to general = true.
+      const isGeneral = general === undefined ? true : general;
+      const row = renderRow(fieldKey, label, renderer, section[fieldKey]);
+      if (!row) continue;
+      if (isGeneral) generalRows.push(row);
+      else detailRows.push(row);
+    }
+    // A section only renders if it has at least one general row.
+    // (Sections whose every field is a "details" row stay hidden until
+    // the user expands AND we drop the section-level filter once any
+    // general row is present — even a single general row in a section
+    // makes the whole section show.)
+    if (generalRows.length === 0) return null;
+    return { title: sectionDef.title, generalRows, detailRows };
+  };
+
+  // Sections we always render in the description block, regardless of
+  // whether a phone has data for them — they're the categories an
+  // average buyer expects to see.
+  const DESCRIPTION_SECTIONS = [
+    "camera",
+    "network",
+    "display",
+    "battery",
+    "platform",
+    "physical",
+    "metadata",
+  ];
+
+  const blocks = DESCRIPTION_SECTIONS.map((k) =>
+    renderSpecBlock(SPEC_SECTIONS.find((s) => s.key === k)),
+  ).filter(Boolean);
+  // The "See more details" button only shows if at least one section has
+  // details-only rows.
+  const hasDetails = blocks.some((b) => b.detailRows.length > 0);
+
+  return (
+    <div className="phone-specs-page">
+      {/* ===== 1) Hero: image + name ===== */}
+      <section className="phone-specs-hero" aria-label="Phone overview">
+        <div className="phone-specs-image">
+          {phone.imageUrl ? (
+            <img
+              src={phone.imageUrl}
+              alt={modelName}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+                e.currentTarget.parentElement.classList.add("no-image");
+              }}
+            />
+          ) : null}
+        </div>
+        <div className="phone-specs-hero-body">
+          {brand.name && (
+            <div className="phone-specs-brand">
+              {brand.logoUrl && (
+                <img src={brand.logoUrl} alt={`${brand.name} logo`} />
+              )}
+              <span>{brand.name}</span>
+            </div>
+          )}
+          <h1 className="phone-specs-name">{modelName}</h1>
+        </div>
+      </section>
+
+      {/* ===== 2-4) Price, colors, AnTuTu, release ===== */}
+      <section className="phone-specs-summary" aria-label="Quick facts">
+        {priceText && (
+          <div className="phone-specs-summary-row">
+            <span className="phone-specs-summary-label">Price:</span>
+            <span className="phone-specs-summary-value">{priceText}</span>
+          </div>
+        )}
+        {colors.length > 0 && (
+          <div className="phone-specs-summary-row">
+            <span className="phone-specs-summary-label">
+              Available Colors:
+            </span>
+            <span className="phone-specs-summary-value">{colors.join(", ")}</span>
+          </div>
+        )}
+        {antutu && (
+          <div className="phone-specs-summary-row">
+            <span className="phone-specs-summary-label">AnTuTu:</span>
+            <span className="phone-specs-summary-value">
+              {antutu}
+            </span>
+          </div>
+        )}
+        {(announcedText || statusText) && (
+          <div className="phone-specs-summary-row">
+            <span className="phone-specs-summary-label">Release Date:</span>
+            <span className="phone-specs-summary-value">
+              {announcedText || statusText}
+            </span>
+          </div>
+        )}
+      </section>
+
+      {/* ===== 5) Description — general rows + see more details ===== */}
+      {blocks.length > 0 && (
+        <section className="phone-specs-description" aria-label="Description">
+          <h2 className="phone-specs-section-title">Description</h2>
+          {blocks.map((block) => (
+            <div className="phone-specs-desc-block" key={block.title}>
+              <h3 className="phone-specs-desc-heading">{block.title}</h3>
+              <div className="phone-specs-desc-grid">
+                {block.generalRows}
+                {/* The details rows for THIS same section — appended in
+                    place, no extra section header, so the user just sees
+                    more rows under the heading they already know. */}
+                {showMoreSpecs && block.detailRows}
+              </div>
+            </div>
+          ))}
+
+          {hasDetails && (
+            <button
+              type="button"
+              className={`phone-specs-see-more${
+                showMoreSpecs ? " open" : ""
+              }`}
+              onClick={() => setShowMoreSpecs((s) => !s)}
+              aria-expanded={showMoreSpecs}
+            >
+              {showMoreSpecs ? "See less" : "See more details"}
+              <ChevronDownIcon />
+            </button>
+          )}
+        </section>
+      )}
+
+      {/* ===== 7) Related phones (unchanged) ===== */}
+      <section
+        className="related-phones-section"
+        aria-label="Related phones"
+      >
+        <header className="related-phones-header">
+          <h2>Related Phones</h2>
+          <p className="related-phones-subtitle">
+            Phones similar to this one
+          </p>
+        </header>
+
+        {relatedLoading && (
+          <p className="dash-status">Loading related phones…</p>
+        )}
+
+        {relatedError && !relatedLoading && (
+          <p className="dash-status dash-status-error">{relatedError}</p>
+        )}
+
+        {!relatedLoading && !relatedError && relatedPhones.length > 0 && (
+          <div className="phone-grid related-phones-grid">
+            {relatedPhones.map((p) => {
+              const isHovered = relatedHoveredId === p.id;
+              const wrapperClass = `phone-card related-phone-card${
+                isHovered ? " expanded" : ""
+              }`;
+              const goToPhone = () => {
+                if (p.id) navigate(`/phones/${p.id}`);
+              };
+              const handleKeyDown = (e) => {
+                if (!p.id) return;
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  goToPhone();
+                }
+              };
+              return (
+                <div
+                  key={p.id}
+                  className={wrapperClass}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View ${p.brand?.name || ""} ${p.modelName || "phone"} details`}
+                  onClick={goToPhone}
+                  onKeyDown={handleKeyDown}
+                  onMouseEnter={() => setRelatedHoveredId(p.id)}
+                  onMouseLeave={() => setRelatedHoveredId(null)}
+                >
+                  <div className="phone-card-top">
+                    <div className="phone-card-image">
+                      {p.imageUrl ? (
+                        <img
+                          src={p.imageUrl}
+                          alt={p.modelName}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            e.target.parentElement.classList.add("no-image");
+                          }}
+                        />
+                      ) : (
+                        <span className="phone-card-emoji">📱</span>
+                      )}
+                    </div>
+                    <div className="phone-card-name">{p.modelName}</div>
+                    <div className="phone-card-tagline">
+                      {p.brand?.name || "Unknown brand"}
+                    </div>
+                  </div>
+
+                  <div className="phone-card-details">
+                    {p.keySpecs?.os && (
+                      <div className="phone-spec">
+                        <CpuIcon />
+                        <span>{p.keySpecs.os}</span>
+                      </div>
+                    )}
+                    {p.keySpecs?.camera && (
+                      <div className="phone-spec">
+                        <CameraIcon />
+                        <span>{p.keySpecs.camera}</span>
+                      </div>
+                    )}
+                    {p.keySpecs?.battery && (
+                      <div className="phone-spec">
+                        <BatteryIcon />
+                        <span>{p.keySpecs.battery} mAh</span>
+                      </div>
+                    )}
+                    {p.cheapestVariant?.price && (
+                      <div className="phone-spec phone-price">
+                        <TagIcon />
+                        <span>
+                          {formatPriceNpr(p.cheapestVariant.price) ?? "—"}
+                          {p.cheapestVariant.ram &&
+                          p.cheapestVariant.storage
+                            ? ` · ${p.cheapestVariant.ram}GB/${p.cheapestVariant.storage}GB`
+                            : ""}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
 export default PhoneDetail;
+export { PhoneSpecsPage };

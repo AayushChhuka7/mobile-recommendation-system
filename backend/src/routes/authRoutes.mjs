@@ -6,8 +6,10 @@ import { validationWith } from "../middleware/validator.mjs";
 import { roleGuard } from "../middleware/roleGuard.mjs";
 import {
   changePasswordValidation,
+  accountVerificationValidation,
   forgetPasswordValidation,
   loginSchema,
+  verificationEmailValidation,
 } from "../validation/authValidation.mjs";
 import {
   userCreationValidation,
@@ -24,14 +26,15 @@ import {
   registerUser,
   requestEmailChange,
   resendOtp,
+  resendVerification,
   userLogin,
   userLogout,
   verifyEmail,
+  verifyAccount,
   verifyEmailChange,
 } from "../controller/authController.mjs";
 
 export const authRoutes = Router();
-
 
 authRoutes.get("/role-options", getRoleOptions);
 
@@ -44,28 +47,35 @@ authRoutes.post(
 authRoutes.post("/logout", isAuthenticate, userLogout);
 authRoutes.post(
   "/register",
-  validationWith(
-    userCreationValidation,
-    [
-      "name",
-      "email",
-      "password",
-      "confirmPassword",
-      "phoneNo",
-      "roleName",
-      // Issue 2 — onboarding fields forwarded in the same POST body so
-      // the user + OTP + preferences land in one atomic transaction.
-      "persona",
-      "budgetMin",
-      "budgetMax",
-      "preferredBrands",
-      "weights",
-    ],
-  ),
+  validationWith(userCreationValidation, [
+    "name",
+    "email",
+    "password",
+    "confirmPassword",
+    "phoneNo",
+    "roleName",
+    // Issue 2 — onboarding fields forwarded in the same POST body so
+    // the user + OTP + preferences land in one atomic transaction.
+    "persona",
+    "budgetMin",
+    "budgetMax",
+    "preferredBrands",
+    "weights",
+  ]),
   registerUser,
 );
 authRoutes.post("/verify", verifyOtp, verifyEmail);
 authRoutes.post("/resend", resendOtp);
+authRoutes.post(
+  "/verify-account",
+  validationWith(accountVerificationValidation, ["email", "otp"]),
+  verifyAccount,
+);
+authRoutes.post(
+  "/resend-verification",
+  validationWith(verificationEmailValidation, ["email"]),
+  resendVerification,
+);
 
 //forget hunda email rakhera send haney
 authRoutes.post(
@@ -74,9 +84,8 @@ authRoutes.post(
   forgetPassword,
 );
 
-//otp verify garney after forget password 
+//otp verify garney after forget password
 authRoutes.post("/forget/verify", verifyOtp, ackOtpVerified);
-
 
 authRoutes.post(
   "/forget/changePassword",

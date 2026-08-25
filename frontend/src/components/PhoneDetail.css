@@ -4,7 +4,7 @@
 .phone-detail-page {
   width: 100%;
   min-height: 100vh;
-  background: var(--bg);
+  background: #fff7e8;
   padding-bottom: 64px;
 }
 
@@ -373,7 +373,7 @@
   --text-muted: #9ca3af;
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
     0 2px 4px -1px rgba(0, 0, 0, 0.3);
-  background: var(--bg);
+  background: #0f172a;
 }
 
 .dashboard-page.dash-dark .phone-detail-topbar,
@@ -465,8 +465,30 @@
   margin: 0 0 20px;
 }
 
-.related-phones-grid {
-  /* Inherits the responsive grid from .phone-grid in Dashboard.css. */
+/* Force a 3-column horizontal layout for related phones on the
+   specs page. Earlier the rule was empty, relying on inheritance from
+   Dashboard.css's `.phone-grid` (3 cols) — but in the specs page
+   context the cards were stacking one-per-row. We set the grid
+   explicitly with a higher-specificity selector so it always wins,
+   regardless of any inherited or cascade-overridden rules. The 9
+   related cards then naturally fall into 3 rows of 3. */
+.related-phones-grid.related-phones-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .related-phones-grid.related-phones-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .related-phones-grid.related-phones-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .related-phone-card {
@@ -519,4 +541,335 @@
   .related-phones-header h2 {
     font-size: 18px;
   }
+}
+
+/* ==========================================================================
+   NEW specs-page layout (`/phones/:id`).
+
+   Layout order, top to bottom:
+     1. .phone-specs-hero          — image + brand + big model name
+     2. .phone-specs-summary       — Price / Colors / AnTuTu / Release
+     3. .phone-specs-description   — general specs + "See more" toggle
+     4. .related-phones-section    — unchanged
+
+   The previous `.phone-detail-hero / .phone-detail-pricing / .phone-detail-
+   sections / .phone-detail-variants` blocks are kept intact so the
+   `PhoneDetailView` export (used by the Compare page) still renders.
+   ========================================================================== */
+
+.phone-specs-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ---------- 1) Hero ---------- */
+.phone-specs-hero {
+  display: grid;
+  grid-template-columns: minmax(260px, 400px) 1fr;
+  gap: 32px;
+  align-items: center;
+  /* No outer card chrome — the inner .phone-specs-image keeps its own
+     gray frame, but the hero section itself is borderless so it
+     blends with the page background. */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 0 0 22px;
+  box-shadow: none;
+}
+
+.phone-specs-image {
+  width: 100%;
+  height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.phone-specs-image img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.phone-specs-image.no-image::after {
+  /* No-emoji fallback: a small inline SVG silhouette. */
+  content: "";
+  width: 64px;
+  height: 110px;
+  background:
+    linear-gradient(
+      135deg,
+      transparent 30%,
+      var(--border) 30% 70%,
+      transparent 70%
+    ),
+    linear-gradient(var(--border), var(--border));
+  background-size: 100% 100%, 80% 2px;
+  background-repeat: no-repeat;
+  background-position: center, 50% 12%;
+  border: 4px solid var(--border);
+  border-radius: 14px;
+  opacity: 0.6;
+}
+
+.phone-specs-hero-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.phone-specs-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.phone-specs-brand img {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid var(--border);
+}
+
+.phone-specs-name {
+  /* "Phone name" in the mockup is intentionally LARGE — the
+     biggest text on the page. */
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 4px 0 0;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+}
+
+/* ---------- 2) Summary: Price / Colors / AnTuTu / Release ---------- */
+.phone-specs-summary {
+  /* No outer card chrome — same flat treatment as the hero. The
+     22px left padding matches the Description card's own left padding
+     so the label/value rows line up with the description rows. */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 0 0 22px;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.phone-specs-summary-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 16px;
+  align-items: baseline;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.phone-specs-summary-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.phone-specs-summary-value {
+  font-size: 16px;
+  color: var(--text);
+  word-break: break-word;
+}
+
+/* The price line gets a subtle emphasis since it's the headline number. */
+.phone-specs-summary-row:has(.phone-specs-price-emphasis) {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 2px;
+}
+
+.phone-specs-price-emphasis {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ---------- 3) Description (general + see more) ---------- */
+.phone-specs-description {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 22px;
+  box-shadow: var(--shadow-md);
+}
+
+.phone-specs-section-title {
+  /* "Description" — the LARGEST heading in this block. */
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 16px;
+}
+
+.phone-specs-desc-block {
+  margin-top: 16px;
+}
+
+.phone-specs-desc-block:first-of-type {
+  margin-top: 0;
+}
+
+.phone-specs-desc-heading {
+  /* "Camera", "Network", etc. — MID-sized, smaller than "Description"
+     but bigger than the per-field labels below. */
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+
+.phone-specs-desc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 18px;
+}
+
+/* Typography hierarchy inside the specs-page description block only:
+   per-field labels ("Main", "Lens count", …) are SMALLER and bold;
+   the values underneath ("12.0", "Yes") stay the same small size but
+   unbolded so the eye lands on the label first. Scoped under
+   .phone-specs-description so the old PhoneDetailView (used by the
+   Compare page) is unaffected. */
+.phone-specs-description .phone-detail-row-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.phone-specs-description .phone-detail-row-value {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.phone-specs-see-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: fit-content;
+  margin: 16px auto 0;
+  /* `margin: auto` on a fit-content element centers it horizontally
+     inside the description card. */
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition);
+}
+
+.phone-specs-see-more:hover {
+  background: var(--primary-light);
+}
+
+.phone-specs-see-more svg {
+  transition: transform var(--transition);
+}
+
+.phone-specs-see-more.open svg {
+  transform: rotate(180deg);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 800px) {
+  .phone-specs-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .phone-specs-image {
+    height: 280px;
+  }
+
+  .phone-specs-name {
+    font-size: 30px;
+  }
+
+  .phone-specs-summary-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .phone-specs-desc-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Dark-mode parity for the new layout ---------- */
+/* The hero + summary sections no longer have outer card chrome, so the
+   blanket "every direct child gets a dark card background" rule is
+   gone. Only the actual cards (Description, Related Phones) still need
+   it. The .related-phones-section dark rule already exists further
+   down — only the Description card needs the parity here. */
+.dashboard-page.dash-dark .phone-specs-description,
+.phone-detail-dark .phone-specs-description {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.dashboard-page.dash-dark .phone-specs-image,
+.phone-detail-dark .phone-specs-image {
+  background: #111827;
+  border-color: #374151;
+}
+
+.dashboard-page.dash-dark .phone-specs-name,
+.dashboard-page.dash-dark .phone-specs-summary-value,
+.dashboard-page.dash-dark .phone-specs-section-title,
+.dashboard-page.dash-dark .phone-specs-desc-heading,
+.phone-detail-dark .phone-specs-name,
+.phone-detail-dark .phone-specs-summary-value,
+.phone-detail-dark .phone-specs-section-title,
+.phone-detail-dark .phone-specs-desc-heading {
+  color: #f3f4f6;
+}
+
+.dashboard-page.dash-dark .phone-specs-brand,
+.dashboard-page.dash-dark .phone-specs-summary-label,
+.phone-detail-dark .phone-specs-brand,
+.phone-detail-dark .phone-specs-summary-label {
+  color: #9ca3af;
+}
+
+.dashboard-page.dash-dark .phone-specs-summary-row:has(
+    .phone-specs-price-emphasis
+  ),
+.phone-detail-dark .phone-specs-summary-row:has(
+    .phone-specs-price-emphasis
+  ) {
+  border-bottom-color: #374151;
 }

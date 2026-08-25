@@ -3,7 +3,7 @@ import { Strategy } from "passport-local";
 import { prisma } from "../config/prisma.mjs";
 import { findUserByEmail } from "../services/userService.mjs";
 import { verifyPassword } from "../utils/crypto.mjs";
-import { invalidCredentials } from "../utils/ApiError.mjs";
+import { invalidCredentials, unauthorized } from "../utils/ApiError.mjs";
 
 passport.serializeUser((user, done) => {
   done(null, user.userId);

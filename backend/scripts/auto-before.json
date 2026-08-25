@@ -1,0 +1,323 @@
+{
+  "userId": "b7e58b7d-8472-4710-87bb-6d6f53bfce66",
+  "at": "2026-08-25T04:42:04.279Z",
+  "behaviorScoresRowCount": 106,
+  "candidateCount": 8361,
+  "top": [
+    {
+      "phoneId": "98aa7344-9e65-428c-af66-1fc87843234a",
+      "modelName": "Apple iPad Air 11 (2026)",
+      "brand": "Apple",
+      "finalScore": 0.5742055374511674,
+      "customerPreference": 0.6722091996522604,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:98aa7344-9e65-428c-af66-1fc87843234a": 2.9675,
+        "brand:apple": 0.3518,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "b76e8986-0bd5-49d8-b3a9-1ec64a85f21a",
+      "modelName": "Acer Iconia Duo S12",
+      "brand": "Acer",
+      "finalScore": 0.5596541320226079,
+      "customerPreference": 0.6382105888378691,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:b76e8986-0bd5-49d8-b3a9-1ec64a85f21a": 2.4248,
+        "brand:acer": 0.7579,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "db40903e-3562-4770-a4fb-f063e3e3e968",
+      "modelName": "Lenovo Vibe Z3 Pro",
+      "brand": "Lenovo",
+      "finalScore": 0.5596541320226079,
+      "customerPreference": 0.6382105888378691,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:db40903e-3562-4770-a4fb-f063e3e3e968": 2.4248,
+        "brand:lenovo": 1.6367,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "dc07078c-1e23-4063-a8a6-ee1db4132818",
+      "modelName": "Oppo Reno16 Pro (China)",
+      "brand": "Oppo",
+      "finalScore": 0.5596541320226079,
+      "customerPreference": 0.6382105888378691,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:dc07078c-1e23-4063-a8a6-ee1db4132818": 2.4248,
+        "brand:oppo": 0.6894,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "1ce9ba76-7812-4aa6-afa7-1daa6eb478d3",
+      "modelName": "Realme X9 Pro",
+      "brand": "Realme",
+      "finalScore": 0.5596541320226079,
+      "customerPreference": 0.6382105888378691,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:1ce9ba76-7812-4aa6-afa7-1daa6eb478d3": 2.4248,
+        "brand:realme": 0.8165,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "36787f0d-78e9-48ab-bfcc-c36e0ff42670",
+      "modelName": "Samsung Galaxy S26",
+      "brand": "Samsung",
+      "finalScore": 0.5596541320226079,
+      "customerPreference": 0.6382105888378691,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:36787f0d-78e9-48ab-bfcc-c36e0ff42670": 2.4248,
+        "brand:samsung": 0.6517,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "3eac7320-50f6-4334-b2cf-309cafe2b0c6",
+      "modelName": "Sony Xperia X Premium",
+      "brand": "Sony",
+      "finalScore": 0.5596541320226079,
+      "customerPreference": 0.6382105888378691,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:3eac7320-50f6-4334-b2cf-309cafe2b0c6": 2.4248,
+        "brand:sony": 0.4049,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "7d704c97-49a9-46fb-8d75-8c04ea68a0d9",
+      "modelName": "Apple iPhone 13 mini",
+      "brand": "Apple",
+      "finalScore": 0.5489369729766457,
+      "customerPreference": 0.6131704976089853,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:7d704c97-49a9-46fb-8d75-8c04ea68a0d9": 1.9855,
+        "brand:apple": 0.3518,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "3f0c5a90-d682-400e-8692-76d53023d0fa",
+      "modelName": "Samsung Galaxy J5 Prime (2017)",
+      "brand": "Samsung",
+      "finalScore": 0.5489369729766457,
+      "customerPreference": 0.6131704976089853,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:3f0c5a90-d682-400e-8692-76d53023d0fa": 1.9855,
+        "brand:samsung": 0.6517,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "3867f23c-c2a1-478c-948d-6ee841a24a25",
+      "modelName": "Xiaomi Redmi 11",
+      "brand": "Xiaomi",
+      "finalScore": 0.5489369729766457,
+      "customerPreference": 0.6131704976089853,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:3867f23c-c2a1-478c-948d-6ee841a24a25": 1.9855,
+        "brand:xiaomi": 1.9026,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "0ff473a2-6cf4-4221-9901-d9d174acccdb",
+      "modelName": "Xiaomi Redmi Pro 2",
+      "brand": "Xiaomi",
+      "finalScore": 0.5489369729766457,
+      "customerPreference": 0.6131704976089853,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:0ff473a2-6cf4-4221-9901-d9d174acccdb": 1.9855,
+        "brand:xiaomi": 1.9026,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "3d3a1049-92dd-44b0-9837-e148115c6222",
+      "modelName": "XOLO Play Tegra Note",
+      "brand": "Xolo",
+      "finalScore": 0.5489369729766457,
+      "customerPreference": 0.6131704976089853,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:3d3a1049-92dd-44b0-9837-e148115c6222": 1.9855,
+        "brand:xolo": 0.6916,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "e00f6a34-3e6a-460e-a533-af06cd02afbe",
+      "modelName": "XOLO Era 2X",
+      "brand": "Xolo",
+      "finalScore": 0.5489369729766457,
+      "customerPreference": 0.6131704976089853,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:e00f6a34-3e6a-460e-a533-af06cd02afbe": 1.9855,
+        "brand:xolo": 0.6916,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "39704f5b-edaf-4c5a-8bdc-a5d400764a22",
+      "modelName": "ZTE nubia RedMagic 11S Pro (China)",
+      "brand": "Zte",
+      "finalScore": 0.5489369729766457,
+      "customerPreference": 0.6131704976089853,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:39704f5b-edaf-4c5a-8bdc-a5d400764a22": 1.9855,
+        "brand:zte": 0.5914,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    },
+    {
+      "phoneId": "4446af2b-eaaa-4a34-8c4d-01812fdff94c",
+      "modelName": "Apple iPad Air 13 (2026)",
+      "brand": "Apple",
+      "finalScore": 0.548236561692514,
+      "customerPreference": 0.6115340226460608,
+      "compatibility": 0.5,
+      "contentSim": 0.5,
+      "searchHistory": 0.5,
+      "value": 0.5,
+      "freshnessTrending": 0.5,
+      "relevantScores": {
+        "affinity:4446af2b-eaaa-4a34-8c4d-01812fdff94c": 1.8511,
+        "brand:apple": 0.3518,
+        "feature:gaming": 0.0599,
+        "feature:camera": null,
+        "feature:battery": null,
+        "feature:performance": 0.0679,
+        "feature:display": 0.0624
+      }
+    }
+  ]
+}

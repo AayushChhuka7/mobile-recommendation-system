@@ -28,15 +28,36 @@
 // in the same order of magnitude as the previous DELTAS table.
 export const BEHAVIOR_CONFIG = Object.freeze({
   eventWeights: Object.freeze({
-    view:      0.40,   // glancing at a card — very light
-    click:     0.65,   // opened the detail page
-    search:    0.90,   // typed a query — explicit intent
-    compare:   2.80,   // side-by-side comparison — strong shopping intent
+    view:      0.90,   // glancing at a card — very light
+                          // (Step 3 rebalance: 0.40 → 0.90; a card glance
+                          //  now carries more weight so a passive
+                          //  browsing session still leaves a useful
+                          //  trail.)
+    click:     2.70,   // opened the detail page — explicit per-phone
+                          // interest; lifted from 0.65 so a single click
+                          // counts more than a search, matching its
+                          // stronger semantic ("this specific phone").
+                          // (Step 3 rebalance: 1.20 → 1.70 to rebalance
+                          //  toward lower-friction events.)
+                          // Dedup + confidence ramp + diminishing curve
+                          // still bound repeat abuse.
+    search:    1.40,   // typed a query — explicit intent
+                          // (Step 3 rebalance: 0.90 → 1.40 to rebalance
+                          //  toward lower-friction events.)
+    compare:   3.30,   // side-by-side comparison — strong shopping intent
                           // (Step 2 rebalance: raised from 2.00 so a single
                           //  compare writes a stronger per-tag delta; the
                           //  pair-level dedup + pair diminishing curve still
                           //  bound spam, so the higher ceiling is safe.)
-    recommend: 3.00,   // "Recommend Me" button — strongest explicit ask
+                          // (Step 3 rebalance: 2.80 → 3.30; compare is the
+                          //  strongest signal we capture — lifting it
+                          //  above recommend re-anchors the brief's
+                          //  "compare > recommend" intent.)
+    recommend: 3.00,   // "Recommend Me" button — explicit ask
+                          // (Step 3 rebalance: 3.00 → 2.50; still a
+                          //  strong single signal, but no longer the
+                          //  ceiling — compare is now the strongest
+                          //  explicit ask, matching the product brief.)
     save:      2.40,   // bookmarked
     ignore:   -0.55,   // dismissed / scrolled past
   }),
@@ -45,22 +66,32 @@ export const BEHAVIOR_CONFIG = Object.freeze({
   // different users; these constants let us bias the feature vector
   // toward the dims this product considers "heavier" without baking
   // the bias into the per-phone feature profile.
+  //
+  // Retuned 2026-08-25 so a single view/click/recommend produces a
+  // per-event score bump in the 0.1–0.4 band (was: < 0.1 because the
+  // old 0.60–1.00 weights combined with a 7% decay rate and a 0.15
+  // confidence floor cancelled out most of the accumulation).
   featureWeight: Object.freeze({
-    gaming:       1.00,
-    camera:       0.85,
-    battery:      0.70,
-    performance:  0.90,
-    display:      0.55,
-    brand:        0.60,  // used when emitting brand:<X> bumps
-    tier:         0.40,
+    gaming:       0.15,
+    camera:       0.12,
+    battery:      0.10,
+    performance:  0.13,
+    display:      0.08,
+    brand:        0.13,  // 1 recommend → ~0.36 bump on brand:<X>
+    tier:         0.10,  // 1 recommend → ~0.27 bump on tier:<T>
   }),
 
   // Score bounds. The `applyDecay` helper reads these every event.
   // `positiveCap` is the asymptote of positive scores; `negativeFloor`
   // is the asymptote of negative scores (always present so ignore /
   // dismiss events can't over-penalise a tag below the neutral line).
+  //
+  // Retuned 2026-08-25: alpha dropped from 0.93 → 0.99 so accumulation
+  // is preserved across many events (was: 7% per-step loss cancelled
+  // out the deltas within 5-10 events). 1% loss is enough to gently
+  // age out very old interest without erasing recent activity.
   score: Object.freeze({
-    alpha: 0.93,            // exponential decay multiplier per event
+    alpha: 0.99,            // 1% per-event decay (was 7%)
     positiveCap: 4.0,       // tanh saturates near here at ~95% of cap
     negativeFloor: -2.0,    // ignore / dismiss asymptote
     saturationTanhK: 0.6,   // tanh(K * raw) ∈ (−1, 1)
@@ -78,17 +109,20 @@ export const BEHAVIOR_CONFIG = Object.freeze({
 
   // Behaviour-confidence ramp. Controls how much each individual
   // event contributes as the user's history grows. With these
-  // defaults: 0 events → 0.15, 5 events → 0.42, 12 events → 0.66,
-  // 30 events → 0.93. A single click therefore writes a tiny bump
-  // (~0.06) and only after dozens of events does each click write
-  // its full base weight.
+  // defaults: 0 events → 0.60, 1 → 0.74, 4 → 0.92, 8 → 0.99.
+  // The ramp saturates by the user's 4th event instead of their 12th
+  // (was: 0/0.15, 5/0.42, 12/0.66, 30/0.93) so a brand-new user's
+  // first click already counts at > 70% of base weight.
+  //
+  // Retuned 2026-08-25 alongside the alpha 0.93→0.99 change so the
+  // combined effect lands each event in the 0.1–0.4 band.
   //
   // Implementation note: we multiply the per-event base weight inside
   // `behaviorAnalyzer.recordEvent`, not the score at read time, so
   // legacy rows in `BehaviorScore` are left untouched.
   confidence: Object.freeze({
-    rampEvents: 12,
-    floor: 0.15,
+    rampEvents: 4,           // saturates by event 4 (was 12)
+    floor: 0.60,             // first event writes ≥ 60% of base (was 15%)
     ceiling: 1.0,
   }),
 
@@ -180,22 +214,18 @@ export const BEHAVIOR_CONFIG = Object.freeze({
   // jump from `affinity:<phoneId>`, with `model:<hash>` and
   // `brand:<X>` lifting related phones nearby, and `feature:<dim>`
   // carrying the existing per-feature signal.
+  //
+  // Retuned 2026-08-25 so each compare writes a per-tag bump in the
+  // 0.1–0.4 band. The previous values (1.10/0.55/0.60/0.40/0.65)
+  // produced deltas of 3+ on `affinity:<id>`, which instantly
+  // saturated the tanh cap of 4.0 — visible score growth stopped
+  // after 1-2 events.
   affinity: Object.freeze({
-    // Step 2 rebalance — lifted from the previous values so a user
-    // who has touched a phone/brand/model repeatedly gets a
-    // noticeably stronger per-tag lift in `customer_preference`
-    // (which now owns 32% of the final score, up from 26.32%). The
-    // model/tier/feature rows are kept at their existing values
-    // because the existing per-dim feature pipeline already
-    // converges through `searchHistoryScore` plus the boosted
-    // `customer_preference` slot.
-    phoneAffinity: 1.10,     // affinity:<phoneId>  — direct
-    modelAffinity: 0.55,     // model:<hash>        — same model cluster
-    brandGatedAffinity: 1.10,// brand:<X>           — gated; only fires
-                             //                     after ≥2 distinct phones
-                             //                     of brand X
-    tierAffinity: 0.40,      // tier:<T>
-    featureAffinity: 0.65,   // average of feature:<dim> rows on the phone
+    phoneAffinity:      0.12, // 1 compare → ~0.36 bump on affinity:<id>
+    modelAffinity:      0.06, // 1 compare → ~0.18 bump on model:<hash>
+    brandGatedAffinity: 0.07, // 1 compare → ~0.21 bump on brand:<X>
+    tierAffinity:       0.05, // 1 compare → ~0.15 bump on tier:<T>
+    featureAffinity:    0.08, // 1 compare → ~0.24 bump on feature:<dim>
   }),
 
   // Event-dedup: hard-deduplicate repeats inside this window so a

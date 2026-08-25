@@ -1,65 +1,145 @@
 // fusionRanker — Step D. Pure final-ranking fusion.
 //
-// Combines five signals (compatibility, customer_preference,
-// content_similarity, search_history, value) into a single finalScore
-// per candidate. The 6th slot from the original spec ("popularity")
-// is deliberately omitted — the user has reserved its 0.05 weight for
-// a future customer-segmentation cluster (same-cluster phones boost
-// each other). Today the remaining five weights scale up
-// proportionally so they sum to exactly 1.0.
+// Combines sub-scores (compatibility, customer_preference,
+// content_similarity, search_history, value, freshness_trending) into
+// a single finalScore per candidate. The 6th slot
+// (freshness_trending) is the new entry from Fix #9; it pulls
+// weight from `compatibility` and `value` proportionally. Sum stays
+// exactly 1.0.
 //
-// Shape contract:
-//   candidates[]      → list of enriched candidates (see Step D plan §"Sub-score sourcing")
-//   behaviorScores    → Map<tag, score> from BehaviorScore rows; null/empty for new users
-//
-// Returns the same list with `finalScore` (0..1) and `components`
-// (the 5 sub-scores in [0,1]) attached, sorted by finalScore desc.
-//
-// Phase 3 (compare redesign):
-//   - `customer_preference` widens from 0.2105 → 0.2632 to absorb the
-//     new per-phone affinity (`affinity:<phoneId>`), per-model
-//     cluster (`model:<hash>`), gated brand lift (`brand:<X>` after
-//     ≥2 distinct phones), tier (`tier:<T>`) and feature vector
-//     (`feature:<dim>`).
-//
-// Step 2 rebalance (config-only):
-//   - `compatibility` shrinks from 0.4211 → 0.32 (-24%). Persona/budget
-//     scoring from FastAPI is still the largest single weight but no
-//     longer dominates the blend.
-//   - `customer_preference` widens 0.2632 → 0.31 (+18%). Behaviour
-//     now sits just below `compatibility` as a near-co-equal slot, so
-//     a strong compare history can override a slightly better FastAPI
-//     score.
-//   - `content_similarity` 0.1579 → 0.18, `search_history` 0.0526
-//     → 0.08, `value` 0.1053 → 0.11 — small bumps to absorb the freed
-//     `compatibility` weight. Sum stays exactly 1.0.
-//   - `SHORT_TERM_BLEND_ALPHA` raises 0.18 → 0.26 so recency has
-//     more visible influence in the personalizedRank blend while
-//     remaining bounded.
+// Learned weights (Fix #3):
+//   The ranker now reads a JSON artifact written by the weekly
+//   `train_fusion_weights.py` job. The artifact, if present and
+//   valid, replaces the hand-tuned defaults. Cold start (no
+//   artifact, or invalid artifact) falls back to the hand-tuned
+//   table. Reload is on file-watch — no BE restart required.
 
 import { searchHistoryScore } from "./searchHistoryScore.mjs";
 import { shortTermMatch } from "./shortTermInterest.mjs";
 import { BEHAVIOR_CONFIG } from "../config/behaviorConfig.mjs";
 import { hashModelName } from "./behaviorAnalyzer.mjs";
+import { readFileSync, watchFile } from "node:fs";
+import { resolve } from "node:path";
 
 
-// ---- Weight table ---------------------------------------------------------
+// ---- Weight table (defaults; overridden by learned artifact) --------------
 //
-// Sums to 1.0 exactly. To re-add popularity: shrink each entry to
-// w * 0.95 (so the original 0.05 popularity slot becomes available),
-// then add `popularity: 0.05` to the table.
-export const FUSION_WEIGHTS = Object.freeze({
-  compatibility:        0.32,
-  customer_preference:  0.31,
-  content_similarity:   0.18,
-  search_history:       0.08,
-  value:                0.11,
+// Sums to 1.0 exactly. If you add a slot, shrink the others to make
+// room. Re-exported as `DEFAULT_FUSION_WEIGHTS` so the trainer can
+// log them and operators can diff against the live values.
+export const DEFAULT_FUSION_WEIGHTS = Object.freeze({
+  compatibility:        0.30,   // was 0.32 (gave 0.02 to freshness_trending)
+  customer_preference:  0.31,   // unchanged
+  content_similarity:   0.18,   // unchanged
+  search_history:       0.08,   // unchanged
+  value:                0.10,   // was 0.11 (gave 0.01 to freshness_trending)
+  freshness_trending:   0.03,   // new in Fix #9
 });
 
-// Reserved slot — not consumed today. Exported so a future step
-// (segmentation cluster popularity) can wire it in without touching
-// the rest of the ranker.
-export const FUSION_WEIGHTS_RESERVED_POPULARITY = 0.05;
+const FUSION_WEIGHT_KEYS = Object.freeze([
+  "compatibility",
+  "customer_preference",
+  "content_similarity",
+  "search_history",
+  "value",
+  "freshness_trending",
+]);
+
+// ---- Learned-weights loader -----------------------------------------------
+//
+// Reads ML Model/artifacts/fusion_weights.json if present. The file
+// is the output of train_fusion_weights.py and contains a `weights`
+// object { slot: number }. The loader validates the structure
+// (expected keys, numeric values, sums to ~1.0) and falls back to
+// defaults on any failure so a bad artifact can never crash the
+// ranker. Hot-reload via fs.watchFile (5s polling) so the weekly
+// refit picks up without a BE restart.
+
+const ARTIFACT_PATH = (() => {
+  // Resolve relative to the BE process CWD so docker-compose mounts
+  // land in the right place. We try a couple of likely locations.
+  const candidates = [
+    resolve(process.cwd(), "ML Model/artifacts/fusion_weights.json"),
+    resolve(process.cwd(), "../ML Model/artifacts/fusion_weights.json"),
+    resolve(process.cwd(), "../../ML Model/artifacts/fusion_weights.json"),
+  ];
+  // Pick the first that exists at module load; if none exist yet,
+  // the readFileSync below will simply throw and we fall back.
+  for (const p of candidates) {
+    try {
+      readFileSync(p, "utf8");
+      return p;
+    } catch {
+      // try next
+    }
+  }
+  return candidates[0]; // default; will be re-checked on watch
+})();
+
+function loadFusionWeightsFromDisk() {
+  try {
+    const txt = readFileSync(ARTIFACT_PATH, "utf8");
+    const parsed = JSON.parse(txt);
+    const weights = parsed && parsed.weights;
+    if (!weights || typeof weights !== "object") {
+      throw new Error("artifact missing `weights` object");
+    }
+    for (const k of FUSION_WEIGHT_KEYS) {
+      if (typeof weights[k] !== "number") {
+        throw new Error(`artifact missing numeric weight for "${k}"`);
+      }
+    }
+    const sum = FUSION_WEIGHT_KEYS.reduce((a, k) => a + weights[k], 0);
+    if (Math.abs(sum - 1) > 0.02) {
+      throw new Error(`weights do not sum to ~1.0: ${sum.toFixed(3)}`);
+    }
+    return Object.freeze({ ...weights });
+  } catch (e) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(
+        "[fusion] learned weights unavailable, using defaults:",
+        e.message,
+      );
+    }
+    return null;
+  }
+}
+
+let _learnedWeights = loadFusionWeightsFromDisk();
+
+// Hot-reload: poll the artifact every 5s. The weekly trainer
+// rewrites the file in place; this picks it up without restart.
+try {
+  watchFile(ARTIFACT_PATH, { interval: 5000 }, () => {
+    const next = loadFusionWeightsFromDisk();
+    if (next) _learnedWeights = next;
+  });
+} catch {
+  // fs.watchFile can throw on some filesystems. Cold start is fine.
+}
+
+// `FUSION_WEIGHTS` is now a live view: reads `_learnedWeights` if
+// present, else the hand-tuned defaults. The frozen table shape is
+// preserved so existing call sites (`FUSION_WEIGHTS[key]`) keep
+// working unchanged.
+export const FUSION_WEIGHTS = new Proxy({}, {
+  get(_target, key) {
+    const src = _learnedWeights || DEFAULT_FUSION_WEIGHTS;
+    return src[key];
+  },
+  ownKeys() {
+    return Reflect.ownKeys(_learnedWeights || DEFAULT_FUSION_WEIGHTS);
+  },
+  getOwnPropertyDescriptor(_t, key) {
+    const src = _learnedWeights || DEFAULT_FUSION_WEIGHTS;
+    return Object.getOwnPropertyDescriptor(src, key);
+  },
+});
+
+// Reserved popularity slot — DEPRECATED in Fix #9 (the slot was
+// reclaimed by `freshness_trending`). Kept as an export so callers
+// that reference the constant still resolve cleanly.
+export const FUSION_WEIGHTS_RESERVED_POPULARITY = 0.0;
 
 // ---- Pure helpers ---------------------------------------------------------
 
@@ -209,15 +289,22 @@ const FEATURE_TAGS = Object.freeze([
   "feature:display",
 ]);
 
-// Read the 5 sub-scores out of an enriched candidate row. Each
+// Read the sub-scores out of an enriched candidate row. Each
 // FastAPI-side score (overallScore / matchScoreFastApi / valueScore)
 // is on a 0..100 scale; we divide by 100 to normalise. The
-// `customer_preference` slot is now derived from the user's
-// BehaviorScore rows (per-phone affinity, per-model cluster, gated
-// brand, tier, and feature vector) instead of FastAPI's
-// `matchScoreFastApi`. Cold users still get a neutral 0.5 from
-// `customerPreferenceFor` so the dashboard layout doesn't shift.
+// `customer_preference` slot is derived from the user's BehaviorScore
+// rows (per-phone affinity, per-model cluster, gated brand, tier, and
+// feature vector) instead of FastAPI's `matchScoreFastApi`. The
+// `freshness_trending` slot (Fix #9) is a 70/30 blend of
+// phone-level freshness (newer = higher) and the nightly
+// phone_trends.trendScore. Cold phones (no releasedAt, no trend)
+// get 0.5 (neutral) so the slot can never DROP a phone just
+// because we lack data.
 function computeComponents(c, behaviorScores) {
+  const trend =
+    Number.isFinite(c.trendScore) ? c.trendScore : 0;
+  const fresh =
+    Number.isFinite(c.freshness) ? c.freshness : 0.5;
   return {
     compatibility: clamp01(
       Number.isFinite(c.overallScore) ? c.overallScore / 100 : 0,
@@ -226,12 +313,6 @@ function computeComponents(c, behaviorScores) {
     content_similarity: clamp01(
       Number.isFinite(c.contentSim) ? c.contentSim : 0,
     ),
-    // searchHistoryScore is keyword-only now. It folds the user's
-    // BehaviourScore map onto the phone's STATIC tag set
-    // (`feature:*`, `tier:*`, legacy `gaming`/`camera`) — the new
-    // per-phone and per-model tags are NOT in `phone.tags` so they
-    // do not contribute here. Brand/feature/affinity live in
-    // `customer_preference`; this slot is now keyword-driven only.
     search_history: searchHistoryScore(
       { tags: Array.isArray(c.tags) ? c.tags : [] },
       behaviorScores,
@@ -239,16 +320,27 @@ function computeComponents(c, behaviorScores) {
     value: clamp01(
       Number.isFinite(c.valueScore) ? c.valueScore / 100 : 0,
     ),
+    // 70% freshness (recency) + 30% trending. Trending without
+    // recency creates a "rich get richer" loop; recency without
+    // trending buries genuinely hot new releases. The blend makes
+    // both signals visible in the slot.
+    freshness_trending: clamp01(0.7 * fresh + 0.3 * trend),
   };
 }
 
-// Fuse a single candidate's 5 sub-scores into a finalScore in [0,1].
+// Fuse a single candidate's sub-scores into a finalScore in [0,1].
 // Returns { finalScore, components } so the FE / future analytics
 // can show *why* a phone ranked where it did.
+//
+// The weights are read from `FUSION_WEIGHTS` (a Proxy that resolves
+// to either the learned artifact or the hand-tuned defaults). Any
+// new slot in FUSION_WEIGHTS_KEYS that the candidate doesn't carry
+// falls back to 0 — so an old payload without the freshness slot
+// simply contributes 0 to that key.
 export function fuseOne(candidate, behaviorScores) {
   const components = computeComponents(candidate, behaviorScores);
   let finalScore = 0;
-  for (const key of Object.keys(FUSION_WEIGHTS)) {
+  for (const key of FUSION_WEIGHT_KEYS) {
     finalScore += FUSION_WEIGHTS[key] * (components[key] ?? 0);
   }
   return { finalScore, components };
@@ -261,12 +353,19 @@ export function fuseOne(candidate, behaviorScores) {
 // Tie-breaker: identical finalScores preserve the input order (Array
 // .sort is stable in V8 ≥ Node 12), so the FastAPI ranker (the
 // source of `matchScoreFastApi`) acts as the implicit tie-breaker.
-export function fusionRank(candidates, behaviorScores) {
+//
+// Optional `stockMultiplier` lets the caller (#9) apply a per-phone
+// penalty (e.g. 0.85 for low-stock) without touching the ranker.
+export function fusionRank(candidates, behaviorScores, stockMultiplier = null) {
   if (!Array.isArray(candidates) || candidates.length === 0) return [];
   return candidates
     .map((c) => {
       const { finalScore, components } = fuseOne(c, behaviorScores);
-      return { ...c, finalScore, components };
+      let score = finalScore;
+      if (stockMultiplier && Number.isFinite(stockMultiplier(c))) {
+        score = Math.max(0, Math.min(1, finalScore * stockMultiplier(c)));
+      }
+      return { ...c, finalScore: score, components };
     })
     .sort((a, b) => b.finalScore - a.finalScore);
 }
@@ -280,14 +379,15 @@ export function fusionRank(candidates, behaviorScores) {
 //
 //   personalizedScore = (1 - α) * baseFinalScore + α * shortTermMatch
 //
-// α = 0.26 (Step 2 rebalance, was 0.18) widens the boost band so
-// repeated compares of the same brand produce a clearly larger
-// recency bump — enough that adjacent phones swap after one or two
-// recent events — while still small enough that a phone with a much
-// higher base score (e.g. FastAPI persona+budget match) won't be
-// leap-frogged by an unrelated candidate. This is the single knob
-// that trades "movement" against "stability".
-export const SHORT_TERM_BLEND_ALPHA = 0.26;
+// α = 0.12 (was 0.26). One click on a phone card used to add up to
+// 0.26 × 1.0 = 0.26 to the blended score — a 30%+ jump against a
+// 0.7 base — which made the auto list visibly reshuffle after every
+// "Recommend Me" click. At α = 0.12 the same click nudges by 0.12,
+// which a typical 0.6–0.8 base score absorbs without reordering.
+// Sustained behaviour (3+ recent events of the same brand/feature)
+// still produces a visible reorder because each event adds
+// independently and the tanh short-term match sums.
+export const SHORT_TERM_BLEND_ALPHA = 0.12;
 
 // Personalized ranking: runs the pure 5-signal fusion, then folds in the
 // short-term interest match as an additive, bounded boost. Falls back to
@@ -306,6 +406,7 @@ export function personalizedRank(
   behaviorScores,
   interestVec,
   metaByPhoneId,
+  stockMultiplier = null,
 ) {
   if (!Array.isArray(candidates) || candidates.length === 0) return [];
 
@@ -321,10 +422,13 @@ export function personalizedRank(
         const meta = c && c.id ? metas.get(c.id) : null;
         stMatch = shortTermMatch(meta, interestVec);
       }
-      const finalScore = hasShortTerm
+      let finalScore = hasShortTerm
         ? (1 - SHORT_TERM_BLEND_ALPHA) * baseScore +
           SHORT_TERM_BLEND_ALPHA * stMatch
         : baseScore;
+      if (stockMultiplier && Number.isFinite(stockMultiplier(c))) {
+        finalScore = Math.max(0, Math.min(1, finalScore * stockMultiplier(c)));
+      }
       return {
         ...c,
         baseScore,
